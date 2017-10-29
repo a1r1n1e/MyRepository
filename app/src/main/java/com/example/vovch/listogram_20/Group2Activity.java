@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -244,7 +245,12 @@ public class Group2Activity extends WithLoginActivity {
         }
         private void makeListogramLine(LinearLayout listogramLayout, LinearLayout.LayoutParams parameters, LinearLayout.LayoutParams itemParameters,
                                        LinearLayout.LayoutParams commentParameters, LinearLayout.LayoutParams buttonParameters, String item, String comment, boolean active, int itemId, boolean listActive){
+            FrameLayout addingFrameLayout = new FrameLayout(listogramLayout.getContext());
+            addingFrameLayout.setLayoutParams(parameters);
+            addingFrameLayout.setPadding(0, 5, 0, 0);
             LinearLayout addingLayout = new LinearLayout(listogramLayout.getContext());
+            addingLayout.setBaselineAligned(false);
+            addingLayout.setBackgroundColor(Color.CYAN);
             addingLayout.setLayoutParams(parameters);
             addingLayout.setGravity(Gravity.START);
             addingLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -254,6 +260,7 @@ public class Group2Activity extends WithLoginActivity {
             itemName.setLayoutParams(itemParameters);
             itemName.setFocusable(false);
             itemName.setClickable(false);
+            itemName.setBackgroundColor(Color.TRANSPARENT);
             itemName.setText(item);
             itemName.setId(LISTOGRAM_ITEM_BIG_NUMBER + NumberOfLines);
             ListItemsTexts.add(ListItemsTexts.size(), itemName);
@@ -261,6 +268,7 @@ public class Group2Activity extends WithLoginActivity {
             itemComment.setLayoutParams(commentParameters);
             itemComment.setFocusable(false);
             itemComment.setClickable(false);
+            itemComment.setBackgroundColor(Color.TRANSPARENT);
             itemComment.setText(comment);
             itemComment.setId(LISTOGRAM_COMMENT_BIG_NUMBER + NumberOfLines);
             ListCommentTexts.add(ListCommentTexts.size(), itemComment);
@@ -307,7 +315,8 @@ public class Group2Activity extends WithLoginActivity {
             addingLayout.addView(itemName);
             addingLayout.addView(itemComment);
             addingLayout.addView(groupButton);
-            listogramLayout.addView(addingLayout);
+            addingFrameLayout.addView(addingLayout);
+            listogramLayout.addView(addingFrameLayout);
             Items.add(Items.size(), itemId);
             NumberOfLines++;
         }

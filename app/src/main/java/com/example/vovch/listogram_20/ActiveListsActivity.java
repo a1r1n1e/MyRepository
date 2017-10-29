@@ -162,6 +162,7 @@ public class ActiveListsActivity extends WithLoginActivity
                 else if(result.codePointAt(i) == INSIDE_DIVIDER && flag % 2 == 1) {
                     tempGroupId.setLength(0);
                     tempGroupId.append(result.substring(j, i));
+                    j = i + 1;
                     flag++;
                 }else if (result.codePointAt(i) == LISTS_DIVIDER) {
                     tempOwner.setLength(0);
@@ -184,19 +185,25 @@ public class ActiveListsActivity extends WithLoginActivity
             listogramLayout.setOrientation(LinearLayout.HORIZONTAL);
             listogramLayout.setLayoutParams(parameters);
             listogramLayout.setId(LISTOGRAM_ACTIVES_BIG_NUMBER + NumberOfActiveLists);
+            listogramLayout.setBaselineAligned(false);
+            //listogramLayout.setBackgroundColor(Color.GREEN);
+            //listogramLayout.setPadding(0, 5, 0, 0);
             Button groupNameButton = new Button(listogramLayout.getContext());
             groupNameButton.setLayoutParams(groupNameButtonParameters);
             groupNameButton.setClickable(false);
             groupNameButton.setText(groupName);
+            groupNameButton.setBackgroundColor(Color.TRANSPARENT);
             Button listOwnerButton = new Button(listogramLayout.getContext());
             listOwnerButton.setLayoutParams(listOwnerButtonParameters);
             listOwnerButton.setClickable(false);
+            listOwnerButton.setBackgroundColor(Color.TRANSPARENT);
             StringBuilder tempString = new StringBuilder("New list from ");
             tempString.append(listOwner);
             listOwnerButton.setText(tempString.toString());
             listogramLayout.addView(groupNameButton);
             listogramLayout.addView(listOwnerButton);
-            listogramLayout.setPadding(0, 80, 0, 80);
+            listogramLayout.setBackgroundColor(Color.GREEN);
+            frameLayout.setPadding(0, 80, 0, 80);
             Button frameButton = new Button(frameLayout.getContext());
             frameButton.setLayoutParams(fullParameters);
             frameButton.setId(LISTOGRAM_FRAME_LAYOUTS_BIG_NUMBER + NumberOfActiveLists);
