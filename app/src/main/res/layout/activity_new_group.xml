@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.vovch.listogram_20.NewGroup">
+    <ScrollView
+        android:layout_width="368dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        android:scrollbars="none"
+        android:layout_marginStart="8dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical"
+            android:id="@+id/newgroupcontainerlayout">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text="Enter Group Name"
+                style="@android:style/TextAppearance.Large"
+                android:gravity="center_horizontal"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@android:style/TextAppearance.Large"
+                android:gravity="center_horizontal"
+                android:id="@+id/newgroupnameview"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:orientation="vertical"
+                    android:id="@+id/newgroupaddeduserslayout">
+                </LinearLayout>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/newgroupnewuseridtextview"
+                android:text="Enter New User Id"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/newgroupadduserbutton"
+                android:text="Add User"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/newgroupsubmitbutton"
+                android:text="Create New Group"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text=""
+                android:id="@+id/newgrouperrorreporter"
+                style="@android:style/TextAppearance.Small"
+                android:gravity="center_horizontal"/>
+        </LinearLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>
