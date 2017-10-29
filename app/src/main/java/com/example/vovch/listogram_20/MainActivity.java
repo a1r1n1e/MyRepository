@@ -12,6 +12,10 @@ public class MainActivity extends WithLoginActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intentOne = new Intent(MainActivity.this, ActiveCheckAndroidFirebaseMsgService.class);
+        Intent intentTwo = new Intent(MainActivity.this, ActiveCheckFirebaseInstanceIDService.class);
+        startService(intentOne);
+        startService(intentTwo);
         setContentView(R.layout.activity_main);
         View.OnClickListener NewListenner1 = new View.OnClickListener() {
             @Override
