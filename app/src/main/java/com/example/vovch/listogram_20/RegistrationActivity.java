@@ -33,13 +33,18 @@ public class RegistrationActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES = "autentification";
     public static final String APP_PREFERENCES_LOGIN = "login";
     public static final String APP_PREFERENCES_PASSWORD = "password";
+    public static final String APP_PREFERENCES_USERID = "userid";
+    public static final String APP_PREFERENCES_TOKEN= "token";
     private SharedPreferences loginPasswordPair;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        loginPasswordPair = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        token = loginPasswordPair.getString(APP_PREFERENCES_TOKEN, null);
         View.OnClickListener NewListenner3 = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,7 +56,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     String uPasswordRegister = editText4.getText().toString();
 
                     RegistrationTask rTask = new RegistrationTask();
-                    rTask.execute(uNameRegister, uPasswordRegister);
+                    rTask.execute(uNameRegister, uPasswordRegister, token);
                 }
             }
         };
@@ -72,10 +77,11 @@ public class RegistrationActivity extends AppCompatActivity {
         protected String doInBackground(String... loginPair) {
             String response = "";
             try {
-                URL url = new URL("http://217.10.35.250/java_registration.php");
+                URL url = new URL("http://217.10.35.250/java_registration_2.php");
                 HashMap<String, String> postDataParams = new HashMap<String, String>();
                 postDataParams.put("newuser", loginPair[0]);
                 postDataParams.put("newpassword", loginPair[1]);
+                postDataParams.put("token", loginPair[2]);
 
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                 conn.setDoOutput(true);                                                 // Enable POST stream
@@ -103,6 +109,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = loginPasswordPair.edit();
                         editor.putString(APP_PREFERENCES_LOGIN, loginPair[0]);
                         editor.putString(APP_PREFERENCES_PASSWORD, loginPair[1]);
+                        editor.putString(APP_PREFERENCES_USERID, response);
                         editor.apply();
                     }
                 }
