@@ -361,20 +361,20 @@ public class Group2Activity extends WithLoginActivity {
         private void onItemMarkButtonTouchedAction(Button button){
             int id = button.getId() - LISTOGRAM_BUTTON_BIG_NUMBER;
             int itemId = Items.get(id);
-            StringBuilder tempString = new StringBuilder(String.valueOf(itemId));
-            tempString.append("%");
+            //StringBuilder tempString = new StringBuilder(String.valueOf(itemId));
+            //tempString.append("%");
             LinearLayout itemLayout = (LinearLayout) button.getParent().getParent().getParent();
             int listId = itemLayout.getId() - LISTOGRAM_BIG_NUMBER;
-            tempString.append(String.valueOf(Identificators1.get(listId)));
-            itemMarkTask = new ItemMarkTask (userId, tempString.toString(), "itemmark", id + LISTOGRAM_BUTTON_BIG_NUMBER);
+            //tempString.append(String.valueOf(Identificators1.get(listId)));
+            itemMarkTask = new ItemMarkTask (userId, String.valueOf(itemId), String.valueOf(listId), "itemmark", id + LISTOGRAM_BUTTON_BIG_NUMBER);
             firstLoginAttemptFlag = 1;
             itemMarkTask.work();
         }
     }
     protected class ItemMarkTask extends FirstLoginAttemptTask {
         private int id;
-        ItemMarkTask(String userId, String itemIdAndGroupId,  String action, int newId){
-            super(userId, itemIdAndGroupId, action);
+        ItemMarkTask(String userId, String itemIdAndGroupId,  String third, String action, int newId){
+            super(userId, itemIdAndGroupId, third, action);
             id = newId;
         }
         @Override

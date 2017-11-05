@@ -1,6 +1,8 @@
 package com.example.vovch.listogram_20;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +11,12 @@ import android.widget.TextView;
 
 public class MainActivity extends WithLoginActivity {
     public  MainActivity.LoginnerTask lTask;
+    public static final String APP_PREFERENCES = "autentification";
+    private static final String  APP_PREFERENCES_TOKEN= "token";
+    private static final String  APP_PREFERENCES_USERID= "userid";
+    public static final String APP_PREFERENCES_PASSWORD = "password";
+    private SharedPreferences preferences;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,6 +24,8 @@ public class MainActivity extends WithLoginActivity {
         Intent intentTwo = new Intent(MainActivity.this, ActiveCheckFirebaseInstanceIDService.class);
         startService(intentOne);
         startService(intentTwo);
+        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        token = preferences.getString(APP_PREFERENCES_TOKEN, null);
         setContentView(R.layout.activity_main);
         View.OnClickListener NewListenner1 = new View.OnClickListener() {
             @Override
@@ -26,7 +36,7 @@ public class MainActivity extends WithLoginActivity {
                     EditText editText2 = (EditText)findViewById(R.id.edittext2);
                     String uName = editText1.getText().toString();
                     String uPassword = editText2.getText().toString();
-                    lTask = new LoginnerTask(uName, uPassword, "login");
+                    lTask = new LoginnerTask(uName, uPassword, token, "login");
                     lTask.work();
                 }
             }
@@ -54,8 +64,8 @@ public class MainActivity extends WithLoginActivity {
         return lTask;
     }
     protected class LoginnerTask extends FirstLoginAttemptTask{
-        LoginnerTask(String username, String userpassword, String action){
-            super(username, userpassword, action);
+        LoginnerTask(String username, String userpassword, String token, String action){
+            super(username, userpassword, token, action);
         }
         @Override
         protected void onGoodResult(String result){

@@ -1,8 +1,6 @@
 package com.example.vovch.listogram_20;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -22,9 +20,7 @@ public class NewGroup extends WithLoginActivity {
     private String userId;
     private String groupName;
     protected boolean stepOneDone = false;
-    protected boolean stepTwoDone = false;
     protected ArrayList <Integer> AddedUsersIds = new ArrayList<>();
-    protected static SharedPreferences loginPasswordPair;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

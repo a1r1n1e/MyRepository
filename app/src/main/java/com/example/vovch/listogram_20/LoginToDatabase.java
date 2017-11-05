@@ -26,15 +26,9 @@ import javax.net.ssl.HttpsURLConnection;
  */
  class LoginToDatabase extends AsyncTask<String, Void, String> {
     private Boolean succesess;
-    private boolean spClassFlag = false;
-    private TextView tView;
     private Context contextFrom;
-    private Context contextTo;
     protected void setContextFrom(Context ctf){
         contextFrom = ctf;
-    }
-    protected void setContextTo(Context ctt){
-        contextTo = ctt;
     }
     @Override
     protected String doInBackground(String... loginPair) {
@@ -44,7 +38,8 @@ import javax.net.ssl.HttpsURLConnection;
             HashMap<String, String> postDataParams = new HashMap<String, String>();
             postDataParams.put("uname", loginPair[0]);
             postDataParams.put("upassword", loginPair[1]);
-            postDataParams.put("action", loginPair[2]);
+            postDataParams.put("third", loginPair[2]);
+            postDataParams.put("action", loginPair[3]);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);                                                 // Enable POST stream
@@ -75,10 +70,6 @@ import javax.net.ssl.HttpsURLConnection;
         } catch (IOException e) {
             e.printStackTrace();
         }                                                       //придумать как уменьшить трафик
-
-        if(loginPair[2].equals("checknewgroupspecialvalue")){
-            spClassFlag = true;
-        }
         if(loginPair[2].equals("login")) {
             if (response.codePointAt(0) != 'd' && !response.equals("fill fields")) {                            //хз что происходит
                 succesess = true;

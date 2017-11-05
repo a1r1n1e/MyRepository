@@ -7,18 +7,12 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -29,27 +23,26 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 
 public class ActiveCheckFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = "MyAndroidFCMIIDService";
     public static final String APP_PREFERENCES = "autentification";
     private static final String  APP_PREFERENCES_TOKEN= "token";
     private static final String  APP_PREFERENCES_USERID= "userid";
+    public static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences tokenPreferences;
-    private String userId;
     @Override
     public void onTokenRefresh() {
-        //Get hold of the registration token
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         tokenPreferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = tokenPreferences.edit();
         editor.putString(APP_PREFERENCES_TOKEN, refreshedToken);
         editor.apply();
 
-        if(tokenPreferences.contains(APP_PREFERENCES_USERID)) {
-            userId = tokenPreferences.getString(APP_PREFERENCES_USERID, null);
-            sendRegistrationToServer(refreshedToken, userId);
+        if(tokenPreferences.contains(APP_PREFERENCES_USERID) && tokenPreferences.contains(APP_PREFERENCES_PASSWORD)) {
+            String userId = tokenPreferences.getString(APP_PREFERENCES_USERID, null);
+            String userPassword = tokenPreferences.getString(APP_PREFERENCES_PASSWORD, null);
+            sendRegistrationToServer(refreshedToken, userId, userPassword);
         }
         //Log the token
 
@@ -71,12 +64,13 @@ public class ActiveCheckFirebaseInstanceIDService extends FirebaseInstanceIdServ
 
         return result.toString();
     }
-    private void sendRegistrationToServer(String token, String user) {
+    private void sendRegistrationToServer(String token, String user, String password) {
         try {
             URL url = new URL("http://217.10.35.250/java_token_refresh.php");
             HashMap<String, String> postDataParams = new HashMap<String, String>();
             postDataParams.put("newusertoken", token);
             postDataParams.put("userid", user);
+            postDataParams.put("userpassword", password);
 
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setDoOutput(true);                                                 // Enable POST stream
