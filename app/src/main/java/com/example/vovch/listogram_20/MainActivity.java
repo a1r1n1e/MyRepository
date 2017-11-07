@@ -34,7 +34,6 @@ public class MainActivity extends WithLoginActivity {
             lTask = new LoginnerTask(preferences.getString(APP_PREFERENCES_LOGIN, null), preferences.getString(APP_PREFERENCES_PASSWORD, null), preferences.getString(APP_PREFERENCES_TOKEN, null), "login");
             lTask.work();
         }
-        else{
             setContentView(R.layout.activity_main);
             View.OnClickListener NewListenner1 = new View.OnClickListener() {
                 @Override
@@ -48,9 +47,12 @@ public class MainActivity extends WithLoginActivity {
                         EditText editText2 = (EditText)findViewById(R.id.edittext2);
                         String uName = editText1.getText().toString();
                         String uPassword = editText2.getText().toString();
-                        if(uName != "" && uPassword != "") {
+                        if(!uName.equals("") && !uPassword.equals("")) {
                             lTask = new LoginnerTask(uName, uPassword, token, "login");
                             lTask.work();
+                        }
+                        else{
+                            errorTextView.setText("Enter Missing Value");
                         }
                     }
                     else if(token == null){
@@ -72,7 +74,6 @@ public class MainActivity extends WithLoginActivity {
             Btn1.setOnClickListener(NewListenner1);
             Button Btn2 = (Button) findViewById(R.id.button2);
             Btn2.setOnClickListener(NewListenner2);
-        }
     }
     private void finisher(){
         this.finish();

@@ -38,6 +38,10 @@ public class ActiveListsActivity extends WithLoginActivity
     private static ArrayList<Integer> GroupIds = new ArrayList<>();
     private static ArrayList<String> GroupNames= new ArrayList<>();
     private String usersId;
+    private static final String  APP_PREFERENCES_USERID= "userid";
+    private static final String APP_PREFERENCES_LOGIN = "login";
+    private static final String APP_PREFERENCES_PASSWORD = "password";
+    public static final String APP_PREFERENCES = "autentification";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +123,15 @@ public class ActiveListsActivity extends WithLoginActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_share) {
-
+            loginPasswordPair = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = loginPasswordPair.edit();
+            editor.putString(APP_PREFERENCES_LOGIN, null);
+            editor.putString(APP_PREFERENCES_PASSWORD, null);
+            editor.putString(APP_PREFERENCES_USERID, null);
+            editor.apply();
+            Intent intent = new Intent(ActiveListsActivity.this, MainActivity.class);
+            startActivity(intent);
+            finisher();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
