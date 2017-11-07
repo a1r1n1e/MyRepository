@@ -1,7 +1,10 @@
 package com.example.vovch.listogram_20;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +24,8 @@ public class NewGroup extends WithLoginActivity {
     private String groupName;
     protected boolean stepOneDone = false;
     protected ArrayList <Integer> AddedUsersIds = new ArrayList<>();
+    private ServiceConnection serviceConn;
+    private CurrentActivityProvider currActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +50,38 @@ public class NewGroup extends WithLoginActivity {
             }
         };
         confirmGroupAdding.setOnClickListener(confirmListenner);
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        serviceConn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        currActivityProvider.updateActivityContext(5, null);
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        serviceConn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        currActivityProvider.updateActivityContext(5, NewGroup.this);
     }
     private void addUser(){
         int id = getAddingUserId();
