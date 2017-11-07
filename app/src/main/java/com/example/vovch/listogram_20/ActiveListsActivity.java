@@ -38,8 +38,6 @@ public class ActiveListsActivity extends WithLoginActivity
     private static ArrayList<Integer> GroupIds = new ArrayList<>();
     private static ArrayList<String> GroupNames= new ArrayList<>();
     private String usersId;
-    private ServiceConnection serviceConn;
-    private CurrentActivityProvider currActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,38 +64,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-    @Override
-    protected void onPause(){
-        super.onPause();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(2, null);
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(2, ActiveListsActivity.this);
     }
     private void finisher(){
         this.finish();

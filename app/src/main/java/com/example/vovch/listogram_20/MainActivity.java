@@ -21,8 +21,6 @@ public class MainActivity extends WithLoginActivity {
     private static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences preferences;
     private String token;
-    private ServiceConnection serviceConn;
-    private CurrentActivityProvider currActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,23 +28,6 @@ public class MainActivity extends WithLoginActivity {
         Intent intentTwo = new Intent(MainActivity.this, ActiveCheckFirebaseInstanceIDService.class);
         startService(intentOne);
         startService(intentTwo);
-        Intent currentActivityStorageIntent = new Intent(MainActivity.this, CurrentActivityProvider.class);
-        startService(currentActivityStorageIntent);
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                CurrentActivityProvider.MBinder binder = (CurrentActivityProvider.MBinder) service;
-                currActivityProvider = binder.getService();
-                //currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                currActivityProvider = null;
-            }
-        };
-        bindService(currentActivityStorageIntent, serviceConn, Context.BIND_AUTO_CREATE);
-        currActivityProvider.updateActivityContext(1, MainActivity.this);
 
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if(preferences.getString(APP_PREFERENCES_PASSWORD, null) != null && preferences.getString(APP_PREFERENCES_LOGIN, null) != null && preferences.getString(APP_PREFERENCES_TOKEN, null) != null){
@@ -92,38 +73,6 @@ public class MainActivity extends WithLoginActivity {
             Button Btn2 = (Button) findViewById(R.id.button2);
             Btn2.setOnClickListener(NewListenner2);
         }
-    }
-    @Override
-    protected void onPause(){
-        super.onPause();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(1, null);
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(1, MainActivity.this);
     }
     private void finisher(){
         this.finish();

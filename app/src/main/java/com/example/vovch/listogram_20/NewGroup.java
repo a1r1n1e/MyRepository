@@ -24,8 +24,6 @@ public class NewGroup extends WithLoginActivity {
     private String groupName;
     protected boolean stepOneDone = false;
     protected ArrayList <Integer> AddedUsersIds = new ArrayList<>();
-    private ServiceConnection serviceConn;
-    private CurrentActivityProvider currActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,38 +48,6 @@ public class NewGroup extends WithLoginActivity {
             }
         };
         confirmGroupAdding.setOnClickListener(confirmListenner);
-    }
-    @Override
-    protected void onPause(){
-        super.onPause();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(5, null);
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(5, NewGroup.this);
     }
     private void addUser(){
         int id = getAddingUserId();

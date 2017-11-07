@@ -31,8 +31,6 @@ public class CreateListogramActivity extends WithLoginActivity {
     private String groupName;
     private String groupId;
     private String userId;
-    private ServiceConnection serviceConn;
-    private CurrentActivityProvider currActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,38 +58,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         addPunctButton.setOnClickListener(addPunctListenner);
         createPunct();
         scrollToEnd();
-    }
-    @Override
-    protected void onPause(){
-        super.onPause();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(6, null);
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(6, CreateListogramActivity.this);
     }
     @Override
     public void onBackPressed(){

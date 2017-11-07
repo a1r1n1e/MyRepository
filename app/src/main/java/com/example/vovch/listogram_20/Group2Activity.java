@@ -42,8 +42,6 @@ public class Group2Activity extends WithLoginActivity {
     private int DisNumberOfLists = 0;
     private int LISTOGRAM_BUTTON_BIG_NUMBER = 70000000;
     private int LISTOGRAM_DIS_BUTTON_BIG_NUMBER = 80000000;
-    private ServiceConnection serviceConn;
-    private CurrentActivityProvider currActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,36 +92,7 @@ public class Group2Activity extends WithLoginActivity {
         ItemMarks.clear();
         Items.clear();
         DisButtons.clear();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(3, null);
         super.onPause();
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                currActivityProvider = ((CurrentActivityProvider.MBinder)service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        currActivityProvider.updateActivityContext(3, Group2Activity.this);
-        update();
     }
     private void update(){
         lTask = new ListogramsGetter(groupId, "gettinglistograms");
