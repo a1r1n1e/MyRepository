@@ -24,20 +24,25 @@ public class MainActivity extends WithLoginActivity {
         Intent intentTwo = new Intent(MainActivity.this, ActiveCheckFirebaseInstanceIDService.class);
         startService(intentOne);
         startService(intentTwo);
-        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        token = preferences.getString(APP_PREFERENCES_TOKEN, null);
         setContentView(R.layout.activity_main);
         View.OnClickListener NewListenner1 = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                if(id == R.id.button1){
+                TextView errorTextView = (TextView) findViewById(R.id.textview1);
+                errorTextView.setText("");
+                preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+                token = preferences.getString(APP_PREFERENCES_TOKEN, null);
+                if(id == R.id.button1 && token != null){
                     EditText editText1 = (EditText)findViewById(R.id.edittext1);
                     EditText editText2 = (EditText)findViewById(R.id.edittext2);
                     String uName = editText1.getText().toString();
                     String uPassword = editText2.getText().toString();
                     lTask = new LoginnerTask(uName, uPassword, token, "login");
                     lTask.work();
+                }
+                else if(token == null){
+                    errorTextView.setText("There is some problem with registration token of your device. Try to reinstall the app");
                 }
             }
         };

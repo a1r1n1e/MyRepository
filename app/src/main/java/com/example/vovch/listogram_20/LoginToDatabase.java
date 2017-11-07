@@ -34,7 +34,7 @@ import javax.net.ssl.HttpsURLConnection;
     protected String doInBackground(String... loginPair) {
         String response = "";
         try {
-            URL url = new URL("http://217.10.35.250/java_listenner.php");
+            URL url = new URL("http://217.10.35.250/java_listenner_2.php");
             HashMap<String, String> postDataParams = new HashMap<String, String>();
             postDataParams.put("uname", loginPair[0]);
             postDataParams.put("upassword", loginPair[1]);

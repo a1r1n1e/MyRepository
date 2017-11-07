@@ -20,10 +20,11 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     @Override
     public  void onMessageReceived(RemoteMessage remoteMessage){
         //Log data to Log Cat
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        //Log.d(TAG, "From: " + remoteMessage.getFrom());
+        //Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
         //create notification
-        createNotification(remoteMessage.getNotification().getBody());
+        String value = remoteMessage.toString();
+        createNotification(remoteMessage.getData().get("message"));
     }
     private void createNotification( String messageBody) {
         Intent intent = new Intent( this , MainActivity.class );
@@ -34,7 +35,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
         Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder( this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Android Tutorial Point FCM Tutorial")
+                .setContentTitle("Something")
                 .setContentText(messageBody)
                 .setAutoCancel( true )
                 .setSound(notificationSoundURI)
