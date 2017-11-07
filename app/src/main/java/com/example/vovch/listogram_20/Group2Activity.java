@@ -366,7 +366,7 @@ public class Group2Activity extends WithLoginActivity {
             LinearLayout itemLayout = (LinearLayout) button.getParent().getParent().getParent();
             int listId = itemLayout.getId() - LISTOGRAM_BIG_NUMBER;
             //tempString.append(String.valueOf(Identificators1.get(listId)));
-            itemMarkTask = new ItemMarkTask (userId, String.valueOf(itemId), String.valueOf(listId), "itemmark", id + LISTOGRAM_BUTTON_BIG_NUMBER);
+            itemMarkTask = new ItemMarkTask (userId, String.valueOf(itemId), String.valueOf(Identificators1.get(listId)), "itemmark", id + LISTOGRAM_BUTTON_BIG_NUMBER);
             firstLoginAttemptFlag = 1;
             itemMarkTask.work();
         }

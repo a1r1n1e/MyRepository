@@ -14,7 +14,8 @@ public class MainActivity extends WithLoginActivity {
     public static final String APP_PREFERENCES = "autentification";
     private static final String  APP_PREFERENCES_TOKEN= "token";
     private static final String  APP_PREFERENCES_USERID= "userid";
-    public static final String APP_PREFERENCES_PASSWORD = "password";
+    private static final String APP_PREFERENCES_LOGIN = "login";
+    private static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences preferences;
     private String token;
     @Override
@@ -24,6 +25,11 @@ public class MainActivity extends WithLoginActivity {
         Intent intentTwo = new Intent(MainActivity.this, ActiveCheckFirebaseInstanceIDService.class);
         startService(intentOne);
         startService(intentTwo);
+        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        if(preferences.getString(APP_PREFERENCES_PASSWORD, null) != null && preferences.getString(APP_PREFERENCES_LOGIN, null) != null && preferences.getString(APP_PREFERENCES_TOKEN, null) != null){
+            lTask = new LoginnerTask(preferences.getString(APP_PREFERENCES_LOGIN, null), preferences.getString(APP_PREFERENCES_PASSWORD, null), preferences.getString(APP_PREFERENCES_TOKEN, null), "login");
+            lTask.work();
+        }
         setContentView(R.layout.activity_main);
         View.OnClickListener NewListenner1 = new View.OnClickListener() {
             @Override
@@ -31,7 +37,6 @@ public class MainActivity extends WithLoginActivity {
                 int id = v.getId();
                 TextView errorTextView = (TextView) findViewById(R.id.textview1);
                 errorTextView.setText("");
-                preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
                 token = preferences.getString(APP_PREFERENCES_TOKEN, null);
                 if(id == R.id.button1 && token != null){
                     EditText editText1 = (EditText)findViewById(R.id.edittext1);
@@ -69,12 +74,21 @@ public class MainActivity extends WithLoginActivity {
         return lTask;
     }
     protected class LoginnerTask extends FirstLoginAttemptTask{
+        String userName;
+        String userPasssword;
         LoginnerTask(String username, String userpassword, String token, String action){
             super(username, userpassword, token, action);
+            userName = username;
+            userPasssword = userpassword;
         }
         @Override
         protected void onGoodResult(String result){
             //saveLoginPair(result);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(APP_PREFERENCES_LOGIN, userName);
+            editor.putString(APP_PREFERENCES_PASSWORD, userPasssword);
+            editor.apply();
+
             Intent intent = new Intent(MainActivity.this, ActiveListsActivity.class);
             intent.putExtra("userId", result);
             startActivity(intent);
