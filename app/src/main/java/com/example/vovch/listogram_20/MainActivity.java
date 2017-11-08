@@ -21,6 +21,7 @@ public class MainActivity extends WithLoginActivity {
     private static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences preferences;
     private String token;
+    public CurrentActivityProvider currentActivityProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +107,7 @@ public class MainActivity extends WithLoginActivity {
         @Override
         protected void onBedResult(String result){
             TextView tView = (TextView)findViewById(R.id.textview1);
-            tView.setText(result);
+            tView.setText(result.substring(1));
         }
     }
 }

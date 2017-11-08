@@ -70,8 +70,8 @@ import javax.net.ssl.HttpsURLConnection;
         } catch (IOException e) {
             e.printStackTrace();
         }                                                       //придумать как уменьшить трафик
-        if(loginPair[2].equals("login")) {
-            if (response.codePointAt(0) != 'd' && !response.equals("fill fields")) {                            //хз что происходит
+        if(loginPair[3].equals("login")) {
+            if (response.codePointAt(0) != 'd') {                            //хз что происходит
                 succesess = true;
             }
             else{
