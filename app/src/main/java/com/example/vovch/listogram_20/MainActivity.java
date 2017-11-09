@@ -21,7 +21,7 @@ public class MainActivity extends WithLoginActivity {
     private static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences preferences;
     private String token;
-    public CurrentActivityProvider currentActivityProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +76,14 @@ public class MainActivity extends WithLoginActivity {
             Button Btn2 = (Button) findViewById(R.id.button2);
             Btn2.setOnClickListener(NewListenner2);
     }
+    @Override
+    protected  void onPause(){
+        super.onPause();
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
     private void finisher(){
         this.finish();
     }
@@ -87,13 +95,12 @@ public class MainActivity extends WithLoginActivity {
         String userName;
         String userPasssword;
         LoginnerTask(String username, String userpassword, String token, String action){
-            super(username, userpassword, token, action);
+            super(username, userpassword, token, action, "1");
             userName = username;
             userPasssword = userpassword;
         }
         @Override
         protected void onGoodResult(String result){
-            //saveLoginPair(result);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(APP_PREFERENCES_LOGIN, userName);
             editor.putString(APP_PREFERENCES_PASSWORD, userPasssword);

@@ -1,8 +1,14 @@
 package com.example.vovch.listogram_20;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+
+import static java.security.AccessController.getContext;
 
 public class WithLoginActivity extends AppCompatActivity {
     public  MainActivity.FirstLoginAttemptTask ITask;
@@ -19,25 +25,29 @@ public class WithLoginActivity extends AppCompatActivity {
         private String userPassword;
         private String userAction;
         private String userToken;
+        private String whichActivity;
         private Context cntxt;
         private Context rsltcntxt;
-        FirstLoginAttemptTask(String uName, String uPassword, String action){
+        FirstLoginAttemptTask(String uName, String uPassword, String action, String whichOne){
             userName = uName;
             userPassword = uPassword;
             userAction = action;
             userToken = "";
+            whichActivity = whichOne;
         }
-        FirstLoginAttemptTask(String groupId, String action){
+        FirstLoginAttemptTask(String groupId, String action, String whichOne){
             userName = groupId;
             userPassword = " ";
             userAction = action;
             userToken = "";
+            whichActivity = whichOne;
         }
-        FirstLoginAttemptTask(String uName, String uPassword, String token, String action){
+        FirstLoginAttemptTask(String uName, String uPassword, String token, String action, String whichOne){
             userName = uName;
             userPassword = uPassword;
             userAction = action;
             userToken = token;
+            whichActivity = whichOne;
         }
         protected void setContext(Context c){
             cntxt = c;
@@ -49,7 +59,7 @@ public class WithLoginActivity extends AppCompatActivity {
         protected void work(){
             LoginToDatabase tDLogin = new LoginToDatabase();
             tDLogin.setContextFrom(WithLoginActivity.this);
-            tDLogin.execute(userName, userPassword, userToken, userAction);
+            tDLogin.execute(userName, userPassword, userToken, userAction, whichActivity);
         }
     }
 }

@@ -21,6 +21,7 @@ public class GroupList2Activity extends WithLoginActivity {
     protected static SharedPreferences loginPasswordPair;
     protected GroupList2Activity.GroupListSearcherTask gTask;
     private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +46,14 @@ public class GroupList2Activity extends WithLoginActivity {
         groupAddButton.setOnClickListener(addGroupListenner);
         LinearLayout basicLayout = (LinearLayout)findViewById(R.id.groupslayout);
         basicLayout.addView(groupAddButton);
-
-        gTask = new GroupList2Activity.GroupListSearcherTask(userId, "groupsearch");
-        gTask.work();
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
     }
     @Override
     public void onBackPressed(){
@@ -69,7 +75,7 @@ public class GroupList2Activity extends WithLoginActivity {
         private int NumberOfLines = 0;
         private int groupId;
         GroupListSearcherTask(String username, String action){
-            super(username, action);
+            super(username, action, "4");
         }
         @Override
         protected void onGoodResult(String result){

@@ -42,10 +42,16 @@ public class ActiveListsActivity extends WithLoginActivity
     private static final String APP_PREFERENCES_LOGIN = "login";
     private static final String APP_PREFERENCES_PASSWORD = "password";
     public static final String APP_PREFERENCES = "autentification";
+    private ActiveActivityProvider provider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(2, ActiveListsActivity.this);
+
         usersId = getIntent().getExtras().getString("userId");
+
         update();
         setContentView(R.layout.activity_active_lists);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -68,6 +74,17 @@ public class ActiveListsActivity extends WithLoginActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(2, ActiveListsActivity.this);
+    }
+    @Override
+    protected void onPause(){
+        provider.nullActiveActivity();
+        super.onPause();
     }
     private void finisher(){
         this.finish();
@@ -138,7 +155,7 @@ public class ActiveListsActivity extends WithLoginActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void update(){
+    protected void update(){
         actTask = new ActiveListSearchTask(usersId, "checkactives");
         actTask.work();
     }
@@ -146,7 +163,7 @@ public class ActiveListsActivity extends WithLoginActivity
         private int LISTS_DIVIDER = 10301;
         private int INSIDE_DIVIDER = 10253;
         ActiveListSearchTask(String userId, String action){
-            super(userId, action);
+            super(userId, action, "2");
         }
         @Override
         protected void onGoodResult(String result){

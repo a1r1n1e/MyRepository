@@ -1,6 +1,7 @@
 package com.example.vovch.listogram_20;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
@@ -42,17 +43,30 @@ public class Group2Activity extends WithLoginActivity {
     private int DisNumberOfLists = 0;
     private int LISTOGRAM_BUTTON_BIG_NUMBER = 70000000;
     private int LISTOGRAM_DIS_BUTTON_BIG_NUMBER = 80000000;
+    private ActiveActivityProvider provider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(3, Group2Activity.this);
+
         setContentView(R.layout.activity_group3);
         groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
         groupId = getIntent().getExtras().getString("groupid");
         userId = getIntent().getExtras().getString("userid");
+
         update();
         //timer = new Timer();
         //timerTask = new TimerClass();
         //timer.schedule(timerTask, 15000, 15000);
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(3, Group2Activity.this);
     }
     @Override
     public void onBackPressed(){
@@ -92,9 +106,12 @@ public class Group2Activity extends WithLoginActivity {
         ItemMarks.clear();
         Items.clear();
         DisButtons.clear();
+
+        provider.nullActiveActivity();
+
         super.onPause();
     }
-    private void update(){
+    protected void update(){
         lTask = new ListogramsGetter(groupId, "gettinglistograms");
         lTask.work();
         View.OnClickListener DownButtonListenner = new View.OnClickListener() {
@@ -135,7 +152,7 @@ public class Group2Activity extends WithLoginActivity {
         private int LISTOGRAM_LINE_INSIDE_DIVIDER = 37;
         private StringBuilder touchedListId;
         ListogramsGetter(String groupId,  String action){
-            super(groupId, action);
+            super(groupId, action, "3");
         }
         @Override
         protected void onGoodResult(String result){
@@ -377,7 +394,7 @@ public class Group2Activity extends WithLoginActivity {
     protected class ItemMarkTask extends FirstLoginAttemptTask {
         private int id;
         ItemMarkTask(String userId, String itemIdAndGroupId,  String third, String action, int newId){
-            super(userId, itemIdAndGroupId, third, action);
+            super(userId, itemIdAndGroupId, third, action, "3");
             id = newId;
         }
         @Override
@@ -407,7 +424,7 @@ public class Group2Activity extends WithLoginActivity {
     protected class DisactivateListTask extends FirstLoginAttemptTask {
         int id;
         DisactivateListTask(String groupId, String listId, int disButtonId){
-            super(groupId, listId, "disactivatelist");
+            super(groupId, listId, "disactivatelist", "3");
             id = disButtonId;
             firstLoginAttemptFlag = 2;
         }

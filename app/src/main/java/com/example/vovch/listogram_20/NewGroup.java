@@ -1,6 +1,7 @@
 package com.example.vovch.listogram_20;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ public class NewGroup extends WithLoginActivity {
     private String groupName;
     protected boolean stepOneDone = false;
     protected ArrayList <Integer> AddedUsersIds = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,14 @@ public class NewGroup extends WithLoginActivity {
             }
         };
         confirmGroupAdding.setOnClickListener(confirmListenner);
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
     }
     private void addUser(){
         int id = getAddingUserId();
@@ -138,7 +148,7 @@ public class NewGroup extends WithLoginActivity {
     }
     protected class CheckUserTask extends FirstLoginAttemptTask{
         CheckUserTask(String username, String userpassword, String action){
-            super(username, userpassword, action);
+            super(username, userpassword, action, "5");
         }
         @Override
         protected void onGoodResult(String result){
@@ -153,7 +163,7 @@ public class NewGroup extends WithLoginActivity {
     }
     protected class NewGroupMakerTask extends FirstLoginAttemptTask{
         NewGroupMakerTask(String username, String userpassword, String action){
-            super(username, userpassword, action);
+            super(username, userpassword, action, "5");
             stepOneDone = true;
         }
         @Override

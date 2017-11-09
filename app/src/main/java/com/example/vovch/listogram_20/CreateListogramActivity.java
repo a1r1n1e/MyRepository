@@ -1,6 +1,7 @@
 package com.example.vovch.listogram_20;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -31,6 +32,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     private String groupName;
     private String groupId;
     private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
         groupId = getIntent().getExtras().getString("groupid");
         userId = getIntent().getExtras().getString("userid");
+
         View.OnClickListener addPunctListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +61,14 @@ public class CreateListogramActivity extends WithLoginActivity {
         addPunctButton.setOnClickListener(addPunctListenner);
         createPunct();
         scrollToEnd();
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
     }
     @Override
     public void onBackPressed(){
@@ -179,7 +190,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
     protected class SendListogramTask extends FirstLoginAttemptTask{
         SendListogramTask(String username, String userpassword, String action){
-            super(username, userpassword, action);
+            super(username, userpassword, action, "6");
         }
         @Override
         protected void onGoodResult(String result){
