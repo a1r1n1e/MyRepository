@@ -27,6 +27,10 @@ public class GroupList2Activity extends WithLoginActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_list3);
         userId = getIntent().getExtras().getString("userId");
+
+        gTask = new GroupListSearcherTask(userId, "groupsearch");
+        gTask.work();
+
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         Button groupAddButton = new Button(findViewById(R.id.groupslayout).getContext());
         LinearLayout.LayoutParams groupAddButtonParameters = new LinearLayout.LayoutParams(matchParent, matchParent);

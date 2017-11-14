@@ -185,12 +185,12 @@ public class CreateListogramActivity extends WithLoginActivity {
         StringBuilder idString = new StringBuilder(userId);
         idString.append("%");
         idString.append(groupId);
-        slTask = new SendListogramTask(idString.toString(), listogram, "sendlistogram");
+        slTask = new SendListogramTask(userId, groupId, listogram, "sendlistogram");
         slTask.work();
     }
     protected class SendListogramTask extends FirstLoginAttemptTask{
-        SendListogramTask(String username, String userpassword, String action){
-            super(username, userpassword, action, "6");
+        SendListogramTask(String username, String userpassword, String third, String action){
+            super(username, third, userpassword, action, "6");
         }
         @Override
         protected void onGoodResult(String result){

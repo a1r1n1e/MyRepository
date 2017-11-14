@@ -49,14 +49,16 @@ public class Group2Activity extends WithLoginActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        provider = (ActiveActivityProvider) getApplicationContext();
-        provider.setActiveActivity(3, Group2Activity.this);
-
-        setContentView(R.layout.activity_group3);
         groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
         groupId = getIntent().getExtras().getString("groupid");
         userId = getIntent().getExtras().getString("userid");
 
+
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(3, Group2Activity.this);
+        provider.setGroupId(Integer.parseInt(groupId));
+
+        setContentView(R.layout.activity_group3);
         update();
         //timer = new Timer();
         //timerTask = new TimerClass();
@@ -67,6 +69,7 @@ public class Group2Activity extends WithLoginActivity {
         super.onResume();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(3, Group2Activity.this);
+        provider.setGroupId(Integer.parseInt(groupId));
     }
     @Override
     public void onBackPressed(){
