@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 public class MainActivity extends WithLoginActivity {
@@ -21,10 +22,15 @@ public class MainActivity extends WithLoginActivity {
     private static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences preferences;
     private String token;
+    private ActiveActivityProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(1, MainActivity.this);
+
         Intent intentOne = new Intent(MainActivity.this, ActiveCheckAndroidFirebaseMsgService.class);
         Intent intentTwo = new Intent(MainActivity.this, ActiveCheckFirebaseInstanceIDService.class);
         startService(intentOne);
@@ -78,14 +84,17 @@ public class MainActivity extends WithLoginActivity {
     }
     @Override
     protected  void onPause(){
+        provider.nullActiveActivity();
         super.onPause();
     }
     @Override
     protected void onResume(){
         super.onResume();
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(1, MainActivity.this);
     }
     private void finisher(){
-        this.finish();
+        MainActivity.this.finish();
     }
     @Override
     public WithLoginActivity.FirstLoginAttemptTask getFirstLoginAttemptTask(){
@@ -95,11 +104,11 @@ public class MainActivity extends WithLoginActivity {
         String userName;
         String userPasssword;
         LoginnerTask(String username, String userpassword, String token, String action){
-            super(username, userpassword, token, action, "1");
+            super(username, userpassword, token, action, "1", "0");
             userName = username;
             userPasssword = userpassword;
         }
-        @Override
+        /*@Override
         protected void onGoodResult(String result){
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(APP_PREFERENCES_LOGIN, userName);
@@ -109,12 +118,27 @@ public class MainActivity extends WithLoginActivity {
             Intent intent = new Intent(MainActivity.this, ActiveListsActivity.class);
             intent.putExtra("userId", result);
             startActivity(intent);
-            finisher();
+            //finisher();                                                                   ????????????WTF???????????
         }
         @Override
         protected void onBedResult(String result){
             TextView tView = (TextView)findViewById(R.id.textview1);
             tView.setText(result.substring(1));
-        }
+        }*/
+    }
+    protected void showGood(String result, String userName, String userPasssword){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(APP_PREFERENCES_LOGIN, userName);
+        editor.putString(APP_PREFERENCES_PASSWORD, userPasssword);
+        editor.apply();
+
+        Intent intent = new Intent(MainActivity.this, ActiveListsActivity.class);
+        intent.putExtra("userId", result);
+        startActivity(intent);
+        finisher();
+    }
+    protected void showBad(String result){
+        TextView tView = (TextView)findViewById(R.id.textview1);
+        tView.setText(result.substring(1));
     }
 }

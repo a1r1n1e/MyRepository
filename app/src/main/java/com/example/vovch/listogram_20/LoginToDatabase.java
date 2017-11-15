@@ -1,5 +1,6 @@
 package com.example.vovch.listogram_20;
 
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,17 +33,25 @@ import static java.security.AccessController.getContext;
  */
  class LoginToDatabase extends AsyncTask<String, Void, String> {
     private Boolean succesess;
-    private Context contextFrom;
+    private Context applicationContext;
     private int whichActivity;
+    private String firstString;
+    private String secondString;
+    private int taskType;
+    private ActiveActivityProvider provider;
 
 
-    protected void setContextFrom(Context ctf){
-        contextFrom = ctf;
+    protected void setApplicationContext(Context ctf){
+        applicationContext = ctf;
     }
     @Override
     protected String doInBackground(String... loginPair) {
         String response = "";
         whichActivity = Integer.parseInt(loginPair[4]);
+        firstString = loginPair[0];
+        secondString = loginPair[1];
+        taskType = Integer.parseInt(loginPair[5]);
+
         try {
             URL url = new URL("http://217.10.35.250/java_listenner_2.php");
             HashMap<String, String> postDataParams = new HashMap<String, String>();
@@ -81,7 +90,7 @@ import static java.security.AccessController.getContext;
             e.printStackTrace();
         }                                                       //придумать как уменьшить трафик
         if(loginPair[3].equals("login")) {
-            if (response.codePointAt(0) != 'd') {                            //хз что происходит
+            if (response.codePointAt(0) != 'd') {
                 succesess = true;
             }
             else{
@@ -108,12 +117,96 @@ import static java.security.AccessController.getContext;
     }
     @Override
     protected void onPostExecute(String result) {
-        WithLoginActivity InvokerActivity = (WithLoginActivity) contextFrom;
+        /*WithLoginActivity InvokerActivity = (WithLoginActivity) applicationContext;
             if (succesess) {
                 InvokerActivity.getFirstLoginAttemptTask().onGoodResult(result);
             } else {
                 InvokerActivity.getFirstLoginAttemptTask().onBedResult(result);
-            }
+            }*/
+
+        provider = (ActiveActivityProvider) applicationContext;
+        switch(whichActivity){
+            case 1:
+                if(provider.getActiveActivity() != null) {
+                    MainActivity mainContext = (MainActivity) provider.getActiveActivity();
+                    if (succesess) {
+                        mainContext.showGood(result, firstString, secondString);
+                    } else {
+                        mainContext.showBad(result);
+                    }
+                }
+                break;
+            case 2:
+                if(provider.getActiveActivity() != null) {
+                    ActiveListsActivity activeContext = (ActiveListsActivity) provider.getActiveActivity();
+                    if (succesess) {
+                        activeContext.showGood(result);
+                    } else {
+                        activeContext.showBad();
+                    }
+                }
+                break;
+            case 3:
+                if(provider.getActiveActivity() != null) {
+                    Group2Activity groupContext = (Group2Activity) provider.getActiveActivity();
+                    if (succesess) {
+                        if (taskType == 0) {
+                            groupContext.showGood(result);
+                        } else if (taskType == 1) {
+                            groupContext.showSecondGood(result);
+                        } else {
+                            groupContext.showThirdGood(result);
+                        }
+                    } else {
+                        if (taskType == 0) {
+                            groupContext.showBad(result);
+                        } else if (taskType == 1) {
+                            groupContext.showSecondBad(result);
+                        } else {
+                            groupContext.showThirdBad(result);
+                        }
+                    }
+                }
+                break;
+            case 4:
+                if(provider.getActiveActivity() != null) {
+                    GroupList2Activity groupListContext = (GroupList2Activity) provider.getActiveActivity();
+                    if (succesess) {
+                        groupListContext.showGood(result);
+                    } else {
+                        groupListContext.showBad();
+                    }
+                }
+                break;
+            case 5:
+                if(provider.getActiveActivity()!= null) {
+                    NewGroup newGroupContext = (NewGroup) provider.getActiveActivity();
+                    if (succesess) {
+                        if (taskType == 0) {
+                            newGroupContext.showUserCheckGood(result);
+                        } else {
+                            newGroupContext.showGood(result);
+                        }
+                    } else {
+                        if (taskType == 0) {
+                            newGroupContext.showUserCheckBad(result);
+                        } else {
+                            newGroupContext.showBad(result);
+                        }
+                    }
+                }
+                break;
+            case 6:
+                if(provider.getActiveActivity() != null) {
+                    CreateListogramActivity createContext = (CreateListogramActivity) provider.getActiveActivity();
+                    if (succesess) {
+                        createContext.showGood();
+                    } else {
+                        createContext.showBad(result);
+                    }
+                }
+                break;
+        }
     }
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {

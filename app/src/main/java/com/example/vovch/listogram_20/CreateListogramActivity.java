@@ -32,10 +32,15 @@ public class CreateListogramActivity extends WithLoginActivity {
     private String groupName;
     private String groupId;
     private String userId;
+    private ActiveActivityProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(6, CreateListogramActivity.this);
+
         setContentView(R.layout.activity_create_listogram);
         groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
         groupId = getIntent().getExtras().getString("groupid");
@@ -65,9 +70,12 @@ public class CreateListogramActivity extends WithLoginActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(6, CreateListogramActivity.this);
     }
     @Override
     protected void onPause(){
+        provider.nullActiveActivity();
         super.onPause();
     }
     @Override
@@ -188,11 +196,23 @@ public class CreateListogramActivity extends WithLoginActivity {
         slTask = new SendListogramTask(userId, groupId, listogram, "sendlistogram");
         slTask.work();
     }
+
+    protected void showGood(){
+        Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+        intent.putExtra("name", groupName);
+        intent.putExtra("groupid", groupId);
+        intent.putExtra("userid", userId);
+        startActivity(intent);
+    }
+    protected void showBad(String result){
+
+    }
+
     protected class SendListogramTask extends FirstLoginAttemptTask{
         SendListogramTask(String username, String userpassword, String third, String action){
-            super(username, third, userpassword, action, "6");
+            super(username, third, userpassword, action, "6", "0");
         }
-        @Override
+        /*@Override
         protected void onGoodResult(String result){
             Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
             intent.putExtra("name", groupName);
@@ -203,6 +223,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         @Override
         protected void onBedResult(String result){
 
-        }
+        }*/
     }
 }

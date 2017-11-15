@@ -25,10 +25,15 @@ public class NewGroup extends WithLoginActivity {
     private String groupName;
     protected boolean stepOneDone = false;
     protected ArrayList <Integer> AddedUsersIds = new ArrayList<>();
+    private ActiveActivityProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(5, NewGroup.this);
+
         setContentView(R.layout.activity_new_group);
         userId = getIntent().getExtras().getString("userId");
         AddedUsersIds.add(AddedUsersIds.size(), Integer.parseInt(userId));
@@ -54,30 +59,42 @@ public class NewGroup extends WithLoginActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(4, NewGroup.this);
     }
     @Override
     protected void onPause(){
+        provider.nullActiveActivity();
         super.onPause();
     }
     private void addUser(){
         int id = getAddingUserId();
-        boolean userAlreadyAdded = false;
-        if(AddedUsersIds.contains(id))
-        {
-            userAlreadyAdded = true;
+        if(id != -1) {
+            boolean userAlreadyAdded = false;
+            if (AddedUsersIds.contains(id)) {
+                userAlreadyAdded = true;
+            }
+            if (userAlreadyAdded) {
+                TextView erView = (TextView) findViewById(R.id.newgrouperrorreporter);
+                erView.setText("User Already Added");
+            } else {
+                checkUser(id);
+            }
         }
-        if(userAlreadyAdded){
+        else{
             TextView erView = (TextView) findViewById(R.id.newgrouperrorreporter);
-            erView.setText("User Already Added");
-        }
-        else {
-            checkUser(id);
+            erView.setText("Enter Any User Id");
         }
     }
     private int getAddingUserId(){
         TextView newUserIdTextView = (TextView)findViewById(R.id.newgroupnewuseridtextview);
-        int id = Integer.parseInt(newUserIdTextView.getText().toString());
-        return id;
+        if(!newUserIdTextView.getText().toString().equals("")) {
+            int id = Integer.parseInt(newUserIdTextView.getText().toString());
+            return id;
+        }
+        else{
+            return -1;
+        }
     }
     private void checkUser(int id){
         chTask = new CheckUserTask(String.valueOf(id), " ", "checkuser");
@@ -138,6 +155,26 @@ public class NewGroup extends WithLoginActivity {
     protected void setGroupId(int id){
         newGroupId = id;
     }
+    protected void showGood(String result){
+        setGroupId(Integer.parseInt(result));
+        Intent intent = new Intent(NewGroup.this, Group2Activity.class);
+        intent.putExtra("groupid", String.valueOf(newGroupId));
+        EditText groupNameEditText = (EditText)findViewById(R.id.newgroupnameview);
+        intent.putExtra("name", groupNameEditText.getText().toString());
+        intent.putExtra("userid", userId);
+        startActivity(intent);
+    }
+    protected void showBad(String result){
+
+    }
+    protected void showUserCheckGood(String result){
+        addNewUserToArray(result);
+        drawnewUserLayout(result);
+    }
+    protected void showUserCheckBad(String result){
+        TextView tView = (TextView)findViewById(R.id.newgrouperrorreporter);
+        tView.setText(result);
+    }
     public WithLoginActivity.FirstLoginAttemptTask getFirstLoginAttemptTask(){
         if(!stepOneDone) {
             return chTask;
@@ -148,9 +185,9 @@ public class NewGroup extends WithLoginActivity {
     }
     protected class CheckUserTask extends FirstLoginAttemptTask{
         CheckUserTask(String username, String userpassword, String action){
-            super(username, userpassword, action, "5");
+            super(username, userpassword, action, "5", "0");
         }
-        @Override
+        /*@Override
         protected void onGoodResult(String result){
             addNewUserToArray(result);
             drawnewUserLayout(result);
@@ -159,14 +196,14 @@ public class NewGroup extends WithLoginActivity {
         protected void onBedResult(String result){
             TextView tView = (TextView)findViewById(R.id.newgrouperrorreporter);
             tView.setText(result);
-        }
+        }*/
     }
     protected class NewGroupMakerTask extends FirstLoginAttemptTask{
         NewGroupMakerTask(String username, String userpassword, String action){
-            super(username, userpassword, action, "5");
+            super(username, userpassword, action, "5", "1");
             stepOneDone = true;
         }
-        @Override
+        /*@Override
         protected void onGoodResult(String result){
             setGroupId(Integer.parseInt(result));
             Intent intent = new Intent(NewGroup.this, Group2Activity.class);
@@ -179,7 +216,7 @@ public class NewGroup extends WithLoginActivity {
         @Override
         protected void onBedResult(String result){
 
-        }
+        }*/
     }
 }
 

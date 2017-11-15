@@ -26,28 +26,32 @@ public class WithLoginActivity extends AppCompatActivity {
         private String userAction;
         private String userToken;
         private String whichActivity;
+        private String taskType;
         private Context cntxt;
         private Context rsltcntxt;
-        FirstLoginAttemptTask(String uName, String uPassword, String action, String whichOne){
+        FirstLoginAttemptTask(String uName, String uPassword, String action, String whichOne, String type){
             userName = uName;
             userPassword = uPassword;
             userAction = action;
             userToken = "";
             whichActivity = whichOne;
+            taskType = type;
         }
-        FirstLoginAttemptTask(String groupId, String action, String whichOne){
+        FirstLoginAttemptTask(String groupId, String action, String whichOne, String type){
             userName = groupId;
             userPassword = " ";
             userAction = action;
             userToken = "";
             whichActivity = whichOne;
+            taskType = type;
         }
-        FirstLoginAttemptTask(String uName, String uPassword, String token, String action, String whichOne){
+        FirstLoginAttemptTask(String uName, String uPassword, String token, String action, String whichOne, String type){
             userName = uName;
             userPassword = uPassword;
             userAction = action;
             userToken = token;
             whichActivity = whichOne;
+            taskType = type;
         }
         protected void setContext(Context c){
             cntxt = c;
@@ -58,8 +62,9 @@ public class WithLoginActivity extends AppCompatActivity {
         }
         protected void work(){
             LoginToDatabase tDLogin = new LoginToDatabase();
-            tDLogin.setContextFrom(WithLoginActivity.this);
-            tDLogin.execute(userName, userPassword, userToken, userAction, whichActivity);
+            //tDLogin.setContextFrom(WithLoginActivity.this);
+            tDLogin.setApplicationContext((ActiveActivityProvider) getApplicationContext());
+            tDLogin.execute(userName, userPassword, userToken, userAction, whichActivity, taskType);
         }
     }
 }
