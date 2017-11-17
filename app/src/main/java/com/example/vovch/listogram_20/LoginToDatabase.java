@@ -59,6 +59,7 @@ import static java.security.AccessController.getContext;
             postDataParams.put("upassword", loginPair[1]);
             postDataParams.put("third", loginPair[2]);
             postDataParams.put("action", loginPair[3]);
+            postDataParams.put("itemmarkgroup", loginPair[6]);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);                                                 // Enable POST stream
@@ -117,13 +118,6 @@ import static java.security.AccessController.getContext;
     }
     @Override
     protected void onPostExecute(String result) {
-        /*WithLoginActivity InvokerActivity = (WithLoginActivity) applicationContext;
-            if (succesess) {
-                InvokerActivity.getFirstLoginAttemptTask().onGoodResult(result);
-            } else {
-                InvokerActivity.getFirstLoginAttemptTask().onBedResult(result);
-            }*/
-
         provider = (ActiveActivityProvider) applicationContext;
         switch(whichActivity){
             case 1:

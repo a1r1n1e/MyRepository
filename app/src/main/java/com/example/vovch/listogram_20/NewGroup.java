@@ -3,9 +3,7 @@ package com.example.vovch.listogram_20;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -175,48 +173,16 @@ public class NewGroup extends WithLoginActivity {
         TextView tView = (TextView)findViewById(R.id.newgrouperrorreporter);
         tView.setText(result);
     }
-    public WithLoginActivity.FirstLoginAttemptTask getFirstLoginAttemptTask(){
-        if(!stepOneDone) {
-            return chTask;
-        }
-        else  {
-            return ngTask;
-        }
-    }
     protected class CheckUserTask extends FirstLoginAttemptTask{
         CheckUserTask(String username, String userpassword, String action){
             super(username, userpassword, action, "5", "0");
         }
-        /*@Override
-        protected void onGoodResult(String result){
-            addNewUserToArray(result);
-            drawnewUserLayout(result);
-        }
-        @Override
-        protected void onBedResult(String result){
-            TextView tView = (TextView)findViewById(R.id.newgrouperrorreporter);
-            tView.setText(result);
-        }*/
     }
     protected class NewGroupMakerTask extends FirstLoginAttemptTask{
         NewGroupMakerTask(String username, String userpassword, String action){
             super(username, userpassword, action, "5", "1");
             stepOneDone = true;
         }
-        /*@Override
-        protected void onGoodResult(String result){
-            setGroupId(Integer.parseInt(result));
-            Intent intent = new Intent(NewGroup.this, Group2Activity.class);
-            intent.putExtra("groupid", String.valueOf(newGroupId));
-            EditText groupNameEditText = (EditText)findViewById(R.id.newgroupnameview);
-            intent.putExtra("name", groupNameEditText.getText().toString());
-            intent.putExtra("userid", userId);
-            startActivity(intent);
-        }
-        @Override
-        protected void onBedResult(String result){
-
-        }*/
     }
 }
 

@@ -30,12 +30,15 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
         if(remoteMessage.getData().get("type").equals("newlistogram")) {
             createNotification(remoteMessage.getData().get("message"), remoteMessage.getData().get("group"));
         }
+        else if(remoteMessage.getData().get("type").equals("groupcontentchange")){
+                groupUpdate(remoteMessage.getData().get("groupid"));
+        }
     }
     private void createNotification( String messageBody, String groupListAddedToId) {
 
         ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
 
-        if(provider.getActiveActivityNumber() == 2){
+        if(provider.getActiveActivityNumber() == 2){                                //провайдер устроен так, что если есть номер, то и контекст есть тоже
             ActiveListsActivity activeActivity = (ActiveListsActivity) provider.getActiveActivity();
             activeActivity.update();
         }
@@ -62,5 +65,14 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, mNotificationBuilder.build());
+    }
+    private void groupUpdate(String groupId){
+        ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
+        if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 3){
+            Group2Activity groupContext = (Group2Activity) provider.getActiveActivity();
+            if(groupContext.getGroupId().equals(groupId)) {
+                groupContext.update();
+            }
+        }
     }
 }

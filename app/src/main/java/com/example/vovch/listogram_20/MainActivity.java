@@ -41,6 +41,7 @@ public class MainActivity extends WithLoginActivity {
             lTask = new LoginnerTask(preferences.getString(APP_PREFERENCES_LOGIN, null), preferences.getString(APP_PREFERENCES_PASSWORD, null), preferences.getString(APP_PREFERENCES_TOKEN, null), "login");
             lTask.work();
         }
+        else {
             setContentView(R.layout.activity_main);
             View.OnClickListener NewListenner1 = new View.OnClickListener() {
                 @Override
@@ -49,20 +50,18 @@ public class MainActivity extends WithLoginActivity {
                     TextView errorTextView = (TextView) findViewById(R.id.textview1);
                     errorTextView.setText("");
                     token = preferences.getString(APP_PREFERENCES_TOKEN, null);
-                    if(id == R.id.button1 && token != null){
-                        EditText editText1 = (EditText)findViewById(R.id.edittext1);
-                        EditText editText2 = (EditText)findViewById(R.id.edittext2);
+                    if (id == R.id.button1 && token != null) {
+                        EditText editText1 = (EditText) findViewById(R.id.edittext1);
+                        EditText editText2 = (EditText) findViewById(R.id.edittext2);
                         String uName = editText1.getText().toString();
                         String uPassword = editText2.getText().toString();
-                        if(!uName.equals("") && !uPassword.equals("")) {
+                        if (!uName.equals("") && !uPassword.equals("")) {
                             lTask = new LoginnerTask(uName, uPassword, token, "login");
                             lTask.work();
-                        }
-                        else{
+                        } else {
                             errorTextView.setText("Enter Missing Value");
                         }
-                    }
-                    else if(token == null){
+                    } else if (token == null) {
                         errorTextView.setText("There is some problem with registration token of your device. Try to reinstall the app");
                     }
                 }
@@ -71,7 +70,7 @@ public class MainActivity extends WithLoginActivity {
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
-                    if(id == R.id.button2){
+                    if (id == R.id.button2) {
                         Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
                         startActivity(intent);
                     }
@@ -81,6 +80,7 @@ public class MainActivity extends WithLoginActivity {
             Btn1.setOnClickListener(NewListenner1);
             Button Btn2 = (Button) findViewById(R.id.button2);
             Btn2.setOnClickListener(NewListenner2);
+        }
     }
     @Override
     protected  void onPause(){
@@ -96,10 +96,6 @@ public class MainActivity extends WithLoginActivity {
     private void finisher(){
         MainActivity.this.finish();
     }
-    @Override
-    public WithLoginActivity.FirstLoginAttemptTask getFirstLoginAttemptTask(){
-        return lTask;
-    }
     protected class LoginnerTask extends FirstLoginAttemptTask{
         String userName;
         String userPasssword;
@@ -108,23 +104,6 @@ public class MainActivity extends WithLoginActivity {
             userName = username;
             userPasssword = userpassword;
         }
-        /*@Override
-        protected void onGoodResult(String result){
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(APP_PREFERENCES_LOGIN, userName);
-            editor.putString(APP_PREFERENCES_PASSWORD, userPasssword);
-            editor.apply();
-
-            Intent intent = new Intent(MainActivity.this, ActiveListsActivity.class);
-            intent.putExtra("userId", result);
-            startActivity(intent);
-            //finisher();                                                                   ????????????WTF???????????
-        }
-        @Override
-        protected void onBedResult(String result){
-            TextView tView = (TextView)findViewById(R.id.textview1);
-            tView.setText(result.substring(1));
-        }*/
     }
     protected void showGood(String result, String userName, String userPasssword){
         SharedPreferences.Editor editor = preferences.edit();

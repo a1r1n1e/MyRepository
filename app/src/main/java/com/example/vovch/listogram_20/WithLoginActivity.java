@@ -17,9 +17,6 @@ public class WithLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_with_login);
     }
-    public WithLoginActivity.FirstLoginAttemptTask getFirstLoginAttemptTask(){
-        return ITask;
-    }
     protected class FirstLoginAttemptTask{
         private String userName;
         private String userPassword;
@@ -27,8 +24,7 @@ public class WithLoginActivity extends AppCompatActivity {
         private String userToken;
         private String whichActivity;
         private String taskType;
-        private Context cntxt;
-        private Context rsltcntxt;
+        private String groupNumber;
         FirstLoginAttemptTask(String uName, String uPassword, String action, String whichOne, String type){
             userName = uName;
             userPassword = uPassword;
@@ -36,6 +32,16 @@ public class WithLoginActivity extends AppCompatActivity {
             userToken = "";
             whichActivity = whichOne;
             taskType = type;
+            groupNumber = "";
+        }
+        FirstLoginAttemptTask(String uName, String uPassword, String token, String action, String whichOne, String type, String groupId){
+            userName = uName;
+            userPassword = uPassword;
+            userAction = action;
+            userToken = token;
+            whichActivity = whichOne;
+            taskType = type;
+            groupNumber = groupId;
         }
         FirstLoginAttemptTask(String groupId, String action, String whichOne, String type){
             userName = groupId;
@@ -44,6 +50,7 @@ public class WithLoginActivity extends AppCompatActivity {
             userToken = "";
             whichActivity = whichOne;
             taskType = type;
+            groupNumber = "";
         }
         FirstLoginAttemptTask(String uName, String uPassword, String token, String action, String whichOne, String type){
             userName = uName;
@@ -52,19 +59,12 @@ public class WithLoginActivity extends AppCompatActivity {
             userToken = token;
             whichActivity = whichOne;
             taskType = type;
-        }
-        protected void setContext(Context c){
-            cntxt = c;
-        }
-        protected void onGoodResult(String result) {
-        }
-        protected void onBedResult(String result){
+            groupNumber = "";
         }
         protected void work(){
             LoginToDatabase tDLogin = new LoginToDatabase();
-            //tDLogin.setContextFrom(WithLoginActivity.this);
             tDLogin.setApplicationContext((ActiveActivityProvider) getApplicationContext());
-            tDLogin.execute(userName, userPassword, userToken, userAction, whichActivity, taskType);
+            tDLogin.execute(userName, userPassword, userToken, userAction, whichActivity, taskType, groupNumber);
         }
     }
 }
