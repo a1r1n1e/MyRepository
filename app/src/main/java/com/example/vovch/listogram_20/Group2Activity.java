@@ -65,9 +65,8 @@ public class Group2Activity extends WithLoginActivity {
 
         setContentView(R.layout.activity_group3);
         update();
-        //timer = new Timer();
-        //timerTask = new TimerClass();
-        //timer.schedule(timerTask, 15000, 15000);
+        ScrollView groupScrollView = (ScrollView) findViewById(R.id.groupscroll);
+        groupScrollView.fullScroll(View.FOCUS_DOWN);
     }
     @Override
     protected void onResume(){
@@ -132,8 +131,8 @@ public class Group2Activity extends WithLoginActivity {
         };
         Button Btn3 = (Button)findViewById(R.id.groupdownbutton);
         Btn3.setOnClickListener(DownButtonListenner);
-        ScrollView groupScrollView = (ScrollView) findViewById(R.id.groupscroll);
-        groupScrollView.fullScroll(View.FOCUS_DOWN);
+        //ScrollView groupScrollView = (ScrollView) findViewById(R.id.groupscroll);
+        //groupScrollView.fullScroll(View.FOCUS_DOWN);
     }
     protected String getUserId(){
         return userId;

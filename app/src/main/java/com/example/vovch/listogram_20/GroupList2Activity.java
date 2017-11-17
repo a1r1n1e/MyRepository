@@ -40,8 +40,7 @@ public class GroupList2Activity extends WithLoginActivity {
         setContentView(R.layout.activity_group_list3);
         userId = getIntent().getExtras().getString("userId");
 
-        gTask = new GroupListSearcherTask(userId, "groupsearch");
-        gTask.work();
+        update();
 
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         Button groupAddButton = new Button(findViewById(R.id.groupslayout).getContext());
@@ -63,6 +62,16 @@ public class GroupList2Activity extends WithLoginActivity {
         LinearLayout basicLayout = (LinearLayout)findViewById(R.id.groupslayout);
         basicLayout.addView(groupAddButton);
     }
+    protected void update(){
+        gTask = new GroupListSearcherTask(userId, "groupsearch");
+        gTask.work();
+    }
+    private void clearer(){
+        Layouts.clear();
+        Buttons.clear();
+        Identificators.clear();
+        NumberOfLines = 0;
+    }
     @Override
     protected void onResume(){
         super.onResume();
@@ -72,7 +81,13 @@ public class GroupList2Activity extends WithLoginActivity {
     @Override
     protected void onPause(){
         provider.nullActiveActivity();
+        clearer();
         super.onPause();
+    }
+    @Override
+    protected void onDestroy(){
+        clearer();
+        super.onDestroy();
     }
     @Override
     public void onBackPressed(){
