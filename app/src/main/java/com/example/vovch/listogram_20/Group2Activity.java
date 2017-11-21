@@ -74,22 +74,11 @@ public class Group2Activity extends WithLoginActivity {
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(3, Group2Activity.this);
         provider.setGroupId(Integer.parseInt(groupId));
+        update();
     }
     @Override
     public void onBackPressed(){
-        //timer.cancel();
-        Layouts1.clear();
-        Buttons1.clear();
-        ListItemsTexts.clear();
-        ListCommentTexts.clear();
-        Lists.clear();
-        ActiveLists.clear();
-        ListOwners.clear();
-        ItemMarks.clear();
-        Items.clear();
-        DisButtons.clear();
-        groupId = null;
-        groupName = null;
+        cleaner();
         Intent intent = new Intent(Group2Activity.this, GroupList2Activity.class);
         intent.putExtra("userId", userId);
         startActivity(intent);
@@ -113,6 +102,8 @@ public class Group2Activity extends WithLoginActivity {
         DisButtons.clear();
         NumberOfLines = 0;
         NumberOfLists = 0;
+        LinearLayout layout = (LinearLayout) findViewById(R.id.listogramslayout);
+        layout.removeAllViews();
     }
     @Override
     public void onPause(){
@@ -121,6 +112,7 @@ public class Group2Activity extends WithLoginActivity {
         super.onPause();
     }
     protected void update(){
+        cleaner();
         lTask = new ListogramsGetter(groupId, "gettinglistograms");
         lTask.work();
         View.OnClickListener DownButtonListenner = new View.OnClickListener() {
@@ -131,8 +123,6 @@ public class Group2Activity extends WithLoginActivity {
         };
         Button Btn3 = (Button)findViewById(R.id.groupdownbutton);
         Btn3.setOnClickListener(DownButtonListenner);
-        //ScrollView groupScrollView = (ScrollView) findViewById(R.id.groupscroll);
-        //groupScrollView.fullScroll(View.FOCUS_DOWN);
     }
     protected String getUserId(){
         return userId;
@@ -159,7 +149,7 @@ public class Group2Activity extends WithLoginActivity {
         parentLayout.addView(emptyInformer);
     }
     protected void showSecondGood(String result){
-        int thatMarkedItemId = deconstructReultStringToElementId(result);
+        int thatMarkedItemId = deconstructResultStringToElementId(result);
         int markId = Items.indexOf(thatMarkedItemId);
         if(result.codePointAt(0) == '0'){
             Button itemMarkTouchedButton = (Button) findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
@@ -187,8 +177,8 @@ public class Group2Activity extends WithLoginActivity {
         }
     }
     protected void showSecondBad(String result){
-        int markId = Items.indexOf(deconstructReultStringToElementId(result));
-        Button itemMarkButton = (Button) findViewById(markId);
+        int markId = Items.indexOf(deconstructResultStringToElementId(result));
+        Button itemMarkButton = (Button) findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
         itemMarkButton.setClickable(true);
         itemMarkButton.setFocusable(true);
         itemMarkButton.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -205,7 +195,7 @@ public class Group2Activity extends WithLoginActivity {
 
     }
 
-    private int deconstructReultStringToElementId(String result){
+    private int deconstructResultStringToElementId(String result){
         int i;
         for(i = 1; result.codePointAt(i)!= '%'; i++){}
         return Integer.parseInt(result.substring(1, i).toString());
@@ -218,9 +208,9 @@ public class Group2Activity extends WithLoginActivity {
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
         LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, wrapContent);
-        LinearLayout.LayoutParams buttonParameters = new LinearLayout.LayoutParams(300, wrapContent);
-        LinearLayout.LayoutParams itemParameters = new LinearLayout.LayoutParams(300, wrapContent);
-        LinearLayout.LayoutParams commentParameters = new LinearLayout.LayoutParams(300, wrapContent);
+        LinearLayout.LayoutParams buttonParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
+        LinearLayout.LayoutParams itemParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
+        LinearLayout.LayoutParams commentParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
 
         LinearLayout listogramLayout = new LinearLayout(findViewById(R.id.listogramslayout).getContext());
         listogramLayout.setOrientation(LinearLayout.VERTICAL);

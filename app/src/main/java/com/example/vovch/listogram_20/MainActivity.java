@@ -117,7 +117,51 @@ public class MainActivity extends WithLoginActivity {
         finisher();
     }
     protected void showBad(String result){
+        setContentView(R.layout.activity_main);
         TextView tView = (TextView)findViewById(R.id.textview1);
         tView.setText(result.substring(1));
+        if(preferences.getString(APP_PREFERENCES_PASSWORD, null) != null && preferences.getString(APP_PREFERENCES_LOGIN, null) != null && preferences.getString(APP_PREFERENCES_TOKEN, null) != null){
+            EditText editText1 = (EditText) findViewById(R.id.edittext1);
+            EditText editText2 = (EditText) findViewById(R.id.edittext2);
+            editText1.setText(preferences.getString(APP_PREFERENCES_LOGIN, null));
+            editText2.setText(preferences.getString(APP_PREFERENCES_PASSWORD, null));
+        }
+        View.OnClickListener NewListenner1 = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                TextView errorTextView = (TextView) findViewById(R.id.textview1);
+                errorTextView.setText("");
+                token = preferences.getString(APP_PREFERENCES_TOKEN, null);
+                if (id == R.id.button1 && token != null) {
+                    EditText editText1 = (EditText) findViewById(R.id.edittext1);
+                    EditText editText2 = (EditText) findViewById(R.id.edittext2);
+                    String uName = editText1.getText().toString();
+                    String uPassword = editText2.getText().toString();
+                    if (!uName.equals("") && !uPassword.equals("")) {
+                        lTask = new LoginnerTask(uName, uPassword, token, "login");
+                        lTask.work();
+                    } else {
+                        errorTextView.setText("Enter Missing Value");
+                    }
+                } else if (token == null) {
+                    errorTextView.setText("There is some problem with registration token of your device. Try to reinstall the app");
+                }
+            }
+        };
+        View.OnClickListener NewListenner2 = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                if (id == R.id.button2) {
+                    Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+                    startActivity(intent);
+                }
+            }
+        };
+        Button Btn1 = (Button) findViewById(R.id.button1);
+        Btn1.setOnClickListener(NewListenner1);
+        Button Btn2 = (Button) findViewById(R.id.button2);
+        Btn2.setOnClickListener(NewListenner2);
     }
 }

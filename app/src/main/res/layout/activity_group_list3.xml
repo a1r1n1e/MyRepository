@@ -17,12 +17,23 @@
         app:layout_constraintVertical_bias="0.0"
         android:scrollbars="none"
         android:layout_marginStart="8dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:orientation="vertical"
+            android:id="@+id/groupsbaselayout">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="80sp"
+                android:id="@+id/groupaddbutton"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top"
+                android:gravity=""
                 android:orientation="vertical"
                 android:id="@+id/groupslayout">
             </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

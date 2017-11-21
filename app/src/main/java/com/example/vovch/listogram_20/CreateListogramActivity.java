@@ -74,17 +74,26 @@ public class CreateListogramActivity extends WithLoginActivity {
     @Override
     protected void onPause(){
         provider.nullActiveActivity();
+        clearer();
         super.onPause();
     }
     @Override
     public void onBackPressed(){
         //timer.cancel();
+        clearer();
         Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.putExtra("name", groupName);
         intent.putExtra("groupid", groupId);
         intent.putExtra("userid", userId);
         startActivity(intent);
         this.finish();
+    }
+    private void clearer(){
+        Items.clear();
+        Komments.clear();
+        AddedLayouts.clear();
+        Buttons.clear();
+        NumberOfLines = 0;
     }
     private void scrollToEnd(){
         getScrollView().post(new Runnable() {
@@ -177,10 +186,7 @@ public class CreateListogramActivity extends WithLoginActivity {
             result.append(eText1.getText().toString() + "%");
             result.append(eText2.getText().toString() + "%");
         }
-        Items.clear();
-        Komments.clear();
-        AddedLayouts.clear();
-        Buttons.clear();
+        clearer();
         return result.toString();
     }
     protected void sendListogram(){

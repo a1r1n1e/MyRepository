@@ -1,5 +1,8 @@
 package com.example.vovch.listogram_20;
 
+import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,16 +50,20 @@ public class ActiveListsActivity extends WithLoginActivity
     private int LISTS_DIVIDER = 10301;
     private int INSIDE_DIVIDER = 10253;
 
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_active_lists);
+
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
 
         usersId = getIntent().getExtras().getString("userId");
 
-        update();
-        setContentView(R.layout.activity_active_lists);
+        //update();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,10 +90,12 @@ public class ActiveListsActivity extends WithLoginActivity
         super.onResume();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
+        update();
     }
     @Override
     protected void onPause(){
         provider.nullActiveActivity();
+        cleaner();
         super.onPause();
     }
     private void finisher(){
@@ -97,8 +106,7 @@ public class ActiveListsActivity extends WithLoginActivity
     }
     @Override
     public void onBackPressed() {
-        GroupNames.clear();
-        GroupIds.clear();
+        cleaner();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -140,8 +148,6 @@ public class ActiveListsActivity extends WithLoginActivity
             intent.putExtra("userId", usersId);
             startActivity(intent);
             this.finish();
-        } else if (id == R.id.nav_gallery) {
-
         } else if (id == R.id.nav_share) {
             loginPasswordPair = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = loginPasswordPair.edit();
@@ -152,6 +158,18 @@ public class ActiveListsActivity extends WithLoginActivity
             Intent intent = new Intent(ActiveListsActivity.this, MainActivity.class);
             startActivity(intent);
             finisher();
+        } else if (id == R.id.nav_copy_id){
+            ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("", usersId);
+            clipboard.setPrimaryClip(clip);
+
+            dialog = new Dialog(ActiveListsActivity.this);
+            dialog.setTitle(usersId);
+            dialog.setContentView(R.layout.dialog_view);
+            TextView text = (TextView) dialog.findViewById(R.id.dialogTextView);
+            text.setText("Your Id Copied");
+            text.setBackgroundColor(Color.GRAY);
+            dialog.show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -162,7 +180,15 @@ public class ActiveListsActivity extends WithLoginActivity
         actTask = new ActiveListSearchTask(usersId, "checkactives");
         actTask.work();
     }
+    private void cleaner(){
+        NumberOfActiveLists = 0;
+        GroupIds.clear();
+        GroupNames.clear();
+        LinearLayout layout = (LinearLayout) findViewById(R.id.activelistslayout);
+        layout.removeAllViews();
+    }
     protected void showGood(String result){
+        cleaner();
         listsListMaker(result);
     }
     protected void showBad(){
@@ -180,32 +206,26 @@ public class ActiveListsActivity extends WithLoginActivity
         StringBuilder tempGroupId = new StringBuilder();
         int flag = 0;
         for (int i = 0, j = 0; i < length; i++) {
-            if (result.codePointAt(i) == INSIDE_DIVIDER && flag % 2 == 0) {
+            if (result.codePointAt(i) == INSIDE_DIVIDER) {
                 tempGroupName.setLength(0);
                 tempGroupName.append(result.substring(j, i));
                 j = i + 1;
-                flag++;
             }
-            else if(result.codePointAt(i) == INSIDE_DIVIDER && flag % 2 == 1) {
+            else if(result.codePointAt(i) == LISTS_DIVIDER) {
                 tempGroupId.setLength(0);
                 tempGroupId.append(result.substring(j, i));
                 j = i + 1;
-                flag++;
-            }else if (result.codePointAt(i) == LISTS_DIVIDER) {
-                tempOwner.setLength(0);
-                tempOwner.append(result.substring(j, i));
-                activeListLayoutDrawer(tempGroupName.toString(), tempOwner.toString(), tempGroupId.toString());
-                j = i + 1;
+                activeListLayoutDrawer(tempGroupName.toString(), tempGroupId.toString());
             }
         }
     }
-    protected void activeListLayoutDrawer(final String groupName, String listOwner, final String groupId){
+    protected void activeListLayoutDrawer(final String groupName, final String groupId){
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
         LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, wrapContent);
         LinearLayout.LayoutParams fullParameters = new LinearLayout.LayoutParams(matchParent, matchParent);
-        LinearLayout.LayoutParams groupNameButtonParameters = new LinearLayout.LayoutParams(400, wrapContent);
-        LinearLayout.LayoutParams listOwnerButtonParameters = new LinearLayout.LayoutParams(600, wrapContent);
+        LinearLayout.LayoutParams groupNameButtonParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.4f);
+        LinearLayout.LayoutParams listOwnerButtonParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.6f);
         FrameLayout frameLayout = new FrameLayout(findViewById(R.id.activelistslayout).getContext());
         frameLayout.setLayoutParams(parameters);
         LinearLayout listogramLayout = new LinearLayout(frameLayout.getContext());
@@ -213,8 +233,6 @@ public class ActiveListsActivity extends WithLoginActivity
         listogramLayout.setLayoutParams(parameters);
         listogramLayout.setId(LISTOGRAM_ACTIVES_BIG_NUMBER + NumberOfActiveLists);
         listogramLayout.setBaselineAligned(false);
-        //listogramLayout.setBackgroundColor(Color.GREEN);
-        //listogramLayout.setPadding(0, 5, 0, 0);
         Button groupNameButton = new Button(listogramLayout.getContext());
         groupNameButton.setLayoutParams(groupNameButtonParameters);
         groupNameButton.setClickable(false);
@@ -224,8 +242,7 @@ public class ActiveListsActivity extends WithLoginActivity
         listOwnerButton.setLayoutParams(listOwnerButtonParameters);
         listOwnerButton.setClickable(false);
         listOwnerButton.setBackgroundColor(Color.TRANSPARENT);
-        StringBuilder tempString = new StringBuilder("New list from ");
-        tempString.append(listOwner);
+        StringBuilder tempString = new StringBuilder("New list");
         listOwnerButton.setText(tempString.toString());
         listogramLayout.addView(groupNameButton);
         listogramLayout.addView(listOwnerButton);

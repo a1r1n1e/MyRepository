@@ -85,35 +85,55 @@ import static java.security.AccessController.getContext;
             }
 
             conn.disconnect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }                                                       //придумать как уменьшить трафик
-        if(loginPair[3].equals("login")) {
-            if (response.codePointAt(0) != 'd') {
-                succesess = true;
-            }
-            else{
-                succesess = false;
-            }
+            if(loginPair[3].equals("login")) {
+                if (response.codePointAt(0) != 'd') {
+                    succesess = true;
+                }
+                else{
+                    succesess = false;
+                }
 
-        }
-        else if(loginPair[2].equals("checkuser")){
-            if(response.equals("No Such User(")){
-                succesess = false;
+            }
+            else if(loginPair[2].equals("checkuser")){
+                if(response.equals("No Such User(")){
+                    succesess = false;
+                }
+                else{
+                    succesess = true;
+                }
             }
             else{
-                succesess = true;
+                if (!response.equals("")) {
+                    succesess = true;
+                } else {
+                    succesess = false;
+                }
             }
-        }
-        else{
-            if (!response.equals("")) {
-                succesess = true;
-            } else {
-                succesess = false;
+        } catch (MalformedURLException e) {
+            //e.printStackTrace();
+            succesess = false;
+            if(loginPair[3].equals("itemmark")){
+                StringBuilder tempString = new StringBuilder("1");
+                tempString.append(loginPair[1]);
+                tempString.append("%");
+                response = tempString.toString();
             }
-        }
+            else if(loginPair[3].equals("login")){
+                response = "1No Internet Acesess";
+            }
+        } catch (IOException e) {
+            //e.printStackTrace();
+            succesess = false;
+            if(loginPair[3].equals("itemmark")){
+                StringBuilder tempString = new StringBuilder("1");
+                tempString.append(loginPair[1]);
+                tempString.append("%");
+                response = tempString.toString();
+            }
+            else if(loginPair[3].equals("login")){
+                response = "1No Internet Acesess";
+            }
+        }                                                       //придумать как уменьшить трафик
         return response;
     }
     @Override

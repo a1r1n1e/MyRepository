@@ -39,13 +39,12 @@ public class GroupList2Activity extends WithLoginActivity {
 
         setContentView(R.layout.activity_group_list3);
         userId = getIntent().getExtras().getString("userId");
-
-        update();
+        //update();
 
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
-        Button groupAddButton = new Button(findViewById(R.id.groupslayout).getContext());
-        LinearLayout.LayoutParams groupAddButtonParameters = new LinearLayout.LayoutParams(matchParent, matchParent);
-        groupAddButton.setLayoutParams(groupAddButtonParameters);
+        Button groupAddButton = (Button) findViewById(R.id.groupaddbutton);
+        //LinearLayout.LayoutParams groupAddButtonParameters = new LinearLayout.LayoutParams(matchParent, matchParent);
+        //groupAddButton.setLayoutParams(groupAddButtonParameters);
         groupAddButton.setText("Add New Group");
         View.OnClickListener addGroupListenner = new View.OnClickListener() {
             @Override
@@ -59,14 +58,16 @@ public class GroupList2Activity extends WithLoginActivity {
         };
         groupAddButton.setClickable(true);
         groupAddButton.setOnClickListener(addGroupListenner);
-        LinearLayout basicLayout = (LinearLayout)findViewById(R.id.groupslayout);
-        basicLayout.addView(groupAddButton);
+        //LinearLayout basicLayout = (LinearLayout)findViewById(R.id.groupslayout);
+        //basicLayout.addView(groupAddButton);
     }
     protected void update(){
         gTask = new GroupListSearcherTask(userId, "groupsearch");
         gTask.work();
     }
     private void clearer(){
+        LinearLayout layout = (LinearLayout) findViewById(R.id.groupslayout);
+        layout.removeAllViews();
         Layouts.clear();
         Buttons.clear();
         Identificators.clear();
@@ -77,6 +78,7 @@ public class GroupList2Activity extends WithLoginActivity {
         super.onResume();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(4, GroupList2Activity.this);
+        update();
     }
     @Override
     protected void onPause(){
@@ -91,6 +93,7 @@ public class GroupList2Activity extends WithLoginActivity {
     }
     @Override
     public void onBackPressed(){
+        clearer();
         Intent intent = new Intent(GroupList2Activity.this, ActiveListsActivity.class);
         intent.putExtra("userId", userId);
         startActivity(intent);
@@ -98,6 +101,7 @@ public class GroupList2Activity extends WithLoginActivity {
     }
 
     protected void showGood(String result){
+        clearer();
         groupListMaker(result);
     }
     protected void showBad(){

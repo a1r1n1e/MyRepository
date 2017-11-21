@@ -7,9 +7,9 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="MY GROUPS" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_copy_id"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="in process" />
+            android:title="copy your id" />
     </group>
 
     <item android:title="still processing">
