@@ -79,9 +79,10 @@ public class Group2Activity extends WithLoginActivity {
     @Override
     public void onBackPressed(){
         cleaner();
-        Intent intent = new Intent(Group2Activity.this, GroupList2Activity.class);
-        intent.putExtra("userId", userId);
-        startActivity(intent);
+        provider.nullActiveActivity();
+        Intent intentGroupList = new Intent(Group2Activity.this, GroupList2Activity.class);
+        intentGroupList.putExtra("userId", userId);
+        startActivity(intentGroupList);
         this.finish();
     }
     @Override

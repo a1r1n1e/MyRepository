@@ -65,6 +65,14 @@ public class NewGroup extends WithLoginActivity {
         provider.nullActiveActivity();
         super.onPause();
     }
+    @Override
+    public void onBackPressed(){
+        provider.nullActiveActivity();
+        Intent intent = new Intent(NewGroup.this, GroupList2Activity.class);
+        intent.putExtra("userId", userId);
+        startActivity(intent);
+        this.finish();
+    }
     private void addUser(){
         int id = getAddingUserId();
         if(id != -1) {

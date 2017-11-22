@@ -44,8 +44,9 @@ public class GroupList2Activity extends WithLoginActivity {
         View.OnClickListener addGroupListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button)v;
+                Button button = (Button) v;
                 button.setText("Done");
+
                 Intent intent = new Intent(GroupList2Activity.this, NewGroup.class);
                 intent.putExtra("userId", userId);
                 startActivity(intent);
@@ -92,7 +93,7 @@ public class GroupList2Activity extends WithLoginActivity {
         Intent intent = new Intent(GroupList2Activity.this, ActiveListsActivity.class);
         intent.putExtra("userId", userId);
         startActivity(intent);
-        GroupList2Activity.this.finish();
+        this.finish();
     }
 
     protected void showGood(String result){
@@ -160,6 +161,7 @@ public class GroupList2Activity extends WithLoginActivity {
         intent.putExtra("userid", userId);
         intent.putExtra("name", text);
         startActivity(intent);
+        this.finish();
     }
     protected class GroupListSearcherTask extends FirstLoginAttemptTask{
         GroupListSearcherTask(String username, String action){

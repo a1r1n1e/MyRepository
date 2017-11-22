@@ -116,7 +116,7 @@ public class ActiveListsActivity extends WithLoginActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            //provider.nullActiveActivity();
+            provider.nullActiveActivity();
             ActiveListsActivity.this.finish();
         }
     }
