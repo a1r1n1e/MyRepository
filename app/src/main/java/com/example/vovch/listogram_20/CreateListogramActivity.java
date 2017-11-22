@@ -79,7 +79,6 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
     @Override
     public void onBackPressed(){
-        //timer.cancel();
         clearer();
         Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.putExtra("name", groupName);

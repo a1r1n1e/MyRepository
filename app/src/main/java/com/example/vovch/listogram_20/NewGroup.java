@@ -58,7 +58,7 @@ public class NewGroup extends WithLoginActivity {
     protected void onResume(){
         super.onResume();
         provider = (ActiveActivityProvider) getApplicationContext();
-        provider.setActiveActivity(4, NewGroup.this);
+        provider.setActiveActivity(5, NewGroup.this);
     }
     @Override
     protected void onPause(){
@@ -95,7 +95,7 @@ public class NewGroup extends WithLoginActivity {
         }
     }
     private void checkUser(int id){
-        chTask = new CheckUserTask(String.valueOf(id), " ", "checkuser");
+        chTask = new CheckUserTask(String.valueOf(id), "checkuser");
         chTask.work();
     }
     protected void addNewUserToArray(String name){
@@ -174,8 +174,8 @@ public class NewGroup extends WithLoginActivity {
         tView.setText(result);
     }
     protected class CheckUserTask extends FirstLoginAttemptTask{
-        CheckUserTask(String username, String userpassword, String action){
-            super(username, userpassword, action, "5", "0");
+        CheckUserTask(String username, String action){
+            super(username, " ", action, "5", "0");
         }
     }
     protected class NewGroupMakerTask extends FirstLoginAttemptTask{
