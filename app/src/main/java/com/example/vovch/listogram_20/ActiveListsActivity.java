@@ -98,6 +98,11 @@ public class ActiveListsActivity extends WithLoginActivity
         cleaner();
         super.onPause();
     }
+    @Override
+    protected void onDestroy(){
+        provider.nullActiveActivity();
+        super.onDestroy();
+    }
     private void finisher(){
         this.finish();
     }
@@ -111,7 +116,8 @@ public class ActiveListsActivity extends WithLoginActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            this.finish();
+            //provider.nullActiveActivity();
+            ActiveListsActivity.this.finish();
         }
     }
 

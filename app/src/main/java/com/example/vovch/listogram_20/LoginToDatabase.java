@@ -141,7 +141,7 @@ import static java.security.AccessController.getContext;
         provider = (ActiveActivityProvider) applicationContext;
         switch(whichActivity){
             case 1:
-                if(provider.getActiveActivity() != null) {
+                if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 1) {
                     MainActivity mainContext = (MainActivity) provider.getActiveActivity();
                     if (succesess) {
                         mainContext.showGood(result, firstString, secondString);
@@ -151,7 +151,7 @@ import static java.security.AccessController.getContext;
                 }
                 break;
             case 2:
-                if(provider.getActiveActivity() != null) {
+                if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 2) {
                     ActiveListsActivity activeContext = (ActiveListsActivity) provider.getActiveActivity();
                     if (succesess) {
                         activeContext.showGood(result);
@@ -161,7 +161,7 @@ import static java.security.AccessController.getContext;
                 }
                 break;
             case 3:
-                if(provider.getActiveActivity() != null) {
+                if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 3) {
                     Group2Activity groupContext = (Group2Activity) provider.getActiveActivity();
                     if (succesess) {
                         if (taskType == 0) {
@@ -183,7 +183,7 @@ import static java.security.AccessController.getContext;
                 }
                 break;
             case 4:
-                if(provider.getActiveActivity() != null) {
+                if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 4) {
                     GroupList2Activity groupListContext = (GroupList2Activity) provider.getActiveActivity();
                     if (succesess) {
                         groupListContext.showGood(result);
@@ -193,7 +193,7 @@ import static java.security.AccessController.getContext;
                 }
                 break;
             case 5:
-                if(provider.getActiveActivity()!= null) {
+                if(provider.getActiveActivity()!= null && provider.getActiveActivityNumber() == 5) {
                     NewGroup newGroupContext = (NewGroup) provider.getActiveActivity();
                     if (succesess) {
                         if (taskType == 0) {
@@ -211,7 +211,7 @@ import static java.security.AccessController.getContext;
                 }
                 break;
             case 6:
-                if(provider.getActiveActivity() != null) {
+                if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 6) {
                     CreateListogramActivity createContext = (CreateListogramActivity) provider.getActiveActivity();
                     if (succesess) {
                         createContext.showGood();
