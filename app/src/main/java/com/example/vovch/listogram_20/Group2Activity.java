@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.View;
@@ -33,6 +32,7 @@ public class Group2Activity extends WithLoginActivity {
     protected static ArrayList <Button> DisButtons = new ArrayList<>();
     protected Group2Activity.ListogramsGetter lTask;
     protected Group2Activity.ItemMarkTask itemMarkTask;
+    private Group2Activity.HistoryGetter hTask;
     protected Group2Activity.DisactivateListTask disactivateListTask;
     private String groupName;
     private String groupId;
@@ -125,12 +125,35 @@ public class Group2Activity extends WithLoginActivity {
         super.onPause();
     }
     protected void update(){
-        lTask = new ListogramsGetter(groupId, "gettinglistograms");
+        lTask = new ListogramsGetter(groupId);
         lTask.work();
+    }
+    protected void historyLoad(){
+        hTask = new HistoryGetter(groupId);
+        hTask.work();
+    }
+    protected void historyLoadOnGood(String result){
+        cleaner();
+        listsListMaker(result, false);
+    }
+    protected void historyLoadOnBad(String result){
+        cleaner();
+        int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
+        LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, 180);
+        TextView emptyInformer = new TextView(historyFragment.getView().findViewById(R.id.passedlistogramslayout).getContext());
+        emptyInformer.setLayoutParams(parameters);
+        if(result.equals("")) {
+            emptyInformer.setText("No listograms jet(");
+        }
+        else{
+            emptyInformer.setText("Something went wrong");
+        }
+        LinearLayout parentLayout = (LinearLayout) historyFragment.getView().findViewById(R.id.passedlistogramslayout);
+        parentLayout.addView(emptyInformer);
     }
     protected void showGood(String result){
         cleaner();
-        listsListMaker(result);
+        listsListMaker(result, true);
     }
     protected void showBad(String result){
         cleaner();
@@ -197,7 +220,7 @@ public class Group2Activity extends WithLoginActivity {
     protected String getGroupId(){
         return groupId;
     }
-    protected void listsLayoutDrawer(String listName, final String listId, String ownerId, boolean listActive){
+    protected void listsLayoutDrawer(String listName, final String listId, String ownerId, boolean listActive, boolean type){
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
         LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, wrapContent);
@@ -205,7 +228,13 @@ public class Group2Activity extends WithLoginActivity {
         LinearLayout.LayoutParams itemParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
         LinearLayout.LayoutParams commentParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
 
-        LinearLayout listogramLayout = new LinearLayout(activeFragment.getView().findViewById(R.id.listogramslayout).getContext());
+        LinearLayout listogramLayout;
+        if(type) {
+            listogramLayout = new LinearLayout(activeFragment.getView().findViewById(R.id.listogramslayout).getContext());
+        }
+        else{
+            listogramLayout = new LinearLayout(historyFragment.getView().findViewById(R.id.passedlistogramslayout).getContext());
+        }
         listogramLayout.setOrientation(LinearLayout.VERTICAL);
         listogramLayout.setLayoutParams(parameters);
         listogramLayout.setId(LISTOGRAM_BIG_NUMBER + NumberOfLists++);
@@ -280,7 +309,13 @@ public class Group2Activity extends WithLoginActivity {
             DisButtons.add(DisButtons.size(), null);
         }
         DisNumberOfLists++;
-        LinearLayout basicLayout = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
+        LinearLayout basicLayout;
+        if(type) {
+            basicLayout = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
+        }
+        else{
+            basicLayout = (LinearLayout) historyFragment.getView().findViewById(R.id.passedlistogramslayout);
+        }
         basicLayout.addView(listogramLayout);
         Lists.add(Lists.size(), Integer.parseInt(listId));
     }
@@ -365,7 +400,7 @@ public class Group2Activity extends WithLoginActivity {
         Items.add(Items.size(), itemId);
         NumberOfLines++;
     }
-    protected void listsListMaker(String result) {
+    protected void listsListMaker(String result, boolean type) {
         int length = result.length();
         StringBuilder tempNameString = new StringBuilder();
         StringBuilder tempIdString = new StringBuilder();
@@ -399,7 +434,7 @@ public class Group2Activity extends WithLoginActivity {
                     listActive = false;
                 }
                 j = i + 1;
-                listsLayoutDrawer(tempNameString.toString(), tempIdString.toString(), tempOwnerIdString.toString(), listActive);
+                listsLayoutDrawer(tempNameString.toString(), tempIdString.toString(), tempOwnerIdString.toString(), listActive, type);
             }
         }
     }
@@ -434,10 +469,10 @@ public class Group2Activity extends WithLoginActivity {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public Adapter(FragmentManager manager) {
+        protected Adapter(FragmentManager manager) {
             super(manager);
         }
-        protected void clean(){
+        private void clean(){
             mFragmentList.clear();
             mFragmentTitleList.clear();
         }
@@ -451,7 +486,7 @@ public class Group2Activity extends WithLoginActivity {
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        protected void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
@@ -461,17 +496,22 @@ public class Group2Activity extends WithLoginActivity {
             return mFragmentTitleList.get(position);
         }
     }
-    protected class ListogramsGetter extends FirstLoginAttemptTask{
-        ListogramsGetter(String groupId,  String action){
-            super(groupId, action, "3", "0");
+    private class ListogramsGetter extends FirstLoginAttemptTask{
+        ListogramsGetter(String groupId){
+            super(groupId, "gettinglistograms", "3", "0");
         }
     }
-    protected class ItemMarkTask extends FirstLoginAttemptTask {
+    private class HistoryGetter extends FirstLoginAttemptTask{
+        HistoryGetter(String groupId){
+            super(groupId, "gettinghistory", "3", "3");
+        }
+    }
+    private class ItemMarkTask extends FirstLoginAttemptTask {
         ItemMarkTask(String userId, String itemIdAndGroupId,  String third, String action, String groupId){
             super(userId, itemIdAndGroupId, third, action, "3", "1", groupId);
         }
     }
-    protected class DisactivateListTask extends FirstLoginAttemptTask {
+    private class DisactivateListTask extends FirstLoginAttemptTask {
         DisactivateListTask(String groupId, String listId){
             super(groupId, listId, userId, "disactivatelist", "3", "2");
         }

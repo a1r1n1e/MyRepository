@@ -93,8 +93,10 @@ public class NewGroup extends WithLoginActivity {
         }
     }
     private int getAddingUserId(){
+        String value;
         TextView newUserIdTextView = (TextView)findViewById(R.id.newgroupnewuseridtextview);
-        if(!newUserIdTextView.getText().toString().equals("")) {
+        value = newUserIdTextView.getText().toString();
+        if(!value.equals("") && android.text.TextUtils.isDigitsOnly(value)) {
             int id = Integer.parseInt(newUserIdTextView.getText().toString());
             return id;
         }

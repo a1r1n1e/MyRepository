@@ -181,7 +181,7 @@ public class GroupList2Activity extends WithLoginActivity {
         startActivity(intent);
         this.finish();
     }
-    protected class GroupListSearcherTask extends FirstLoginAttemptTask{
+    private class GroupListSearcherTask extends FirstLoginAttemptTask{
         GroupListSearcherTask(String username, String action){
             super(username, action, "4", "0");
         }

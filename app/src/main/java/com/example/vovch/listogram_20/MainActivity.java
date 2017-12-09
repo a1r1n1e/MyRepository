@@ -1,16 +1,12 @@
 package com.example.vovch.listogram_20;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 public class MainActivity extends WithLoginActivity {
@@ -96,7 +92,7 @@ public class MainActivity extends WithLoginActivity {
     private void finisher(){
         MainActivity.this.finish();
     }
-    protected class LoginnerTask extends FirstLoginAttemptTask{
+    private class LoginnerTask extends FirstLoginAttemptTask{
         String userName;
         String userPasssword;
         LoginnerTask(String username, String userpassword, String token, String action){

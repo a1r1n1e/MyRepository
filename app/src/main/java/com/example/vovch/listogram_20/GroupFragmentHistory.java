@@ -23,6 +23,14 @@ public class GroupFragmentHistory extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.group_fragment_history, container, false);
+        Button historyLoadButton = (Button) rootView.findViewById(R.id.loadhistorybutton);
+        historyLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Group2Activity groupActivity = (Group2Activity) getActivity();
+                groupActivity.historyLoad();
+            }
+        });
         return rootView;
     }
 }

@@ -23,7 +23,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="version 0.60 beta" />
+        android:text="version 0.66 test" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

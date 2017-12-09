@@ -168,16 +168,22 @@ import static java.security.AccessController.getContext;
                             groupContext.showGood(result);
                         } else if (taskType == 1) {
                             groupContext.showSecondGood(result);
-                        } else {
+                        } else if (taskType == 2){
                             groupContext.showThirdGood(result);
+                        }
+                        else {
+                            groupContext.historyLoadOnGood(result);
                         }
                     } else {
                         if (taskType == 0) {
                             groupContext.showBad(result);
                         } else if (taskType == 1) {
                             groupContext.showSecondBad(result);
-                        } else {
+                        } else if (taskType == 2){
                             groupContext.showThirdBad(result);
+                        }
+                        else{
+                            groupContext.historyLoadOnBad(result);
                         }
                     }
                 }

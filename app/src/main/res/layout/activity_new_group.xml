@@ -25,7 +25,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:text="Enter Group Name"
+                android:text="New Group"
                 style="@android:style/TextAppearance.Large"
                 android:gravity="center_horizontal"/>
             <EditText
@@ -33,7 +33,8 @@
                 android:layout_height="wrap_content"
                 style="@android:style/TextAppearance.Large"
                 android:gravity="center_horizontal"
-                android:id="@+id/newgroupnameview"/>
+                android:id="@+id/newgroupnameview"
+                android:hint="Enter Group Name"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -45,8 +46,9 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:id="@+id/newgroupnewuseridtextview"
-                android:text="Enter New User Id"/>
+                android:hint="Enter New User Id"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
