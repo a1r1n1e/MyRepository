@@ -1,17 +1,9 @@
 package com.example.vovch.listogram_20;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 
-import static java.security.AccessController.getContext;
-
 public class WithLoginActivity extends AppCompatActivity {
-    public  MainActivity.FirstLoginAttemptTask ITask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -24,6 +24,9 @@ public class ActiveActivityProvider extends Application {
     protected void setActiveActivity(int whichOne, Context context){
         activeActivity = context;
         activeActivityNumber = whichOne;
+        if(activeActivityNumber != 3){
+            groupId = -1;
+        }
     }
     protected void setGroupId(int id){
         groupId = id;

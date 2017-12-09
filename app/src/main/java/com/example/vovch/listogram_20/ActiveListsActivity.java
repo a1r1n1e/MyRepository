@@ -100,7 +100,7 @@ public class ActiveListsActivity extends WithLoginActivity
     }
     @Override
     protected void onDestroy(){
-        provider.nullActiveActivity();
+        //provider.nullActiveActivity();
         super.onDestroy();
     }
     private void finisher(){

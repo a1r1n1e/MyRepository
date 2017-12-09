@@ -1,16 +1,27 @@
 package com.example.vovch.listogram_20;
 
+import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -29,6 +40,13 @@ public class GroupList2Activity extends WithLoginActivity {
     private int GROUPS_DIVIDER = 10301;
     private int INSIDE_DIVIDER = 10253;
     private int NumberOfLines = 0;
+
+    private static final String  APP_PREFERENCES_USERID= "userid";
+    private static final String APP_PREFERENCES_LOGIN = "login";
+    private static final String APP_PREFERENCES_PASSWORD = "password";
+    public static final String APP_PREFERENCES = "autentification";
+
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +100,7 @@ public class GroupList2Activity extends WithLoginActivity {
     }
     @Override
     protected void onDestroy(){
-        provider.nullActiveActivity();
+        //provider.nullActiveActivity();
         clearer();
         super.onDestroy();
     }

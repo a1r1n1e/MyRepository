@@ -22,10 +22,6 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     }
     @Override
     public  void onMessageReceived(RemoteMessage remoteMessage){
-        //Log data to Log Cat
-        //Log.d(TAG, "From: " + remoteMessage.getFrom());
-        //Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
-        //create notification
         String value = remoteMessage.toString();
         if(remoteMessage.getData().get("type").equals("newlistogram")) {
             createNotification(remoteMessage.getData().get("message"), remoteMessage.getData().get("group"));
@@ -38,6 +34,8 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
 
         ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
 
+        int i = provider.getActiveActivityNumber();
+        int j = provider.getGroupId();
         if(provider.getActiveActivityNumber() == 2){                                //провайдер устроен так, что если есть номер, то и контекст есть тоже
             ActiveListsActivity activeActivity = (ActiveListsActivity) provider.getActiveActivity();
             activeActivity.update();

@@ -1,20 +1,24 @@
 package com.example.vovch.listogram_20;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Group2Activity extends WithLoginActivity {
     protected static ArrayList<LinearLayout> Layouts1 = new ArrayList<>();
@@ -27,7 +31,6 @@ public class Group2Activity extends WithLoginActivity {
     protected static ArrayList <Boolean> ItemMarks = new ArrayList<>();
     protected static ArrayList <Integer> Items = new ArrayList<>();
     protected static ArrayList <Button> DisButtons = new ArrayList<>();
-    protected static ArrayList<ArrayList<String>> ItemObjects = new ArrayList<>();
     protected Group2Activity.ListogramsGetter lTask;
     protected Group2Activity.ItemMarkTask itemMarkTask;
     protected Group2Activity.DisactivateListTask disactivateListTask;
@@ -48,25 +51,33 @@ public class Group2Activity extends WithLoginActivity {
     private int LISTS_DIVIDER = 10301;
     private int INSIDE_DIVIDER = 10253;
     private int LISTOGRAM_LINE_INSIDE_DIVIDER = 37;
+    protected FragmentManager fragmentManager;
 
+    private GroupFragmentActive activeFragment;
+    private GroupFragmentHistory historyFragment;
+    private Adapter adapter;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
         groupId = getIntent().getExtras().getString("groupid");
         userId = getIntent().getExtras().getString("userid");
-
-
-        provider = (ActiveActivityProvider) getApplicationContext();
-        provider.setActiveActivity(3, Group2Activity.this);
-        provider.setGroupId(Integer.parseInt(groupId));
-
         setContentView(R.layout.activity_group3);
-        update();
-        ScrollView groupScrollView = (ScrollView) findViewById(R.id.groupscroll);
-        groupScrollView.fullScroll(View.FOCUS_DOWN);
+        fragmentManager = getSupportFragmentManager();
+        viewPager = (ViewPager) findViewById(R.id.group_viewpager);
+        setupViewPager(viewPager);
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs_group);
+        tabs.removeAllTabs();
+        tabs.addTab(tabs.newTab().setText("Active"));
+        tabs.addTab(tabs.newTab().setText("History"));
+        tabs.setupWithViewPager(viewPager);
+
+        adapter.startUpdate(viewPager);
+        activeFragment = (GroupFragmentActive) adapter.instantiateItem(viewPager, 0);
+        historyFragment = (GroupFragmentHistory) adapter.instantiateItem(viewPager, 1);
+        adapter.finishUpdate(viewPager);
     }
     @Override
     protected void onResume(){
@@ -87,7 +98,7 @@ public class Group2Activity extends WithLoginActivity {
     }
     @Override
     protected void onDestroy(){
-        cleaner();
+        provider.nullActiveActivity();
         super.onDestroy();
     }
     private void cleaner(){
@@ -103,35 +114,22 @@ public class Group2Activity extends WithLoginActivity {
         DisButtons.clear();
         NumberOfLines = 0;
         NumberOfLists = 0;
-        LinearLayout layout = (LinearLayout) findViewById(R.id.listogramslayout);
-        layout.removeAllViews();
+        LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
+        layoutScrollingActiveListsContainer.removeAllViews();
+        LinearLayout layoutScrollingHistoryListsContainer = (LinearLayout) historyFragment.getView().findViewById(R.id.passedlistogramslayout);
+        layoutScrollingHistoryListsContainer.removeAllViews();
     }
     @Override
     public void onPause(){
-        cleaner();
         provider.nullActiveActivity();
         super.onPause();
     }
     protected void update(){
-        cleaner();
         lTask = new ListogramsGetter(groupId, "gettinglistograms");
         lTask.work();
-        View.OnClickListener DownButtonListenner = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendListogram();
-            }
-        };
-        Button Btn3 = (Button)findViewById(R.id.groupdownbutton);
-        Btn3.setOnClickListener(DownButtonListenner);
-    }
-    protected String getUserId(){
-        return userId;
     }
     protected void showGood(String result){
         cleaner();
-        LinearLayout bigScrollLayout = (LinearLayout) findViewById(R.id.listogramslayout);
-        bigScrollLayout.removeAllViewsInLayout();
         listsListMaker(result);
     }
     protected void showBad(String result){
@@ -146,14 +144,14 @@ public class Group2Activity extends WithLoginActivity {
         else{
             emptyInformer.setText("Something went wrong");
         }
-        LinearLayout parentLayout = (LinearLayout) findViewById(R.id.listogramslayout);
+        LinearLayout parentLayout = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
         parentLayout.addView(emptyInformer);
     }
     protected void showSecondGood(String result){
         int thatMarkedItemId = deconstructResultStringToElementId(result);
         int markId = Items.indexOf(thatMarkedItemId);
         if(result.codePointAt(0) == '0'){
-            Button itemMarkTouchedButton = (Button) findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
+            Button itemMarkTouchedButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
             itemMarkTouchedButton.setClickable(true);
             itemMarkTouchedButton.setFocusable(true);
             itemMarkTouchedButton.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -162,7 +160,7 @@ public class Group2Activity extends WithLoginActivity {
             ItemMarks.set(markId, true);
         }
         else if(result.codePointAt(0) == '2'){
-            Button itemMarkTouchedButton = (Button) findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
+            Button itemMarkTouchedButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
             itemMarkTouchedButton.setClickable(true);
             itemMarkTouchedButton.setFocusable(true);
             itemMarkTouchedButton.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -171,7 +169,7 @@ public class Group2Activity extends WithLoginActivity {
             ItemMarks.set(markId, false);
         }
         else{
-            Button itemMarkTouchedButton = (Button) findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
+            Button itemMarkTouchedButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
             itemMarkTouchedButton.setClickable(true);
             itemMarkTouchedButton.setFocusable(true);
             itemMarkTouchedButton.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -179,21 +177,15 @@ public class Group2Activity extends WithLoginActivity {
     }
     protected void showSecondBad(String result){
         int markId = Items.indexOf(deconstructResultStringToElementId(result));
-        Button itemMarkButton = (Button) findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
+        Button itemMarkButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
         itemMarkButton.setClickable(true);
         itemMarkButton.setFocusable(true);
         itemMarkButton.setGravity(Gravity.CENTER_HORIZONTAL);
     }
     protected void showThirdGood(String result){
-        /*int disId = Lists.indexOf(deconstructReultStringToElementId(result));
-        Button disButton = DisButtons.get(disId);
-        disButton.setClickable(false);
-        disButton.setFocusable(false);
-        disButton.setText("Done");*/
         update();
     }
     protected void showThirdBad(String result){
-
     }
 
     private int deconstructResultStringToElementId(String result){
@@ -209,11 +201,11 @@ public class Group2Activity extends WithLoginActivity {
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
         LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, wrapContent);
-        LinearLayout.LayoutParams buttonParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
+        LinearLayout.LayoutParams buttonParameters = new LinearLayout.LayoutParams(0, matchParent, 0.33f);
         LinearLayout.LayoutParams itemParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
         LinearLayout.LayoutParams commentParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
 
-        LinearLayout listogramLayout = new LinearLayout(findViewById(R.id.listogramslayout).getContext());
+        LinearLayout listogramLayout = new LinearLayout(activeFragment.getView().findViewById(R.id.listogramslayout).getContext());
         listogramLayout.setOrientation(LinearLayout.VERTICAL);
         listogramLayout.setLayoutParams(parameters);
         listogramLayout.setId(LISTOGRAM_BIG_NUMBER + NumberOfLists++);
@@ -288,7 +280,7 @@ public class Group2Activity extends WithLoginActivity {
             DisButtons.add(DisButtons.size(), null);
         }
         DisNumberOfLists++;
-        LinearLayout basicLayout = (LinearLayout) findViewById(R.id.listogramslayout);
+        LinearLayout basicLayout = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
         basicLayout.addView(listogramLayout);
         Lists.add(Lists.size(), Integer.parseInt(listId));
     }
@@ -338,7 +330,7 @@ public class Group2Activity extends WithLoginActivity {
         if(active){
             groupButton.setText("Needed");
             if(listActive) {
-                groupButton.setClickable(true);                                                 //!!!!!!!!!РАЗОБРАТЬСЯ!!!!!!!!!
+                groupButton.setClickable(true);
                 groupButton.setOnClickListener(ItemMarkButtonListenner);
                 groupButton.setBackgroundColor(Color.GREEN);
             }
@@ -423,7 +415,7 @@ public class Group2Activity extends WithLoginActivity {
         itemMarkTask.work();
     }
 
-    protected void sendListogram(){
+    public void sendListogram(){
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
         intent.putExtra("name", groupName.toString());
         intent.putExtra("groupid", groupId.toString());
@@ -431,6 +423,44 @@ public class Group2Activity extends WithLoginActivity {
         startActivity(intent);
     }
 
+    private void setupViewPager(ViewPager viewPager) {
+        adapter = new Adapter(getSupportFragmentManager());
+        adapter.clean();
+        adapter.addFragment(new GroupFragmentActive(), "Active");
+        adapter.addFragment(new GroupFragmentHistory(), "History");
+        viewPager.setAdapter(adapter);
+    }
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+        protected void clean(){
+            mFragmentList.clear();
+            mFragmentTitleList.clear();
+        }
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
     protected class ListogramsGetter extends FirstLoginAttemptTask{
         ListogramsGetter(String groupId,  String action){
             super(groupId, action, "3", "0");

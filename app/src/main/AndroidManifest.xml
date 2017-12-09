@@ -23,7 +23,9 @@
             <activity android:name=".RegistrationActivity" />
             <activity android:name=".WithLoginActivity" />
             <activity android:name=".GroupList2Activity" />
-            <activity android:name=".Group2Activity" />
+            <activity
+                android:name=".Group2Activity"
+                android:theme="@style/AppTheme.NoActionBar"/>
             <activity android:name=".NewGroup" />
             <activity android:name=".CreateListogramActivity" />
             <activity
