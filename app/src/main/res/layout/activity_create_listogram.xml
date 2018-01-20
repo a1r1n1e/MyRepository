@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    tools:context="com.example.vovch.listogram_20.CreateListogramActivity"
+    tools:context="com.example.vovch.listogram_20.activities.simple.CreateListogramActivity"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="0dp"
