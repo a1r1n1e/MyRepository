@@ -1,5 +1,6 @@
 package com.example.vovch.listogram_20;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -52,11 +53,6 @@ public class WithLoginActivity extends AppCompatActivity {
             whichActivity = whichOne;
             taskType = type;
             groupNumber = "";
-        }
-        protected void work(){
-            LoginToDatabase tDLogin = new LoginToDatabase();
-            tDLogin.setApplicationContext((ActiveActivityProvider) getApplicationContext());
-            tDLogin.execute(userName, userPassword, userToken, userAction, whichActivity, taskType, groupNumber);
         }
     }
 }

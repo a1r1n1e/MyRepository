@@ -1,460 +1,312 @@
 package com.example.vovch.listogram_20;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Group2Activity extends WithLoginActivity {
-    protected static ArrayList<LinearLayout> Layouts1 = new ArrayList<>();
-    protected static ArrayList <Button> Buttons1 = new ArrayList<>();
-    protected static ArrayList <EditText> ListItemsTexts = new ArrayList<>();
-    protected static ArrayList <EditText> ListCommentTexts = new ArrayList<>();
-    protected static ArrayList <Integer> Lists = new ArrayList<>();
-    protected static ArrayList <Boolean> ActiveLists = new ArrayList<>();
-    protected static ArrayList <Integer> ListOwners = new ArrayList<>();
-    protected static ArrayList <Boolean> ItemMarks = new ArrayList<>();
-    protected static ArrayList <Integer> Items = new ArrayList<>();
-    protected static ArrayList <Button> DisButtons = new ArrayList<>();
-    protected Group2Activity.ListogramsGetter lTask;
-    protected Group2Activity.ItemMarkTask itemMarkTask;
-    private Group2Activity.HistoryGetter hTask;
-    protected Group2Activity.DisactivateListTask disactivateListTask;
     private String groupName;
     private String groupId;
-    private String userId;
-    private int NumberOfLists = 0;
-    private int DisNumberOfLists = 0;
-    private int LISTOGRAM_BUTTON_BIG_NUMBER = 70000000;
-    private int LISTOGRAM_DIS_BUTTON_BIG_NUMBER = 80000000;
-    private ActiveActivityProvider provider;
-
-    private int NumberOfLines = 0;
-    private int LISTOGRAM_LINE_BIG_NUMBER = 50000000;
-    private int LISTOGRAM_BIG_NUMBER = 60000000;
-    private int LISTOGRAM_ITEM_BIG_NUMBER = 30000000;
-    private int LISTOGRAM_COMMENT_BIG_NUMBER = 40000000;
-    private int LISTS_DIVIDER = 10301;
-    private int INSIDE_DIVIDER = 10253;
-    private int LISTOGRAM_LINE_INSIDE_DIVIDER = 37;
     protected FragmentManager fragmentManager;
-
+    private ActiveActivityProvider provider;
     private GroupFragmentActive activeFragment;
     private GroupFragmentHistory historyFragment;
     private Adapter adapter;
     private ViewPager viewPager;
+    private FloatingActionButton fab;
+    private boolean activeReady;
+    private boolean historyReady;
+
+    View.OnClickListener groupSettingsButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Group2Activity.this, GroupSettingsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+            if(provider.getActiveActivityNumber() == 3) {
+                provider.nullActiveActivity();
+            }
+            Group2Activity.this.finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
-        groupId = getIntent().getExtras().getString("groupid");
-        userId = getIntent().getExtras().getString("userid");
+
+        activeReady = false;
+        historyReady = false;
+
         setContentView(R.layout.activity_group3);
+
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(3, Group2Activity.this);
+
+        UserGroup activeGroup = provider.getActiveGroup();
+        groupId = activeGroup.getId();
+        groupName = activeGroup.getName();
+
         fragmentManager = getSupportFragmentManager();
         viewPager = (ViewPager) findViewById(R.id.group_viewpager);
         setupViewPager(viewPager);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(24);
+        }
+        setSupportActionBar(toolbar);
+
+        TextView groupNameTextView = (TextView) findViewById(R.id.group_name_textview);
+        groupNameTextView.setText(groupName);
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.group_settings_imagebutton);
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/ic_more_vertical_32");
+        settingsButton.setImageURI(uri);
+        settingsButton.setOnClickListener(groupSettingsButtonListener);
+
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs_group);
         tabs.removeAllTabs();
         tabs.addTab(tabs.newTab().setText("Active"));
         tabs.addTab(tabs.newTab().setText("History"));
         tabs.setupWithViewPager(viewPager);
 
+        fab = (FloatingActionButton) findViewById(R.id.group_fab);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fab.setElevation(24);
+        }
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0){
+                    fab.show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send, getTheme()));
+                    } else {
+                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send));
+                    }
+                }
+                else if(position == 1){
+                    fab.hide();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
+
         adapter.startUpdate(viewPager);
         activeFragment = (GroupFragmentActive) adapter.instantiateItem(viewPager, 0);
         historyFragment = (GroupFragmentHistory) adapter.instantiateItem(viewPager, 1);
         adapter.finishUpdate(viewPager);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send, getTheme()));
+        } else {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send));
+        }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment currentFragment = (Fragment) adapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                if (currentFragment instanceof GroupFragmentActive) {
+                    sendListogram();
+                } else if (currentFragment instanceof GroupFragmentHistory) {
+                    historyLoad();
+                }
+            }
+        });
     }
     @Override
     protected void onResume(){
         super.onResume();
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(3, Group2Activity.this);
-        provider.setGroupId(Integer.parseInt(groupId));
-        update();
     }
     @Override
     public void onBackPressed(){
         cleaner();
-        provider.nullActiveActivity();
-        Intent intentGroupList = new Intent(Group2Activity.this, GroupList2Activity.class);
-        intentGroupList.putExtra("userId", userId);
+        if(provider.getActiveActivityNumber() == 3) {
+            provider.nullActiveActivity();
+        }
+        provider.setActiveGroup(null);
+        Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
+        intentGroupList.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intentGroupList);
         this.finish();
     }
     @Override
     protected void onDestroy(){
-        provider.nullActiveActivity();
+        cleaner();
         super.onDestroy();
     }
     private void cleaner(){
-        Layouts1.clear();
-        Buttons1.clear();
-        ListItemsTexts.clear();
-        ListCommentTexts.clear();
-        Lists.clear();
-        ActiveLists.clear();
-        ListOwners.clear();
-        ItemMarks.clear();
-        Items.clear();
-        DisButtons.clear();
-        NumberOfLines = 0;
-        NumberOfLists = 0;
-        LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
-        layoutScrollingActiveListsContainer.removeAllViews();
-        LinearLayout layoutScrollingHistoryListsContainer = (LinearLayout) historyFragment.getView().findViewById(R.id.passedlistogramslayout);
-        layoutScrollingHistoryListsContainer.removeAllViews();
+        if(activeFragment != null) {
+            if(activeReady) {
+                activeFragment.activeFragmentCleaner();
+            }
+        }
+        if(historyFragment != null) {
+            if(historyReady) {
+                historyFragment.historyFragmentCleaner();
+            }
+        }
     }
+
     @Override
     public void onPause(){
-        provider.nullActiveActivity();
         super.onPause();
     }
+    @Override
+    public void onStop(){
+        if(provider.getActiveActivityNumber() == 3) {
+            provider.nullActiveActivity();
+        }
+        super.onStop();
+    }
     protected void update(){
-        lTask = new ListogramsGetter(groupId);
-        lTask.work();
+        if(activeFragment != null){
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.setRefresherRefreshing();
+        }
+        provider.getGroupActiveLists(groupId);
+    }
+    protected void refreshActiveLists(){
+        if(activeFragment != null){
+            if(activeReady) {
+                activeFragment.checkRootView(viewPager, getLayoutInflater());
+                activeFragment.setRefresherRefreshing();
+                update();
+            }
+        }
+    }
+    protected  void onActiveReady(){
+        activeReady = true;
+        if(activeFragment != null) {
+            activeFragment.setRefresher();
+        }
+        refreshActiveLists();
+    }
+    protected void refreshHistoryLists(){
+        if(historyFragment != null){
+            if(historyReady) {
+                historyFragment.checkRootView(viewPager, getLayoutInflater());
+                historyFragment.setRefresherRefreshing();
+                historyLoad();
+            }
+        }
+    }
+    protected void onHistoryReady(){
+        if(historyFragment != null) {
+            historyReady = true;
+            historyFragment.setRefresher();
+        }
     }
     protected void historyLoad(){
-        hTask = new HistoryGetter(groupId);
-        hTask.work();
+        provider.getGroupHistoryLists(groupId);
     }
-    protected void historyLoadOnGood(String result){
-        cleaner();
-        listsListMaker(result, false);
+    protected void itemmark(Item item){
+        provider.itemmark(item);
+    }
+    protected void disactivateGroupList(SList list){
+        if(list != null) {
+            provider.disactivateGroupList(list);
+        }
+    }
+    protected void showGroupDataSettledGood(){
+
+    }
+    protected void showGroupDataSettledBad(){
+
+    }
+
+
+    protected void historyLoadOnGood(SList[] result){
+        if(historyFragment != null) {
+            historyFragment.checkRootView(viewPager, getLayoutInflater());
+            onHistoryReady();                                                                        //strange solution
+            historyFragment.historyFragmentCleaner();
+            historyFragment.setRefresherNotRefreshing();
+            historyFragment.fragmentShowGood(result);
+        }
     }
     protected void historyLoadOnBad(String result){
-        cleaner();
-        int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
-        LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, 180);
-        TextView emptyInformer = new TextView(historyFragment.getView().findViewById(R.id.passedlistogramslayout).getContext());
-        emptyInformer.setLayoutParams(parameters);
-        if(result.equals("")) {
-            emptyInformer.setText("No listograms jet(");
-        }
-        else{
-            emptyInformer.setText("Something went wrong");
-        }
-        LinearLayout parentLayout = (LinearLayout) historyFragment.getView().findViewById(R.id.passedlistogramslayout);
-        parentLayout.addView(emptyInformer);
-    }
-    protected void showGood(String result){
-        cleaner();
-        listsListMaker(result, true);
-    }
-    protected void showBad(String result){
-        cleaner();
-        int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
-        LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, 180);
-        TextView emptyInformer = new TextView(findViewById(R.id.listogramslayout).getContext());
-        emptyInformer.setLayoutParams(parameters);
-        if(result.equals("")) {
-            emptyInformer.setText("No listograms jet(");
-        }
-        else{
-            emptyInformer.setText("Something went wrong");
-        }
-        LinearLayout parentLayout = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
-        parentLayout.addView(emptyInformer);
-    }
-    protected void showSecondGood(String result){
-        int thatMarkedItemId = deconstructResultStringToElementId(result);
-        int markId = Items.indexOf(thatMarkedItemId);
-        if(result.codePointAt(0) == '0'){
-            Button itemMarkTouchedButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
-            itemMarkTouchedButton.setClickable(true);
-            itemMarkTouchedButton.setFocusable(true);
-            itemMarkTouchedButton.setGravity(Gravity.CENTER_HORIZONTAL);
-            itemMarkTouchedButton.setText("Needed");
-            itemMarkTouchedButton.setBackgroundColor(Color.GREEN);
-            ItemMarks.set(markId, true);
-        }
-        else if(result.codePointAt(0) == '2'){
-            Button itemMarkTouchedButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
-            itemMarkTouchedButton.setClickable(true);
-            itemMarkTouchedButton.setFocusable(true);
-            itemMarkTouchedButton.setGravity(Gravity.CENTER_HORIZONTAL);
-            itemMarkTouchedButton.setText("Bought");
-            itemMarkTouchedButton.setBackgroundColor(Color.BLUE);
-            ItemMarks.set(markId, false);
-        }
-        else{
-            Button itemMarkTouchedButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
-            itemMarkTouchedButton.setClickable(true);
-            itemMarkTouchedButton.setFocusable(true);
-            itemMarkTouchedButton.setGravity(Gravity.CENTER_HORIZONTAL);
+        if(historyFragment != null) {
+            historyFragment.checkRootView(viewPager, getLayoutInflater());
+            onHistoryReady();                                                                        //strange solution
+            historyFragment.setRefresherNotRefreshing();
+            historyFragment.fragmentShowBad(result);
         }
     }
-    protected void showSecondBad(String result){
-        int markId = Items.indexOf(deconstructResultStringToElementId(result));
-        Button itemMarkButton = (Button) activeFragment.getView().findViewById(markId + LISTOGRAM_BUTTON_BIG_NUMBER);
-        itemMarkButton.setClickable(true);
-        itemMarkButton.setFocusable(true);
-        itemMarkButton.setGravity(Gravity.CENTER_HORIZONTAL);
-    }
-    protected void showThirdGood(String result){
-        update();
-    }
-    protected void showThirdBad(String result){
-    }
-
-    private int deconstructResultStringToElementId(String result){
-        int i;
-        for(i = 1; result.codePointAt(i)!= '%'; i++){}
-        return Integer.parseInt(result.substring(1, i).toString());
-    }
-
-    protected String getGroupId(){
-        return groupId;
-    }
-    protected void listsLayoutDrawer(String listName, final String listId, String ownerId, boolean listActive, boolean type){
-        int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
-        int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
-        LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(matchParent, wrapContent);
-        LinearLayout.LayoutParams buttonParameters = new LinearLayout.LayoutParams(0, matchParent, 0.33f);
-        LinearLayout.LayoutParams itemParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
-        LinearLayout.LayoutParams commentParameters = new LinearLayout.LayoutParams(0, wrapContent, 0.33f);
-
-        LinearLayout listogramLayout;
-        if(type) {
-            listogramLayout = new LinearLayout(activeFragment.getView().findViewById(R.id.listogramslayout).getContext());
-        }
-        else{
-            listogramLayout = new LinearLayout(historyFragment.getView().findViewById(R.id.passedlistogramslayout).getContext());
-        }
-        listogramLayout.setOrientation(LinearLayout.VERTICAL);
-        listogramLayout.setLayoutParams(parameters);
-        listogramLayout.setId(LISTOGRAM_BIG_NUMBER + NumberOfLists++);
-        if(listActive) {
-            ActiveLists.add(ActiveLists.size(), true);
-        }
-        else{
-            ActiveLists.add(ActiveLists.size(), false);
-        }
-
-        StringBuilder itemNameString = new StringBuilder("");
-        StringBuilder itemCommentString = new StringBuilder("");
-        StringBuilder itemIdString = new StringBuilder("");
-        int itemId;
-        boolean itemActive = false;
-        int flag1 = 0;
-        for(int i = 0, j = 0;i < listName.length();i++){
-            if(listName.codePointAt(i) == LISTOGRAM_LINE_INSIDE_DIVIDER&&flag1 % 4 == 0) {
-                itemNameString.append(listName.substring(j,i));
-                j = i + 1;
-                flag1++;
-            }
-            else if(listName.codePointAt(i) == LISTOGRAM_LINE_INSIDE_DIVIDER&&flag1 % 4 == 1){
-                itemCommentString.append(listName.substring(j,i));
-                j = i + 1;
-                flag1++;
-            }
-            else if(listName.codePointAt(i) == LISTOGRAM_LINE_INSIDE_DIVIDER&&flag1 % 4 == 2){
-                if(listName.substring(j,i).equals("t")){
-                    itemActive = true;
-                }
-                else{
-                    itemActive = false;
-                }
-                j = i + 1;
-                flag1++;
-            }
-            else if(listName.codePointAt(i) == LISTOGRAM_LINE_INSIDE_DIVIDER&&flag1 % 4 == 3){
-                itemId = Integer.parseInt(listName.substring(j,i));
-                makeListogramLine(listogramLayout, parameters, itemParameters, commentParameters, buttonParameters, itemNameString.toString(), itemCommentString.toString(), itemActive, itemId, listActive);
-                itemNameString.delete(0, itemNameString.length());
-                itemCommentString.delete(0, itemCommentString.length());
-                j = i + 1;
-                flag1++;
-            }
-        }
-        listogramLayout.setPadding(0, 80, 0, 80);
-        ListOwners.add(ListOwners.size(), Integer.parseInt(ownerId));
-        View.OnClickListener disactivateListButtonOnClickListenner = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                disactivateList(groupId, listId, v.getId());
-            }
-        };
-        if(ownerId.equals(userId)) {
-            Button disactivateListButton = new Button(listogramLayout.getContext());
-            disactivateListButton.setClickable(true);
-            if(listActive){
-                disactivateListButton.setText("Disactivate list");
-            }
-            else{
-                disactivateListButton.setClickable(false);
-                disactivateListButton.setFocusable(false);
-                disactivateListButton.setText("Done");
-            }
-            disactivateListButton.setId(DisNumberOfLists + LISTOGRAM_DIS_BUTTON_BIG_NUMBER);
-            disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
-            listogramLayout.addView(disactivateListButton);
-            DisButtons.add(DisButtons.size(), disactivateListButton);
-        }
-        else{
-            DisButtons.add(DisButtons.size(), null);
-        }
-        DisNumberOfLists++;
-        LinearLayout basicLayout;
-        if(type) {
-            basicLayout = (LinearLayout) activeFragment.getView().findViewById(R.id.listogramslayout);
-        }
-        else{
-            basicLayout = (LinearLayout) historyFragment.getView().findViewById(R.id.passedlistogramslayout);
-        }
-        basicLayout.addView(listogramLayout);
-        Lists.add(Lists.size(), Integer.parseInt(listId));
-    }
-    private void disactivateList(String groupId, String listId, int disButtonId){
-        disactivateListTask = new DisactivateListTask(groupId, listId);
-        disactivateListTask.work();
-    }
-    private void makeListogramLine(LinearLayout listogramLayout, LinearLayout.LayoutParams parameters, LinearLayout.LayoutParams itemParameters,
-                                   LinearLayout.LayoutParams commentParameters, LinearLayout.LayoutParams buttonParameters, String item, String comment, boolean active, int itemId, boolean listActive){
-        FrameLayout addingFrameLayout = new FrameLayout(listogramLayout.getContext());
-        addingFrameLayout.setLayoutParams(parameters);
-        addingFrameLayout.setPadding(0, 5, 0, 0);
-        LinearLayout addingLayout = new LinearLayout(listogramLayout.getContext());
-        addingLayout.setBaselineAligned(false);
-        addingLayout.setBackgroundColor(Color.CYAN);
-        addingLayout.setLayoutParams(parameters);
-        addingLayout.setGravity(Gravity.START);
-        addingLayout.setOrientation(LinearLayout.HORIZONTAL);
-        addingLayout.setId(LISTOGRAM_LINE_BIG_NUMBER + NumberOfLines);
-        Layouts1.add(Layouts1.size(), addingLayout);
-        EditText itemName = new EditText(addingLayout.getContext());
-        itemName.setLayoutParams(itemParameters);
-        itemName.setFocusable(false);
-        itemName.setClickable(false);
-        itemName.setBackgroundColor(Color.TRANSPARENT);
-        itemName.setText(item);
-        itemName.setId(LISTOGRAM_ITEM_BIG_NUMBER + NumberOfLines);
-        ListItemsTexts.add(ListItemsTexts.size(), itemName);
-        EditText itemComment = new EditText(addingLayout.getContext());
-        itemComment.setLayoutParams(commentParameters);
-        itemComment.setFocusable(false);
-        itemComment.setClickable(false);
-        itemComment.setBackgroundColor(Color.TRANSPARENT);
-        itemComment.setText(comment);
-        itemComment.setId(LISTOGRAM_COMMENT_BIG_NUMBER + NumberOfLines);
-        ListCommentTexts.add(ListCommentTexts.size(), itemComment);
-        Button groupButton = new Button(addingLayout.getContext());
-        groupButton.setLayoutParams(buttonParameters);
-        groupButton.setGravity(Gravity.CENTER_HORIZONTAL);
-        groupButton.setId(LISTOGRAM_BUTTON_BIG_NUMBER + NumberOfLines);
-        View.OnClickListener ItemMarkButtonListenner = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemMarkButtonTouchedAction((Button) v);
-            }
-        };
-        if(active){
-            groupButton.setText("Needed");
-            if(listActive) {
-                groupButton.setClickable(true);
-                groupButton.setOnClickListener(ItemMarkButtonListenner);
-                groupButton.setBackgroundColor(Color.GREEN);
-            }
-            else
-            {
-                groupButton.setClickable(false);
-                groupButton.setFocusable(false);
-                groupButton.setBackgroundColor(Color.GRAY);
-            }
-            ItemMarks.add(ItemMarks.size(), true);
-        }
-        else{
-            groupButton.setText("Bought");
-            if(listActive) {
-                groupButton.setClickable(true);
-                groupButton.setOnClickListener(ItemMarkButtonListenner);
-                groupButton.setBackgroundColor(Color.BLUE);
-            }
-            else{
-                groupButton.setClickable(false);
-                groupButton.setFocusable(false);
-                groupButton.setBackgroundColor(Color.GRAY);
-            }
-            ItemMarks.add(ItemMarks.size(), false);
-        }
-        Buttons1.add(Buttons1.size(), groupButton);
-        addingLayout.addView(itemName);
-        addingLayout.addView(itemComment);
-        addingLayout.addView(groupButton);
-        addingFrameLayout.addView(addingLayout);
-        listogramLayout.addView(addingFrameLayout);
-        Items.add(Items.size(), itemId);
-        NumberOfLines++;
-    }
-    protected void listsListMaker(String result, boolean type) {
-        int length = result.length();
-        StringBuilder tempNameString = new StringBuilder();
-        StringBuilder tempIdString = new StringBuilder();
-        StringBuilder tempOwnerIdString = new StringBuilder();
-        StringBuilder tempIsActiveString = new StringBuilder();
-        boolean listActive = false;
-        int listogramLineFlag = 0;
-        for (int i = 0, j = 0; i < length; i++) {
-            if (result.codePointAt(i) == INSIDE_DIVIDER && listogramLineFlag % 3 == 0) {
-                tempNameString.setLength(0);
-                tempNameString.append(result.substring(j, i));
-                j = i + 1;
-                listogramLineFlag++;
-            } else if (result.codePointAt(i) == INSIDE_DIVIDER && listogramLineFlag % 3 == 1){
-                tempIdString.setLength(0);
-                tempIdString.append(result.substring(j, i));
-                j = i + 1;
-                listogramLineFlag++;
-            } else if (result.codePointAt(i) == INSIDE_DIVIDER && listogramLineFlag % 3 == 2){
-                tempOwnerIdString.setLength(0);
-                tempOwnerIdString.append(result.substring(j, i));
-                j = i + 1;
-                listogramLineFlag++;
-            } else if (result.codePointAt(i) == LISTS_DIVIDER) {
-                tempIsActiveString.setLength(0);
-                tempIsActiveString.append(result.substring(j, i));
-                if(tempIsActiveString.toString().equals("t")){
-                    listActive = true;
-                }
-                else{
-                    listActive = false;
-                }
-                j = i + 1;
-                listsLayoutDrawer(tempNameString.toString(), tempIdString.toString(), tempOwnerIdString.toString(), listActive, type);
-            }
+    protected void showGood(SList[] result){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.activeFragmentCleaner();
+            activeFragment.fragmentShowGood(result);
+            activeFragment.setRefresherNotRefreshing();
         }
     }
-    private void onItemMarkButtonTouchedAction(Button button){
-        int id = button.getId() - LISTOGRAM_BUTTON_BIG_NUMBER;
-        int itemId = Items.get(id);
-        LinearLayout itemLayout = (LinearLayout) button.getParent().getParent().getParent();
-        int listId = itemLayout.getId() - LISTOGRAM_BIG_NUMBER;
-        button.setClickable(false);
-        button.setFocusable(false);
-        button.setGravity(Gravity.END);
-        itemMarkTask = new ItemMarkTask (userId, String.valueOf(itemId), String.valueOf(Lists.get(listId)), "itemmark", groupId);
-        itemMarkTask.work();
+    protected void showBad(SList[] result){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.activeFragmentCleaner();
+            activeFragment.fragmentShowBad(result);
+            activeFragment.setRefresherNotRefreshing();
+        }
+    }
+    protected void showSecondGood(SList result){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowSecondGood(result);
+        }
+    }
+    protected void showSecondBad(SList result){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowSecondBad(result);
+        }
+    }
+    protected void showThirdGood(Item result){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowThirdGood(result);
+        }
+    }
+    protected void showThirdBad(Item result){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowThirdBad(result);
+        }
+    }
+    protected void showItemmarkProcessing(Item item){
+        if(activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowProcessing(item);
+        }
     }
 
     public void sendListogram(){
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
-        intent.putExtra("name", groupName.toString());
-        intent.putExtra("groupid", groupId.toString());
-        intent.putExtra("userid", userId.toString());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.putExtra("loadtype", true);
         startActivity(intent);
     }
 
@@ -494,26 +346,6 @@ public class Group2Activity extends WithLoginActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
-        }
-    }
-    private class ListogramsGetter extends FirstLoginAttemptTask{
-        ListogramsGetter(String groupId){
-            super(groupId, "gettinglistograms", "3", "0");
-        }
-    }
-    private class HistoryGetter extends FirstLoginAttemptTask{
-        HistoryGetter(String groupId){
-            super(groupId, "gettinghistory", "3", "3");
-        }
-    }
-    private class ItemMarkTask extends FirstLoginAttemptTask {
-        ItemMarkTask(String userId, String itemIdAndGroupId,  String third, String action, String groupId){
-            super(userId, itemIdAndGroupId, third, action, "3", "1", groupId);
-        }
-    }
-    private class DisactivateListTask extends FirstLoginAttemptTask {
-        DisactivateListTask(String groupId, String listId){
-            super(groupId, listId, userId, "disactivatelist", "3", "2");
         }
     }
 }

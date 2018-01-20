@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.vovch.listogram_20.GroupButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+</com.example.vovch.listogram_20.GroupButton>

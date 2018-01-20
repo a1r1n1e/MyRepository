@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.vovch.listogram_20.Group2Activity"
     android:orientation="vertical"
+    android:layout_gravity="top"
     android:gravity="bottom"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.85"
-        android:layout_marginLeft="0dp"
-        android:layout_marginStart="0dp"
-        android:scrollbars="none"
-        android:layout_marginBottom="0dp"
-        android:id="@+id/grouphistoryscroll"
-        android:focusable="false">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:orientation="vertical"
-            android:id="@+id/passedlistogramslayout">
-        </LinearLayout>
-    </ScrollView>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.15"
-        android:id="@+id/loadhistorybutton"
-        android:text="Get History"/>
+        android:layout_height="match_parent"
+        android:id="@+id/group_history_fragment_refresher">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:scrollbars="none"
+                android:layout_marginBottom="0dp"
+                android:id="@+id/grouphistoryscroll"
+                android:focusable="false">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="top"
+                    android:orientation="vertical"
+                    android:id="@+id/passedlistogramslayout">
+                </LinearLayout>
+            </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

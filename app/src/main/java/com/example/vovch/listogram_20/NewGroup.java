@@ -3,6 +3,7 @@ package com.example.vovch.listogram_20;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -14,15 +15,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class NewGroup extends WithLoginActivity {
-    private NewGroup.CheckUserTask chTask;
-    private NewGroup.NewGroupMakerTask ngTask;
-    protected int ADDED_USERS_BIG_NUMBER = 400000;
-    protected int NumberOfLines = 0;
-    private int newGroupId;
-    private String userId;
+    private ArrayList<AddingUser> AddingUsers = new ArrayList<>();
     private String groupName;
     protected boolean stepOneDone = false;
-    protected ArrayList <Integer> AddedUsersIds = new ArrayList<>();
     private ActiveActivityProvider provider;
 
     @Override
@@ -33,10 +28,10 @@ public class NewGroup extends WithLoginActivity {
         provider.setActiveActivity(5, NewGroup.this);
 
         setContentView(R.layout.activity_new_group);
-        userId = getIntent().getExtras().getString("userId");
-        AddedUsersIds.add(AddedUsersIds.size(), Integer.parseInt(userId));
+
+        provider.addUserToGroup(String.valueOf(provider.userSessionData.getId()), "NewGroup");
+
         Button addUserButton = (Button)findViewById(R.id.newgroupadduserbutton);
-        addUserButton.setClickable(true);
         View.OnClickListener addUserButtonListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,7 +40,6 @@ public class NewGroup extends WithLoginActivity {
         };
         addUserButton.setOnClickListener(addUserButtonListenner);
         Button confirmGroupAdding = (Button)findViewById(R.id.newgroupsubmitbutton);
-        confirmGroupAdding.setClickable(true);
         View.OnClickListener confirmListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,27 +51,40 @@ public class NewGroup extends WithLoginActivity {
     @Override
     protected void onResume(){
         super.onResume();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(5, NewGroup.this);
     }
     @Override
-    protected void onPause(){
-        provider.nullActiveActivity();
-        super.onPause();
+    protected void onStop(){
+        if(provider.getActiveActivityNumber() == 5) {
+            provider.nullActiveActivity();
+        }
+        super.onStop();
     }
     @Override
     public void onBackPressed(){
-        provider.nullActiveActivity();
+        if(provider.getActiveActivityNumber() == 5) {
+            provider.nullActiveActivity();
+        }
+        provider.clearNewGroupPossibleMembers();
         Intent intent = new Intent(NewGroup.this, GroupList2Activity.class);
-        intent.putExtra("userId", userId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         this.finish();
     }
     private void addUser(){
-        int id = getAddingUserId();
-        if(id != -1) {
+        String id = getAddingUserId();
+        if(id != null) {
             boolean userAlreadyAdded = false;
-            if (AddedUsersIds.contains(id)) {
+            if (provider.checkUser(id)) {
                 userAlreadyAdded = true;
             }
             if (userAlreadyAdded) {
@@ -92,50 +99,62 @@ public class NewGroup extends WithLoginActivity {
             erView.setText("Enter Any User Id");
         }
     }
-    private int getAddingUserId(){
+    private String getAddingUserId(){
         String value;
-        TextView newUserIdTextView = (TextView)findViewById(R.id.newgroupnewuseridtextview);
+        TextView newUserIdTextView = (TextView)findViewById(R.id.new_user_id_edittext);
         value = newUserIdTextView.getText().toString();
+        String id;
         if(!value.equals("") && android.text.TextUtils.isDigitsOnly(value)) {
-            int id = Integer.parseInt(newUserIdTextView.getText().toString());
-            return id;
+            id = newUserIdTextView.getText().toString();
         }
         else{
-            return -1;
+            id = null;
         }
+        return id;
     }
-    private void checkUser(int id){
-        chTask = new CheckUserTask(String.valueOf(id), "checkuser");
-        chTask.work();
+    private void checkUser(String id){
+        provider.addUserToGroup(id, "NewGroup");
     }
-    protected void addNewUserToArray(String name){
-        TextView newUserTextView = (TextView) findViewById(R.id.newgroupnewuseridtextview);
-        AddedUsersIds.add(AddedUsersIds.size(), Integer.parseInt(newUserTextView.getText().toString()));
-    }
-    protected void drawnewUserLayout(String name){
+    protected void drawnewUserLayout(AddingUser user){
         int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         LinearLayout.LayoutParams addedUserButtonParameters = new LinearLayout.LayoutParams(matchParent, 180);
-        LinearLayout addingUsersLayout = (LinearLayout) findViewById(R.id.newgroupaddeduserslayout) ;
-        Button newUserButton = new Button(addingUsersLayout.getContext());
+        LinearLayout addingUsersLayout = (LinearLayout) findViewById(R.id.group_members_linear_layout) ;
+        UserButton newUserButton = new UserButton(addingUsersLayout.getContext());
         newUserButton.setLayoutParams(addedUserButtonParameters);
         newUserButton.setGravity(Gravity.CENTER_HORIZONTAL);
-        newUserButton.setText(name);
-        newUserButton.setId(ADDED_USERS_BIG_NUMBER + NumberOfLines);
-
-        NumberOfLines++;
+        newUserButton.setText(user.getUserName());
+        user.setButton(newUserButton);
         newUserButton.setLongClickable(true);
         View.OnLongClickListener addedUserListenner = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                int id = v.getId();
-                AddedUsersIds.remove(findViewById(id));
-                AddedUsersIds.trimToSize();
-                findViewById(id).setVisibility(View.GONE);
-                return false;
+                UserButton button = (UserButton) v;
+                provider.removeAddedUser(button.getUser(), "NewGroup");
+                return  false;
             }
         };
         newUserButton.setOnLongClickListener(addedUserListenner);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            newUserButton.setBackground(getDrawable(R.color.elementLayoutColor2));
+        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            newUserButton.setBackground(getResources().getDrawable(R.color.elementLayoutColor2));
+        } else{
+            newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor2));
+        }
+        newUserButton.setUser(user);
         addingUsersLayout.addView(newUserButton);
+    }
+    protected void showRemoveUserGood(AddingUser user){
+        Button button = (Button) user.getButton();
+        button.setVisibility(View.GONE);
+    }
+    protected void showRemoveUserBad(AddingUser user){                                                  //TODO ?
+
+    }                                               //TODO ?
+    private void nullUserIdEditText(){
+        EditText edit = (EditText) findViewById(R.id.new_user_id_edittext) ;
+        edit.setHint(edit.getText());
+        edit.setText("");
     }
     protected void confirmAdding(){
         EditText eText = (EditText)findViewById(R.id.newgroupnameview);
@@ -149,50 +168,25 @@ public class NewGroup extends WithLoginActivity {
         }
     }
     protected void addGroup(String name){
-        String usersString = makeUsersString();
-        ngTask = new NewGroupMakerTask(name, usersString, "newgroup");
-        ngTask.work();
+        provider.addNewGroup(name);
     }
-    protected String makeUsersString(){
-        StringBuilder result = new StringBuilder("");
-        for(int i = 0;i < AddedUsersIds.size();i++){
-            result.append(AddedUsersIds.get(i).toString() + '\0');
-        }
-        return result.toString();
-    }
-    protected void setGroupId(int id){
-        newGroupId = id;
-    }
-    protected void showGood(String result){
-        setGroupId(Integer.parseInt(result));
+    protected void showGood(UserGroup result){
         Intent intent = new Intent(NewGroup.this, Group2Activity.class);
-        intent.putExtra("groupid", String.valueOf(newGroupId));
-        EditText groupNameEditText = (EditText)findViewById(R.id.newgroupnameview);
-        intent.putExtra("name", groupNameEditText.getText().toString());
-        intent.putExtra("userid", userId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        provider.setActiveGroup(result);
         startActivity(intent);
     }
-    protected void showBad(String result){
+    protected void showBad(UserGroup result){
 
     }
-    protected void showUserCheckGood(String result){
-        addNewUserToArray(result);
+    protected void showUserCheckGood(AddingUser result){
+        nullUserIdEditText();
         drawnewUserLayout(result);
     }
-    protected void showUserCheckBad(String result){
+    protected void showUserCheckBad(AddingUser result){
+        nullUserIdEditText();
         TextView tView = (TextView)findViewById(R.id.newgrouperrorreporter);
-        tView.setText(result);
-    }
-    protected class CheckUserTask extends FirstLoginAttemptTask{
-        CheckUserTask(String username, String action){
-            super(username, " ", action, "5", "0");
-        }
-    }
-    protected class NewGroupMakerTask extends FirstLoginAttemptTask{
-        NewGroupMakerTask(String username, String userpassword, String action){
-            super(username, userpassword, action, "5", "1");
-            stepOneDone = true;
-        }
+        tView.setText("No Such User(");
     }
 }
 

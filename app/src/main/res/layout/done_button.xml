@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.vovch.listogram_20.DisactivateImageButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:clickable="true"
+    android:layout_marginBottom="0dp"
+    android:paddingTop="0dp"
+    android:background="@android:color/white"
+    >
+</com.example.vovch.listogram_20.DisactivateImageButton>

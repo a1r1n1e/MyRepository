@@ -2,70 +2,91 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.vovch.listogram_20.CreateListogramActivity">
+    tools:context="com.example.vovch.listogram_20.CreateListogramActivity"
+    android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="0dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <ScrollView
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:background="@color/elementLayoutColor1">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_marginLeft="8dp"
-                android:id="@+id/createlistogramscrollview"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                android:scrollbars="none"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_alignParentTop="true">
-                <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/createlistogramdownbuttoncardview"
+                android:orientation="vertical">
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/creatinglistogrampunctlistcontainer">
+                    android:layout_marginLeft="0dp"
+                    android:id="@+id/createlistogramscrollview"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:scrollbars="none"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginBottom="0dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="top"
                         android:orientation="vertical"
-                        android:id="@+id/listogrampunctslayout">
+                        android:id="@+id/creatinglistogrampunctlistcontainer">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="4dp"
+                            android:id="@+id/listogrampunctslayout">
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-            <Button
+                </ScrollView>
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addlistogrampunct"
-                android:text="Add A Punct" />
-        </LinearLayout>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:id="@+id/listogramsenddownbutton"
-            android:layout_alignParentBottom="true"
-            android:text="Send A Listogram"
-            />
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
+                android:foreground="?attr/selectableItemBackground"
+                card_view:cardUseCompatPadding="false"
+                card_view:contentPaddingLeft="4dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:contentPaddingBottom="4dp"
+                card_view:contentPaddingRight="4dp"
+                card_view:contentPaddingTop="4dp"
+                card_view:cardElevation="1dp"
+                android:id="@+id/createlistogramdownbuttoncardview"
+                android:layout_alignParentBottom="true">
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="96dp"
+                        android:background="@android:color/white">
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/listogramsenddownbutton"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/confirm_button_96"/>
+                    </FrameLayout>
+            </android.support.v7.widget.CardView>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

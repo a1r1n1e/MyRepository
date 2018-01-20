@@ -1,32 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.vovch.listogram_20.RegistrationActivity">
+    android:id="@+id/registration_page_layout"
+    tools:context="com.example.vovch.listogram_20.ActiveListsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/textview2"
+            android:id="@+id/registration_error_textview"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:textSize="25sp"
+            android:visibility="visible"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:id="@+id/edittext3"/>
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:hint="Enter Login"
+            android:id="@+id/registration_login"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:id="@+id/edittext4"/>
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:hint="EnterPassword"
+            android:id="@+id/registration_pasword"/>
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/registration_button"
             android:layout_width="match_parent"
             android:layout_height="78dp"
-            android:text="Confirm" />
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Confirm"
+            android:textAllCaps="false"
+            android:textSize="30sp"
+            android:textColor="@color/whoBuysGray"
+            android:background="@color/whoBuysGreen"/>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

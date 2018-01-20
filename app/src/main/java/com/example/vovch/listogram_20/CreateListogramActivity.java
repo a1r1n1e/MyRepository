@@ -1,36 +1,67 @@
 package com.example.vovch.listogram_20;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.text.Selection;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class CreateListogramActivity extends WithLoginActivity {
-    private CreateListogramActivity.SendListogramTask slTask;
-    protected static ArrayList<LinearLayout> AddedLayouts = new ArrayList<>();
-    protected static ArrayList <EditText> Items = new ArrayList<>();
-    protected static ArrayList <EditText> Komments = new ArrayList<>();
-    protected static ArrayList <Button> Buttons = new ArrayList<>();
-    protected static SharedPreferences loginPasswordPair;
-    private int NumberOfLines = 0;
-    private static final int sGravity = Gravity.START;
-    private int PUNCT_LAYOUTS_BIG_NUMBER = 1000000;
-    private int PUNCT_ITEMS_BIG_NUMBER = 2000000;
-    private int PUNCT_KOMMENTS_BIG_NUMBER = 3000000;
-    private int PUNCT_BUTTONS_BIG_NUMBER = 4000000;
+    protected ArrayList<TempItem> TempItems = new ArrayList<>();
     private String groupName;
     private String groupId;
-    private String userId;
     private ActiveActivityProvider provider;
+
+    private boolean loadType;
+
+    TextView.OnEditorActionListener editorListenerOne = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_GO || actionId ==EditorInfo.IME_ACTION_UNSPECIFIED) {
+                CreateListEditText currentEditText = (CreateListEditText) v;
+                CreateListEditText nextEditText = currentEditText.getTempItem().getItemCommentEditText();
+                Selection.setSelection(nextEditText.getText(), nextEditText.getSelectionStart());
+                nextEditText.requestFocus();
+                return true;
+            }
+            else {
+                return true;
+            }
+        }
+    };
+    TextView.OnEditorActionListener editorListenerTwo = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                CreateListEditText createListEditText = (CreateListEditText) v;
+                TempItem item = createListEditText.getTempItem();
+                int number = TempItems.indexOf(item);
+                if(number >= TempItems.size() - 1) {
+                    createPunct(null);
+                }
+                CreateListEditText nextEditText =  TempItems.get(number + 1).getNameEditText();
+                Selection.setSelection(nextEditText.getText(), nextEditText.getSelectionStart());
+                nextEditText.requestFocus();
+                return true;
+            }
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,30 +71,31 @@ public class CreateListogramActivity extends WithLoginActivity {
         provider.setActiveActivity(6, CreateListogramActivity.this);
 
         setContentView(R.layout.activity_create_listogram);
-        groupName = getIntent().getExtras().getString("name");                                  //получаем данные о группе
-        groupId = getIntent().getExtras().getString("groupid");
-        userId = getIntent().getExtras().getString("userid");
 
-        View.OnClickListener addPunctListenner = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createPunct();
-                scrollToEnd();
+        loadType = getIntent().getExtras().getBoolean("loadtype");                                      //gettitg information what type of activity is our invoker
+
+        if(loadType){
+            UserGroup currentGroup = provider.getActiveGroup();
+            if(currentGroup != null){
+                groupId = currentGroup.getId();
+                groupName = currentGroup.getName();
             }
-        };
+        }
+
         View.OnClickListener sendListagramListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendListogram();
             }
         };
-        Button sendListogramButton = (Button)findViewById(R.id.listogramsenddownbutton);
+        ImageButton sendListogramButton = (ImageButton) findViewById(R.id.listogramsenddownbutton);
         sendListogramButton.setOnClickListener(sendListagramListener);
-        Button addPunctButton = (Button) findViewById(R.id.addlistogrampunct);
-        addPunctButton.setClickable(true);
-        addPunctButton.setOnClickListener(addPunctListenner);
-        createPunct();
         scrollToEnd();
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        getAndShowTempItemsState();
     }
     @Override
     protected void onResume(){
@@ -73,26 +105,37 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
     @Override
     protected void onPause(){
-        provider.nullActiveActivity();
-        clearer();
         super.onPause();
+    }
+    @Override
+    protected void onStop(){
+        if(provider.getActiveActivityNumber() == 6) {
+            provider.nullActiveActivity();
+        }
+        saveTempItemsState();
+        clearer();
+        super.onStop();
     }
     @Override
     public void onBackPressed(){
         clearer();
-        Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        intent.putExtra("name", groupName);
-        intent.putExtra("groupid", groupId);
-        intent.putExtra("userid", userId);
+        if(provider.getActiveActivityNumber() == 6) {
+            provider.nullActiveActivity();
+        }
+        Intent intent;
+        if(loadType) {
+            intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+        }
+        else{
+            intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
+        }
         startActivity(intent);
-        this.finish();
+        CreateListogramActivity.this.finish();
     }
     private void clearer(){
-        Items.clear();
-        Komments.clear();
-        AddedLayouts.clear();
-        Buttons.clear();
-        NumberOfLines = 0;
+        LinearLayout layout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
+        layout.removeAllViewsInLayout();
+        TempItems.clear();
     }
     private void scrollToEnd(){
         getScrollView().post(new Runnable() {
@@ -106,111 +149,129 @@ public class CreateListogramActivity extends WithLoginActivity {
         ScrollView scrView = (ScrollView) findViewById(R.id.createlistogramscrollview);
         return scrView;
     }
-    protected void createPunct(){
+    protected void createPunct(TempItem tempItem){
         LinearLayout listogramContainerLayout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
-        int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
-        LinearLayout.LayoutParams layoutParameters = new LinearLayout.LayoutParams(matchParent, 180);
-        LinearLayout.LayoutParams itemNameParameters = new LinearLayout.LayoutParams(300, matchParent);
-        LinearLayout.LayoutParams itemKommentParameters = new LinearLayout.LayoutParams(300, matchParent);
-        LinearLayout.LayoutParams buttonParameters = new LinearLayout.LayoutParams(300, matchParent);
-        layoutParameters.gravity = sGravity;
-        itemNameParameters.gravity = sGravity;
-        itemKommentParameters.gravity = sGravity;
-        buttonParameters.gravity = sGravity;
-        LinearLayout addingListogramLayout = new LinearLayout(listogramContainerLayout.getContext());
-        addingListogramLayout.setLayoutParams(layoutParameters);
-        addingListogramLayout.setOrientation(LinearLayout.HORIZONTAL);
-        addingListogramLayout.setId(PUNCT_LAYOUTS_BIG_NUMBER + NumberOfLines);
-        AddedLayouts.add(AddedLayouts.size(), addingListogramLayout);
-        EditText itemNameEditText = new EditText(addingListogramLayout.getContext());
-        itemNameEditText.setLayoutParams(itemNameParameters);
-        itemNameEditText.setHint("Enter Item Name");
-        itemNameEditText.setClickable(true);
-        itemNameEditText.setId(PUNCT_ITEMS_BIG_NUMBER + NumberOfLines);
-        addingListogramLayout.addView(itemNameEditText);
-        Items.add(Items.size(), itemNameEditText);
-        EditText itemKommentEditText = new EditText(addingListogramLayout.getContext());
-        itemKommentEditText.setLayoutParams(itemNameParameters);
-        itemKommentEditText.setHint("Enter Any Komment You Like");
-        itemKommentEditText.setClickable(true);
-        itemKommentEditText.setId(PUNCT_KOMMENTS_BIG_NUMBER + NumberOfLines);
-        addingListogramLayout.addView(itemKommentEditText);
-        Komments.add(Komments.size(), itemKommentEditText);
-        Button addingButton = new Button(addingListogramLayout.getContext());
-        addingButton.setLayoutParams(buttonParameters);
-        addingButton.setId(PUNCT_BUTTONS_BIG_NUMBER + NumberOfLines);
-        addingButton.setText("Delete Item");
-        View.OnLongClickListener deleteListenner = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                int id = v.getId() - PUNCT_BUTTONS_BIG_NUMBER;
-                AddedLayouts.remove(findViewById(id + PUNCT_LAYOUTS_BIG_NUMBER));
-                AddedLayouts.trimToSize();
-                Items.remove(findViewById(id + PUNCT_ITEMS_BIG_NUMBER));
-                Items.trimToSize();
-                Komments.remove(findViewById(id + PUNCT_KOMMENTS_BIG_NUMBER));
-                Komments.trimToSize();
-                Buttons.remove(findViewById(id + PUNCT_BUTTONS_BIG_NUMBER));
-                Buttons.trimToSize();
-                findViewById(id + PUNCT_LAYOUTS_BIG_NUMBER).setVisibility(View.GONE);
-                findViewById(id + PUNCT_BUTTONS_BIG_NUMBER).setVisibility(View.GONE);
-                findViewById(id + PUNCT_ITEMS_BIG_NUMBER).setVisibility(View.GONE);
-                findViewById(id + PUNCT_KOMMENTS_BIG_NUMBER).setVisibility(View.GONE);
-                LinearLayout removingLayout = (LinearLayout) findViewById(id + PUNCT_LAYOUTS_BIG_NUMBER);
-                removingLayout.removeView(findViewById(id + PUNCT_LAYOUTS_BIG_NUMBER));
-                removingLayout.removeView(findViewById(id + PUNCT_BUTTONS_BIG_NUMBER));
-                removingLayout.removeView(findViewById(id + PUNCT_ITEMS_BIG_NUMBER));
-                removingLayout.removeView(findViewById(id + PUNCT_KOMMENTS_BIG_NUMBER));
-                LinearLayout parent = (LinearLayout) findViewById(R.id.creatinglistogrampunctlistcontainer);
-                parent.removeView(removingLayout);
-                return true;
-            }
-        };
-        addingButton.setFocusable(true);
-        addingButton.setLongClickable(true);
-        addingButton.setClickable(true);
-        addingButton.setOnLongClickListener(deleteListenner);
-        addingListogramLayout.addView(addingButton);
-        Buttons.add(Buttons.size(), addingButton);
-        listogramContainerLayout.addView(addingListogramLayout);
-        NumberOfLines++;
-    }
-    protected String makeSendingString(){
-        StringBuilder result = new StringBuilder("");
-        EditText eText1;
-        EditText eText2;
-        for(int i = 0;i < Items.size();i++){
-            eText1 = Items.get(i);
-            eText2 = Komments.get(i);
-            result.append(eText1.getText().toString() + "%");
-            result.append(eText2.getText().toString() + "%");
+        CardView cardView;
+        if(tempItem == null) {
+            tempItem = new TempItem();
+            cardView = (CardView) LayoutInflater.from(listogramContainerLayout.getContext()).inflate(R.layout.list_card, listogramContainerLayout, false);
+            LinearLayout addingListogramLayout = (LinearLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.list_element_linear_layout, cardView, false);
+            CreateListEditText itemNameEditText;
+            itemNameEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
+            itemNameEditText.setHint("Name");
+            itemNameEditText.setTempItem(tempItem);
+            itemNameEditText.setOnEditorActionListener(editorListenerOne);
+            addingListogramLayout.addView(itemNameEditText);
+            CreateListEditText itemKommentEditText;
+            itemKommentEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
+            itemKommentEditText.setHint("Comment");
+            itemKommentEditText.setTempItem(tempItem);
+            itemKommentEditText.setOnEditorActionListener(editorListenerTwo);
+            addingListogramLayout.addView(itemKommentEditText);
+            ItemButton addingButton = (ItemButton) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_element_right_side_button, addingListogramLayout, false);
+            addingButton.setText("Delete");
+            View.OnLongClickListener deleteListenner = new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    deletePunct((ItemButton) v);
+                    return false;
+                }
+            };
+            addingButton.setFocusable(true);
+            addingButton.setLongClickable(true);
+            addingButton.setClickable(true);
+            addingButton.setOnLongClickListener(deleteListenner);
+            addingListogramLayout.addView(addingButton);
+            cardView.addView(addingListogramLayout);
+            tempItem.setButton(addingButton);
+            tempItem.setItemNameEditText(itemNameEditText);
+            tempItem.setItemCommentEditText(itemKommentEditText);
+            tempItem.setCardView(cardView);
+            TempItems.add(tempItem);
+            addingButton.setTempItem(tempItem);
         }
-        clearer();
-        return result.toString();
+        else{
+            cardView = tempItem.getCardView();
+            tempItem.getNameEditText().setOnEditorActionListener(editorListenerOne);
+            tempItem.getItemCommentEditText().setOnEditorActionListener(editorListenerTwo);
+            cardView.setVisibility(View.VISIBLE);
+            tempItem.setCardView(cardView);
+            TempItems.add(tempItem);
+        }
+        listogramContainerLayout.addView(cardView);
+    }
+    protected void deletePunct(ItemButton button){
+        int i = 0;
+        if(button.getTempItem() != null){
+            TempItem tempItem = button.getTempItem();
+            tempItem.getCardView().setVisibility(View.GONE);
+            TempItems.remove(tempItem);
+            TempItems.trimToSize();
+            saveTempItemsState();
+        }
+    }
+    protected void saveTempItemsState(){
+        TempItem[] tempItems = new TempItem[TempItems.size()];
+        if(tempItems.length > -1) {
+            tempItems = TempItems.toArray(tempItems);
+            provider.saveTempItems(tempItems);
+        }
+    }
+    protected void getAndShowTempItemsState(){
+        TempItem[] tempItems;
+        tempItems = provider.getTempItems();
+        int length = tempItems.length;
+        for(int i = 0; i < length; i++){
+            createPunct(tempItems[i]);
+        }
+        if(length == 0){
+            createPunct(null);
+        }
+    }
+    protected Item[] makeSendingItemsArray(){
+        Item[] items = new Item[TempItems.size()];
+        Item tempItem;
+        StringBuilder eText1 = new StringBuilder("");
+        StringBuilder eText2 = new StringBuilder("");
+        for(int i = 0;i < TempItems.size();i++){
+            eText1.append(TempItems.get(i).getNameEditText().getText().toString());
+            eText2.append(TempItems.get(i).getItemCommentEditText().getText().toString());
+
+            tempItem = new Item(eText1.toString(), eText2.toString(), true);
+
+            eText1.setLength(0);
+            eText2.setLength(0);
+            items[i] = tempItem;
+        }
+        return items;
     }
     protected void sendListogram(){
-        String listogram = makeSendingString();
-        StringBuilder idString = new StringBuilder(userId);
-        idString.append("%");
-        idString.append(groupId);
-        slTask = new SendListogramTask(userId, groupId, listogram, "sendlistogram");
-        slTask.work();
+        Item[] items = makeSendingItemsArray();
+        if(loadType) {
+            provider.createOnlineListogram(groupId, items);
+        }
+        else{
+            provider.createListogramOffline(items);
+        }
     }
 
     protected void showGood(){
+        TempItems.clear();
+        TempItems.trimToSize();
         Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        intent.putExtra("name", groupName);
-        intent.putExtra("groupid", groupId);
-        intent.putExtra("userid", userId);
         startActivity(intent);
     }
-    protected void showBad(String result){
+    protected void showBad(){
 
     }
+    protected void showAddListOfflineGood(){
+        TempItems.clear();
+        TempItems.trimToSize();
+        Intent intent;
+        intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
+        startActivity(intent);
+    }
+    protected void showAddListOfflineBad(){
 
-    protected class SendListogramTask extends FirstLoginAttemptTask{
-        SendListogramTask(String username, String userpassword, String third, String action){
-            super(username, third, userpassword, action, "6", "0");
-        }
     }
 }

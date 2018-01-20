@@ -7,4 +7,5 @@
 
     <string name="action_settings">Settings</string>
     <string name="group_down_button_string">Send New List</string>
+    <string name="title_activity_group_settings">GroupSettingsActivity</string>
 </resources>

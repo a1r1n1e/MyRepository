@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:focusable="false"
+    android:clickable="false"
+    android:layout_gravity="center_vertical"
+    android:layout_weight="0.4"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="@android:color/transparent"
+    android:textSize="20sp"
+    android:visibility="visible">
+</TextView>
