@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.vovch.listogram_20.GroupList2Activity"
+    tools:context="com.example.vovch.listogram_20.activities.simple.GroupList2Activity"
     android:background="@color/elementLayoutColor1">
 
     <android.support.design.widget.TabLayout

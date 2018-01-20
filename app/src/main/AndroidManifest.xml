@@ -14,21 +14,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WithLoginActivity" />
+        <activity android:name=".activities.WithLoginActivity" />
         <activity
-            android:name=".GroupList2Activity"
+            android:name=".activities.simple.GroupList2Activity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".Group2Activity"
+            android:name=".activities.complex.Group2Activity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".NewGroup"
+            android:name=".activities.simple.NewGroup"
             android:theme="@style/AppTheme.NoActionBarExtended"/>
         <activity
-            android:name=".CreateListogramActivity"
+            android:name=".activities.simple.CreateListogramActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".ActiveListsActivity"
+            android:name=".activities.complex.ActiveListsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,15 +37,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GroupSettingsActivity"
+            android:name=".activities.simple.GroupSettingsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended"/>
-        <service android:name=".ActiveCheckFirebaseInstanceIDService">
+        <service android:name=".data_layer.firebase.ActiveCheckFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".ActiveCheckAndroidFirebaseMsgService"
+            android:name=".data_layer.firebase.ActiveCheckAndroidFirebaseMsgService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

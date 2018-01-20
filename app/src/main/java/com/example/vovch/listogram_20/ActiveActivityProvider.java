@@ -4,13 +4,41 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.nfc.NfcAdapter;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.ImageButton;
 
-import com.google.firebase.messaging.RemoteMessage;
+import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
+import com.example.vovch.listogram_20.activities.simple.CreateListogramActivity;
+import com.example.vovch.listogram_20.activities.complex.Group2Activity;
+import com.example.vovch.listogram_20.activities.simple.GroupList2Activity;
+import com.example.vovch.listogram_20.activities.simple.GroupSettingsActivity;
+import com.example.vovch.listogram_20.activities.simple.NewGroup;
+import com.example.vovch.listogram_20.data_layer.DataExchanger;
+import com.example.vovch.listogram_20.data_layer.UserSessionData;
+import com.example.vovch.listogram_20.data_layer.async_tasks.ActiveListsInformerTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.AddUserTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.GroupActiveGetterTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.GroupChangeConfirmTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.GroupDataSetterTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.GroupHistoryGetterTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.GroupLeaverTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.GroupsGetterTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.LoginnerTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.NewDataBaseTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.NewGroupAdderTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.OfflineCreateListTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.OfflineDisactivateTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.OfflineItemmarkTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineCreateListogramTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineDisactivateTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineItemmarkTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.RegistrationTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.RemoveAddedUserTask;
+import com.example.vovch.listogram_20.data_types.AddingUser;
+import com.example.vovch.listogram_20.data_types.Item;
+import com.example.vovch.listogram_20.data_types.ListInformer;
+import com.example.vovch.listogram_20.data_types.SList;
+import com.example.vovch.listogram_20.data_types.TempItem;
+import com.example.vovch.listogram_20.data_types.UserGroup;
 
 /**
  * Created by vovch on 09.11.2017.
@@ -30,31 +58,31 @@ public class ActiveActivityProvider extends Application {
         dataExchanger = DataExchanger.getInstance(ActiveActivityProvider.this);
         userSessionData = UserSessionData.getInstance(ActiveActivityProvider.this);
     }
-    protected Context getActiveActivity(){
+    public Context getActiveActivity(){
         return activeActivity;
     }
-    protected void setActiveActivity(int whichOne, Context context){
+    public void setActiveActivity(int whichOne, Context context){
         activeActivity = context;
         activeActivityNumber = whichOne;
     }
-    protected void setActiveGroup(UserGroup newActiveGroup){
+    public void setActiveGroup(UserGroup newActiveGroup){
         activeGroup = newActiveGroup;
     }
-    protected UserGroup getActiveGroup(){
+    public UserGroup getActiveGroup(){
         return activeGroup;
     }
-    protected void nullActiveActivity(){
+    public void nullActiveActivity(){
         activeActivity = null;
         activeActivityNumber = -1;
     }
-    protected int getActiveActivityNumber(){
+    public int getActiveActivityNumber(){
         return  activeActivityNumber;
     }
 
 
 
 
-    protected void tryToLoginFromPrefs(){
+    public void tryToLoginFromPrefs(){
         boolean prefCheck = false;
         boolean internetCheck = false;
         if(userSessionData.isAnyPrefsData()){
@@ -73,44 +101,44 @@ public class ActiveActivityProvider extends Application {
             activeListsNoInternet();
         }
     }
-    protected void activeListsNoInternet(){
+    public void activeListsNoInternet(){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.noInternet();
         }
     }
-    protected void tryToLoginFromForms(String login, String password){
+    public void tryToLoginFromForms(String login, String password){
         tryToLoginWeb(login, password);
     }
-    protected void tryToLoginWeb(String login, String password){
+    public void tryToLoginWeb(String login, String password){
         LoginnerTask loginnerTask = new LoginnerTask();
         loginnerTask.setApplicationContext(ActiveActivityProvider.this);
         loginnerTask.execute(login, password);
     }
-    protected void badLoginTry(String result){
+    public void badLoginTry(String result){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.onLoginFailed(result);
         }
     }
-    protected void goodLoginTry(String result){
+    public void goodLoginTry(String result){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.loginToActiveFragmentChange();
         }
     }
-    protected void registrationTry(String login, String password){
+    public void registrationTry(String login, String password){
         RegistrationTask registrationTask = new RegistrationTask();
         registrationTask.setApplicationContext(ActiveActivityProvider.this);
         registrationTask.execute(login, password);
     }
-    protected void goodRegistrationTry(String result){
+    public void goodRegistrationTry(String result){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.registrationToActiveListsOnlineFragmentChange();
         }
     }
-    protected void badRegistrationTry(String result){
+    public void badRegistrationTry(String result){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.badRegistrationTry(result);
@@ -121,22 +149,22 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void startOfflineGetterDatabaseTask(boolean type){
+    public void startOfflineGetterDatabaseTask(boolean type){
         NewDataBaseTask newDataBaseTask = new NewDataBaseTask();
         newDataBaseTask.setApplicationContext(ActiveActivityProvider.this);
         newDataBaseTask.execute(String.valueOf(type));
     }
-    protected void activeActivityDisactivateList(SList list){
+    public void activeActivityDisactivateList(SList list){
         OfflineDisactivateTask offlineDisactivateTask = new OfflineDisactivateTask();
         offlineDisactivateTask.setApplicationContext(ActiveActivityProvider.this);
         offlineDisactivateTask.execute(list);
     }
-    protected void activeListsItemmark(Item item){
+    public void activeListsItemmark(Item item){
         OfflineItemmarkTask offlineItemmarkTask = new OfflineItemmarkTask();
         offlineItemmarkTask.setApplicationContext(ActiveActivityProvider.this);
         offlineItemmarkTask.execute(item);
     }
-    protected void createListogramOffline(Item[] items){
+    public void createListogramOffline(Item[] items){
         OfflineCreateListTask offlineCreateListTask = new OfflineCreateListTask();
         offlineCreateListTask.setApplicationContext(ActiveActivityProvider.this);
         offlineCreateListTask.execute(items);
@@ -145,18 +173,18 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void getActiveActivityActiveLists(){
+    public void getActiveActivityActiveLists(){
         ActiveListsInformerTask activeListsInformerTask = new ActiveListsInformerTask();
         activeListsInformerTask.setApplicationContext(ActiveActivityProvider.this);
         activeListsInformerTask.execute(String.valueOf(userSessionData.getId()));
     }
-    protected void showListInformersGottenGood(ListInformer[] result){
+    public void showListInformersGottenGood(ListInformer[] result){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showGood(result);
         }
     }
-    protected void showListInformersGottenBad(ListInformer[] result){
+    public void showListInformersGottenBad(ListInformer[] result){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showBad(result);
@@ -166,37 +194,37 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void confirmGroupSettingsChange(UserGroup changedGroup){
+    public void confirmGroupSettingsChange(UserGroup changedGroup){
         GroupChangeConfirmTask groupChangeConfirmTask = new GroupChangeConfirmTask();
         groupChangeConfirmTask.setApplicationContext(ActiveActivityProvider.this);
         groupChangeConfirmTask.execute(changedGroup);
     }
-    protected void showGroupSettingsChangeGood(UserGroup result){
+    public void showGroupSettingsChangeGood(UserGroup result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.confirmGood(result);
         }
     }
-    protected void showGroupSettingsChangeBad(UserGroup result){
+    public void showGroupSettingsChangeBad(UserGroup result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.confirmBad(result);
         }
     }
-    protected void leaveGroup(){
+    public void leaveGroup(){
         UserGroup group = getActiveGroup();
         GroupLeaverTask groupLeaverTask = new GroupLeaverTask();
         groupLeaverTask.setApplicationContext(ActiveActivityProvider.this);
         groupLeaverTask.execute(group);
 
     }
-    protected void leaveGroupGood(UserGroup result){
+    public void leaveGroupGood(UserGroup result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.leaveGroupGood(result);
         }
     }
-    protected void leaveGroupBad(UserGroup result){
+    public void leaveGroupBad(UserGroup result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.leaveGroupBad(result);
@@ -206,41 +234,41 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void addNewGroup(String groupName){
+    public void addNewGroup(String groupName){
         NewGroupAdderTask newGroupAdderTask = new NewGroupAdderTask();
         newGroupAdderTask.setApplicationContext(ActiveActivityProvider.this);
         newGroupAdderTask.execute(groupName);
     }
-    protected AddingUser[] getPossibleMembers(){
+    public AddingUser[] getPossibleMembers(){
         AddingUser[] users = dataExchanger.getAddingUsers();
         return users;
     }
-    protected void clearNewGroupPossibleMembers(){
+    public void clearNewGroupPossibleMembers(){
         dataExchanger.clearAddingUsers();
     }
-    protected void showNewGroupAddedGood(UserGroup result){
+    public void showNewGroupAddedGood(UserGroup result){
         if(getActiveActivityNumber() == 5){
             NewGroup activity = (NewGroup) getActiveActivity();
             activity.showGood(result);
         }
     }
-    protected void showNewGroupAddedBad(UserGroup result){
+    public void showNewGroupAddedBad(UserGroup result){
         if(getActiveActivityNumber() == 5){
             NewGroup activity = (NewGroup) getActiveActivity();
             activity.showBad(result);
         }
     }
-    protected boolean checkUser(String id){
+    public boolean checkUser(String id){
         boolean result = false;
         result = dataExchanger.checkUserRAM(id);
         return result;
     }
-    protected void addUserToGroup(String userId, String activityType){
+    public void addUserToGroup(String userId, String activityType){
         AddUserTask addUserTask = new AddUserTask();
         addUserTask.setApplicationContext(ActiveActivityProvider.this);
         addUserTask.execute(userId, activityType);
     }
-    protected  void removeAddedUser(AddingUser user, String activityType){                                //TODO костыль
+    public void removeAddedUser(AddingUser user, String activityType){                                //TODO костыль
         if(activityType.equals("NewGroup")) {
             RemoveAddedUserTask removeAddedUserTask = new RemoveAddedUserTask();
             removeAddedUserTask.setApplicationContext(ActiveActivityProvider.this);
@@ -252,49 +280,49 @@ public class ActiveActivityProvider extends Application {
             removeAddedUserTask.execute(user, null);
         }
     }
-    protected void showRemoveAddedUserNewGroupGood(AddingUser result){
+    public void showRemoveAddedUserNewGroupGood(AddingUser result){
         if(getActiveActivityNumber() == 5){
             NewGroup activity = (NewGroup) getActiveActivity();
             activity.showRemoveUserGood(result);
         }
     }
-    protected void showRemoveAddedUserNewGroupBad(AddingUser result){
+    public void showRemoveAddedUserNewGroupBad(AddingUser result){
         if(getActiveActivityNumber() == 5){
             NewGroup activity = (NewGroup) getActiveActivity();
             activity.showRemoveUserBad(result);
         }
     }
-    protected void showCheckUserNewGroupGood(AddingUser result){
+    public void showCheckUserNewGroupGood(AddingUser result){
         if(getActiveActivityNumber() == 5){
             NewGroup activity = (NewGroup) getActiveActivity();
             activity.showUserCheckGood(result);
         }
     }
-    protected void showCheckUserNewGroupBad(AddingUser result){
+    public void showCheckUserNewGroupBad(AddingUser result){
         if(getActiveActivityNumber() == 5){
             NewGroup activity = (NewGroup) getActiveActivity();
             activity.showUserCheckBad(result);
         }
     }
-    protected void showCheckUserSettingsGood(AddingUser result){
+    public void showCheckUserSettingsGood(AddingUser result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.showUserCheckGood(result);
         }
     }
-    protected void showCheckUserSettingsBad(AddingUser result){
+    public void showCheckUserSettingsBad(AddingUser result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.showUserCheckBad(result);
         }
     }
-    protected void showRemoveAddedUserSettingsGood(AddingUser result){
+    public void showRemoveAddedUserSettingsGood(AddingUser result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.showRemoveUserGood(result);
         }
     }
-    protected void showRemoveAddedUserSettingsBad(AddingUser result){
+    public void showRemoveAddedUserSettingsBad(AddingUser result){
         if(getActiveActivityNumber() == 7){
             GroupSettingsActivity activity = (GroupSettingsActivity) getActiveActivity();
             activity.showRemoveUserBad(result);
@@ -304,22 +332,22 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void getGroupHistoryLists(String groupId){
+    public void getGroupHistoryLists(String groupId){
         GroupHistoryGetterTask groupHistoryGetterTask = new GroupHistoryGetterTask();
         groupHistoryGetterTask.setApplicationContext(ActiveActivityProvider.this);
         groupHistoryGetterTask.execute(groupId);
     }
-    protected void getGroupActiveLists(String groupId){
+    public void getGroupActiveLists(String groupId){
         GroupActiveGetterTask groupActiveGetterTask = new GroupActiveGetterTask();
         groupActiveGetterTask.setApplicationContext(ActiveActivityProvider.this);
         groupActiveGetterTask.execute(groupId);
     }
-    protected void disactivateGroupList(SList list){
+    public void disactivateGroupList(SList list){
         OnlineDisactivateTask onlineDisactivateTask = new OnlineDisactivateTask();
         onlineDisactivateTask.setApplicationContext(ActiveActivityProvider.this);
         onlineDisactivateTask.execute(list);
     }
-    protected void itemmark(Item item){
+    public void itemmark(Item item){
         OnlineItemmarkTask onlineItemmarkTask = new OnlineItemmarkTask();
         onlineItemmarkTask.setApplicationContext(ActiveActivityProvider.this);
         onlineItemmarkTask.execute(item);
@@ -328,17 +356,17 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void createOnlineListogram(String groupId, Item[] items){
+    public void createOnlineListogram(String groupId, Item[] items){
         OnlineCreateListogramTask onlineCreateListogramTask = new OnlineCreateListogramTask();
         onlineCreateListogramTask.setApplicationContext(ActiveActivityProvider.this);
         onlineCreateListogramTask.setUserId(String.valueOf(userSessionData.getId()));
         onlineCreateListogramTask.setGroupId(groupId);
         onlineCreateListogramTask.execute(items);
     }
-    protected void saveTempItems(TempItem[] tempItems){
+    public void saveTempItems(TempItem[] tempItems){
         dataExchanger.saveTempItems(tempItems);
     }
-    protected TempItem[] getTempItems(){
+    public TempItem[] getTempItems(){
         TempItem[] result;
         result = dataExchanger.getTempItems();
         return result;
@@ -347,18 +375,18 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void getGroups(){
+    public void getGroups(){
         GroupsGetterTask groupsGetterTask = new GroupsGetterTask();
         groupsGetterTask.setApplicationContext(ActiveActivityProvider.this);
         groupsGetterTask.execute();
     }
-    protected void showGroupsGottenGood(UserGroup[] result){
+    public void showGroupsGottenGood(UserGroup[] result){
         if(getActiveActivityNumber() == 4){
             GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
             activity.showGood(result);
         }
     }
-    protected void showGroupsGottenBad(UserGroup[] result){
+    public void showGroupsGottenBad(UserGroup[] result){
         if(getActiveActivityNumber() == 4){
             GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
             activity.showBad(result);
@@ -367,13 +395,13 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void showTouchedGroupGoingGood(UserGroup result){
+    public void showTouchedGroupGoingGood(UserGroup result){
         if(getActiveActivityNumber() == 4){
             GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
             activity.goToGroup(result);
         }
     }
-    protected void showTouchedGroupGoingBad(UserGroup result){                                          //TODO
+    public void showTouchedGroupGoingBad(UserGroup result){                                          //TODO
         if(getActiveActivityNumber() == 4){
             GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
             activity.update();
@@ -383,12 +411,12 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void setGroupData(String id, String name){
+    public void setGroupData(String id, String name){
         GroupDataSetterTask groupDataSetterTask = new GroupDataSetterTask();
         groupDataSetterTask.setApplicationContext(ActiveActivityProvider.this);
         groupDataSetterTask.execute(id, name);
     }
-    protected void showGroupDataSettledGood(String id){
+    public void showGroupDataSettledGood(String id){
         if(getActiveActivityNumber() == 3){
             if(getActiveGroup().getId().equals(id)){
                 Group2Activity activity = (Group2Activity) getActiveActivity();
@@ -396,7 +424,7 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showGroupDataSettledBad(String id){
+    public void showGroupDataSettledBad(String id){
         if(getActiveActivityNumber() == 3){
             if(getActiveGroup().getId().equals(id)){
                 Group2Activity activity = (Group2Activity) getActiveActivity();
@@ -408,7 +436,7 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void showOnlineItemmarkedGood(Item item){
+    public void showOnlineItemmarkedGood(Item item){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))){
@@ -416,7 +444,7 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showOnlineItemmarkedBad(Item item){
+    public void showOnlineItemmarkedBad(Item item){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))){
@@ -424,7 +452,7 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showItemmarkProcessingToUser(Item item){
+    public void showItemmarkProcessingToUser(Item item){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))){
@@ -437,7 +465,7 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void showOnlineDisactivateListGood(SList result){
+    public void showOnlineDisactivateListGood(SList result){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(String.valueOf(result.getGroup()))) {
@@ -448,7 +476,7 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showOnlineDisactivateListBad(SList result){
+    public void showOnlineDisactivateListBad(SList result){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(String.valueOf(result.getGroup()))) {
@@ -460,20 +488,20 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void showOnlineListogramCreatedGood(){
+    public void showOnlineListogramCreatedGood(){
         if(getActiveActivityNumber() == 6){
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
             activity.showGood();
         }
     }
-    protected void showOnlineListogramCreatedBad(){                                                 //TODO
+    public void showOnlineListogramCreatedBad(){                                                 //TODO
 
     }
 
 
 
 
-    protected void showGroupHistoryListsGood(SList[] lists, String groupId){
+    public void showGroupHistoryListsGood(SList[] lists, String groupId){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(groupId)) {
@@ -481,7 +509,7 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showGroupHistoryListsBad(String lists, String groupId){
+    public void showGroupHistoryListsBad(String lists, String groupId){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(groupId)){
@@ -493,7 +521,7 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void showGroupActiveListsGood(SList[] lists, String groupId){
+    public void showGroupActiveListsGood(SList[] lists, String groupId){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(groupId)){
@@ -501,7 +529,7 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showGroupActiveListsBad(SList[] lists, String groupId){
+    public void showGroupActiveListsBad(SList[] lists, String groupId){
         if(getActiveActivityNumber() == 3){
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if(getActiveGroup().getId().equals(groupId)) {
@@ -513,32 +541,32 @@ public class ActiveActivityProvider extends Application {
 
 
 
-    protected void showOfflineListCreatedGood(SList list){
+    public void showOfflineListCreatedGood(SList list){
         if(getActiveActivityNumber() == 6){
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
             activity.showAddListOfflineGood();
         }
     }
-    protected void showOfflineListCreatedBad(SList list){
+    public void showOfflineListCreatedBad(SList list){
         if(getActiveActivityNumber() == 6){
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
             activity.showAddListOfflineBad();
         }
     }
 
-    protected void showOfflineActiveListsItemmarkedGood(Item item){
+    public void showOfflineActiveListsItemmarkedGood(Item item){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showItemmarkOfflineGood(item);
         }
     }
-    protected void showOfflineActiveListsItemmarkedBad(Item item){
+    public void showOfflineActiveListsItemmarkedBad(Item item){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showItemmarkOfflineBad(item);
         }
     }
-    protected void showOfflineActiveListsDisactivatedGood(SList list){
+    public void showOfflineActiveListsDisactivatedGood(SList list){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showDisactivateOfflineGood(list);
@@ -547,31 +575,31 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-    protected void showOfflineActiveListsDisactivatedBad(SList list){
+    public void showOfflineActiveListsDisactivatedBad(SList list){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showDisactivateOfflineBad(list);
         }
     }
-    protected void showOfflineActiveListsGood(SList[] lists){
+    public void showOfflineActiveListsGood(SList[] lists){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showActiveOfflineGood(lists);
         }
     }
-    protected void showOfflineActiveListsBad(SList[] lists){
+    public void showOfflineActiveListsBad(SList[] lists){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showActiveOfflineBad(lists);
         }
     }
-    protected void showOfflineHistoryListsGood(SList[] lists){
+    public void showOfflineHistoryListsGood(SList[] lists){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showHistoryOfflineGood(lists);
         }
     }
-    protected void showOfflineHistoryListsBad(SList[] lists){
+    public void showOfflineHistoryListsBad(SList[] lists){
         if(getActiveActivityNumber() == 2){
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.showHistoryOfflineBad(lists);
