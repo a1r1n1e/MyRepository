@@ -57,6 +57,7 @@ public class ActiveActivityProvider extends Application {
         Log.w("MY", "onCreate WhoBuys ActiveActivityProvider");
         dataExchanger = DataExchanger.getInstance(ActiveActivityProvider.this);
         userSessionData = UserSessionData.getInstance(ActiveActivityProvider.this);
+        nullActiveActivity();
     }
     public Context getActiveActivity(){
         return activeActivity;

@@ -47,8 +47,8 @@
             android:text="Confirm"
             android:textAllCaps="false"
             android:textSize="30sp"
-            android:textColor="@color/whoBuysGray"
-            android:background="@color/whoBuysGreen"/>
+            android:textColor="@color/whoBuysGreen"
+            android:background="@color/whoBuysGray"/>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
