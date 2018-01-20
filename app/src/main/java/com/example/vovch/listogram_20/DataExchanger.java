@@ -317,7 +317,7 @@ public class DataExchanger{
             String userId = String.valueOf(provider.userSessionData.getId());
             String resultString = webCall.callServer(groupId, listId, userId, "disactivatelist", "3", "2", "2", "7");
             if (resultString.substring(0, 3).equals("200")) {
-                int i = 0;
+                int i;
                 UserGroup[] groups = storage.getGroups();
                 int length = groups.length;
                 for(i = 0; i < length; i++) {
