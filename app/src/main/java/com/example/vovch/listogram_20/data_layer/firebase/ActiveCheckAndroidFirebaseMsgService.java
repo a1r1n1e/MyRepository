@@ -13,6 +13,7 @@ import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.R;
+import com.example.vovch.listogram_20.data_types.ListInformer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -25,30 +26,13 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     public  void onMessageReceived(RemoteMessage remoteMessage){
         String value = remoteMessage.toString();
         if(remoteMessage.getData().get("type").equals("newlistogram") || remoteMessage.getData().get("type").equals("groupcontentchange")) {
-            createNotification(remoteMessage.getData().get("group"));
+            updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"));
         }
-        else{
-            Intent intent = new Intent(this, ActiveListsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent resultIntent = PendingIntent.getActivity(this, 0, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-
-            Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Something")
-                    .setContentText(remoteMessage.getData().get("message"))
-                    .setAutoCancel(true)
-                    .setSound(notificationSoundURI)
-                    .setContentIntent(resultIntent);
-
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-            notificationManager.notify(0, mNotificationBuilder.build());
+        else if(remoteMessage.getData().get("type").equals("listogramdeleted")){
+            checkAndRemoveNotification();
         }
     }
-    private void createNotification(String groupListAddedToId) {
+    private void updateActivities(String groupListAddedToId, String message) {
 
         ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
 
@@ -57,6 +41,40 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
         }
         else if(provider.getActiveActivityNumber() == 3){
             groupUpdate(groupListAddedToId);
+        } else if(provider.getActiveActivityNumber() == -1){
+            addNotification(message);
+        }
+    }
+    private void addNotification(String message){
+        Intent intent = new Intent(this, ActiveListsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent resultIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Something")
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(notificationSoundURI)
+                .setContentIntent(resultIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, mNotificationBuilder.build());
+    }
+    private void checkAndRemoveNotification(){
+        ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
+        if(provider.dataExchanger != null && provider.userSessionData != null) {
+            if(provider.userSessionData.getId() != null) {
+                ListInformer[] informers = provider.dataExchanger.getListInformers(provider.userSessionData.getId());
+                if(informers == null || informers.length == 0){
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancelAll();
+                }
+            }
         }
     }
     private void groupUpdate(String groupId){
