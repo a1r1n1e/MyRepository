@@ -1,6 +1,7 @@
 package com.example.vovch.listogram_20.data_layer;
 
 import android.content.Context;
+import android.icu.text.DateFormat;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.data_types.AddingUser;
@@ -12,6 +13,7 @@ import com.example.vovch.listogram_20.data_types.UserGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by vovch on 24.12.2017.
@@ -73,20 +75,29 @@ public class DataExchanger{
     }
     public UserGroup newGroupAdding(String name){
         UserGroup result = null;
+        UserGroup[] tempResult = null;
         String resultString = null;
         AddingUser[] users = storage.getAddingUsers();
         int length = users.length;
         try {
-            JSONArray members = new JSONArray();
-            for (int i = 0; i < length; i++) {
-                members.put(i, users[i].getUserId());
-            }
-            String jsonString = members.toString();
-            WebCall webCall = new WebCall();
-            resultString = webCall.callServer(name, jsonString, "5", "newgroup", "3", "4", "4", "4");
-            if(resultString.substring(0, 3).equals("200")){
-                result = new UserGroup(name, resultString);
-                clearAddingUsers();
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            if(provider.userSessionData.getId() != null) {
+                JSONArray members = new JSONArray();
+                JSONObject tempMember;
+                for (int i = 0; i < length; i++) {
+                    tempMember = new JSONObject();
+                    tempMember.put("name", users[i].getUserName());
+                    tempMember.put("id", users[i].getUserId());
+                    members.put(i, tempMember);
+                }
+                String jsonString = members.toString();
+                WebCall webCall = new WebCall();
+                resultString = webCall.callServer(name, jsonString, provider.userSessionData.getId(), "newgroup", "3", "4", "4", "4");
+                if (resultString.substring(0, 3).equals("200")) {
+                    tempResult = webCall.getGroupsFromJsonString(resultString.substring(3));
+                    result = tempResult[0];
+                    clearAddingUsers();
+                }
             }
         }
         catch(JSONException e){                                                                         //TODO
@@ -136,12 +147,23 @@ public class DataExchanger{
     }
     public AddingUser removeUser(AddingUser user){
         if(user != null){
-            user = storage.removeOneAddingUser(user);
+            if(storage.isAddingUser(user)) {
+                user = storage.removeOneAddingUser(user);
+            }
         }
         return user;
     }
     public AddingUser[] getAddingUsers(){
         AddingUser[] users = storage.getAddingUsers();
+        return users;
+    }
+    public AddingUser[] makeAllUsersPossible(UserGroup group){
+        AddingUser[] users = null;
+        if(group != null && group.getMembers() != null){
+            storage.clearAddingUsers();
+            storage.setAddingUsers(group.getMembers());
+            users = getAddingUsers();
+        }
         return users;
     }
 
@@ -261,8 +283,26 @@ public class DataExchanger{
     public UserGroup confirmGroupChanges(UserGroup group){
         UserGroup result = null;
         String resultString;
-        AddingUser[] users = storage.getAddingUsers();
-        int length = users.length;
+        AddingUser[] oldUsers;
+        AddingUser[] newUsers;
+        if(group.getMembers() != null) {
+            oldUsers = group.getMembers();
+        }
+        else{
+            oldUsers = new AddingUser[0];
+        }
+        if(storage.getAddingUsers() != null) {
+            newUsers = storage.getAddingUsers();
+        }
+        else{
+            newUsers = new AddingUser[0];
+        }
+
+        AddingUser[] users = new AddingUser[oldUsers.length + newUsers.length];
+        System.arraycopy(oldUsers, 0, users, 0, oldUsers.length);
+        System.arraycopy(newUsers, 0, users, oldUsers.length, newUsers.length);
+
+        int length = newUsers.length;
         try {
             JSONArray members = new JSONArray();
             for (int i = 0; i < length; i++) {
@@ -271,10 +311,16 @@ public class DataExchanger{
             String jsonString = members.toString();
             WebCall webCall = new WebCall();
             resultString = webCall.callServer(group.getId(), jsonString, group.getName(), "changegroup", "3", "4", "4", "4");
-                                                                                                        //TODO decoding users from JSON
             if(resultString.substring(0, 3).equals("200")){
                 group.setMembers(users);
-                result = storage.updateGroup(findGroupById(group.getId()), group, true);
+                ActiveActivityProvider provider = (ActiveActivityProvider) context;
+                boolean mergingUsersNeeded = true;
+                if(group.getOwner() != null) {
+                    if (group.getOwner().equals(provider.userSessionData.getId())) {
+                        mergingUsersNeeded = false;
+                    }
+                    result = storage.updateGroup(findGroupById(group.getId()), group, mergingUsersNeeded);
+                }
             }
         }
         catch(JSONException e){                                                                         //TODO

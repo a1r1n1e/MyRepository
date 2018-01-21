@@ -26,13 +26,13 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     public  void onMessageReceived(RemoteMessage remoteMessage){
         String value = remoteMessage.toString();
         if(remoteMessage.getData().get("type").equals("newlistogram") || remoteMessage.getData().get("type").equals("groupcontentchange")) {
-            updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"));
+            updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
         }
         else if(remoteMessage.getData().get("type").equals("listogramdeleted")){
             checkAndRemoveNotification();
         }
     }
-    private void updateActivities(String groupListAddedToId, String message) {
+    private void updateActivities(String groupListAddedToId, String message, String type) {
 
         ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
 
@@ -41,7 +41,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
         }
         else if(provider.getActiveActivityNumber() == 3){
             groupUpdate(groupListAddedToId);
-        } else if(provider.getActiveActivityNumber() == -1){
+        } else if(provider.getActiveActivityNumber() == -1 && type.equals("newlistogram")){
             addNotification(message);
         }
     }
