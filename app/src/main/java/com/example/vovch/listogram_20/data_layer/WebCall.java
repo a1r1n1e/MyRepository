@@ -211,6 +211,7 @@ public class WebCall {
                 tempObject = informersArray.getJSONObject(i);
                 groupId = tempObject.getString("group_id");
                 groupName = tempObject.getString("group_name");
+                owner = tempObject.getString("group_owner");
                 tempMembersArray = tempObject.getJSONArray("group_members");
                 tempMembersLength = tempMembersArray.length();
                 tempMembers = new AddingUser[tempMembersLength];
@@ -220,7 +221,6 @@ public class WebCall {
                     tempMembers[j].setData(tempObject.getString("name"), tempObject.getString("id"));
                 }
                 tempInformer = new ListInformer(groupId, groupName);
-                owner = tempObject.getString("group_owner");
                 tempGroup = new UserGroup(groupName, groupId, tempMembers);
                 tempGroup.setOwner(owner);
                 tempInformer.setGroup(tempGroup);

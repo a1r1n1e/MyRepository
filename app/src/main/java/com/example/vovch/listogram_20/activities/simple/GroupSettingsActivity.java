@@ -114,14 +114,16 @@ public class GroupSettingsActivity extends AppCompatActivity {
         super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(7, GroupSettingsActivity.this);
+        AddingUser[] users;
         LinearLayout oldMembersLayout = (LinearLayout) findViewById(R.id.group_members_linear_layout);
         if(!provider.getActiveGroup().getOwner().equals(provider.userSessionData.getId())) {
             drawOldMembers(oldMembersLayout);
+            users= provider.getPossibleMembers();
         }
         else{
-            provider.makeAllMembersPossible();
+            users = provider.makeAllMembersPossible();
         }
-        drawNewMembers(oldMembersLayout, provider.getPossibleMembers());
+        drawNewMembers(oldMembersLayout, users);
     }
     @Override
     protected void onStop(){
