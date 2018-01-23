@@ -60,6 +60,9 @@ public class DataStorage {
             if(addingUsers.length > 0) {
                 AddingUsers = new ArrayList<>(Arrays.asList(addingUsers));
             }
+            else{
+                AddingUsers = new ArrayList<>();
+            }
         }
     }
     protected AddingUser[] getAddingUsers(){
@@ -71,7 +74,7 @@ public class DataStorage {
         return result;
     }
     protected void clearAddingUsers(){
-        AddingUsers.clear();
+        AddingUsers = new ArrayList<>();
         AddingUsers.trimToSize();
     }
 
@@ -113,14 +116,24 @@ public class DataStorage {
             return null;
         }
     }
+    protected boolean isAddingUser(AddingUser user){
+        boolean result = false;
+        if(user != null){
+            if(AddingUsers.contains(user)){
+                result = true;
+            }
+        }
+        return  result;
+    }
 
 
     protected UserGroup updateGroup(UserGroup oldVersionOfGroup, UserGroup newVersionOfGroup, boolean membersAppendingNeeded){
         UserGroup result = null;
         if(oldVersionOfGroup != null && newVersionOfGroup != null){
             int changingGroupNumber = Groups.indexOf(oldVersionOfGroup);
+            AddingUser[] users;
             if(membersAppendingNeeded){
-                AddingUser[] users = new AddingUser[oldVersionOfGroup.getMembers().length + newVersionOfGroup.getMembers().length];
+                users = new AddingUser[oldVersionOfGroup.getMembers().length + newVersionOfGroup.getMembers().length];
                 System.arraycopy(oldVersionOfGroup.getMembers(), 0, users, 0, oldVersionOfGroup.getMembers().length);
                 System.arraycopy(newVersionOfGroup.getMembers(), 0, users, oldVersionOfGroup.getMembers().length, newVersionOfGroup.getMembers().length);
                 newVersionOfGroup.setMembers(users);

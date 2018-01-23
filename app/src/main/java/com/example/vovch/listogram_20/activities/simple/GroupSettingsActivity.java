@@ -114,9 +114,16 @@ public class GroupSettingsActivity extends AppCompatActivity {
         super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(7, GroupSettingsActivity.this);
+        AddingUser[] users;
         LinearLayout oldMembersLayout = (LinearLayout) findViewById(R.id.group_members_linear_layout);
-        drawOldMembers(oldMembersLayout);
-        drawNewMembers(oldMembersLayout, provider.getPossibleMembers());
+        if(!provider.getActiveGroup().getOwner().equals(provider.userSessionData.getId())) {
+            drawOldMembers(oldMembersLayout);
+            users= provider.getPossibleMembers();
+        }
+        else{
+            users = provider.makeAllMembersPossible();
+        }
+        drawNewMembers(oldMembersLayout, users);
     }
     @Override
     protected void onStop(){
@@ -129,9 +136,13 @@ public class GroupSettingsActivity extends AppCompatActivity {
     }
     public void drawOldMembers(LinearLayout parentLayout){
         AddingUser[] oldMembers = provider.getActiveGroup().getMembers();
+        boolean type = false;
         if(oldMembers != null) {
+            if(provider.getActiveGroup().getOwner().equals(provider.userSessionData.getId())){
+                type = true;
+            }
             for (int i = 0; i < oldMembers.length; i++) {
-                drawNewUserLayout(oldMembers[i], false, parentLayout);
+                drawNewUserLayout(oldMembers[i], type, parentLayout);
             }
         }
     }
@@ -264,7 +275,9 @@ public class GroupSettingsActivity extends AppCompatActivity {
         TextView nameTextView = (TextView) findViewById(R.id.newgroupnameview);
         String newName = nameTextView.getText().toString();
         String groupId = provider.getActiveGroup().getId();
+        String owner = provider.getActiveGroup().getOwner();
         UserGroup changedGroup= new UserGroup(newName, groupId);
+        changedGroup.setOwner(owner);
         provider.confirmGroupSettingsChange(changedGroup);
     }
     public void confirmGood(UserGroup result){

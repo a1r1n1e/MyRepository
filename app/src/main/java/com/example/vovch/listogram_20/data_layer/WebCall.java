@@ -114,21 +114,23 @@ public class WebCall {
             String name;
             String id;
             AddingUser[] members;
+            String owner;
             for(int i = 0; i < length; i++){
                 tempJsonObject = groupsArray.getJSONObject(i);
                 name = tempJsonObject.getString("group_name");
                 id = tempJsonObject.getString("group_id");
                 tempMembersArray = tempJsonObject.getJSONArray("group_members");
                 int membersNumber = tempMembersArray.length();
-                int j = 0;
                 members = new AddingUser[membersNumber];
                 JSONObject tempMember;
-                for(j = 0; j < membersNumber; j++){
+                for(int j = 0; j < membersNumber; j++){
                     tempMember = tempMembersArray.getJSONObject(j);
                     members[j] = new AddingUser();
                     members[j].setData(tempMember.getString("name"), tempMember.getString("id"));
                 }
+                owner = tempJsonObject.getString("group_owner");
                 tempGroup = new UserGroup(name, id, members);
+                tempGroup.setOwner(owner);
                 groups[i] = tempGroup;
             }
         }
@@ -203,11 +205,13 @@ public class WebCall {
             String groupId;
             AddingUser[] tempMembers;
             JSONArray tempMembersArray;
+            String owner;
             int tempMembersLength;
             for(i = 0; i < length; i++){
                 tempObject = informersArray.getJSONObject(i);
                 groupId = tempObject.getString("group_id");
                 groupName = tempObject.getString("group_name");
+                owner = tempObject.getString("group_owner");
                 tempMembersArray = tempObject.getJSONArray("group_members");
                 tempMembersLength = tempMembersArray.length();
                 tempMembers = new AddingUser[tempMembersLength];
@@ -218,6 +222,7 @@ public class WebCall {
                 }
                 tempInformer = new ListInformer(groupId, groupName);
                 tempGroup = new UserGroup(groupName, groupId, tempMembers);
+                tempGroup.setOwner(owner);
                 tempInformer.setGroup(tempGroup);
                 informers[i] = tempInformer;
             }

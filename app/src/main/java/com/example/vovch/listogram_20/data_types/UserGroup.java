@@ -22,9 +22,11 @@ public class UserGroup {
     private ArrayList<AddingUser> members;
     private CardView cardView;
     private Button button;
+    private String owner;
     public UserGroup(String newName, String newId, SList[] newActiveLists, SList[] newHistoryLists, AddingUser[] newMembers){
         name = newName;
         id = newId;
+        owner = null;
         activeLists = new ArrayList<>(Arrays.asList(newActiveLists));
         historyLists = new ArrayList<>(Arrays.asList(newHistoryLists));
         members = new ArrayList<>(Arrays.asList(newMembers));
@@ -33,6 +35,7 @@ public class UserGroup {
     public UserGroup(String newName, String newId, AddingUser[] newMembers){
         name = newName;
         id = newId;
+        owner = null;
         members = null;
         if(newMembers != null) {
             setMembers(newMembers);
@@ -44,6 +47,7 @@ public class UserGroup {
     public UserGroup(String newName, String newId){
         name = newName;
         id = newId;
+        owner = null;
         members = null;
         activeLists = null;
         historyLists = null;
@@ -72,7 +76,12 @@ public class UserGroup {
     public void clear(){
         cardView = null;
     }
-
+    public void setOwner(String newOwner){
+        owner = newOwner;
+    }
+    public String getOwner(){
+        return owner;
+    }
     public void disactivateList(SList list){
         if(activeLists != null) {
             activeLists.remove(list);
