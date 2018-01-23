@@ -137,7 +137,7 @@ public class DataExchanger{
     public AddingUser addUser(String userId){
         AddingUser newUser = null;
         String result = checkUserWeb(userId);
-        if(!result.equals("No Such User(")){
+        if(result != null){
             newUser = new AddingUser();
             newUser.setData(result, userId);
             storage.addOneAddingUser(newUser);
