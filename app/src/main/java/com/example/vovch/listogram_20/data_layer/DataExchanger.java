@@ -240,7 +240,11 @@ public class DataExchanger{
     public SList[] getGroupDataFromWeb(String groupId){
         SList[] lists = null;
         WebCall webCall = new WebCall();
-        String resultJsonString = webCall.callServer(groupId, "3", "3", "gettinghistory", "3", "3", "3");
+        String lastListCreationTime = findGroupById(groupId).getLastListCreationTime();
+        if(lastListCreationTime == null){
+            lastListCreationTime = "0000";
+        }
+        String resultJsonString = webCall.callServer(groupId, lastListCreationTime, "3", "gettinghistory", "3", "3", "3");
         if(resultJsonString.substring(0, 3).equals("200")){
             lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
         }

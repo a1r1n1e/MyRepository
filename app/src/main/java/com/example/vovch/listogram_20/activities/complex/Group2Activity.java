@@ -231,6 +231,10 @@ public class Group2Activity extends WithLoginActivity {
             historyFragment.setRefresher();
         }
     }
+    public void tempFunction(){
+        onHistoryReady();
+        refreshHistoryLists();
+    }
     public void historyLoad(){
         provider.getGroupHistoryLists(groupId);
     }

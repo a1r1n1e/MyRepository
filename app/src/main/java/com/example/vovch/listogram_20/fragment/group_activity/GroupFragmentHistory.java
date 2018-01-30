@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
+import com.example.vovch.listogram_20.data_types.HistoryScrollView;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
 import com.example.vovch.listogram_20.data_types.SList;
@@ -33,21 +34,35 @@ public class GroupFragmentHistory extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
-    public void checkRootView(ViewGroup container, LayoutInflater inflater){
-        if(rootView == null){
+
+    public void checkRootView(ViewGroup container, LayoutInflater inflater) {
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.group_fragment_history, container, false);
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.group_fragment_history, container, false);
         unsetRefresher();
+        /*HistoryScrollView historyScrollView = (HistoryScrollView) rootView.findViewById(R.id.grouphistoryscroll);
+        historyScrollView.setOnTopReachedListener(new HistoryScrollView.OnTopReachedListener() {
+            @Override
+            public void onTopReached() {
+                historyLoad();
+            }
+        });*/
         Group2Activity activity = (Group2Activity) getActivity();
-        activity.onHistoryReady();
+        activity.tempFunction();
         return rootView;
     }
-    public void listsLayoutDrawer(SList list){
+    private void historyLoad(){
+        Group2Activity activity = (Group2Activity) getActivity();
+        activity.historyLoad();
+    }
+
+    public void listsLayoutDrawer(SList list) {
         LinearLayout basicLayout;
         basicLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
@@ -74,7 +89,8 @@ public class GroupFragmentHistory extends Fragment {
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
     }
-    private void makeListogramLine(Item item, LinearLayout listogramLayout){
+
+    private void makeListogramLine(Item item, LinearLayout listogramLayout) {
         FrameLayout addingFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_element_frame_layout, listogramLayout, false);
         LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingFrameLayout, false);
 
@@ -112,19 +128,23 @@ public class GroupFragmentHistory extends Fragment {
         addingFrameLayout.addView(groupButton);
         listogramLayout.addView(addingFrameLayout);
     }
+
     public void listsListMaker(SList[] result) {
         int listsNumber = result.length;
-        for(int i = 0; i < listsNumber; i++){
+        for (int i = 0; i < listsNumber; i++) {
             listsLayoutDrawer(result[i]);
         }
     }
-    public void historyFragmentCleaner(){
+
+    public void historyFragmentCleaner() {
         LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
         layoutScrollingActiveListsContainer.removeAllViews();
     }
-    public void fragmentShowGood(SList[] result){
+
+    public void fragmentShowGood(SList[] result) {
         listsListMaker(result);
     }
+
     public void fragmentShowBad(String result) {
         historyFragmentCleaner();
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
@@ -134,9 +154,10 @@ public class GroupFragmentHistory extends Fragment {
         }
         parentLayout.addView(emptyInformer);
     }
-    public void setRefresher(){
+
+    public void setRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
-        if(refreshLayout != null) {
+        if (refreshLayout != null) {
             refreshLayout.setFocusable(true);
             refreshLayout.setRefreshing(false);
             refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -147,26 +168,31 @@ public class GroupFragmentHistory extends Fragment {
             });
         }
     }
-    public void unsetRefresher(){
+
+    public void unsetRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
-        if(refreshLayout != null) {
+        if (refreshLayout != null) {
             refreshLayout.setFocusable(false);
             refreshLayout.setRefreshing(false);
         }
     }
-    public void setRefresherRefreshing(){
+
+    public void setRefresherRefreshing() {
         SwipeRefreshLayout refresher = getRefresher();
         refresher.setRefreshing(true);
     }
-    public void setRefresherNotRefreshing(){
+
+    public void setRefresherNotRefreshing() {
         SwipeRefreshLayout refresher = getRefresher();
         refresher.setRefreshing(false);
     }
-    public void refresh(){
+
+    public void refresh() {
         Group2Activity activity = (Group2Activity) getActivity();
         activity.refreshHistoryLists();
     }
-    public SwipeRefreshLayout getRefresher(){
-        return  (SwipeRefreshLayout) rootView.findViewById(R.id.group_history_fragment_refresher);
+
+    public SwipeRefreshLayout getRefresher() {
+        return (SwipeRefreshLayout) rootView.findViewById(R.id.group_history_fragment_refresher);
     }
 }

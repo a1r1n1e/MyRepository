@@ -28,14 +28,18 @@ public class SList {
         state = true;
         creationTime = Calendar.getInstance().getTime().toString();
     }
-    public SList(Item[] newItems, int newId, int newGroup, boolean newType, boolean newState, int newOwner){
+    public SList(Item[] newItems, int newId, int newGroup, boolean newType, boolean newState, int newOwner, String newCreationTime){
         setItems(newItems);
         setId(newId);
         setGroup(newGroup);
         setType(newType);
         setState(newState);
         setOwner(newOwner);
-        creationTime = Calendar.getInstance().getTime().toString();
+        if(newType) {
+            creationTime = Calendar.getInstance().getTime().toString();
+        } else{
+            creationTime = newCreationTime;
+        }
     }
     public void clear(){
         cardView = null;
