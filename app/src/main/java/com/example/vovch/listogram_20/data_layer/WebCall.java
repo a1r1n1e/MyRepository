@@ -33,8 +33,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WebCall {
 
-    public WebCall(){
+    public WebCall() {
     }
+
     public String callServer(String... loginPair) {
         String response = "";
 
@@ -70,39 +71,38 @@ public class WebCall {
                 while ((line = br.readLine()) != null) {
                     response += line;
                 }
-            } else{
+            } else {
                 response += String.valueOf(responseCode);
             }
 
             conn.disconnect();
         } catch (MalformedURLException e) {
-            if(loginPair[3].equals("itemmark")){
+            if (loginPair[3].equals("itemmark")) {
                 StringBuilder tempString = new StringBuilder("");
                 tempString.append("400");
                 tempString.append(loginPair[1]);
                 response = tempString.toString();
-            }
-            else if(loginPair[3].equals("login")){
+            } else if (loginPair[3].equals("login")) {
                 response = "400No Internet Acesess";
             }
         } catch (IOException e) {
-            if(loginPair[3].equals("itemmark")){
+            if (loginPair[3].equals("itemmark")) {
                 StringBuilder tempString = new StringBuilder("");
                 tempString.append("400");
                 tempString.append(loginPair[1]);
                 response = tempString.toString();
-            }
-            else if(loginPair[3].equals("login")){
+            } else if (loginPair[3].equals("login")) {
                 response = "400No Internet Acesess";
             }
         } finally {
-            if(conn != null) {
+            if (conn != null) {
                 conn.disconnect();
             }
         }
         return response;
     }
-    public UserGroup[] getGroupsFromJsonString(String result){
+
+    public UserGroup[] getGroupsFromJsonString(String result) {
         UserGroup[] groups = null;
         try {
             JSONArray groupsArray = new JSONArray(result);
@@ -115,7 +115,7 @@ public class WebCall {
             String id;
             AddingUser[] members;
             String owner;
-            for(int i = 0; i < length; i++){
+            for (int i = 0; i < length; i++) {
                 tempJsonObject = groupsArray.getJSONObject(i);
                 name = tempJsonObject.getString("group_name");
                 id = tempJsonObject.getString("group_id");
@@ -123,7 +123,7 @@ public class WebCall {
                 int membersNumber = tempMembersArray.length();
                 members = new AddingUser[membersNumber];
                 JSONObject tempMember;
-                for(int j = 0; j < membersNumber; j++){
+                for (int j = 0; j < membersNumber; j++) {
                     tempMember = tempMembersArray.getJSONObject(j);
                     members[j] = new AddingUser();
                     members[j].setData(tempMember.getString("name"), tempMember.getString("id"));
@@ -133,13 +133,24 @@ public class WebCall {
                 tempGroup.setOwner(owner);
                 groups[i] = tempGroup;
             }
-        }
-        catch (JSONException e){
-                                                                                                        //TODO
+        } catch (JSONException e) {
+            //TODO
         }
         return groups;
     }
-    public SList[] getGroupListsFromJsonString(String result){
+
+    protected String getStringFromJsonString(String jsonString, String value) {
+        String result = null;
+        try {
+            JSONObject dataHolder = new JSONObject(jsonString);
+            result = dataHolder.getString(value);
+        } catch (JSONException e) {                                                                         //TODO
+
+        }
+        return result;
+    }
+
+    public SList[] getGroupListsFromJsonString(String result) {
         SList[] lists = null;
         try {
             JSONArray fromJsonLists = new JSONArray(result);
@@ -149,7 +160,7 @@ public class WebCall {
             Item tempItem;
             JSONObject tempListObject;
             lists = new SList[length];
-            for(int i = 0; i < length; i++){
+            for (int i = 0; i < length; i++) {
                 try {
                     tempListObject = fromJsonLists.getJSONObject(i);
                     JSONArray encodedItems = tempListObject.getJSONArray("items_array");
@@ -175,23 +186,23 @@ public class WebCall {
                     }
                     int listOwner = tempListObject.getInt("list_owner");
                     int listGroupId = tempListObject.getInt("list_group");
-                    tempList = new SList(items, listId, listGroupId, false, listState, listOwner);
-                    for(int k = 0; k < items.length; k++){
+                    String creation_time = tempListObject.getString("list_creation_time");
+                    tempList = new SList(items, listId, listGroupId, false, listState, listOwner, creation_time);
+                    for (int k = 0; k < items.length; k++) {
                         items[k].setList(tempList);
                     }
                     lists[i] = tempList;
-                }
-                catch(JSONException e){                                                                 //TODO
+                } catch (JSONException e) {                                                                 //TODO
                     String res = "123";
                 }
             }
-        }
-        catch(JSONException e) {
+        } catch (JSONException e) {
             // TODO
         }
         return lists;
     }
-    public ListInformer[] getListInformersFromJsonString(String result){
+
+    public ListInformer[] getListInformersFromJsonString(String result) {
         ListInformer[] informers = null;
         try {
             JSONArray informersArray = new JSONArray(result);
@@ -207,7 +218,7 @@ public class WebCall {
             JSONArray tempMembersArray;
             String owner;
             int tempMembersLength;
-            for(i = 0; i < length; i++){
+            for (i = 0; i < length; i++) {
                 tempObject = informersArray.getJSONObject(i);
                 groupId = tempObject.getString("group_id");
                 groupName = tempObject.getString("group_name");
@@ -215,7 +226,7 @@ public class WebCall {
                 tempMembersArray = tempObject.getJSONArray("group_members");
                 tempMembersLength = tempMembersArray.length();
                 tempMembers = new AddingUser[tempMembersLength];
-                for(int j = 0; j < tempMembersLength; j++){
+                for (int j = 0; j < tempMembersLength; j++) {
                     tempObject = tempMembersArray.getJSONObject(j);
                     tempMembers[j] = new AddingUser();
                     tempMembers[j].setData(tempObject.getString("name"), tempObject.getString("id"));
@@ -226,19 +237,19 @@ public class WebCall {
                 tempInformer.setGroup(tempGroup);
                 informers[i] = tempInformer;
             }
-        } catch (JSONException e){                                                                      //TODO
+        } catch (JSONException e) {                                                                      //TODO
 
         }
         return informers;
     }
+
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (first) {
                 first = false;
-            }
-            else {
+            } else {
                 result.append("&");
             }
 

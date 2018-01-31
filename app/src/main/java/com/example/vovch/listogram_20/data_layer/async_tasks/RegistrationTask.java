@@ -15,11 +15,12 @@ public class RegistrationTask extends AsyncTask<String, Void, String> {
     private String userLogin;
     private String userPassword;
 
-    public void setApplicationContext(Context ctf){
+    public void setApplicationContext(Context ctf) {
         applicationContext = ctf;
     }
+
     @Override
-    public String doInBackground(String... loginPair){
+    public String doInBackground(String... loginPair) {
         String result;
         userLogin = loginPair[0];
         userPassword = loginPair[1];
@@ -27,16 +28,16 @@ public class RegistrationTask extends AsyncTask<String, Void, String> {
         result = activeActivityProvider.dataExchanger.registrationTry(loginPair[0], loginPair[1]);
         return result;
     }
+
     @Override
-    public void onPostExecute(String result){
-        if(result.substring(0, 3).equals("200")){
+    public void onPostExecute(String result) {
+        if (result.substring(0, 3).equals("200")) {
             activeActivityProvider.goodRegistrationTry(result.substring(3));
             activeActivityProvider.userSessionData.checkUserData(result.substring(3), userLogin, userPassword);
-        }  else {
-            if(result.substring(0, 3).equals("403")){
+        } else {
+            if (result.substring(0, 3).equals("403")) {
                 result = "Username Is Already Used";
-            }
-            else{
+            } else {
                 result = "Something Went Wrong";
             }
             activeActivityProvider.badRegistrationTry(result);

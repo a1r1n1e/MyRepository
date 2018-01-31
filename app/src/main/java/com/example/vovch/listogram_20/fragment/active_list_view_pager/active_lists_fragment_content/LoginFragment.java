@@ -19,16 +19,19 @@ import com.example.vovch.listogram_20.fragment.active_list_view_pager.ActiveList
 
 public class LoginFragment extends ActiveListsFragment {
     private View rootView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
-    public void checkRootView(ViewGroup container, LayoutInflater inflater){
-        if(rootView == null){
+
+    public void checkRootView(ViewGroup container, LayoutInflater inflater) {
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.login_page_layout, container, false);
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,7 +56,8 @@ public class LoginFragment extends ActiveListsFragment {
         activity.loginFragmentOnStart();
         return rootView;
     }
-    public void tryToLoginFromForms(){
+
+    public void tryToLoginFromForms() {
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
         TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
         errorTextView.setText("");
@@ -71,11 +75,13 @@ public class LoginFragment extends ActiveListsFragment {
             errorTextView.setText("Our Fail. Try to reinstall the app");
         }
     }
-    public void setRegisterFragment(){
+
+    public void setRegisterFragment() {
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
         activity.loginToRegistrationFragmentChange();
     }
-    public void badInform(String result){
+
+    public void badInform(String result) {
         TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
         errorTextView.setText(result);
     }

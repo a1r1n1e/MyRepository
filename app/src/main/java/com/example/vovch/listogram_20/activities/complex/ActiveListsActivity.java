@@ -74,22 +74,25 @@ public class ActiveListsActivity extends WithLoginActivity
     };
     final ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
         @Override
         public void onPageSelected(int position) {
-                if(position == 1){
-                    fabActionOne(fab);
-                }
-                else if(position == 2){
-                    fabActionTwo(fab);
-                }
-                else if(position == 0){
-                    fabActionZero(fab);
-                }
+            if (position == 1) {
+                fabActionOne(fab);
+            } else if (position == 2) {
+                fabActionTwo(fab);
+            } else if (position == 0) {
+                fabActionZero(fab);
+            }
         }
+
         @Override
-        public void onPageScrollStateChanged(int state) {}
+        public void onPageScrollStateChanged(int state) {
+        }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,12 +144,14 @@ public class ActiveListsActivity extends WithLoginActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
     }
+
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
@@ -154,34 +159,39 @@ public class ActiveListsActivity extends WithLoginActivity
         refreshOfflineHistory();
         loginFragmentStart();
     }
+
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
     }
+
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
     }
+
     @Override
-    protected void onStop(){
-        if(provider.getActiveActivityNumber() == 2) {
+    protected void onStop() {
+        if (provider.getActiveActivityNumber() == 2) {
             provider.nullActiveActivity();
         }
         offlineFragment.activeFragmentCleaner();
         super.onStop();
     }
-    private void finisher(){
+
+    private void finisher() {
         this.finish();
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(registrationFragment != null) {
+        } else if (registrationFragment != null) {
             registrationToLoginFragmentChange();
         } else {
-            if(provider.getActiveActivityNumber() == 2) {
+            if (provider.getActiveActivityNumber() == 2) {
                 provider.nullActiveActivity();
             }
             ActiveListsActivity.this.finish();
@@ -223,7 +233,7 @@ public class ActiveListsActivity extends WithLoginActivity
         } else if (id == R.id.nav_share) {
             provider.userSessionData.exit();
             activeToLoginFragmentChange();
-        } else if (id == R.id.nav_copy_id){
+        } else if (id == R.id.nav_copy_id) {
             //ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
             //ClipData clip = ClipData.newPlainText("", usersId);
             //clipboard.setPrimaryClip(clip);
@@ -243,72 +253,81 @@ public class ActiveListsActivity extends WithLoginActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void refreshActiveLists(){
-            update();
+
+    public void refreshActiveLists() {
+        update();
     }
-    public void refreshOfflineLists(){
-        if(offlineFragment != null){
+
+    public void refreshOfflineLists() {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.setRefresher();
             offlineUpdate(true);
         }
     }
-    public void refreshOfflineHistory(){
-        if(historyFragment != null){
+
+    public void refreshOfflineHistory() {
+        if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             historyFragment.setRefresher();
             offlineUpdate(false);
         }
     }
-    public void onOfflineFragmentStart(){
-        if(offlineFragment != null){
+
+    public void onOfflineFragmentStart() {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             refreshOfflineLists();
         }
     }
-    public void onHistoryFragmentStart(){
-        if(historyFragment != null){
+
+    public void onHistoryFragmentStart() {
+        if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             refreshOfflineHistory();
         }
     }
 
 
-
-
-
-    public void tryToLoginFromPrefs(){
+    public void tryToLoginFromPrefs() {
         provider.tryToLoginFromPrefs();
     }
-    public void tryToLoginFromForms(String login, String password){
+
+    public void tryToLoginFromForms(String login, String password) {
         provider.tryToLoginFromForms(login, password);
     }
-    public String getToken(){
+
+    public String getToken() {
         return provider.userSessionData.getToken();
     }
-    public void loginFragmentStart(){
+
+    public void loginFragmentStart() {
         tryToLoginFromPrefs();
     }
-    public void onLoginFailed(String result){                                                        //TODO cases
+
+    public void onLoginFailed(String result) {                                                        //TODO cases
         activeToLoginFragmentChange();
         loginFailed = result;
         checkLoginBadInformNeeded();
     }
-    public void checkLoginBadInformNeeded(){
-        if(loginFailed != null){
+
+    public void checkLoginBadInformNeeded() {
+        if (loginFailed != null) {
             loginFragment.checkRootView(viewPager, getLayoutInflater());
             loginFragment.badInform(loginFailed);
         }
     }
-    public void loginFragmentOnStart(){
+
+    public void loginFragmentOnStart() {
         checkLoginBadInformNeeded();
     }
+
     public void loginToActiveFragmentChange() {                                                      //TODO same class for moving to activeListsOnlineFragment
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        if(loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null){
+        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             activeListsOnlineFragment = new ActiveListsOnlineFragment();
             transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
-        } else if(loginFragment != null){
+        } else if (loginFragment != null) {
             transaction.remove(loginFragment);
             loginFragment.onDestroy();
             activeListsOnlineFragment = new ActiveListsOnlineFragment();
@@ -318,22 +337,24 @@ public class ActiveListsActivity extends WithLoginActivity
         loginFragment = null;
         transaction.commit();
     }
-    public void activeListsOnlineFragmentStart(){
+
+    public void activeListsOnlineFragmentStart() {
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        if(viewPager.getCurrentItem() == 0) {
+        if (viewPager.getCurrentItem() == 0) {
             fabActionZero(fab);
         }
-        if(activeListsOnlineFragment != null) {
+        if (activeListsOnlineFragment != null) {
             activeListsOnlineFragment.setRefresher();
         }
         update();
     }
-    public void loginToRegistrationFragmentChange(){
+
+    public void loginToRegistrationFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        if(loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null){
+        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             registrationFragment = new RegistrationFragment();
             transaction.add(R.id.active_lists_page_one, registrationFragment);
-        } else if(loginFragment != null){
+        } else if (loginFragment != null) {
             transaction.remove(loginFragment);
             loginFragment.onDestroy();
             registrationFragment = new RegistrationFragment();
@@ -343,15 +364,17 @@ public class ActiveListsActivity extends WithLoginActivity
         loginFragment = null;
         transaction.commit();
     }
-    public void tryToRegister(String login, String password){
+
+    public void tryToRegister(String login, String password) {
         provider.registrationTry(login, password);
     }
-    public void registrationToActiveListsOnlineFragmentChange(){
+
+    public void registrationToActiveListsOnlineFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        if(loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null){
+        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             activeListsOnlineFragment = new ActiveListsOnlineFragment();
             transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
-        } else if(registrationFragment != null){
+        } else if (registrationFragment != null) {
             transaction.remove(registrationFragment);
             registrationFragment.onDestroy();
             activeListsOnlineFragment = new ActiveListsOnlineFragment();
@@ -361,18 +384,20 @@ public class ActiveListsActivity extends WithLoginActivity
         loginFragment = null;
         transaction.commit();
     }
-    public void badRegistrationTry(String result){
-        if(registrationFragment != null) {
+
+    public void badRegistrationTry(String result) {
+        if (registrationFragment != null) {
             registrationFragment.checkRootView(viewPager, getLayoutInflater());
             registrationFragment.badInform(result);
         }
     }
-    public void activeToLoginFragmentChange(){
+
+    public void activeToLoginFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        if(loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null){
+        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             loginFragment = new LoginFragment();
             transaction.add(R.id.active_lists_page_one, loginFragment);
-        } else if(activeListsOnlineFragment != null){
+        } else if (activeListsOnlineFragment != null) {
             transaction.remove(activeListsOnlineFragment);
             activeListsOnlineFragment.unsetRefresher();
             activeListsOnlineFragment.onDestroy();
@@ -382,17 +407,18 @@ public class ActiveListsActivity extends WithLoginActivity
         registrationFragment = null;
         activeListsOnlineFragment = null;
         transaction.commit();
-        if(viewPager.getCurrentItem() == 0) {
+        if (viewPager.getCurrentItem() == 0) {
             fabActionZero(fab);
         }
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
-    public void registrationToLoginFragmentChange(){
+
+    public void registrationToLoginFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        if(loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null){
+        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             loginFragment = new LoginFragment();
             transaction.add(R.id.active_lists_page_one, loginFragment);
-        } else if(registrationFragment != null){
+        } else if (registrationFragment != null) {
             transaction.remove(registrationFragment);
             registrationFragment.onDestroy();
             loginFragment = new LoginFragment();
@@ -402,55 +428,59 @@ public class ActiveListsActivity extends WithLoginActivity
         activeListsOnlineFragment = null;
         transaction.commit();
     }
-    public void noInternet(){
-        if(activeFragment != null){
+
+    public void noInternet() {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.noInternet();
         }
     }
 
 
-
-
-
-    public void update(){
+    public void update() {
         provider.getActiveActivityActiveLists();
-        if(activeListsOnlineFragment != null){
+        if (activeListsOnlineFragment != null) {
             activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-            if(activeListsOnlineFragment.getRefresher() != null) {
+            if (activeListsOnlineFragment.getRefresher() != null) {
                 activeListsOnlineFragment.setRefresherRefreshing();
             }
         }
     }
-    public void offlineUpdate(boolean type){
+
+    public void offlineUpdate(boolean type) {
         provider.startOfflineGetterDatabaseTask(type);
     }
-    public void disactivateList(SList list){
+
+    public void disactivateList(SList list) {
         provider.activeActivityDisactivateList(list);
     }
-    public void itemmark(Item item){
+
+    public void itemmark(Item item) {
         provider.activeListsItemmark(item);
     }
-    public void showGood(ListInformer[] result){
-        if(activeListsOnlineFragment != null) {
+
+    public void showGood(ListInformer[] result) {
+        if (activeListsOnlineFragment != null) {
             activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
             activeListsOnlineFragment.fragmentShowGood(result);
-            if(activeListsOnlineFragment.getRefresher() != null) {
+            if (activeListsOnlineFragment.getRefresher() != null) {
                 activeListsOnlineFragment.setRefresherNotRefreshing();
             }
         }
     }
-    public void showBad(ListInformer[] result){
-        if(activeListsOnlineFragment != null) {
+
+    public void showBad(ListInformer[] result) {
+        if (activeListsOnlineFragment != null) {
             activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
             activeListsOnlineFragment.fragmentShowBad(result);
-            if(activeListsOnlineFragment.getRefresher() != null) {
+            if (activeListsOnlineFragment.getRefresher() != null) {
                 activeListsOnlineFragment.setRefresherNotRefreshing();
             }
         }
     }
-    public void goToGroup(UserGroup group){
-        if(group != null) {
+
+    public void goToGroup(UserGroup group) {
+        if (group != null) {
             if (group.getId() != null && group.getName() != null) {
                 provider.setActiveGroup(group);
                 Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
@@ -461,70 +491,77 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-    public void showActiveOfflineGood(SList[] lists){
-        if(offlineFragment != null) {
+    public void showActiveOfflineGood(SList[] lists) {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentShowGood(lists);
-            if(offlineFragment.getRefresher() != null) {
+            if (offlineFragment.getRefresher() != null) {
                 offlineFragment.unsetRefresher();
             }
         }
     }
-    public void showActiveOfflineBad(SList[] lists){
-        if(offlineFragment != null) {
+
+    public void showActiveOfflineBad(SList[] lists) {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentShowBad(lists);
-            if(offlineFragment.getRefresher() != null) {
+            if (offlineFragment.getRefresher() != null) {
                 offlineFragment.unsetRefresher();
             }
         }
     }
-    public void showHistoryOfflineGood(SList[] lists){
-        if(historyFragment != null) {
+
+    public void showHistoryOfflineGood(SList[] lists) {
+        if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             historyFragment.fragmentShowGood(lists);
-            if(historyFragment.getRefresher() != null){
+            if (historyFragment.getRefresher() != null) {
                 historyFragment.unsetRefresher();
             }
         }
     }
-    public void showHistoryOfflineBad(SList[] lists){
-        if(historyFragment != null) {
+
+    public void showHistoryOfflineBad(SList[] lists) {
+        if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             historyFragment.fragmentShowBad(lists);
-            if(historyFragment.getRefresher() != null){
+            if (historyFragment.getRefresher() != null) {
                 historyFragment.unsetRefresher();
             }
         }
     }
-    public void showDisactivateOfflineGood(SList result){
-        if(offlineFragment != null) {
+
+    public void showDisactivateOfflineGood(SList result) {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentDisactivateGood(result);
         }
     }
-    public void showDisactivateOfflineBad(SList result){
-        if(offlineFragment != null) {
+
+    public void showDisactivateOfflineBad(SList result) {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentDisactivateBad(result);
         }
     }
-    public void showItemmarkOfflineGood(Item result){
-        if(offlineFragment != null) {
+
+    public void showItemmarkOfflineGood(Item result) {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentShowSecondGood(result);
         }
     }
-    public void showItemmarkOfflineBad(Item result){
-        if(offlineFragment != null) {
+
+    public void showItemmarkOfflineBad(Item result) {
+        if (offlineFragment != null) {
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentShowSecondBad(result);
         }
     }
 
 
-    private void fabActionZero(FloatingActionButton fab){
-        if(activeListsOnlineFragment != null) {
+    private void fabActionZero(FloatingActionButton fab) {
+        if (activeListsOnlineFragment != null) {
             fab.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add, getTheme()));
@@ -532,12 +569,12 @@ public class ActiveListsActivity extends WithLoginActivity
                 fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
             }
             fab.setOnClickListener(fabOnClickListener);
-        }
-        else{
+        } else {
             fab.hide();
         }
     }
-    private void fabActionOne(FloatingActionButton fab){
+
+    private void fabActionOne(FloatingActionButton fab) {
         fab.show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send, getTheme()));
@@ -556,7 +593,8 @@ public class ActiveListsActivity extends WithLoginActivity
             }
         });
     }
-    private void fabActionTwo(FloatingActionButton fab){
+
+    private void fabActionTwo(FloatingActionButton fab) {
         fab.hide();
     }
 
@@ -568,6 +606,7 @@ public class ActiveListsActivity extends WithLoginActivity
         adapter.addFragment(new ActiveFragmentHistory(), "History");
         viewPager.setAdapter(adapter);
     }
+
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -575,10 +614,12 @@ public class ActiveListsActivity extends WithLoginActivity
         protected Adapter(FragmentManager manager) {
             super(manager);
         }
-        private void clean(){
+
+        private void clean() {
             mFragmentList.clear();
             mFragmentTitleList.clear();
         }
+
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
@@ -593,7 +634,8 @@ public class ActiveListsActivity extends WithLoginActivity
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
-        protected void replace0FragmentByNewOne(Fragment oldOne, Fragment newOne){
+
+        protected void replace0FragmentByNewOne(Fragment oldOne, Fragment newOne) {
             mFragmentList.add(0, newOne);
         }
 

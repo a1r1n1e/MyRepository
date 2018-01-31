@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/group_history_fragment_refresher">
-            <ScrollView
+            <com.example.vovch.listogram_20.data_types.HistoryScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
@@ -30,6 +30,6 @@
                     android:orientation="vertical"
                     android:id="@+id/passedlistogramslayout">
                 </LinearLayout>
-            </ScrollView>
+            </com.example.vovch.listogram_20.data_types.HistoryScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

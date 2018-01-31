@@ -99,6 +99,7 @@ public class UserSessionData {
         editor.apply();
     }
     public void exit(){
+        webExit(id, password);
         id = null;
         name = null;
         password = null;
@@ -109,19 +110,31 @@ public class UserSessionData {
             @Override
             public void run() {
                 if(isAnyPrefsData()){
-                    sendRegistrationToServer(preferences.getString(APP_PREFERENCES_TOKEN, null), preferences.getString(APP_PREFERENCES_USERID, null), preferences.getString(APP_PREFERENCES_PASSWORD, null));
+                    sendTokenToServer(preferences.getString(APP_PREFERENCES_TOKEN, null), preferences.getString(APP_PREFERENCES_USERID, null), preferences.getString(APP_PREFERENCES_PASSWORD, null));
                 }
             }
         };
         Thread thread = new Thread(runnable);
         thread.start();
     }
-    private void sendRegistrationToServer(String token, String user, String password) {                 //Should be used not from UI thread
+    private void webExit(final String userId, final String userPassword){
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(userId != null && userPassword != null) {
+                    sendTokenToServer(null, userId, userPassword);
+                }
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+    private void sendTokenToServer(String token, String userId, String password) {                 //Should be used not from UI thread
         try {
             URL url = new URL("http://217.10.35.250/java_token_refresh.php");
             HashMap<String, String> postDataParams = new HashMap<String, String>();
             postDataParams.put("newusertoken", token);
-            postDataParams.put("userid", user);
+            postDataParams.put("userid", userId);
             postDataParams.put("userpassword", password);
 
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();

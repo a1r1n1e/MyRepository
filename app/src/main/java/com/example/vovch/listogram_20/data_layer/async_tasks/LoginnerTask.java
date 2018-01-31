@@ -9,17 +9,18 @@ import com.example.vovch.listogram_20.ActiveActivityProvider;
  * Created by vovch on 08.01.2018.
  */
 
-public class LoginnerTask extends AsyncTask <String, Void, String>{
+public class LoginnerTask extends AsyncTask<String, Void, String> {
     private Context applicationContext;
     private ActiveActivityProvider activeActivityProvider;
     private String userLogin;
     private String userPassword;
 
-    public void setApplicationContext(Context ctf){
+    public void setApplicationContext(Context ctf) {
         applicationContext = ctf;
     }
+
     @Override
-    public String doInBackground(String... loginPair){
+    public String doInBackground(String... loginPair) {
         String result;
         userLogin = loginPair[0];
         userPassword = loginPair[1];
@@ -27,16 +28,16 @@ public class LoginnerTask extends AsyncTask <String, Void, String>{
         result = activeActivityProvider.dataExchanger.loginTry(loginPair[0], loginPair[1]);
         return result;
     }
+
     @Override
-    public void onPostExecute(String result){
-        if(result.substring(0, 3).equals("200")){
+    public void onPostExecute(String result) {
+        if (result.substring(0, 3).equals("200")) {
             activeActivityProvider.userSessionData.checkUserData(result.substring(3), userLogin, userPassword);
             activeActivityProvider.goodLoginTry(result.substring(3));
-        }  else {
-            if(result.substring(0, 3).equals("403")){
+        } else {
+            if (result.substring(0, 3).equals("403")) {
                 result = "No Such User";
-            }
-            else{
+            } else {
                 result = "Something Went Wrong";
             }
             activeActivityProvider.badLoginTry(result);

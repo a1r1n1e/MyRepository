@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
+import com.example.vovch.listogram_20.data_types.HistoryScrollView;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
 import com.example.vovch.listogram_20.data_types.SList;
@@ -27,16 +28,19 @@ import com.example.vovch.listogram_20.data_types.SList;
 
 public class ActiveFragmentHistory extends Fragment {
     private View rootView = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
-    public void checkRootView(ViewGroup container, LayoutInflater inflater){
-        if(rootView == null){
+
+    public void checkRootView(ViewGroup container, LayoutInflater inflater) {
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.group_fragment_history, container, false);
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,7 +52,8 @@ public class ActiveFragmentHistory extends Fragment {
         activity.onHistoryFragmentStart();
         return rootView;
     }
-    protected void listsLayoutDrawer(SList list){
+
+    protected void listsLayoutDrawer(SList list) {
         LinearLayout basicLayout;
         basicLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
@@ -75,7 +80,8 @@ public class ActiveFragmentHistory extends Fragment {
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
     }
-    private void makeListogramLine(Item item, LinearLayout listogramLayout){
+
+    private void makeListogramLine(Item item, LinearLayout listogramLayout) {
         FrameLayout addingFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_element_frame_layout, listogramLayout, false);
         LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingFrameLayout, false);
 
@@ -113,20 +119,24 @@ public class ActiveFragmentHistory extends Fragment {
         addingFrameLayout.addView(groupButton);
         listogramLayout.addView(addingFrameLayout);
     }
+
     public void listsListMaker(SList[] result) {
         int listsNumber = result.length;
-        for(int i = 0; i < listsNumber; i++){
+        for (int i = 0; i < listsNumber; i++) {
             listsLayoutDrawer(result[i]);
         }
     }
-    public void historyFragmentCleaner(){
+
+    public void historyFragmentCleaner() {
         LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
         layoutScrollingActiveListsContainer.removeAllViews();
     }
-    public void fragmentShowGood(SList[] result){
+
+    public void fragmentShowGood(SList[] result) {
         historyFragmentCleaner();
         listsListMaker(result);
     }
+
     public void fragmentShowBad(SList[] result) {
         historyFragmentCleaner();
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
@@ -136,7 +146,8 @@ public class ActiveFragmentHistory extends Fragment {
         }
         parentLayout.addView(emptyInformer);
     }
-    public void setRefresher(){
+
+    public void setRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
         refreshLayout.setFocusable(true);
         refreshLayout.setRefreshing(false);
@@ -147,16 +158,19 @@ public class ActiveFragmentHistory extends Fragment {
             }
         });
     }
-    public void unsetRefresher(){
+
+    public void unsetRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
         refreshLayout.setFocusable(false);
         refreshLayout.setRefreshing(false);
     }
-    public void refresh(){
+
+    public void refresh() {
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
         activity.refreshOfflineHistory();
     }
-    public SwipeRefreshLayout getRefresher(){
-        return  (SwipeRefreshLayout) rootView.findViewById(R.id.group_history_fragment_refresher);
+
+    public SwipeRefreshLayout getRefresher() {
+        return (SwipeRefreshLayout) rootView.findViewById(R.id.group_history_fragment_refresher);
     }
 }

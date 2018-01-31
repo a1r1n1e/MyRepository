@@ -23,7 +23,8 @@ public class UserGroup {
     private CardView cardView;
     private Button button;
     private String owner;
-    public UserGroup(String newName, String newId, SList[] newActiveLists, SList[] newHistoryLists, AddingUser[] newMembers){
+
+    public UserGroup(String newName, String newId, SList[] newActiveLists, SList[] newHistoryLists, AddingUser[] newMembers) {
         name = newName;
         id = newId;
         owner = null;
@@ -32,19 +33,21 @@ public class UserGroup {
         members = new ArrayList<>(Arrays.asList(newMembers));
         button = null;
     }
-    public UserGroup(String newName, String newId, AddingUser[] newMembers){
+
+    public UserGroup(String newName, String newId, AddingUser[] newMembers) {
         name = newName;
         id = newId;
         owner = null;
         members = null;
-        if(newMembers != null) {
+        if (newMembers != null) {
             setMembers(newMembers);
         }
         activeLists = null;
         historyLists = null;
         button = null;
     }
-    public UserGroup(String newName, String newId){
+
+    public UserGroup(String newName, String newId) {
         name = newName;
         id = newId;
         owner = null;
@@ -54,83 +57,91 @@ public class UserGroup {
         button = null;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 
-    public void setCardView(CardView newCardView){
+    public void setCardView(CardView newCardView) {
         cardView = newCardView;
     }
-    public void setButton(Button newButton){
+
+    public void setButton(Button newButton) {
         button = newButton;
     }
-    public Button getButton(){
+
+    public Button getButton() {
         return button;
     }
-    public CardView getCardView(){
+
+    public CardView getCardView() {
         return cardView;
     }
-    public void clear(){
+
+    public void clear() {
         cardView = null;
     }
-    public void setOwner(String newOwner){
+
+    public void setOwner(String newOwner) {
         owner = newOwner;
     }
-    public String getOwner(){
+
+    public String getOwner() {
         return owner;
     }
-    public void disactivateList(SList list){
-        if(activeLists != null) {
+
+    public void disactivateList(SList list) {
+        if (activeLists != null) {
             activeLists.remove(list);
             activeLists.trimToSize();
             list.setState(false);
         }
     }
-    public void itemmark(Item item){
-        if(item != null) {
+
+    public void itemmark(Item item) {
+        if (item != null) {
             item.setState(!item.getState());
         }
     }
 
-    public void setActiveLists(SList[] lists){
-        if(lists != null) {
+    public void setActiveLists(SList[] lists) {
+        if (lists != null) {
             activeLists = new ArrayList<>(Arrays.asList(lists));
-        }
-        else{
+        } else {
             activeLists = new ArrayList<>();
         }
     }
-    public SList[] getActiveLists(){
+
+    public SList[] getActiveLists() {
         SList[] result = null;
-        if(activeLists != null){
+        if (activeLists != null) {
             result = new SList[activeLists.size()];
             result = activeLists.toArray(result);
-        }
-        else{
+        } else {
             activeLists = new ArrayList<>();
             result = new SList[activeLists.size()];
             result = activeLists.toArray(result);
         }
         return result;
     }
-    public void setHistoryLists(SList[] lists){
-        if(lists != null) {
+
+    public void setHistoryLists(SList[] lists) {
+        if (lists != null) {
             historyLists = new ArrayList<>(Arrays.asList(lists));
-        }
-        else{
+        } else {
             historyLists = new ArrayList<>();
         }
     }
-    public SList[] getHistoryLists(){
+
+    public SList[] getHistoryLists() {
         SList[] result = null;
-        if(historyLists != null){
+        if (historyLists != null) {
             result = new SList[historyLists.size()];
             result = historyLists.toArray(result);
-        }
-        else{
+        } else {
             historyLists = new ArrayList<>();
             result = new SList[historyLists.size()];
             result = historyLists.toArray(result);
@@ -138,29 +149,40 @@ public class UserGroup {
         return result;
     }
 
-    public void addMember(AddingUser memberId){
-        if(members == null){
+    public String getLastListCreationTime() {
+        String creationTime = null;
+        if(historyLists != null && historyLists.size() > 0){
+            creationTime = historyLists.get(historyLists.size() - 1).getCreationTime();
+        }
+        return creationTime;
+    }
+
+    public void addMember(AddingUser memberId) {
+        if (members == null) {
             members = new ArrayList<>();
         }
-        if(!members.contains(memberId)) {
+        if (!members.contains(memberId)) {
             members.add(memberId);
         }
     }
-    public void deleteMember(String memberId){
-        if(members != null){
-            if(members.contains(memberId)) {
+
+    public void deleteMember(String memberId) {
+        if (members != null) {
+            if (members.contains(memberId)) {
                 members.remove(memberId);
             }
         }
     }
-    public void setMembers(AddingUser[] newMembers){
-        if(newMembers != null) {
+
+    public void setMembers(AddingUser[] newMembers) {
+        if (newMembers != null) {
             members = new ArrayList<>(Arrays.asList(newMembers));
         }
     }
-    public AddingUser[] getMembers(){
+
+    public AddingUser[] getMembers() {
         AddingUser[] result = null;
-        if(members != null){
+        if (members != null) {
             result = new AddingUser[members.size()];
             result = members.toArray(result);
         }
