@@ -120,6 +120,7 @@ public class DataExchanger{
                 if (resultString.substring(0, 3).equals("200")) {
                     tempResult = webCall.getGroupsFromJsonString(resultString.substring(3));
                     result = tempResult[0];
+                    storage.addGroup(result);
                     clearAddingUsers();
                 }
             }
@@ -144,19 +145,13 @@ public class DataExchanger{
         return result;
     }
     public boolean checkUserRAM(String id){
-        boolean result = false;
         AddingUser[] allUsers = storage.getAddingUsers();
-        int i = 0;
-        int length = allUsers.length;
-        for(i = 0; i < length; i++){
-            if(allUsers[i].getUserId().equals(id)){
-                break;
+        for (AddingUser user : allUsers) {
+            if (user.getUserId().equals(id)) {
+                return true;
             }
         }
-        if(i < length){
-            result = true;
-        }
-        return result;
+        return false;
     }
     public AddingUser addUser(String userId){
         AddingUser newUser = null;

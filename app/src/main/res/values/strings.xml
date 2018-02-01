@@ -8,4 +8,15 @@
     <string name="action_settings">Settings</string>
     <string name="group_down_button_string">Send New List</string>
     <string name="title_activity_group_settings">GroupSettingsActivity</string>
+    <string name="enter_group_name">Enter Group Name</string>
+    <string name="members">Members</string>
+    <string name="enter_new_user_id">Enter New User Id</string>
+    <string name="add_user">Add User</string>
+    <string name="confirm">Confirm</string>
+    <string name="user_added_error">User Already Added</string>
+    <string name="no_user_id_error">Enter Any User Id</string>
+    <string name="enter_your_group_name">Enter Your Group Name</string>
+    <string name="error_no_user">No Such User(</string>
+    <string name="some_error">Something Went Wrong</string>
+    <string name="leave_group">Leave Group</string>
 </resources>
