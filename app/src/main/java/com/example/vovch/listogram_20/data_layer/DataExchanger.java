@@ -325,7 +325,7 @@ public class DataExchanger{
         System.arraycopy(oldUsers, 0, users, 0, oldUsers.length);
         System.arraycopy(newUsers, 0, users, oldUsers.length, newUsers.length);
 
-        int length = newUsers.length;
+        int length = users.length;
         try {
             JSONArray members = new JSONArray();
             for (int i = 0; i < length; i++) {

@@ -138,7 +138,8 @@ public class DataStorage {
                 System.arraycopy(newVersionOfGroup.getMembers(), 0, users, oldVersionOfGroup.getMembers().length, newVersionOfGroup.getMembers().length);
                 newVersionOfGroup.setMembers(users);
             }
-            Groups.add(changingGroupNumber, newVersionOfGroup);
+            Groups.remove(changingGroupNumber);
+            Groups.add(newVersionOfGroup);
             result = newVersionOfGroup;
         }
         return result;

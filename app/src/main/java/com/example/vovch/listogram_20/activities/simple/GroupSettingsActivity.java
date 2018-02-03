@@ -138,6 +138,7 @@ public class GroupSettingsActivity extends NewGroup {
     }
 
     public void confirmGood(UserGroup result) {
+        provider.setActiveGroup(result);
         onBackPressed();
     }
 
