@@ -152,7 +152,7 @@ public class UserGroup {
     public String getLastListCreationTime() {
         String creationTime = null;
         if(historyLists != null && historyLists.size() > 0){
-            creationTime = historyLists.get(historyLists.size() - 1).getCreationTime();
+            creationTime = historyLists.get(0).getCreationTime();
         }
         return creationTime;
     }

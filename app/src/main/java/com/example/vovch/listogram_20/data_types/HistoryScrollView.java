@@ -24,7 +24,7 @@ public class HistoryScrollView extends ScrollView {
         super(context);
     }
 
-    /*@Override
+    @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         //View view = getChildAt(getChildCount() - 1);
@@ -33,7 +33,7 @@ public class HistoryScrollView extends ScrollView {
         if (t == 0 && topReachedListener != null) {
             topReachedListener.onTopReached();
         }
-    }*/
+    }
 
     public OnTopReachedListener getOnTopReachedListener() {
         return topReachedListener;

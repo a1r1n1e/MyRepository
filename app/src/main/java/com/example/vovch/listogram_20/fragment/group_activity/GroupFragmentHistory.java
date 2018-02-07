@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
@@ -134,6 +135,13 @@ public class GroupFragmentHistory extends Fragment {
         for (int i = 0; i < listsNumber; i++) {
             listsLayoutDrawer(result[i]);
         }
+        /*getScrollView().post(new Runnable() {
+
+            @Override
+            public void run() {
+                getScrollView().scrollTo(500, 0);
+            }
+        });*/
     }
 
     public void historyFragmentCleaner() {
@@ -144,7 +152,9 @@ public class GroupFragmentHistory extends Fragment {
     public void fragmentShowGood(SList[] result) {
         listsListMaker(result);
     }
-
+    public HistoryScrollView getScrollView(){
+        return  (HistoryScrollView) rootView.findViewById(R.id.grouphistoryscroll);
+    }
     public void fragmentShowBad(String result) {
         historyFragmentCleaner();
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
