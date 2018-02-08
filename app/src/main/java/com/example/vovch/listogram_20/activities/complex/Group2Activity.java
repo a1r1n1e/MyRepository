@@ -273,7 +273,6 @@ public class Group2Activity extends WithLoginActivity {
             String message = "Want To Kill List?";
             String button1String = "Confirm";
             String button2String = "Cancel";
-            String nuller = null;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
