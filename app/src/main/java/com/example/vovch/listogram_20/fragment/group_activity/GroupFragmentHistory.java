@@ -1,5 +1,6 @@
 package com.example.vovch.listogram_20.fragment.group_activity;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,11 +71,17 @@ public class GroupFragmentHistory extends Fragment {
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
         list.setCardView(listCard);
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
+        LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
+        headerLayout.setAlpha(0.5f);
+        listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
         for (int i = 0; i < length; i++) {
             makeListogramLine(items[i], listogramLayout);
         }
+        LinearLayout footerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_footer_layout, listogramLayout, false);
+        LinearLayout leftFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
+        leftFooterLayout.setGravity(Gravity.START);
         FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.dis_button_frame_layout, listogramLayout, false);
         final ImageButton disactivateListButton = (ImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         list.setDisButton(disactivateListButton);
@@ -86,7 +94,28 @@ public class GroupFragmentHistory extends Fragment {
         disactivateListButton.setImageURI(uri);
         disactivateListButton.setAlpha(0.5f);
         disButtonFrameLayout.addView(disactivateListButton);
-        listogramLayout.addView(disButtonFrameLayout);
+        leftFooterLayout.addView(disButtonFrameLayout);
+        LinearLayout rightFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
+        rightFooterLayout.setGravity(Gravity.END);
+
+
+        FrameLayout disButtonFrameLayout2 = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.dis_button_frame_layout, listogramLayout, false);
+        final ImageButton disactivateListButton2 = (ImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            disactivateListButton2.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+        } else {
+            disactivateListButton2.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        }
+        Uri uri2 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/confirm_button_64");
+        disactivateListButton2.setImageURI(uri2);
+        disactivateListButton2.setAlpha(0.5f);
+        disButtonFrameLayout2.addView(disactivateListButton2);
+        rightFooterLayout.addView(disButtonFrameLayout2);
+
+
+        footerLayout.addView(leftFooterLayout);
+        footerLayout.addView(rightFooterLayout);
+        listogramLayout.addView(footerLayout);
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
     }

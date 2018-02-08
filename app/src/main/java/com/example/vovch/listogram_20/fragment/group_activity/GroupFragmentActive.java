@@ -1,11 +1,13 @@
 package com.example.vovch.listogram_20.fragment.group_activity;
 
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
@@ -48,12 +51,36 @@ public class GroupFragmentActive extends Fragment {
         activity.onActiveReady();
         return rootView;
     }
+    /*public void askForDisactivating(final SList list){
+        AlertDialog.Builder ad = new AlertDialog.Builder(rootView.getContext());
+        ad.setMessage("Want To Kill List?");
+        ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                Toast.makeText(rootView.getContext(), "Nothing Happened", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+        ad.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                Group2Activity activity = (Group2Activity) getActivity();
+                activity.disactivateGroupList(list);
+                Toast.makeText(rootView.getContext(), "Processing",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        ad.setCancelable(true);
+        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                Toast.makeText(rootView.getContext(), "Nothing Happened",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        ad.show();
+    }*/
     private void disactivateGroupList(DisactivateImageButton button){
         if(button.getList() != null) {
-            button.setFocusable(false);
-            button.setClickable(false);
-            Group2Activity groupActivity = (Group2Activity) getActivity();
-            groupActivity.disactivateGroupList(button.getList());
+            Group2Activity activity = (Group2Activity) getActivity();
+            activity.disactivateGroupList(button.getList());
         }
     }
     private void onItemMarkButtonTouchedAction(ItemButton button){
@@ -124,6 +151,8 @@ public class GroupFragmentActive extends Fragment {
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
         list.setCardView(listCard);
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
+        LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
+        listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
         for (int i = 0; i < length; i++) {

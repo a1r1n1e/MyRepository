@@ -1,19 +1,26 @@
 package com.example.vovch.listogram_20.activities.complex;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.activities.simple.CreateListogramActivity;
@@ -243,7 +250,48 @@ public class Group2Activity extends WithLoginActivity {
     }
     public void disactivateGroupList(SList list){
         if(list != null) {
-            provider.disactivateGroupList(list);
+            DisactivateDialogFragment dialogFragment = new DisactivateDialogFragment();
+            dialogFragment.setList(list);
+            dialogFragment.setActiveActivityProvider(provider);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            dialogFragment.show(transaction, "dialog");
+        }
+    }
+    public static class DisactivateDialogFragment extends DialogFragment {
+        private SList list;
+        private ActiveActivityProvider activeActivityProvider;
+        protected void setList(SList newList){
+            list = newList;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = "Want To Kill List?";
+            String button1String = "Confirm";
+            String button2String = "Cancel";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    activeActivityProvider.disactivateGroupList(list);
+                    Toast.makeText(getActivity(), "Processing",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setCancelable(true);
+
+            return builder.create();
         }
     }
     public void showGroupDataSettledGood(){
