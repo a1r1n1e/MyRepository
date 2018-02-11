@@ -502,7 +502,9 @@ public class DataExchanger{
         }
         else{
             lists = getOfflineActiveDataFromMemory();
-            storage.setOfflineActiveData(lists);
+            if(lists != null) {
+                storage.setOfflineActiveData(lists);
+            }
         }
         return lists;
     }
@@ -518,7 +520,9 @@ public class DataExchanger{
         }
         else{
             lists = getOfflineHistoryDataFromMemory();
-            storage.setOfflineHistoryData(lists);
+            if(lists != null) {
+                storage.setOfflineHistoryData(lists);
+            }
         }
         return lists;
     }

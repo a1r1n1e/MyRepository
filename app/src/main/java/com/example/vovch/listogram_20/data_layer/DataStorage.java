@@ -324,8 +324,11 @@ public class DataStorage {
         Item tempIt;
         Item[] tempItems;
         for(i = 0; i < length; i++){
+            tempLength = 0;
             tempItems = lists[i].getItems();
-            tempLength = tempItems.length;
+            if(tempItems != null) {
+                tempLength = tempItems.length;
+            }
             for(j = 0; j < tempLength; j++){
                 tempIt = tempItems[j];
                 ItemsOfflineOfActiveLists.add(ItemsOfflineOfActiveLists.size(), tempIt);
@@ -370,8 +373,11 @@ public class DataStorage {
         Item tempIt;
         Item[] tempItems;
         for(i = 0; i < length; i++){
+            tempLength = 0;
             tempItems = lists[i].getItems();
-            tempLength = tempItems.length;
+            if(tempItems != null) {
+                tempLength = tempItems.length;
+            }
             for(j = 0; j < tempLength; j++){
                 tempIt = tempItems[j];
                 ItemsOfflineOfHistoryLists.add(ItemsOfflineOfHistoryLists.size(), tempIt);
