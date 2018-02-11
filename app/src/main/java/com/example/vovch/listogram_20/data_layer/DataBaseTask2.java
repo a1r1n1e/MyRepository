@@ -167,7 +167,10 @@ public class DataBaseTask2 {
             long listId;
             listId = db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
             values.clear();
-            int length = incomingItems.length;
+            int length = 0;
+            if(incomingItems != null) {
+                length = incomingItems.length;
+            }
             long itemId;
             for (i = 0; i < length; i++) {
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, incomingItems[i].getName());
