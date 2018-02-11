@@ -13,14 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
-import com.example.vovch.listogram_20.data_types.DisactivateImageButton;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
+import com.example.vovch.listogram_20.data_types.ListImageButton;
 import com.example.vovch.listogram_20.data_types.SList;
 
 /**
@@ -57,17 +58,50 @@ public class ActiveFragmentOffline extends Fragment {
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
         list.setCardView(listCard);
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
+        LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
+        LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
+        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        String listOwner;
+        if(list.getOwner() > 0) {
+            listOwner = list.getOwnerName();
+        }
+        else{
+            listOwner = "You";
+        }
+        listNameTextView.setText("From: " + listOwner);
+
+        TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        if(list.getCreationTime() != null){
+            listCreationTimeTextView.setTextSize(10);
+            listCreationTimeTextView.setText(list.getCreationTime());
+        }
+        leftHeaderLayout.addView(listNameTextView);
+        leftHeaderLayout.addView(listCreationTimeTextView);
+        headerLayout.addView(leftHeaderLayout);
+        FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
+        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, imageButtonFrame, false);
+        imageButtonFrame.addView(resendButton);
+        headerLayout.addView(imageButtonFrame);
+        listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
+        list.setResendButton(resendButton);
+        resendButton.setList(list);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resend((ListImageButton) v);
+            }
+        });
         for (int i = 0; i < length; i++) {
             makeListogramLine(items[i], listogramLayout);
         }
         FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.dis_button_frame_layout, listogramLayout, false);
-        DisactivateImageButton disactivateListButton = (DisactivateImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
+        ListImageButton disactivateListButton = (ListImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         View.OnClickListener disactivateListButtonOnClickListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                disactivateList((DisactivateImageButton) v);
+                disactivateList((ListImageButton) v);
             }
         };
         list.setDisButton(disactivateListButton);
@@ -85,12 +119,20 @@ public class ActiveFragmentOffline extends Fragment {
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
     }
-    private void disactivateList(DisactivateImageButton button){
+    private void disactivateList(ListImageButton button){
         if(button.getList() != null) {
+            ActiveListsActivity activity = (ActiveListsActivity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);
+            activity.disactivateList(button);
+        }
+    }
+    private void resend(ListImageButton button){
+        if(button.getList() != null){
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-            activity.disactivateList(button.getList());
+            button.setFocusable(false);
+            button.setClickable(false);
+            activity.resendList(button);
         }
     }
     private void onItemMarkButtonTouchedAction(ItemButton button){

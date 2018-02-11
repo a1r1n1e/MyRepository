@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
+import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.data_types.ListInformer;
 
 /**
@@ -32,6 +33,8 @@ public class ActiveListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.active_lists_page_one_container, container, false);
+        ActiveListsActivity activity = (ActiveListsActivity) getActivity();
+        activity.loginFragmentStart();
         return rootView;
     }
     public void fragmentShowGood(ListInformer[] result){}

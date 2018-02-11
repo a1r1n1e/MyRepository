@@ -11,16 +11,16 @@ import com.example.vovch.listogram_20.data_types.UserGroup;
  * Created by vovch on 11.01.2018.
  */
 
-public class DisactivateImageButton extends AppCompatImageButton {
+public class ListImageButton extends AppCompatImageButton {
     private SList list;
     private UserGroup group;
-    public DisactivateImageButton(Context context){
+    public ListImageButton(Context context){
         super(context);
     }
-    public DisactivateImageButton(Context context, AttributeSet attrs) {
+    public ListImageButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    public DisactivateImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ListImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
     public void setList(SList newList){

@@ -26,6 +26,7 @@ import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.activities.simple.CreateListogramActivity;
 import com.example.vovch.listogram_20.activities.simple.GroupSettingsActivity;
 import com.example.vovch.listogram_20.activities.WithLoginActivity;
+import com.example.vovch.listogram_20.data_types.ListImageButton;
 import com.example.vovch.listogram_20.fragment.group_activity.GroupFragmentActive;
 import com.example.vovch.listogram_20.fragment.group_activity.GroupFragmentHistory;
 import com.example.vovch.listogram_20.R;
@@ -248,7 +249,8 @@ public class Group2Activity extends WithLoginActivity {
     public void itemmark(Item item){
         provider.itemmark(item);
     }
-    public void disactivateGroupList(SList list){
+    public void disactivateGroupList(ListImageButton button){
+        SList list = button.getList();
         if(list != null) {
             DisactivateDialogFragment dialogFragment = new DisactivateDialogFragment();
             dialogFragment.setList(list);
@@ -280,6 +282,8 @@ public class Group2Activity extends WithLoginActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
                             .show();
+                    list.getDisButton().setFocusable(true);
+                    list.getDisButton().setClickable(true);
                 }
             });
             builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {

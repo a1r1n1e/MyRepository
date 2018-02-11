@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
-import com.example.vovch.listogram_20.data_types.DisactivateImageButton;
+import com.example.vovch.listogram_20.data_types.ListImageButton;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
 import com.example.vovch.listogram_20.data_types.SList;
@@ -32,6 +32,7 @@ import com.example.vovch.listogram_20.data_types.SList;
 
 public class GroupFragmentActive extends Fragment {
     private View rootView = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,36 +52,10 @@ public class GroupFragmentActive extends Fragment {
         activity.onActiveReady();
         return rootView;
     }
-    /*public void askForDisactivating(final SList list){
-        AlertDialog.Builder ad = new AlertDialog.Builder(rootView.getContext());
-        ad.setMessage("Want To Kill List?");
-        ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                Toast.makeText(rootView.getContext(), "Nothing Happened", Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
-        ad.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                Group2Activity activity = (Group2Activity) getActivity();
-                activity.disactivateGroupList(list);
-                Toast.makeText(rootView.getContext(), "Processing",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-        ad.setCancelable(true);
-        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                Toast.makeText(rootView.getContext(), "Nothing Happened",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-        ad.show();
-    }*/
-    private void disactivateGroupList(DisactivateImageButton button){
+    private void disactivateGroupList(ListImageButton button){
         if(button.getList() != null) {
             Group2Activity activity = (Group2Activity) getActivity();
-            activity.disactivateGroupList(button.getList());
+            activity.disactivateGroupList(button);
         }
     }
     private void onItemMarkButtonTouchedAction(ItemButton button){
@@ -152,6 +127,21 @@ public class GroupFragmentActive extends Fragment {
         list.setCardView(listCard);
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
         LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
+        LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
+        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        if(list.getOwner() != -1) {
+            listNameTextView.setText("From: " + list.getOwnerName());
+        }
+        TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        if(list.getCreationTime() != null){
+            listCreationTimeTextView.setTextSize(10);
+            listCreationTimeTextView.setText(list.getHumanCreationTime());
+        }
+        leftHeaderLayout.addView(listNameTextView);
+        leftHeaderLayout.addView(listCreationTimeTextView);
+        headerLayout.addView(leftHeaderLayout);
+        FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
+        headerLayout.addView(imageButtonFrame);
         listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
@@ -159,11 +149,11 @@ public class GroupFragmentActive extends Fragment {
             makeListogramLine(items[i], listogramLayout);
         }
         FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.dis_button_frame_layout, listogramLayout, false);
-        DisactivateImageButton disactivateListButton = (DisactivateImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
+        ListImageButton disactivateListButton = (ListImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         View.OnClickListener disactivateListButtonOnClickListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DisactivateImageButton button = (DisactivateImageButton) v;
+                ListImageButton button = (ListImageButton) v;
                 disactivateGroupList(button);
             }
         };

@@ -185,9 +185,10 @@ public class WebCall {
                         listState = true;
                     }
                     int listOwner = tempListObject.getInt("list_owner");
+                    String listOwnerName = tempListObject.getString("list_owner_name");
                     int listGroupId = tempListObject.getInt("list_group");
                     String creation_time = tempListObject.getString("list_creation_time");
-                    tempList = new SList(items, listId, listGroupId, false, listState, listOwner, creation_time);
+                    tempList = new SList(items, listId, listGroupId, false, listState, listOwner, listOwnerName, creation_time);
                     for (int k = 0; k < items.length; k++) {
                         items[k].setList(tempList);
                     }

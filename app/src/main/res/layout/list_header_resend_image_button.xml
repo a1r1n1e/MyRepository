@@ -2,11 +2,7 @@
 <com.example.vovch.listogram_20.data_types.ListImageButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:focusable="true"
     android:clickable="true"
-    android:layout_marginBottom="0dp"
-    android:paddingTop="0dp"
-    android:background="@android:color/white"
-    >
-</com.example.vovch.listogram_20.data_types.ListImageButton>
+    android:background="@android:color/darker_gray"/>

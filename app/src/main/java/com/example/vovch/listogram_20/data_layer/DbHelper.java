@@ -19,7 +19,8 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String
             SQL_CREATE_LISTS = "CREATE TABLE " + SqLiteBaseContruct.Lists.TABLE_NAME + " (" +
             SqLiteBaseContruct.Lists._ID + " INTEGER PRIMARY KEY," +
-            SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + TEXT_TYPE + " )";
+            SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + TEXT_TYPE + COMMA_SEP +
+            SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME + TEXT_TYPE + " )";
     private static final String SQL_DROP_LISTS = "DROP TABLE IF EXISTS " + SqLiteBaseContruct.Lists.TABLE_NAME;
     private static final String
             SQL_CREATE_ITEMS = "CREATE TABLE " + SqLiteBaseContruct.Items.TABLE_NAME + " (" +

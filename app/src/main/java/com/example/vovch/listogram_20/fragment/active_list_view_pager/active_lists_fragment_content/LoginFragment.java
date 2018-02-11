@@ -53,7 +53,8 @@ public class LoginFragment extends ActiveListsFragment {
         Button Btn2 = (Button) rootView.findViewById(R.id.button200);
         Btn2.setOnClickListener(NewListenner2);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.loginFragmentOnStart();
+        //activity.loginFragmentOnStart();
+        activity.loginFragmentStart();
         return rootView;
     }
 

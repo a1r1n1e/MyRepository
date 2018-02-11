@@ -59,6 +59,29 @@ public class ActiveFragmentHistory extends Fragment {
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
         list.setCardView(listCard);
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
+        LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
+        LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
+        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        String listOwner;
+        if(list.getOwner() > 0) {
+            listOwner = list.getOwnerName();
+        }
+        else{
+            listOwner = "You";
+        }
+        listNameTextView.setText("From: " + listOwner);
+
+        TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        if(list.getCreationTime() != null){
+            listCreationTimeTextView.setTextSize(10);
+            listCreationTimeTextView.setText(list.getCreationTime());
+        }
+        leftHeaderLayout.addView(listNameTextView);
+        leftHeaderLayout.addView(listCreationTimeTextView);
+        headerLayout.addView(leftHeaderLayout);
+        FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
+        headerLayout.addView(imageButtonFrame);
+        listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
         for (int i = 0; i < length; i++) {

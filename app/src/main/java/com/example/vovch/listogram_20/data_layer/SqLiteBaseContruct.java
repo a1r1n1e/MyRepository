@@ -12,6 +12,7 @@ public final class SqLiteBaseContruct {
     }
     public static abstract class Lists implements BaseColumns{
         public static final String TABLE_NAME = "lists";
+        public static final String COLUMN_NAME_CREATION_TIME = "creation_time";
         public static final String COLUMN_NAME_ACTIVE = "active";
     }
     public static abstract class Items implements BaseColumns{

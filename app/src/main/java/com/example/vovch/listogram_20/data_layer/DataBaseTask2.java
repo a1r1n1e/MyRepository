@@ -46,7 +46,8 @@ public class DataBaseTask2 {
         String[] listArgs = {typeTask};
         String[] listProjection = {
                 SqLiteBaseContruct.Lists._ID,
-                SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE};
+                SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
+                SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME};
         String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
         String[] projection = {
                 SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
@@ -73,11 +74,9 @@ public class DataBaseTask2 {
                         itemNumber = cursor.getCount();
                         items = new Item[itemNumber];
                         for (int j = 0; j < itemNumber; j++) {
+                            type = false;
                             if(cursor.getString(2).equals("t")){
                                 type = true;
-                            }
-                            else{
-                                type = false;
                             }
                             tempItem = new Item(cursor.getInt(3), cursor.getString(0), cursor.getString(1), type);
                             items[j] = tempItem;
@@ -85,13 +84,11 @@ public class DataBaseTask2 {
                                 cursor.moveToNext();
                             }
                         }
+                        type = false;
                         if(listCursor.getString(1).equals("t")){
                             type = true;
                         }
-                        else{
-                            type = false;
-                        }
-                        tempSlist = new SList(items, listCursor.getInt(0), 0, false, type, 0, null);
+                        tempSlist = new SList(items, listCursor.getInt(0), 0, false, type, 0, null, listCursor.getString(2));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -162,9 +159,11 @@ public class DataBaseTask2 {
         dbHelper = new DbHelper(applicationContext);
         SList result;
         try {
+            String creationTime = Calendar.getInstance().getTime().toString();
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE, "t");
+            values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME, creationTime);
             long listId;
             listId = db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
             values.clear();
@@ -174,7 +173,7 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, incomingItems[i].getName());
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, incomingItems[i].getComment());
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST, listId);
-                values.put(SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME, Calendar.getInstance().getTime().toString());
+                values.put(SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME, creationTime);
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE, "t");
                 itemId = db.insert(SqLiteBaseContruct.Items.TABLE_NAME, SqLiteBaseContruct.Items._ID, values);
                 incomingItems[i].setId((int) itemId);                                                                               // long to int careful
@@ -182,7 +181,7 @@ public class DataBaseTask2 {
             }
             values.clear();
             dbHelper.close();
-            result = new SList(incomingItems, (int) listId, 0, false, true, 0, null);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
+            result = new SList(incomingItems, (int) listId, 0, false, true, 0, null, creationTime);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
         } catch (SQLException e) {
             result = null;
         }
