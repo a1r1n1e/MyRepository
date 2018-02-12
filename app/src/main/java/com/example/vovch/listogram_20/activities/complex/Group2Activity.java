@@ -305,6 +305,68 @@ public class Group2Activity extends WithLoginActivity {
 
     }
 
+    public void resendList(ListImageButton button){
+        SList list = button.getList();
+        if(list != null){
+            ResendDialogFragment dialogFragment = new ResendDialogFragment();
+            dialogFragment.setList(list);
+            dialogFragment.setActiveActivityProvider(provider);
+            dialogFragment.setActivity(Group2Activity.this);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            dialogFragment.show(transaction, "dialog");
+        }
+    }
+
+    public static class ResendDialogFragment extends DialogFragment {
+        private SList list;
+        private ActiveActivityProvider activeActivityProvider;
+        private Group2Activity activity;
+        protected void setActivity(Group2Activity newActivity){
+            activity = newActivity;
+        }
+        protected void setList(SList newList){
+            list = newList;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = "What To Do?";
+            String button1String = "Send To Group";
+            String button2String = "Save";
+            String button3String = "Cancel";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "List Downloaded", Toast.LENGTH_LONG)
+                            .show();
+                    activeActivityProvider.createListogramOffline(list.getItems(), activity);
+                }
+            });
+            builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Not Really Sent To Group Yet:)",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setCancelable(true);
+            list.getResendButton().setFocusable(true);
+            list.getResendButton().setClickable(true);
+            return builder.create();
+        }
+    }
+
 
     public void historyLoadOnGood(SList[] result){
         if(historyFragment != null) {

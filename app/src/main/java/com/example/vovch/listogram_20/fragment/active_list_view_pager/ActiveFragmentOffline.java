@@ -63,12 +63,12 @@ public class ActiveFragmentOffline extends Fragment {
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = list.getOwnerName();
+            listOwner = "From: " + list.getOwnerName();
         }
         else{
-            listOwner = "You";
+            listOwner = "Your List";
         }
-        listNameTextView.setText("From: " + listOwner);
+        listNameTextView.setText(listOwner);
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         if(list.getCreationTime() != null){

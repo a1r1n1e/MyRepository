@@ -41,7 +41,7 @@ public class DataExchanger{
         WebCall webCall = new WebCall();
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         String token = provider.userSessionData.getToken();
-        if (token != null) {
+        if (token != null && login != null && password != null) {
             tempResult = webCall.callServer(login, password, token, "login", "5", "5", "5", "5");
             if(tempResult != null) {
                 result = new StringBuilder(tempResult.substring(0, 3));
@@ -63,7 +63,7 @@ public class DataExchanger{
         WebCall webCall = new WebCall();
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         String token = provider.userSessionData.getToken();
-        if (token != null) {
+        if (token != null && login != null && password != null) {
             tempResult = webCall.callServer(login, password, token, "registration", "5", "5", "5", "5");
             if(tempResult != null) {
                 result = new StringBuilder(tempResult.substring(0, 3));
@@ -83,10 +83,12 @@ public class DataExchanger{
         ListInformer[] informers = null;
         WebCall webCall = new WebCall();
         String resultJsonString = null;
-        resultJsonString = webCall.callServer(userId, "2", "2", "checkactives", "4", "5", "5", "5");
-        if(resultJsonString.substring(0, 3).equals("200")){
-            informers = webCall.getListInformersFromJsonString(resultJsonString.substring(3));
-            informers = storage.setListInformers(informers);
+        if(userId != null) {
+            resultJsonString = webCall.callServer(userId, "2", "2", "checkactives", "4", "5", "5", "5");
+            if (resultJsonString.substring(0, 3).equals("200")) {
+                informers = webCall.getListInformersFromJsonString(resultJsonString.substring(3));
+                informers = storage.setListInformers(informers);
+            }
         }
         return informers;
     }
@@ -105,7 +107,7 @@ public class DataExchanger{
         int length = users.length;
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
-            if(provider.userSessionData.getId() != null) {
+            if(provider.userSessionData.getId() != null && name != null) {
                 JSONArray members = new JSONArray();
                 JSONObject tempMember;
                 for (int i = 0; i < length; i++) {
@@ -136,11 +138,13 @@ public class DataExchanger{
 
     public String checkUserWeb(String id){
         String result = null;
-        String tempResultString = null;
-        WebCall webCall = new WebCall();
-        tempResultString = webCall.callServer(id, "3", "3", "checkuser", "3", "3", "4", "4");
-        if(tempResultString != null && tempResultString.substring(0, 3).equals("200")) {
-            result = webCall.getStringFromJsonString(tempResultString.substring(3), "name");
+        if(id != null) {
+            String tempResultString = null;
+            WebCall webCall = new WebCall();
+            tempResultString = webCall.callServer(id, "3", "3", "checkuser", "3", "3", "4", "4");
+            if (tempResultString != null && tempResultString.substring(0, 3).equals("200")) {
+                result = webCall.getStringFromJsonString(tempResultString.substring(3), "name");
+            }
         }
         return result;
     }
@@ -210,12 +214,14 @@ public class DataExchanger{
     }
     public SList[] getGroupActiveDataFromWeb(String groupId){
         SList[] lists = null;
-        WebCall webCall = new WebCall();
-        String resultJsonString = webCall.callServer(groupId, "3", "3", "gettinglistograms", "3", "3", "3");
-        if(resultJsonString.substring(0, 3).equals("200")){
-            lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
+        if(groupId != null) {
+            WebCall webCall = new WebCall();
+            String resultJsonString = webCall.callServer(groupId, "3", "3", "gettinglistograms", "3", "3", "3");
+            if (resultJsonString.substring(0, 3).equals("200")) {
+                lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
+            }
+            setActiveListsToGroup(groupId, lists);
         }
-        setActiveListsToGroup(groupId, lists);
         return lists;
     }
 
@@ -234,16 +240,18 @@ public class DataExchanger{
     }
     public SList[] getGroupDataFromWeb(String groupId){
         SList[] lists = null;
-        WebCall webCall = new WebCall();
-        String lastListCreationTime = findGroupById(groupId).getLastListCreationTime();
-        if(lastListCreationTime == null){
-            lastListCreationTime = "0000";
+        if (groupId != null) {
+            WebCall webCall = new WebCall();
+            String lastListCreationTime = findGroupById(groupId).getLastListCreationTime();
+            if (lastListCreationTime == null) {
+                lastListCreationTime = "0000";
+            }
+            String resultJsonString = webCall.callServer(groupId, lastListCreationTime, "3", "gettinghistory", "3", "3", "3");
+            if (resultJsonString.substring(0, 3).equals("200")) {
+                lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
+            }
+            setHistoryListsToGroup(groupId, lists);
         }
-        String resultJsonString = webCall.callServer(groupId, lastListCreationTime, "3", "gettinghistory", "3", "3", "3");
-        if(resultJsonString.substring(0, 3).equals("200")){
-            lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
-        }
-        setHistoryListsToGroup(groupId, lists);
         return lists;
     }
 

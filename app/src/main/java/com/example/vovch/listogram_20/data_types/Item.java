@@ -1,12 +1,14 @@
 package com.example.vovch.listogram_20.data_types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.LinearLayout;
 
 /**
  * Created by vovch on 23.12.2017.
  */
 
-public class Item {
+public class Item implements Parcelable {
     private int id;
     private final String name;
     private final String comment;
@@ -30,12 +32,8 @@ public class Item {
         name = newName;
         comment = newComment;
     }
-    public boolean buttonEquals(ItemButton newButton){
-        boolean result = false;
-        if(button.equals(newButton)){
-            result = true;
-        }
-        return result;
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
     public void clear(){
         layout = null;
@@ -78,4 +76,43 @@ public class Item {
         return button;
     }
 
+
+    protected Item(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        comment = in.readString();
+        list = (SList) in.readValue(SList.class.getClassLoader());
+        state = in.readByte() != 0x00;
+        layout = (LinearLayout) in.readValue(LinearLayout.class.getClassLoader());
+        button = (ItemButton) in.readValue(ItemButton.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(comment);
+        dest.writeValue(list);
+        dest.writeByte((byte) (state ? 0x01 : 0x00));
+        dest.writeValue(layout);
+        dest.writeValue(button);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 }

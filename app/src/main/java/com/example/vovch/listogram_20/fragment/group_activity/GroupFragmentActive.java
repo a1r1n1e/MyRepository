@@ -129,9 +129,15 @@ public class GroupFragmentActive extends Fragment {
         LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
         LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        if(list.getOwner() != -1) {
-            listNameTextView.setText("From: " + list.getOwnerName());
+        String listOwner;
+        if(list.getOwner() > 0) {
+            listOwner = list.getOwnerName();
         }
+        else{
+            listOwner = "You";
+        }
+        listNameTextView.setText("From: " + listOwner);
+
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         if(list.getCreationTime() != null){
             listCreationTimeTextView.setTextSize(10);
@@ -141,10 +147,20 @@ public class GroupFragmentActive extends Fragment {
         leftHeaderLayout.addView(listCreationTimeTextView);
         headerLayout.addView(leftHeaderLayout);
         FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
+        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, imageButtonFrame, false);
+        imageButtonFrame.addView(resendButton);
         headerLayout.addView(imageButtonFrame);
         listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
+        list.setResendButton(resendButton);
+        resendButton.setList(list);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resend((ListImageButton) v);
+            }
+        });
         for (int i = 0; i < length; i++) {
             makeListogramLine(items[i], listogramLayout);
         }
@@ -277,5 +293,14 @@ public class GroupFragmentActive extends Fragment {
     }
     public SwipeRefreshLayout getRefresher(){
         return  (SwipeRefreshLayout) rootView.findViewById(R.id.group_active_fragment_refresher);
+    }
+
+    private void resend(ListImageButton button){
+        if(button.getList() != null){
+            Group2Activity activity = (Group2Activity) getActivity();
+            button.setFocusable(false);
+            button.setClickable(false);
+            activity.resendList(button);
+        }
     }
 }

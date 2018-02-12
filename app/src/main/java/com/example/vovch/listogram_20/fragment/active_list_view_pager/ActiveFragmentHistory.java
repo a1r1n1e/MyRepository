@@ -20,6 +20,7 @@ import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.data_types.HistoryScrollView;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
+import com.example.vovch.listogram_20.data_types.ListImageButton;
 import com.example.vovch.listogram_20.data_types.SList;
 
 /**
@@ -64,12 +65,12 @@ public class ActiveFragmentHistory extends Fragment {
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = list.getOwnerName();
+            listOwner = "From: " + list.getOwnerName();
         }
         else{
-            listOwner = "You";
+            listOwner = "Your List";
         }
-        listNameTextView.setText("From: " + listOwner);
+        listNameTextView.setText(listOwner);
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         if(list.getCreationTime() != null){
@@ -80,10 +81,20 @@ public class ActiveFragmentHistory extends Fragment {
         leftHeaderLayout.addView(listCreationTimeTextView);
         headerLayout.addView(leftHeaderLayout);
         FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
+        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, imageButtonFrame, false);
+        imageButtonFrame.addView(resendButton);
         headerLayout.addView(imageButtonFrame);
         listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
         int length = items.length;
+        list.setResendButton(resendButton);
+        resendButton.setList(list);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resend((ListImageButton) v);
+            }
+        });
         for (int i = 0; i < length; i++) {
             makeListogramLine(items[i], listogramLayout);
         }
@@ -141,6 +152,15 @@ public class ActiveFragmentHistory extends Fragment {
         addingFrameLayout.addView(addingLayout);
         addingFrameLayout.addView(groupButton);
         listogramLayout.addView(addingFrameLayout);
+    }
+
+    private void resend(ListImageButton button){
+        if(button.getList() != null){
+            ActiveListsActivity activity = (ActiveListsActivity) getActivity();
+            button.setFocusable(false);
+            button.setClickable(false);
+            activity.resendList(button);
+        }
     }
 
     public void listsListMaker(SList[] result) {

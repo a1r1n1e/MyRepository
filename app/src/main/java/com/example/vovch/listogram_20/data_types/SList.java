@@ -1,5 +1,7 @@
 package com.example.vovch.listogram_20.data_types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
 import android.widget.ImageButton;
@@ -13,7 +15,7 @@ import java.util.Date;
  * Created by vovch on 23.12.2017.
  */
 
-public class SList {
+public class SList implements Parcelable {
     private int id;
     private boolean state;
     private int group;
@@ -51,6 +53,9 @@ public class SList {
             creationTime = newCreationTime;
         }
         setHumanCreationTime();
+    }
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
     private void setHumanCreationTime(){
         if (creationTime != null) {
@@ -147,4 +152,51 @@ public class SList {
     public void setCardView(CardView newCardView){
         cardView = newCardView;
     }
+
+    protected SList(Parcel in) {
+        id = in.readInt();
+        state = in.readByte() != 0x00;
+        group = in.readInt();
+        type = in.readByte() != 0x00;
+        creationTime = in.readString();
+        humanCreationTime = in.readString();
+        owner = in.readInt();
+        ownerName = in.readString();
+        cardView = (CardView) in.readValue(CardView.class.getClassLoader());
+        disButton = (ImageButton) in.readValue(ImageButton.class.getClassLoader());
+        resendButton = (ImageButton) in.readValue(ImageButton.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeByte((byte) (state ? 0x01 : 0x00));
+        dest.writeInt(group);
+        dest.writeByte((byte) (type ? 0x01 : 0x00));
+        dest.writeString(creationTime);
+        dest.writeString(humanCreationTime);
+        dest.writeInt(owner);
+        dest.writeString(ownerName);
+        dest.writeValue(cardView);
+        dest.writeValue(disButton);
+        dest.writeValue(resendButton);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<SList> CREATOR = new Parcelable.Creator<SList>() {
+        @Override
+        public SList createFromParcel(Parcel in) {
+            return new SList(in);
+        }
+
+        @Override
+        public SList[] newArray(int size) {
+            return new SList[size];
+        }
+    };
 }

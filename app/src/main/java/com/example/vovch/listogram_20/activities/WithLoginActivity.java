@@ -11,4 +11,5 @@ public class WithLoginActivity extends AppCompatActivity {  //todo: make abstrac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_with_login);
     }
+
 }

@@ -73,6 +73,7 @@ public class ActiveListsActivity extends WithLoginActivity
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
+            intent.putExtra("loadtype", 0);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             ActiveListsActivity.this.finish();
@@ -229,6 +230,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
         if (id == R.id.nav_camera) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
+            intent.putExtra("loadtype", 0);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             this.finish();
@@ -509,6 +511,7 @@ public class ActiveListsActivity extends WithLoginActivity
             ResendDialogFragment dialogFragment = new ResendDialogFragment();
             dialogFragment.setList(list);
             dialogFragment.setActiveActivityProvider(provider);
+            dialogFragment.setActivity(ActiveListsActivity.this);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             dialogFragment.show(transaction, "dialog");
@@ -518,6 +521,10 @@ public class ActiveListsActivity extends WithLoginActivity
     public static class ResendDialogFragment extends DialogFragment {
         private SList list;
         private ActiveActivityProvider activeActivityProvider;
+        private ActiveListsActivity activity;
+        protected void setActivity(ActiveListsActivity newActivity){
+            activity = newActivity;
+        }
         protected void setList(SList newList){
             list = newList;
         }
@@ -527,25 +534,34 @@ public class ActiveListsActivity extends WithLoginActivity
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "Where Do You Want To Send List?";
-            String button1String = "Other Group";
-            String button2String = "Offline";
+            String message = "What To Do?";
+            String button1String = "Send To Group";
+            String button2String = "Copy";
             String button3String = "Cancel";
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Not Really Saved Yet:)", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), "List Copied", Toast.LENGTH_LONG)
                             .show();
+                    activeActivityProvider.createListogramOffline(list.getItems(), activity);
                 }
             });
-            builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Not Really Sent To Other Group:)",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+            if(activeActivityProvider.userSessionData.isLoginned()) {
+                builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getActivity(), "Not Working Jet :)",
+                                Toast.LENGTH_LONG).show();
+                        SList sendingList = new SList(list.getItems());
+                        Intent intent = new Intent(activity, GroupList2Activity.class);
+                        intent.putExtra("loadtype", 1);
+                        intent.putExtra("sending_list", sendingList);
+                        startActivity(intent);
+                        activity.finish();
+                    }
+                });
+            }
             builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), "Nothing Happened:)",
@@ -558,7 +574,6 @@ public class ActiveListsActivity extends WithLoginActivity
             return builder.create();
         }
     }
-
     public void itemmark(Item item) {
         provider.activeListsItemmark(item);
     }

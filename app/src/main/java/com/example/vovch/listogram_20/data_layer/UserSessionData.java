@@ -48,6 +48,13 @@ public class UserSessionData {
         }
         return instance;
     }
+    public boolean isLoginned(){
+        boolean result = false;
+        if(id != null && login != null && password != null && token != null){
+            result = true;
+        }
+        return result;
+    }
     public String getId(){
         return id;
     }
@@ -92,11 +99,13 @@ public class UserSessionData {
         return result;
     }
     public void savePrefs(final String userId, final String userName, final String userPassword){    // Should be used not from UI thread
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(APP_PREFERENCES_LOGIN, userName);
-        editor.putString(APP_PREFERENCES_USERID, userId);
-        editor.putString(APP_PREFERENCES_PASSWORD, userPassword);
-        editor.apply();
+        if(userId != null && userName != null && userPassword != null) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(APP_PREFERENCES_LOGIN, userName);
+            editor.putString(APP_PREFERENCES_USERID, userId);
+            editor.putString(APP_PREFERENCES_PASSWORD, userPassword);
+            editor.apply();
+        }
     }
     public void exit(){
         webExit(id, password);
@@ -130,30 +139,32 @@ public class UserSessionData {
         thread.start();
     }
     private void sendTokenToServer(String token, String userId, String password) {                 //Should be used not from UI thread
-        try {
-            URL url = new URL("http://217.10.35.250/java_token_refresh.php");
-            HashMap<String, String> postDataParams = new HashMap<String, String>();
-            postDataParams.put("newusertoken", token);
-            postDataParams.put("userid", userId);
-            postDataParams.put("userpassword", password);
+        if(token != null && userId != null && password != null) {
+            try {
+                URL url = new URL("http://217.10.35.250/java_token_refresh.php");
+                HashMap<String, String> postDataParams = new HashMap<String, String>();
+                postDataParams.put("newusertoken", token);
+                postDataParams.put("userid", userId);
+                postDataParams.put("userpassword", password);
 
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setDoOutput(true);                                                 // Enable POST stream
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(postDataParams));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);                                                 // Enable POST stream
+                conn.setDoInput(true);
+                conn.setRequestMethod("POST");
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(getPostDataString(postDataParams));
 
-            writer.flush();
-            writer.close();
-            os.close();
+                writer.flush();
+                writer.close();
+                os.close();
 
-            conn.disconnect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+                conn.disconnect();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {

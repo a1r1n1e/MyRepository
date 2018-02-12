@@ -31,14 +31,14 @@ public class LoginnerTask extends AsyncTask<String, Void, String> {
 
     @Override
     public void onPostExecute(String result) {
-        if (result.substring(0, 3).equals("200")) {
+        if (result != null && result.substring(0, 3).equals("200")) {
             activeActivityProvider.userSessionData.checkUserData(result.substring(3), userLogin, userPassword);
             activeActivityProvider.goodLoginTry(result.substring(3));
         } else {
-            if (result.substring(0, 3).equals("403")) {
+            if (result != null && result.substring(0, 3).equals("403")) {
                 result = "No Such User";
             } else {
-                result = "Something Went Wrong";
+                result = "Logged Off";
             }
             activeActivityProvider.badLoginTry(result);
         }

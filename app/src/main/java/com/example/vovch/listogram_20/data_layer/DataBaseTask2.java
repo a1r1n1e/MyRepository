@@ -12,6 +12,7 @@ import com.example.vovch.listogram_20.data_layer.SqLiteBaseContruct;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.SList;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -153,13 +154,18 @@ public class DataBaseTask2 {
             //return "";
         }
     }
-    public SList addList(Item[] incomingItems) {                                           //REFACTOR FOR DATASTORAGE
-
+    public SList addList(Item[] items) {                                                        //REFACTOR FOR DATASTORAGE
         int i, j;
+        int length = 0;
+        if(items != null) {
+            length = items.length;
+        }
+        Item[] incomingItems = new Item[length];
         dbHelper = new DbHelper(applicationContext);
         SList result;
         try {
-            String creationTime = Calendar.getInstance().getTime().toString();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
+            String creationTime =  dateFormat.format(Calendar.getInstance().getTime());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE, "t");
@@ -167,18 +173,15 @@ public class DataBaseTask2 {
             long listId;
             listId = db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
             values.clear();
-            int length = 0;
-            if(incomingItems != null) {
-                length = incomingItems.length;
-            }
             long itemId;
             for (i = 0; i < length; i++) {
-                values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, incomingItems[i].getName());
-                values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, incomingItems[i].getComment());
+                values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, items[i].getName());
+                values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, items[i].getComment());
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST, listId);
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME, creationTime);
                 values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE, "t");
                 itemId = db.insert(SqLiteBaseContruct.Items.TABLE_NAME, SqLiteBaseContruct.Items._ID, values);
+                incomingItems[i] = new Item(items[i].getName(), items[i].getComment(), true);
                 incomingItems[i].setId((int) itemId);                                                                               // long to int careful
                 values.clear();
             }

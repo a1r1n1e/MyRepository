@@ -16,14 +16,21 @@ import com.example.vovch.listogram_20.activities.WithLoginActivity;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.GroupButton;
+import com.example.vovch.listogram_20.data_types.SList;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
 public class GroupList2Activity extends WithLoginActivity {
     private ActiveActivityProvider provider;
+    private int loadType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        loadType = getIntent().getExtras().getInt("loadtype");
+        if(loadType == 1) {
+            SList resendingList = (SList) getIntent().getParcelableExtra("sending_list");
+        }
 
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(4, GroupList2Activity.this);

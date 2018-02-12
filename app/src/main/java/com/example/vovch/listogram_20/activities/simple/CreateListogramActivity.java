@@ -256,7 +256,7 @@ public class CreateListogramActivity extends WithLoginActivity {
             provider.createOnlineListogram(groupId, items);
         }
         else{
-            provider.createListogramOffline(items);
+            provider.createListogramOffline(items, CreateListogramActivity.this);
         }
     }
 
