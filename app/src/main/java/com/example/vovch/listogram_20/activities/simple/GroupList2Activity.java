@@ -43,7 +43,7 @@ public class GroupList2Activity extends WithLoginActivity {
         }
         setSupportActionBar(toolbar);
 
-        if(loadType == 1) {
+        if(loadType == 1 || loadType == 2) {
             resendingList = provider.getResendingList();
             TextView headerTextView = (TextView) findViewById(R.id.group_list_textview);
             headerTextView.setText("Choose Where To Send");
@@ -144,7 +144,7 @@ public class GroupList2Activity extends WithLoginActivity {
         };
         if(loadType == 0) {
             groupButton.setOnClickListener(groupTochedListenner);
-        } else if(loadType == 1){
+        } else if(loadType == 1 || loadType == 2){
             groupButton.setOnClickListener(sendListToLisntener);
         }
         addingLayout.addView(groupButton);
@@ -154,8 +154,14 @@ public class GroupList2Activity extends WithLoginActivity {
 
     }
     protected void onGroupWhereTOSendChosenAction(UserGroup group){
-        if(group != null && group.getId() != null){
-            provider.createOnlineListogram(group, resendingList.getItems(), GroupList2Activity.this);
+        if(loadType == 1) {
+            if (group != null && group.getId() != null) {
+                provider.createOnlineListogram(group, resendingList.getItems(), GroupList2Activity.this);
+            }
+        } else if(loadType == 2){
+            if (group != null && group.getId() != null) {
+                provider.resendListToGroup(resendingList, group);
+            }
         }
     }
     protected void onGroupNameTochedAction(UserGroup group){

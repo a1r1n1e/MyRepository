@@ -551,9 +551,8 @@ public class ActiveListsActivity extends WithLoginActivity
             if(activeActivityProvider.userSessionData.isLoginned()) {
                 builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(getActivity(), "Not Working Jet :)",
+                        Toast.makeText(getActivity(), "Chose Where To :)",
                                 Toast.LENGTH_LONG).show();
-                        SList sendingList = new SList(list.getItems());
                         activeActivityProvider.setResendingList(list);
                         Intent intent = new Intent(activity, GroupList2Activity.class);
                         intent.putExtra("loadtype", 1);

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.activities.simple.CreateListogramActivity;
+import com.example.vovch.listogram_20.activities.simple.GroupList2Activity;
 import com.example.vovch.listogram_20.activities.simple.GroupSettingsActivity;
 import com.example.vovch.listogram_20.activities.WithLoginActivity;
 import com.example.vovch.listogram_20.data_types.ListImageButton;
@@ -350,8 +351,13 @@ public class Group2Activity extends WithLoginActivity {
             });
             builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Not Really Sent To Group Yet:)",
+                    Toast.makeText(getActivity(), "Chose Where To:)",
                             Toast.LENGTH_LONG).show();
+                    activeActivityProvider.setResendingList(list);
+                    Intent intent = new Intent(activity, GroupList2Activity.class);
+                    intent.putExtra("loadtype", 2);
+                    startActivity(intent);
+                    activity.finish();
                 }
             });
             builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {

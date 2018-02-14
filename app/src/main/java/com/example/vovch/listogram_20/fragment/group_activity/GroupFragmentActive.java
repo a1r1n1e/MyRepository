@@ -197,7 +197,6 @@ public class GroupFragmentActive extends Fragment {
         listsListMaker(result);
     }
     public void fragmentShowBad(SList[] result){
-        int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
         TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
         parentLayout.addView(emptyInformer);
