@@ -136,7 +136,7 @@ public class DataExchanger{
 
 
 
-    public String checkUserWeb(String id){
+    private String checkUserWeb(String id){
         String result = null;
         if(id != null) {
             String tempResultString = null;
@@ -177,8 +177,7 @@ public class DataExchanger{
         return user;
     }
     public AddingUser[] getAddingUsers(){
-        AddingUser[] users = storage.getAddingUsers();
-        return users;
+        return storage.getAddingUsers();
     }
     public AddingUser[] makeAllUsersPossible(UserGroup group){
         AddingUser[] users = null;
@@ -193,109 +192,76 @@ public class DataExchanger{
 
 
 
-    public boolean checkGroupActiveData(String groupId){
+    public boolean checkGroupActiveData(UserGroup group){
         boolean result = false;
-        if(groupId != null) {
-            result = storage.isAnyGroupActiveLists(groupId);
+        if(group != null && group.getId() != null) {
+            result = storage.isAnyGroupActiveLists(group);
         }
         return result;
     }
-    public SList[] getGroupActiveData(String groupId){
-        SList[] lists = null;
-        /*if(storage.isAnyGroupActiveLists(groupId)){
-            lists = storage.getGroupActive(groupId);
-        }
-        else{
-            lists = getGroupActiveDataFromWeb(groupId);
-            //storage.setGroupActiveData(lists, groupId);
-        }*/
-        lists = getGroupActiveDataFromWeb(groupId);
-        return lists;
-    }
-    public SList[] getGroupActiveDataFromWeb(String groupId){
-        SList[] lists = null;
-        if(groupId != null) {
-            WebCall webCall = new WebCall();
-            String resultJsonString = webCall.callServer(groupId, "3", "3", "gettinglistograms", "3", "3", "3");
-            if (resultJsonString.substring(0, 3).equals("200")) {
-                lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
-            }
-            setActiveListsToGroup(groupId, lists);
-        }
-        return lists;
-    }
-
-
-    public SList[] getGroupHistoryData(String groupId){
+    public SList[] getGroupActiveData(UserGroup group){
         SList[] lists;
-        /*if(storage.isAnyGroupHistory(groupId)){
-            lists = storage.getGroupHistory(groupId);
-        }
-        else{
-            lists = getGroupDataFromWeb(groupId);
-            //storage.setGroupHistoryData(lists, groupId);
-        }*/
-        lists = getGroupDataFromWeb(groupId);
+                                            // this way just now
+        lists = getGroupActiveDataFromWeb(group);
         return lists;
     }
-    public SList[] getGroupDataFromWeb(String groupId){
+    private SList[] getGroupActiveDataFromWeb(UserGroup group){
         SList[] lists = null;
-        if (groupId != null) {
+        if(group != null && group.getId() != null) {
             WebCall webCall = new WebCall();
-            String lastListCreationTime = findGroupById(groupId).getLastListCreationTime();
+            String resultJsonString = webCall.callServer(group.getId(), "3", "3", "gettinglistograms", "3", "3", "3");
+            if (resultJsonString.substring(0, 3).equals("200")) {
+                lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
+            }
+            setActiveListsToGroup(group, lists);
+        }
+        return lists;
+    }
+
+
+    public SList[] getGroupHistoryData(UserGroup group){
+        SList[] lists;
+                    // this way just now
+        lists = getGroupDataFromWeb(group);
+        return lists;
+    }
+    private SList[] getGroupDataFromWeb(UserGroup group){
+        SList[] lists = null;
+        if (group != null) {
+            WebCall webCall = new WebCall();
+            String lastListCreationTime = group.getLastListCreationTime();
             if (lastListCreationTime == null) {
                 lastListCreationTime = "0000";
             }
-            String resultJsonString = webCall.callServer(groupId, lastListCreationTime, "3", "gettinghistory", "3", "3", "3");
+            String resultJsonString = webCall.callServer(group.getId(), lastListCreationTime, "3", "gettinghistory", "3", "3", "3");
             if (resultJsonString.substring(0, 3).equals("200")) {
-                lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3));
+                lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
             }
-            setHistoryListsToGroup(groupId, lists);
+            setHistoryListsToGroup(group, lists);
         }
         return lists;
     }
 
 
-    public void setHistoryListsToGroup(String groupId, SList[] lists){
-        UserGroup group = findGroupById(groupId);
+    private void setHistoryListsToGroup(UserGroup group, SList[] lists){
         if(group != null){
             group.setHistoryLists(lists);
             int length = lists.length;
             for(int i = 0; i < length; i++){
-                lists[i].setGroup(Integer.parseInt(groupId));
+                lists[i].setGroup(group);
             }
         }
     }
-    public void setActiveListsToGroup(String groupId, SList[] lists){
-        UserGroup group = findGroupById(groupId);
+    private void setActiveListsToGroup(UserGroup group, SList[] lists){
         if(group != null){
             group.setActiveLists(lists);
             int length = lists.length;
             for(int i = 0; i < length; i++){
-                lists[i].setGroup(Integer.parseInt(groupId));
+                lists[i].setGroup(group);
             }
         }
-    }
-    public UserGroup findGroupById(String groupId){
-        UserGroup[] groups = null;
-        UserGroup result = null;
-        groups = storage.getGroups();
-        int i = 0;
-        if(groups != null) {
-            int length = groups.length;
-            for (i = 0; i < length; i++) {
-                if (groups[i].getId().equals(groupId)) {
-                    break;
-                }
-            }
-            if (i < length) {
-                result  = groups[i];
-            }
-        }
-        return result;
     }
     public boolean updateGroupData(String groupId, String groupName){
-        boolean result = false;                                                                         //?
         UserGroup[] groups = storage.getGroups();
         int i = 0;
         int length = groups.length;
@@ -308,8 +274,7 @@ public class DataExchanger{
                 UserGroup newGroup = new UserGroup(groupName, groupId);
                 storage.addGroup(newGroup);
         }
-        result = true;
-        return result;
+        return true;
     }
     public UserGroup confirmGroupChanges(UserGroup group){
         UserGroup result = null;
@@ -350,7 +315,7 @@ public class DataExchanger{
                     if (group.getOwner().equals(provider.userSessionData.getId())) {
                         mergingUsersNeeded = false;
                     }
-                    result = storage.updateGroup(findGroupById(group.getId()), group, mergingUsersNeeded);
+                    result = storage.updateGroup(group, group, mergingUsersNeeded);
                 }
             }
         }
@@ -374,6 +339,36 @@ public class DataExchanger{
     }
 
 
+    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group){
+        UserGroup resultGroup = null;
+        String result = null;
+        if(itemsArray!= null && group != null){
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            WebCall webCall = new WebCall();
+            String jsonString = webCall.prepareItemsJSONString(itemsArray);
+            result = webCall.callServer(provider.userSessionData.getId(), jsonString, group.getId(), "sendlistogram", "6", "6", "6", "6");
+            if(result.substring(0, 3).equals("200")){
+                resultGroup = group;
+            }
+        }
+        return resultGroup;
+    }
+
+    public UserGroup resendListToGroup(SList list, UserGroup group){
+        UserGroup resultGroup = null;
+        String jsonString;
+        if(list != null && group != null && list.getItems() != null){
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            WebCall webCall = new WebCall();
+            String itemsJSONString = webCall.prepareItemsJSONString(list.getItems());
+            jsonString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), group.getId(), "resendlist", "66", "66", "66", itemsJSONString);
+            if(jsonString.substring(0,3).equals("200")){
+                resultGroup = group;
+            }
+        }
+        return resultGroup;
+    }
+
 
     public UserGroup[] getGroupsFromWeb(){
         UserGroup[] groups = null;
@@ -388,58 +383,38 @@ public class DataExchanger{
         return groups;
     }
 
-    public SList disactivateOnlineList(SList list){                                         //TODO optimise search by extending Button class and keeping direct cursor
+    public SList disactivateOnlineList(SList list){
         SList result = null;
-        if (list != null) {
+        if (list != null && list.getGroup() != null) {
+            UserGroup group = list.getGroup();
             WebCall webCall = new WebCall();
-            String groupId = String.valueOf(list.getGroup());
+            String groupId = list.getGroup().getId();
             String listId = String.valueOf(list.getId());
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String userId = String.valueOf(provider.userSessionData.getId());
             String resultString = webCall.callServer(groupId, listId, userId, "disactivatelist", "3", "2", "2", "7");
             if (resultString.substring(0, 3).equals("200")) {
-                int i;
-                UserGroup[] groups = storage.getGroups();
-                int length = groups.length;
-                for(i = 0; i < length; i++) {
-                    if(groups[i].getId().equals(groupId)){
-                        break;
-                    }
-                }
-                if(i < length){
-                    groups[i].disactivateList(list);
-                    result = list;
-                }
+                group.disactivateList(list);
+                result = list;
             }
         }
         return result;
     }
     public Item itemmarkOnline(Item item){
         Item result = null;
-        if(item != null) {
+        if(item != null && item.getList() != null && item.getList().getGroup() != null) {
             WebCall webCall = new WebCall();
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String userId = String.valueOf(provider.userSessionData.getId());
             String itemId = String.valueOf(item.getId());
             String listId = String.valueOf(item.getList().getId());
-            UserGroup[] groups = storage.getGroups();
-            int i = 0;
-
-            int length = groups.length;
-            for (i = 0; i < length; i++) {
-                if (groups[i].getId().equals(String.valueOf(item.getList().getGroup()))) {
-                    break;
-                }
-            }
-            if (i < length) {
-                UserGroup group = groups[i];
-                String groupId = group.getId();
-                String resultString = webCall.callServer(userId, itemId, listId, "itemmark", "6", "6", groupId);
-                if (resultString != null) {
-                    if (resultString.codePointAt(0) == '2') {
-                        result = item;
-                        group.itemmark(item);
-                    }
+            String groupId = item.getList().getGroup().getId();
+            String resultString = webCall.callServer(userId, itemId, listId, "itemmark", "6", "6", groupId);
+            if (resultString != null) {
+                if (resultString.codePointAt(0) == '2') {
+                    result = item;
+                    UserGroup group = item.getList().getGroup();
+                    group.itemmark(item);
                 }
             }
         }
@@ -535,13 +510,13 @@ public class DataExchanger{
         return lists;
     }
 
-    public SList[] getOfflineActiveDataFromMemory(){
+    private SList[] getOfflineActiveDataFromMemory(){
         SList[] lists;
         DataBaseTask2 task2 = new DataBaseTask2(context);
         lists = task2.getOffline(1);
         return lists;
     }
-    public SList[] getOfflineHistoryDataFromMemory(){
+    private SList[] getOfflineHistoryDataFromMemory(){
         SList[] lists;
         DataBaseTask2 task2 = new DataBaseTask2(context);
         lists = task2.getOffline(0);

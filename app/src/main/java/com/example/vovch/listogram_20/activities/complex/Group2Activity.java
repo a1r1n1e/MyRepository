@@ -206,7 +206,7 @@ public class Group2Activity extends WithLoginActivity {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.setRefresherRefreshing();
         }
-        provider.getGroupActiveLists(groupId);
+        provider.getGroupActiveLists(provider.getActiveGroup());
     }
     public void refreshActiveLists(){
         if(activeFragment != null){
@@ -244,7 +244,7 @@ public class Group2Activity extends WithLoginActivity {
         refreshHistoryLists();
     }
     public void historyLoad(){
-        provider.getGroupHistoryLists(groupId);
+        provider.getGroupHistoryLists(provider.getActiveGroup());
     }
     public void itemmark(Item item){
         provider.itemmark(item);

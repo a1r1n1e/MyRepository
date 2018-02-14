@@ -5,33 +5,30 @@ import android.os.AsyncTask;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.data_types.SList;
+import com.example.vovch.listogram_20.data_types.UserGroup;
 
 /**
  * Created by vovch on 05.01.2018.
  */
 
-public class GroupActiveGetterTask extends AsyncTask <String, Void, SList[]> {
-    private Context applicationContext;
+public class GroupActiveGetterTask extends AsyncTask <Object, Void, SList[]> {
     private ActiveActivityProvider activeActivityProvider;
-    private String groupId;
+    private UserGroup group;
 
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public SList[] doInBackground(String... loginPair){
+    public SList[] doInBackground(Object... loginPair){
         SList[] result;
-        groupId = loginPair[0];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        result = activeActivityProvider.dataExchanger.getGroupActiveData(groupId);
+        group = (UserGroup) loginPair[0];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
+        result = activeActivityProvider.dataExchanger.getGroupActiveData(group);
         return result;
     }
     @Override
     public void onPostExecute(SList[] result){
         if(result == null || result.length == 0){
-            activeActivityProvider.showGroupActiveListsBad(result, groupId);
+            activeActivityProvider.showGroupActiveListsBad(result, group.getId());
         }  else {
-            activeActivityProvider.showGroupActiveListsGood(result, groupId);
+            activeActivityProvider.showGroupActiveListsGood(result, group.getId());
         }
     }
 }

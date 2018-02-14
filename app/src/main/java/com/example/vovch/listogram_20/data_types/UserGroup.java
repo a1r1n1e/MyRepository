@@ -1,5 +1,7 @@
 package com.example.vovch.listogram_20.data_types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.widget.Button;
 
@@ -14,7 +16,7 @@ import java.util.Arrays;
  * Created by vovch on 03.01.2018.
  */
 
-public class UserGroup {
+public class UserGroup /*implements Parcelable*/ {
     private String name;
     private String id;
     private ArrayList<SList> activeLists;
@@ -188,4 +190,75 @@ public class UserGroup {
         }
         return result;
     }
+
+    /*protected UserGroup(Parcel in) {
+        name = in.readString();
+        id = in.readString();
+        if (in.readByte() == 0x01) {
+            activeLists = new ArrayList<SList>();
+            in.readList(activeLists, SList.class.getClassLoader());
+        } else {
+            activeLists = null;
+        }
+        if (in.readByte() == 0x01) {
+            historyLists = new ArrayList<SList>();
+            in.readList(historyLists, SList.class.getClassLoader());
+        } else {
+            historyLists = null;
+        }
+        if (in.readByte() == 0x01) {
+            members = new ArrayList<AddingUser>();
+            in.readList(members, AddingUser.class.getClassLoader());
+        } else {
+            members = null;
+        }
+        //cardView = (CardView) in.readValue(CardView.class.getClassLoader());
+        //button = (Button) in.readValue(Button.class.getClassLoader());
+        owner = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(id);
+        if (activeLists == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(activeLists);
+        }
+        if (historyLists == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(historyLists);
+        }
+        if (members == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(members);
+        }
+        //dest.writeValue(cardView);
+        //dest.writeValue(button);
+        dest.writeString(owner);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<UserGroup> CREATOR = new Parcelable.Creator<UserGroup>() {
+        @Override
+        public UserGroup createFromParcel(Parcel in) {
+            return new UserGroup(in);
+        }
+
+        @Override
+        public UserGroup[] newArray(int size) {
+            return new UserGroup[size];
+        }
+    };*/
 }

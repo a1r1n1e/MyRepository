@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,10 +16,10 @@ import java.util.Date;
  * Created by vovch on 23.12.2017.
  */
 
-public class SList implements Parcelable {
+public class SList /*implements Parcelable*/ {
     private int id;
     private boolean state;
-    private int group;
+    private UserGroup group;
     private boolean type;
     private Item[] items;
     private final String creationTime;
@@ -32,14 +33,14 @@ public class SList implements Parcelable {
     public SList(Item[] newItems){
         items = newItems;
         id = 0;
-        group = 0;
+        group = null;
         owner = -1;
         type = false;
         state = true;
         creationTime = Calendar.getInstance().getTime().toString();
         setHumanCreationTime();
     }
-    public SList(Item[] newItems, int newId, int newGroup, boolean newType, boolean newState, int newOwner, String newOwnerName, String newCreationTime){
+    public SList(Item[] newItems, int newId, UserGroup newGroup, boolean newType, boolean newState, int newOwner, String newOwnerName, String newCreationTime){
         setItems(newItems);
         setId(newId);
         setGroup(newGroup);
@@ -108,10 +109,10 @@ public class SList implements Parcelable {
     public void setId(int newId){
         id = newId;
     }
-    public int getGroup(){
+    public UserGroup getGroup(){
         return group;
     }
-    public void setGroup(int newGroup){
+    public void setGroup(UserGroup newGroup){
         group = newGroup;
     }
     public boolean getType(){
@@ -139,10 +140,6 @@ public class SList implements Parcelable {
         return humanCreationTime;
     }
 
-    public SList createAlmostCopy(){
-        SList copy = new SList(items);
-        return copy;
-    }
     public void disactivate(){
         setState(false);
     }
@@ -153,18 +150,26 @@ public class SList implements Parcelable {
         cardView = newCardView;
     }
 
-    protected SList(Parcel in) {
+    /*protected SList(Parcel in) {
         id = in.readInt();
+
+        Parcelable[] parcelableArray =
+                in.readParcelableArray(Item.class.getClassLoader());
+        items = null;
+        if (parcelableArray != null) {
+            items = Arrays.copyOf(parcelableArray, parcelableArray.length, Item[].class);
+        }
+
         state = in.readByte() != 0x00;
-        group = in.readInt();
+        group = (UserGroup) in.readValue(UserGroup.class.getClassLoader());
         type = in.readByte() != 0x00;
         creationTime = in.readString();
         humanCreationTime = in.readString();
         owner = in.readInt();
         ownerName = in.readString();
-        cardView = (CardView) in.readValue(CardView.class.getClassLoader());
-        disButton = (ImageButton) in.readValue(ImageButton.class.getClassLoader());
-        resendButton = (ImageButton) in.readValue(ImageButton.class.getClassLoader());
+        //cardView = (CardView) in.readValue(CardView.class.getClassLoader());
+        //disButton = (ImageButton) in.readValue(ImageButton.class.getClassLoader());
+        //resendButton = (ImageButton) in.readValue(ImageButton.class.getClassLoader());
     }
 
     @Override
@@ -176,15 +181,16 @@ public class SList implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeByte((byte) (state ? 0x01 : 0x00));
-        dest.writeInt(group);
+        dest.writeValue(group);
+        dest.writeTypedArray(items, flags);
         dest.writeByte((byte) (type ? 0x01 : 0x00));
         dest.writeString(creationTime);
         dest.writeString(humanCreationTime);
         dest.writeInt(owner);
         dest.writeString(ownerName);
-        dest.writeValue(cardView);
-        dest.writeValue(disButton);
-        dest.writeValue(resendButton);
+        //dest.writeValue(cardView);
+        //dest.writeValue(disButton);
+        //dest.writeValue(resendButton);
     }
 
     @SuppressWarnings("unused")
@@ -198,5 +204,5 @@ public class SList implements Parcelable {
         public SList[] newArray(int size) {
             return new SList[size];
         }
-    };
+    };*/
 }

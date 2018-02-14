@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 public class CreateListogramActivity extends WithLoginActivity {
     protected ArrayList<TempItem> TempItems = new ArrayList<>();
-    private String groupName;
     private String groupId;
     private ActiveActivityProvider provider;
 
@@ -83,7 +82,6 @@ public class CreateListogramActivity extends WithLoginActivity {
             UserGroup currentGroup = provider.getActiveGroup();
             if(currentGroup != null){
                 groupId = currentGroup.getId();
-                groupName = currentGroup.getName();
             }
         }
 
@@ -253,7 +251,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     public void sendListogram(){
         Item[] items = makeSendingItemsArray();
         if(loadType) {
-            provider.createOnlineListogram(groupId, items);
+            provider.createOnlineListogram(provider.getActiveGroup(), items, CreateListogramActivity.this);
         }
         else{
             provider.createListogramOffline(items, CreateListogramActivity.this);

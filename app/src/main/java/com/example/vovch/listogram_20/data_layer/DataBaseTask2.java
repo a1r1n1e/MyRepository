@@ -89,7 +89,7 @@ public class DataBaseTask2 {
                         if(listCursor.getString(1).equals("t")){
                             type = true;
                         }
-                        tempSlist = new SList(items, listCursor.getInt(0), 0, false, type, 0, null, listCursor.getString(2));
+                        tempSlist = new SList(items, listCursor.getInt(0), null, false, type, 0, null, listCursor.getString(2));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -187,7 +187,7 @@ public class DataBaseTask2 {
             }
             values.clear();
             dbHelper.close();
-            result = new SList(incomingItems, (int) listId, 0, false, true, 0, null, creationTime);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
+            result = new SList(incomingItems, (int) listId, null, false, true, 0, null, creationTime);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
         } catch (SQLException e) {
             result = null;
         }

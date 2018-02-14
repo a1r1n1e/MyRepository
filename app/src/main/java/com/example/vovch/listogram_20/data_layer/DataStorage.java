@@ -6,6 +6,7 @@ import com.example.vovch.listogram_20.data_types.ListInformer;
 import com.example.vovch.listogram_20.data_types.SList;
 import com.example.vovch.listogram_20.data_types.TempItem;
 import com.example.vovch.listogram_20.data_types.UserGroup;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,98 +176,50 @@ public class DataStorage {
         Groups = new ArrayList<>(Arrays.asList(groups));
         return groups;
     }
-    protected boolean isAnyGroupActiveLists(String groupId){
+    protected boolean isAnyGroupActiveLists(UserGroup group){
         boolean result = false;
-        int i;
-        for(i = 0; i < Groups.size(); i++){
-            if(Groups.get(i).getId().equals(groupId)){
-                break;
-            }
-        }
-        if(i < Groups.size()){
-            if(Groups.get(i).getActiveLists() != null) {
-                if(Groups.get(i).getActiveLists().length > 0) {
-                    result = true;
-                }
+        if(group != null && group.getActiveLists() != null) {
+            if(group.getActiveLists().length > 0) {
+                result = true;
             }
         }
         return result;
     }
-    protected SList[] getGroupActive(String groupId){
-        int i;
+    protected SList[] getGroupActive(UserGroup group){
         SList[] lists = null;
-        for(i = 0; i < Groups.size(); i++){
-            if(Groups.get(i).getId().equals(groupId)) {
-                break;
-            }
-        }
-        if(i < Groups.size()){
-            if(Groups.get(i).getActiveLists() != null) {
-                lists = Groups.get(i).getActiveLists();
-            }
+        if(group.getActiveLists() != null) {
+            lists = group.getActiveLists();
         }
         return lists;
     }
-    protected void setGroupActiveData(SList[] lists, String groupId){
-        int i;
-        for(i = 0; i < Groups.size(); i++){
-            if( Groups.get(i).getId().equals(groupId)) {
-                break;
-            }
-        }
-        if(i < Groups.size()){
-            if(Groups.get(i).getActiveLists() != null) {
-                Groups.get(i).setActiveLists(lists);
-            }
+    protected void setGroupActiveData(SList[] lists, UserGroup group){
+        if(group.getActiveLists() != null) {
+            group.setActiveLists(lists);
         }
     }
 
 
 
 
-    protected boolean isAnyGroupHistory(String groupId){
+    protected boolean isAnyGroupHistory(UserGroup group){
         boolean result = false;
-        int i;
-        for(i = 0; i < Groups.size(); i++){
-            if(Groups.get(i).getId().equals(groupId)){
-                break;
-            }
-        }
-        if(i < Groups.size()){
-            if(Groups.get(i).getHistoryLists() != null) {
-                if(Groups.get(i).getHistoryLists().length > 0) {
-                    result = true;
-                }
+        if(group != null && group.getHistoryLists() != null) {
+            if(group.getHistoryLists().length > 0) {
+                result = true;
             }
         }
         return result;
     }
-    protected SList[] getGroupHistory(String groupId){
-        int i;
-        SList[] lists = null;
-        for(i = 0; i < Groups.size(); i++){
-            if(Groups.get(i).getId().equals(groupId)) {
-                break;
-            }
-        }
-        if(i < Groups.size()){
-            if(Groups.get(i).getHistoryLists() != null) {
-                lists = Groups.get(i).getHistoryLists();
-            }
+    protected SList[] getGroupHistory(UserGroup group){
+        SList[] lists = new SList[0];
+        if(group.getHistoryLists() != null) {
+            lists = group.getHistoryLists();
         }
         return lists;
     }
-    protected void setGroupHistoryData(SList[] lists, String groupId){
-        int i;
-        for(i = 0; i < Groups.size(); i++){
-            if(Groups.get(i).getId().equals(groupId)) {
-                break;
-            }
-        }
-        if(i < Groups.size()){
-            if(Groups.get(i).getHistoryLists() != null) {
-                Groups.get(i).setHistoryLists(lists);
-            }
+    protected void setGroupHistoryData(SList[] lists, UserGroup group){
+        if(group.getHistoryLists() != null) {
+            group.setHistoryLists(lists);
         }
     }
 

@@ -554,9 +554,9 @@ public class ActiveListsActivity extends WithLoginActivity
                         Toast.makeText(getActivity(), "Not Working Jet :)",
                                 Toast.LENGTH_LONG).show();
                         SList sendingList = new SList(list.getItems());
+                        activeActivityProvider.setResendingList(list);
                         Intent intent = new Intent(activity, GroupList2Activity.class);
                         intent.putExtra("loadtype", 1);
-                        intent.putExtra("sending_list", sendingList);
                         startActivity(intent);
                         activity.finish();
                     }

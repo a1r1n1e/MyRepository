@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.os.ParcelableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -215,8 +216,10 @@ public class ActiveFragmentOffline extends Fragment {
         parentLayout.addView(emptyInformer);
     }
     public void fragmentShowSecondGood(Item result){
-        LinearLayout itemMarkLayout = result.getLayout();
         Button itemMarkTouchedButton = result.getButton();
+        itemMarkTouchedButton.setFocusable(true);
+        itemMarkTouchedButton.setClickable(true);
+        LinearLayout itemMarkLayout = result.getLayout();
         if(result.getState()){
             itemMarkTouchedButton.setFocusable(true);
             itemMarkTouchedButton.setClickable(true);

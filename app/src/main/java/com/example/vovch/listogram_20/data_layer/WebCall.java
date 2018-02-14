@@ -36,7 +36,7 @@ public class WebCall {
     public WebCall() {
     }
 
-    public String callServer(String... loginPair) {
+    protected String callServer(String... loginPair) {
         String response = "";
 
         HttpURLConnection conn = null;
@@ -102,7 +102,7 @@ public class WebCall {
         return response;
     }
 
-    public UserGroup[] getGroupsFromJsonString(String result) {
+    protected UserGroup[] getGroupsFromJsonString(String result) {
         UserGroup[] groups = null;
         try {
             JSONArray groupsArray = new JSONArray(result);
@@ -139,6 +139,25 @@ public class WebCall {
         return groups;
     }
 
+    protected String prepareItemsJSONString(Item[] items){
+        String result = null;
+        int length = items.length;
+        JSONArray itemsArray = new JSONArray();
+        try{
+            for(int i = 0; i < length; i++){
+                JSONObject item = new JSONObject();
+                item.put("item_name", items[i].getName());
+                item.put("item_comment", items[i].getComment());
+                itemsArray.put(item);
+            }
+            result = itemsArray.toString();
+        }
+        catch (JSONException e){
+                                                                                                        //TODO
+        }
+        return result;
+    }
+
     protected String getStringFromJsonString(String jsonString, String value) {
         String result = null;
         try {
@@ -150,7 +169,7 @@ public class WebCall {
         return result;
     }
 
-    public SList[] getGroupListsFromJsonString(String result) {
+    protected SList[] getGroupListsFromJsonString(String result, UserGroup group) {
         SList[] lists = null;
         try {
             JSONArray fromJsonLists = new JSONArray(result);
@@ -187,8 +206,17 @@ public class WebCall {
                     int listOwner = tempListObject.getInt("list_owner");
                     String listOwnerName = tempListObject.getString("list_owner_name");
                     int listGroupId = tempListObject.getInt("list_group");
+
+
+
+                    if(Integer.parseInt(group.getId()) != listGroupId){
+                        group = null;
+                    }
+
+
+
                     String creation_time = tempListObject.getString("list_creation_time");
-                    tempList = new SList(items, listId, listGroupId, false, listState, listOwner, listOwnerName, creation_time);
+                    tempList = new SList(items, listId, group, false, listState, listOwner, listOwnerName, creation_time);
                     for (int k = 0; k < items.length; k++) {
                         items[k].setList(tempList);
                     }
@@ -203,7 +231,7 @@ public class WebCall {
         return lists;
     }
 
-    public ListInformer[] getListInformersFromJsonString(String result) {
+    protected ListInformer[] getListInformersFromJsonString(String result) {
         ListInformer[] informers = null;
         try {
             JSONArray informersArray = new JSONArray(result);

@@ -147,7 +147,7 @@ public class ActiveFragmentHistory extends Fragment {
         groupButton.setClickable(false);
         addingLayout.addView(itemName);
         addingLayout.addView(itemComment);
-        item.setLayout(addingLayout);
+        //item.setLayout(addingLayout);
         item.setButton(groupButton);
         addingFrameLayout.addView(addingLayout);
         addingFrameLayout.addView(groupButton);

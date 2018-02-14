@@ -62,6 +62,7 @@ public class GroupFragmentActive extends Fragment {
         if(button.getItem() != null) {
             button.setFocusable(false);
             button.setClickable(false);
+            button.getItem().getLayout().setAlpha(0.5f);
             Group2Activity groupActivity = (Group2Activity) getActivity();
             groupActivity.itemmark(button.getItem());
         }

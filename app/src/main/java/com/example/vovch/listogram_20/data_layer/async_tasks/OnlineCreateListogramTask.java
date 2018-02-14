@@ -4,8 +4,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
+import com.example.vovch.listogram_20.activities.WithLoginActivity;
+import com.example.vovch.listogram_20.activities.simple.CreateListogramActivity;
+import com.example.vovch.listogram_20.activities.simple.GroupList2Activity;
 import com.example.vovch.listogram_20.data_layer.WebCall;
 import com.example.vovch.listogram_20.data_types.Item;
+import com.example.vovch.listogram_20.data_types.UserGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,50 +20,36 @@ import org.json.JSONObject;
  * Created by vovch on 03.01.2018.
  */
 
-public class OnlineCreateListogramTask extends AsyncTask <Item[], Void, String>{
-    private Context applicationContext;
+public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGroup>{
     private ActiveActivityProvider activeActivityProvider;
-    private String groupId;
-    private String userId;
-    private Item[] items;
+    private WithLoginActivity activity;
 
     @Override
-    public String doInBackground(Item[]... loginPair){
-        String result = null;
-        items = loginPair[0];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        int length = items.length;
-        JSONArray itemsArray = new JSONArray();
-        for(int i = 0; i < length; i++){
-            JSONObject item = new JSONObject();
-            try {
-                item.put("item_name", items[i].getName());
-                item.put("item_comment", items[i].getComment());
-                itemsArray.put(item);
-            }
-            catch (JSONException e){
-                                                                                                    //TODO
-            }
-        }
-
-        String jsonString = itemsArray.toString();
-        WebCall webCall = new WebCall();
-        result = webCall.callServer(userId, jsonString, groupId, "sendlistogram", "6", "6", "6", "6");
-
+    public UserGroup doInBackground(Object... loginPair){
+        UserGroup result;
+        Item [] items = (Item[]) loginPair[0];
+        UserGroup group = (UserGroup) loginPair[1];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[2];
+        activity = (WithLoginActivity) loginPair[3];
+        result = activeActivityProvider.dataExchanger.addOnlineList(items, group);
         return result;
     }
     @Override
-    public void onPostExecute(String result){
-        activeActivityProvider.showOnlineListogramCreatedGood();
-        activeActivityProvider.dataExchanger.clearTempItems();
-    }
-    public void setUserId(String newUserId){
-        userId = newUserId;
-    }
-    public void setGroupId(String newGroupId){
-        groupId = newGroupId;
-    }
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
+    public void onPostExecute(UserGroup result){
+        if(activity instanceof  CreateListogramActivity) {
+            if (result != null) {
+                activeActivityProvider.showOnlineListogramCreatedGood();
+                activeActivityProvider.dataExchanger.clearTempItems();
+            } else {
+                activeActivityProvider.showOnlineListogramCreatedBad();
+            }
+        } else if(activity instanceof  GroupList2Activity){
+            if(result != null){
+                activeActivityProvider.resendListToGroupGood(result);
+            }
+            else{
+                activeActivityProvider.resendListToGroupBad(null);
+            }
+        }
     }
 }

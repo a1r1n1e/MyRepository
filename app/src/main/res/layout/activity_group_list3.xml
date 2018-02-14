@@ -7,11 +7,27 @@
     tools:context="com.example.vovch.listogram_20.activities.simple.GroupList2Activity"
     android:background="@color/elementLayoutColor1">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs_group_list"
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/group_list_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/elementLayoutColor1"/>
+        android:layout_height="100dp"
+        android:background="@color/elementLayoutColor1">
+                <TextView
+                    android:id="@+id/group_list_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="0.8"
+                    android:text="Your Groups"
+                    android:maxLines="1"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whoBuysGray"
+                    android:textSize="30sp"
+                    android:gravity="start"
+                    android:layout_gravity="center" />
+    </android.support.v7.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"

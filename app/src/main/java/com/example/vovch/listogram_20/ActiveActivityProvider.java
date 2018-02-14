@@ -34,6 +34,7 @@ import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineDisactivateTa
 import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineItemmarkTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RegistrationTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RemoveAddedUserTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.ResendListToGroupTask;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ListInformer;
@@ -50,6 +51,7 @@ public class ActiveActivityProvider extends Application {
     private Context activeActivity;
     private int activeActivityNumber;
     private UserGroup activeGroup;
+    private SList list;
     public DataExchanger dataExchanger;
     public UserSessionData userSessionData;
 
@@ -86,6 +88,26 @@ public class ActiveActivityProvider extends Application {
 
     public int getActiveActivityNumber() {
         return activeActivityNumber;
+    }
+
+    public void setResendingList(SList newList){
+        list = newList;
+    }
+
+    public SList getResendingList(){
+        return list;
+    }
+
+    public void nullResendingList(){
+        list = null;
+    }
+
+    public boolean isAnyResendingList(){
+        boolean result = false;
+        if(list != null){
+            result = true;
+        }
+        return result;
     }
 
 
@@ -368,16 +390,14 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void getGroupHistoryLists(String groupId) {
+    public void getGroupHistoryLists(UserGroup group) {
         GroupHistoryGetterTask groupHistoryGetterTask = new GroupHistoryGetterTask();
-        groupHistoryGetterTask.setApplicationContext(ActiveActivityProvider.this);
-        groupHistoryGetterTask.execute(groupId);
+        groupHistoryGetterTask.execute(group, ActiveActivityProvider.this);
     }
 
-    public void getGroupActiveLists(String groupId) {
+    public void getGroupActiveLists(UserGroup group) {
         GroupActiveGetterTask groupActiveGetterTask = new GroupActiveGetterTask();
-        groupActiveGetterTask.setApplicationContext(ActiveActivityProvider.this);
-        groupActiveGetterTask.execute(groupId);
+        groupActiveGetterTask.execute(group, ActiveActivityProvider.this);
     }
 
     public void disactivateGroupList(SList list) {
@@ -393,12 +413,9 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void createOnlineListogram(String groupId, Item[] items) {
+    public void createOnlineListogram(UserGroup group, Item[] items, WithLoginActivity activity) {
         OnlineCreateListogramTask onlineCreateListogramTask = new OnlineCreateListogramTask();
-        onlineCreateListogramTask.setApplicationContext(ActiveActivityProvider.this);
-        onlineCreateListogramTask.setUserId(String.valueOf(userSessionData.getId()));
-        onlineCreateListogramTask.setGroupId(groupId);
-        onlineCreateListogramTask.execute(items);
+        onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, activity);
     }
 
     public void saveTempItems(TempItem[] tempItems) {
@@ -431,6 +448,22 @@ public class ActiveActivityProvider extends Application {
             activity.showBad(result);
         }
     }
+
+    public void resendListToGroup(SList resendingList, UserGroup group){
+        ResendListToGroupTask resendListToGroupTask = new ResendListToGroupTask();
+        resendListToGroupTask.execute(resendingList, group, ActiveActivityProvider.this);
+    }
+
+    public void resendListToGroupGood(UserGroup result){
+        if(getActiveActivityNumber() == 4){
+            GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
+            activity.goToGroup(result);
+            nullResendingList();
+        }
+    }
+    public void resendListToGroupBad(UserGroup result){
+
+    }                                           //TODO
 
 
     public void showTouchedGroupGoingGood(UserGroup result) {
@@ -476,7 +509,7 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineItemmarkedGood(Item item) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))) {
+            if (getActiveGroup().equals(item.getList().getGroup())) {
                 activity.showThirdGood(item);
             }
         }
@@ -485,7 +518,7 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineItemmarkedBad(Item item) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))) {
+            if (getActiveGroup().equals(item.getList().getGroup())) {
                 activity.showThirdBad(item);
             }
         }
@@ -504,9 +537,9 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineDisactivateListGood(SList result) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().getId().equals(String.valueOf(result.getGroup()))) {
+            if (getActiveGroup().equals(result.getGroup())) {
                 activity.showSecondGood(result);
-                if (!dataExchanger.checkGroupActiveData(getActiveGroup().getId())) {
+                if (!dataExchanger.checkGroupActiveData(getActiveGroup())) {
                     activity.showBad(new SList[0]);
                 }
             }
@@ -516,7 +549,7 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineDisactivateListBad(SList result) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().getId().equals(String.valueOf(result.getGroup()))) {
+            if (getActiveGroup().equals(result.getGroup())) {
                 activity.showSecondBad(result);
             }
         }
@@ -533,7 +566,6 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineListogramCreatedBad() {                                                 //TODO
 
     }
-
 
     public void showGroupHistoryListsGood(SList[] lists, String groupId) {
         if (getActiveActivityNumber() == 3) {
@@ -552,7 +584,6 @@ public class ActiveActivityProvider extends Application {
             }
         }
     }
-
 
     public void showGroupActiveListsGood(SList[] lists, String groupId) {
         if (getActiveActivityNumber() == 3) {
