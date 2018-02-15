@@ -505,8 +505,66 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-    public void resendList(ListImageButton button){
-        SList list = button.getList();
+    public void redactList(SList list){
+        if(list != null){
+            RedactDialogFragment dialogFragment = new RedactDialogFragment();
+            dialogFragment.setList(list);
+            dialogFragment.setActiveActivityProvider(provider);
+            dialogFragment.setActivity(ActiveListsActivity.this);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            dialogFragment.show(transaction, "dialog");
+        }
+    }
+
+    public static class RedactDialogFragment extends DialogFragment {
+        private SList list;
+        private ActiveActivityProvider activeActivityProvider;
+        private ActiveListsActivity activity;
+        protected void setActivity(ActiveListsActivity newActivity){
+            activity = newActivity;
+        }
+        protected void setList(SList newList){
+            list = newList;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = "Whant To Redact List?";
+            String button1String = "Yes";
+            String button2String = "No";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Redacting", Toast.LENGTH_LONG)
+                            .show();
+                    activeActivityProvider.setResendingList(list);
+                    activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
+                    Intent intent = new Intent(activity, CreateListogramActivity.class);
+                    intent.putExtra("loadtype", 2);
+                    startActivity(intent);
+                    activity.finish();
+                }
+            });
+            builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setCancelable(true);
+            list.getRedactButton().setFocusable(true);
+            list.getRedactButton().setClickable(true);
+            return builder.create();
+        }
+    }
+
+    public void resendList(SList list){
         if(list != null){
             ResendDialogFragment dialogFragment = new ResendDialogFragment();
             dialogFragment.setList(list);
@@ -696,9 +754,9 @@ public class ActiveListsActivity extends WithLoginActivity
     private void fabActionOne(FloatingActionButton fab) {
         fab.show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send, getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.plus_32, getTheme()));
         } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.plus_32));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

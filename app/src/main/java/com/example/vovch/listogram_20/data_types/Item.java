@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 
 public class Item /*implements Parcelable*/ {
     private int id;
-    private final String name;
-    private final String comment;
+    private String name;
+    private String comment;
     private SList list;
     private boolean state;
     private LinearLayout layout;
@@ -54,8 +54,14 @@ public class Item /*implements Parcelable*/ {
     public String getName(){
         return name;
     }
+    public void setName(String newName){
+        name = newName;
+    }
     public String getComment(){
         return comment;
+    }
+    public void setComment(String newComment){
+        comment = newComment;
     }
     public void setList(SList newList){
         list = newList;

@@ -1,5 +1,6 @@
 package com.example.vovch.listogram_20.data_types;
 
+import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
@@ -29,6 +30,7 @@ public class SList /*implements Parcelable*/ {
     private CardView cardView;
     private ImageButton disButton;
     private ImageButton resendButton;
+    private ImageButton redactButton;
 
     public SList(Item[] newItems){
         items = newItems;
@@ -79,6 +81,12 @@ public class SList /*implements Parcelable*/ {
         cardView = null;
     }
 
+    public ImageButton getRedactButton(){
+        return redactButton;
+    }
+    public void setRedactButton(ImageButton newRedactButton){
+        redactButton = newRedactButton;
+    }
     public void setDisButton(ImageButton newDisButton){
         disButton = newDisButton;
     }

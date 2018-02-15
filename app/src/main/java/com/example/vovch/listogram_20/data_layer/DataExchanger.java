@@ -462,7 +462,18 @@ public class DataExchanger{
         return list;
     }
 
-
+    public TempItem[]  makeTempItemsFromItems(Item[] items){
+        TempItem[] tempItems = null;
+        if(items != null){
+            tempItems = new TempItem[items.length];
+            for(int i = 0; i < items.length; i++){
+                tempItems[i] = new TempItem(items[i].getName(), items[i].getComment());
+                tempItems[i].setId(items[i].getId());
+                tempItems[i].setState(items[i].getState());
+            }
+        }
+        return  tempItems;
+    }
 
     public void saveTempItems(TempItem[] tempItems){
         storage.setTempItems(tempItems);
@@ -476,6 +487,15 @@ public class DataExchanger{
         storage.clearTempItems();
     }
 
+
+    public SList redactOfflineList(SList list, Item[] items){
+        SList resultList = null;
+        if(list != null && items != null){
+            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            resultList = dataBaseTask2.redactOfflineList(list, items);
+        }
+        return resultList;
+    }
 
 
     public SList[] getOfflineActiveData(){

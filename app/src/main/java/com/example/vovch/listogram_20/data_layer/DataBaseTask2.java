@@ -193,4 +193,44 @@ public class DataBaseTask2 {
         }
         return result;
     }
+    protected SList redactOfflineList(SList list, Item[] items){
+        SList resultList = null;
+        if(list != null && items != null){
+            try {
+                dbHelper = new DbHelper(applicationContext);
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                ContentValues values = new ContentValues();
+                SimpleDateFormat dateFormat;
+                String creationTime;
+                StringBuilder active = new StringBuilder("");
+                db.execSQL("DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST + "= '" + list.getId() + "'");
+                for (int i = 0; i < items.length; i++) {
+                    active.setLength(0);
+                    dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
+                    creationTime =  dateFormat.format(Calendar.getInstance().getTime());
+                    if(items[i].getState()){
+                        active.append("f");
+                    } else{
+                        active.append("t");
+                    }
+                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, items[i].getName());
+                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, items[i].getComment());
+                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST, list.getId());
+                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME, creationTime);
+                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE, active.toString());
+                    long itemId = db.insert(SqLiteBaseContruct.Items.TABLE_NAME, SqLiteBaseContruct.Items._ID, values);
+                    items[i].setId((int) itemId);                                                                                   // long to int careful
+                    values.clear();
+                }
+                db.close();
+                dbHelper.close();
+                list.setItems(items);
+                resultList = list;
+            }
+            catch (SQLException e){
+
+            }
+        }
+        return resultList;
+    }
 }

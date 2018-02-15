@@ -31,7 +31,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     private String groupId;
     private ActiveActivityProvider provider;
 
-    private boolean loadType;
+    private int loadType;
 
     TextView.OnEditorActionListener editorListenerOne = new TextView.OnEditorActionListener() {
         @Override
@@ -76,9 +76,9 @@ public class CreateListogramActivity extends WithLoginActivity {
 
         setContentView(R.layout.activity_create_listogram);
 
-        loadType = getIntent().getExtras().getBoolean("loadtype");                                      //gettitg information what type of activity is our invoker
+        loadType = getIntent().getExtras().getInt("loadtype");                                      //gettitg information what type of action is it
 
-        if(loadType){
+        if(loadType == 1){
             UserGroup currentGroup = provider.getActiveGroup();
             if(currentGroup != null){
                 groupId = currentGroup.getId();
@@ -125,11 +125,10 @@ public class CreateListogramActivity extends WithLoginActivity {
         if(provider.getActiveActivityNumber() == 6) {
             provider.nullActiveActivity();
         }
-        Intent intent;
-        if(loadType) {
+        Intent intent = null;
+        if(loadType == 1) {
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        }
-        else{
+        } else if (loadType == 0 || loadType == 2) {
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         }
         startActivity(intent);
@@ -152,57 +151,71 @@ public class CreateListogramActivity extends WithLoginActivity {
         ScrollView scrView = (ScrollView) findViewById(R.id.createlistogramscrollview);
         return scrView;
     }
-    public void createPunct(TempItem tempItem){
+    public void createPunct(TempItem tempItem) {
         LinearLayout listogramContainerLayout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
-        CardView cardView;
-        if(tempItem == null) {
+        CardView cardView = (CardView) LayoutInflater.from(listogramContainerLayout.getContext()).inflate(R.layout.list_card, listogramContainerLayout, false);
+        if (tempItem == null) {
             tempItem = new TempItem();
-            cardView = (CardView) LayoutInflater.from(listogramContainerLayout.getContext()).inflate(R.layout.list_card, listogramContainerLayout, false);
-            LinearLayout addingListogramLayout = (LinearLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.list_element_linear_layout, cardView, false);
-            CreateListEditText itemNameEditText;
-            itemNameEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
-            itemNameEditText.setHint("Name");
-            itemNameEditText.setTempItem(tempItem);
-            itemNameEditText.setOnEditorActionListener(editorListenerOne);
-            addingListogramLayout.addView(itemNameEditText);
-            CreateListEditText itemKommentEditText;
-            itemKommentEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
-            itemKommentEditText.setHint("Comment");
-            itemKommentEditText.setTempItem(tempItem);
-            itemKommentEditText.setOnEditorActionListener(editorListenerTwo);
-            addingListogramLayout.addView(itemKommentEditText);
-            ItemButton addingButton = (ItemButton) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_element_right_side_button, addingListogramLayout, false);
-            addingButton.setText("Delete");
-            View.OnLongClickListener deleteListenner = new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    deletePunct((ItemButton) v);
-                    return false;
-                }
-            };
-            addingButton.setFocusable(true);
-            addingButton.setLongClickable(true);
-            addingButton.setClickable(true);
-            addingButton.setOnLongClickListener(deleteListenner);
-            addingListogramLayout.addView(addingButton);
-            cardView.addView(addingListogramLayout);
-            tempItem.setButton(addingButton);
-            tempItem.setItemNameEditText(itemNameEditText);
-            tempItem.setItemCommentEditText(itemKommentEditText);
-            tempItem.setCardView(cardView);
-            TempItems.add(tempItem);
-            addingButton.setTempItem(tempItem);
-        }
-        else{
-            cardView = tempItem.getCardView();
-            tempItem.getNameEditText().setOnEditorActionListener(editorListenerOne);
-            tempItem.getItemCommentEditText().setOnEditorActionListener(editorListenerTwo);
-            cardView.setVisibility(View.VISIBLE);
-            tempItem.setCardView(cardView);
-            TempItems.add(tempItem);
+            tempItem.setState(true);
+            showViewsForPunct(tempItem, cardView, false);
+        } else {
+            if (tempItem.getCardView() != null && tempItem.getLayout() != null && tempItem.getNameEditText() != null && tempItem.getItemCommentEditText() != null) {
+                cardView = tempItem.getCardView();
+                tempItem.getNameEditText().setOnEditorActionListener(editorListenerOne);
+                tempItem.getItemCommentEditText().setOnEditorActionListener(editorListenerTwo);
+                cardView.setVisibility(View.VISIBLE);
+                tempItem.setCardView(cardView);
+                TempItems.add(tempItem);
+            } else {
+                showViewsForPunct(tempItem, cardView, true);
+            }
         }
         listogramContainerLayout.addView(cardView);
     }
+
+    private void showViewsForPunct(TempItem tempItem, CardView cardView, boolean hasData){
+        LinearLayout addingListogramLayout = (LinearLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.list_element_linear_layout, cardView, false);
+        CreateListEditText itemNameEditText;
+        itemNameEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
+        if(hasData){
+            itemNameEditText.setText(tempItem.getName());
+        }
+        itemNameEditText.setHint("Name");
+        itemNameEditText.setTempItem(tempItem);
+        itemNameEditText.setOnEditorActionListener(editorListenerOne);
+        addingListogramLayout.addView(itemNameEditText);
+        CreateListEditText itemKommentEditText;
+        itemKommentEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
+        if(hasData){
+            itemKommentEditText.setText(tempItem.getComment());
+        }
+        itemKommentEditText.setHint("Comment");
+        itemKommentEditText.setTempItem(tempItem);
+        itemKommentEditText.setOnEditorActionListener(editorListenerTwo);
+        addingListogramLayout.addView(itemKommentEditText);
+        ItemButton addingButton = (ItemButton) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_element_right_side_button, addingListogramLayout, false);
+        addingButton.setText("Delete");
+        View.OnLongClickListener deleteListenner = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                deletePunct((ItemButton) v);
+                return false;
+            }
+        };
+        addingButton.setFocusable(true);
+        addingButton.setLongClickable(true);
+        addingButton.setClickable(true);
+        addingButton.setOnLongClickListener(deleteListenner);
+        addingListogramLayout.addView(addingButton);
+        cardView.addView(addingListogramLayout);
+        tempItem.setButton(addingButton);
+        tempItem.setItemNameEditText(itemNameEditText);
+        tempItem.setItemCommentEditText(itemKommentEditText);
+        tempItem.setCardView(cardView);
+        TempItems.add(tempItem);
+        addingButton.setTempItem(tempItem);
+    }
+
     public void deletePunct(ItemButton button){
         int i = 0;
         if(button.getTempItem() != null){
@@ -232,29 +245,23 @@ public class CreateListogramActivity extends WithLoginActivity {
         }
     }
     public Item[] makeSendingItemsArray(){
-        Item[] items = new Item[TempItems.size()];
-        Item tempItem;
-        StringBuilder eText1 = new StringBuilder("");
-        StringBuilder eText2 = new StringBuilder("");
-        for(int i = 0;i < TempItems.size();i++){
-            eText1.append(TempItems.get(i).getNameEditText().getText().toString());
-            eText2.append(TempItems.get(i).getItemCommentEditText().getText().toString());
-
-            tempItem = new Item(eText1.toString(), eText2.toString(), true);
-
-            eText1.setLength(0);
-            eText2.setLength(0);
-            items[i] = tempItem;
+        TempItem[] tempItems = new TempItem[TempItems.size()];
+        tempItems = TempItems.toArray(tempItems);
+        for(int i = 0; i < tempItems.length; i++){
+            tempItems[i].setName(tempItems[i].getNameEditText().getText().toString());
+            tempItems[i].setComment(tempItems[i].getItemCommentEditText().getText().toString());
         }
-        return items;
+        return tempItems;
     }
     public void sendListogram(){
         Item[] items = makeSendingItemsArray();
-        if(loadType) {
+        if(loadType == 1) {
             provider.createOnlineListogram(provider.getActiveGroup(), items, CreateListogramActivity.this);
         }
-        else{
+        else if(loadType == 0){
             provider.createListogramOffline(items, CreateListogramActivity.this);
+        } else if(loadType == 2){
+            provider.redactOfflineListogram(items, provider.getResendingList() ,CreateListogramActivity.this);
         }
     }
 

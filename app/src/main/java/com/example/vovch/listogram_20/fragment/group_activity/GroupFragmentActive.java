@@ -165,8 +165,6 @@ public class GroupFragmentActive extends Fragment {
         for (int i = 0; i < length; i++) {
             makeListogramLine(items[i], listogramLayout);
         }
-        FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.dis_button_frame_layout, listogramLayout, false);
-        ListImageButton disactivateListButton = (ListImageButton) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         View.OnClickListener disactivateListButtonOnClickListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,6 +172,13 @@ public class GroupFragmentActive extends Fragment {
                 disactivateGroupList(button);
             }
         };
+
+
+        LinearLayout footerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_footer_layout, listogramLayout, false);
+        LinearLayout leftFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
+        leftFooterLayout.setGravity(Gravity.START);
+        FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(leftFooterLayout.getContext()).inflate(R.layout.dis_button_frame_layout, leftFooterLayout, false);
+        ListImageButton disactivateListButton = (ListImageButton) LayoutInflater.from(disButtonFrameLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         list.setDisButton(disactivateListButton);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             disactivateListButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
@@ -185,7 +190,14 @@ public class GroupFragmentActive extends Fragment {
         disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
         disactivateListButton.setList(list);
         disButtonFrameLayout.addView(disactivateListButton);
-        listogramLayout.addView(disButtonFrameLayout);
+        leftFooterLayout.addView(disButtonFrameLayout);
+        LinearLayout rightFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
+        rightFooterLayout.setGravity(Gravity.END);
+
+
+        footerLayout.addView(leftFooterLayout);
+        footerLayout.addView(rightFooterLayout);
+        listogramLayout.addView(footerLayout);
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
     }

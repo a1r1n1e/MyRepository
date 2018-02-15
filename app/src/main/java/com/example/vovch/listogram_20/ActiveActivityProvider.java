@@ -32,6 +32,7 @@ import com.example.vovch.listogram_20.data_layer.async_tasks.OfflineItemmarkTask
 import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineCreateListogramTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineDisactivateTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineItemmarkTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.RedactOfflineListTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RegistrationTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RemoveAddedUserTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.ResendListToGroupTask;
@@ -203,9 +204,7 @@ public class ActiveActivityProvider extends Application {
 
     public void createListogramOffline(Item[] items, WithLoginActivity activity) {
         OfflineCreateListTask offlineCreateListTask = new OfflineCreateListTask();
-        offlineCreateListTask.setApplicationContext(ActiveActivityProvider.this);
-        offlineCreateListTask.setIncomingActivity(activity);
-        offlineCreateListTask.execute(items);
+        offlineCreateListTask.execute(items, activity, ActiveActivityProvider.this);
     }
 
     public void getActiveActivityActiveLists() {
@@ -417,6 +416,22 @@ public class ActiveActivityProvider extends Application {
         OnlineCreateListogramTask onlineCreateListogramTask = new OnlineCreateListogramTask();
         onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, activity);
     }
+
+    public void redactOfflineListogram(Item[] items, SList redactingList ,WithLoginActivity activity){
+        RedactOfflineListTask redactOfflineListTask = new RedactOfflineListTask();
+        redactOfflineListTask.execute(redactingList, items, activity, ActiveActivityProvider.this);
+    }
+
+    public void showOfflineListRedactedGood(SList resultList, WithLoginActivity incomingActivity){
+        if (getActiveActivityNumber() == 6 && incomingActivity instanceof CreateListogramActivity) {
+            CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
+            activity.showAddListOfflineGood();
+        }
+    }
+
+    public void showOfflineListRedactedBad(SList resultList, WithLoginActivity activity){
+
+    }           //TODO
 
     public void saveTempItems(TempItem[] tempItems) {
         dataExchanger.saveTempItems(tempItems);

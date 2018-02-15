@@ -16,6 +16,12 @@ public class TempItem extends Item {
         itemNameEditText = null;
         cardView = null;
     }
+    public TempItem(String newName, String newComment){
+        super(newName, newComment);
+        itemCommentEditText = null;
+        itemNameEditText = null;
+        cardView = null;
+    }
     public void setItemNameEditText(CreateListEditText editText){
         itemNameEditText = editText;
     }

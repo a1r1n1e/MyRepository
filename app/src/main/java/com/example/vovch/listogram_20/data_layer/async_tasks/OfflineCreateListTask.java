@@ -13,24 +13,18 @@ import com.example.vovch.listogram_20.data_types.SList;
  * Created by vovch on 14.12.2017.
  */
 
-public class OfflineCreateListTask extends AsyncTask<Item[], Void, SList> {
-    private Context applicationContext;
+public class OfflineCreateListTask extends AsyncTask<Object, Void, SList> {
     private ActiveActivityProvider activeActivityProvider;
     private WithLoginActivity incomingActivity;
 
-    public void setIncomingActivity(WithLoginActivity newActivity){
-        incomingActivity = newActivity;
-    }
-
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public SList doInBackground(Item[]... loginPair){
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
+    public SList doInBackground(Object... loginPair){
+        Item[] items = (Item[]) loginPair[0];
+        incomingActivity = (WithLoginActivity) loginPair[1];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[2];
         SList list;
 
-        list = activeActivityProvider.dataExchanger.addOfflineList(loginPair[0]);
+        list = activeActivityProvider.dataExchanger.addOfflineList(items);
 
         return list;
     }
@@ -42,7 +36,6 @@ public class OfflineCreateListTask extends AsyncTask<Item[], Void, SList> {
         else{
             activeActivityProvider.showOfflineListCreatedBad(result, incomingActivity);
         }
-        applicationContext = null;
         activeActivityProvider = null;
         incomingActivity = null;
     }

@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="top"
     android:gravity="top"
-    android:layout_marginLeft="48dp"
-    android:layout_marginStart="48dp"
+    android:layout_marginLeft="82dp"
+    android:layout_marginStart="82dp"
     android:layout_marginEnd="8dp"
     android:layout_marginRight="8dp">
 
