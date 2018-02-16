@@ -274,20 +274,18 @@ public class Group2Activity extends WithLoginActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             String message = "Want To Kill List?";
-            String button1String = "Confirm";
-            String button2String = "Cancel";
+            String button2String = "Yes";
+            String button1String = "No";
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
-            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
                             .show();
-                    list.getDisButton().setFocusable(true);
-                    list.getDisButton().setClickable(true);
                 }
             });
-            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     activeActivityProvider.disactivateGroupList(list);
                     Toast.makeText(getActivity(), "Processing",
@@ -295,7 +293,8 @@ public class Group2Activity extends WithLoginActivity {
                 }
             });
             builder.setCancelable(true);
-
+            list.getDisButton().setFocusable(true);
+            list.getDisButton().setClickable(true);
             return builder.create();
         }
     }
@@ -373,6 +372,65 @@ public class Group2Activity extends WithLoginActivity {
         }
     }
 
+    public void redactList(SList list){
+        if(list != null){
+            RedactDialogFragment dialogFragment = new RedactDialogFragment();
+            dialogFragment.setList(list);
+            dialogFragment.setActiveActivityProvider(provider);
+            dialogFragment.setActivity(Group2Activity.this);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            dialogFragment.show(transaction, "dialog");
+        }
+    }
+
+    public static class RedactDialogFragment extends DialogFragment {
+        private SList list;
+        private ActiveActivityProvider activeActivityProvider;
+        private Group2Activity activity;
+        protected void setActivity(Group2Activity newActivity){
+            activity = newActivity;
+        }
+        protected void setList(SList newList){
+            list = newList;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = "Whant To Redact List?";
+            String button1String = "Yes";
+            String button2String = "No";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Redacting", Toast.LENGTH_LONG)
+                            .show();
+                    activeActivityProvider.setResendingList(list);
+                    activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
+                    Intent intent = new Intent(activity, CreateListogramActivity.class);
+                    intent.putExtra("loadtype", 3);
+                    startActivity(intent);
+                    activity.finish();
+                }
+            });
+            builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setCancelable(true);
+            list.getRedactButton().setFocusable(true);
+            list.getRedactButton().setClickable(true);
+            return builder.create();
+        }
+    }
+
 
     public void historyLoadOnGood(SList[] result){
         if(historyFragment != null) {
@@ -441,7 +499,7 @@ public class Group2Activity extends WithLoginActivity {
     public void sendListogram(){
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.putExtra("loadtype", true);
+        intent.putExtra("loadtype", 1);
         startActivity(intent);
     }
 

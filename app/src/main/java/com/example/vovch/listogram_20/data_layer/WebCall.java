@@ -148,6 +148,15 @@ public class WebCall {
                 JSONObject item = new JSONObject();
                 item.put("item_name", items[i].getName());
                 item.put("item_comment", items[i].getComment());
+                if(items[i].getId() != 0){
+                    item.put("item_id", items[i].getId());
+                }
+                if(items[i].getState()){
+                    item.put("item_state", "TRUE");
+                }
+                else{
+                    item.put("item_state", "FALSE");
+                }
                 itemsArray.put(item);
             }
             result = itemsArray.toString();

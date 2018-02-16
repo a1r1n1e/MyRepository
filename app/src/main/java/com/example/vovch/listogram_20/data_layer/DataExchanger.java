@@ -497,6 +497,21 @@ public class DataExchanger{
         return resultList;
     }
 
+    public SList redactOnlineList(SList list, Item[] items){
+        SList resultList = null;
+        if(list != null && items != null && list.getGroup().getId() != null){
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            WebCall webCall = new WebCall();
+            String itemsJSONString = webCall.prepareItemsJSONString(items);
+            String resultString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), itemsJSONString, "redactlist", "44", "44", list.getGroup().getId());
+            if(resultString.substring(0, 3).equals("200")){
+                list.setItems(items);
+                resultList = list;
+            }
+        }
+        return resultList;
+    }
+
 
     public SList[] getOfflineActiveData(){
         SList[] lists;

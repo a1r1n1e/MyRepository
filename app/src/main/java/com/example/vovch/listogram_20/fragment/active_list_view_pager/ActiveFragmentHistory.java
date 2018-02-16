@@ -64,6 +64,7 @@ public class ActiveFragmentHistory extends Fragment {
         LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
         LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        listNameTextView.setAlpha(0.5f);
         String listOwner;
         if(list.getOwner() > 0) {
             listOwner = "From: " + list.getOwnerName();
@@ -74,6 +75,7 @@ public class ActiveFragmentHistory extends Fragment {
         listNameTextView.setText(listOwner);
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        listCreationTimeTextView.setAlpha(0.5f);
         if(list.getCreationTime() != null){
             listCreationTimeTextView.setTextSize(10);
             listCreationTimeTextView.setText(list.getCreationTime());
@@ -82,7 +84,18 @@ public class ActiveFragmentHistory extends Fragment {
         leftHeaderLayout.addView(listCreationTimeTextView);
         headerLayout.addView(leftHeaderLayout);
         FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
-        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, imageButtonFrame, false);
+        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.done_button, imageButtonFrame, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            resendButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+        } else {
+            resendButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        }
+        Uri uri3 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/resend_48");
+        resendButton.setImageURI(uri3);
+        resendButton.setAlpha(0.5f);
+        resendButton.setList(list);
+
         imageButtonFrame.addView(resendButton);
         headerLayout.addView(imageButtonFrame);
         listogramLayout.addView(headerLayout);
@@ -99,26 +112,52 @@ public class ActiveFragmentHistory extends Fragment {
         for (int i = 0; i < length; i++) {
             makeListogramLine(items[i], listogramLayout);
         }
+
         LinearLayout footerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_footer_layout, listogramLayout, false);
         LinearLayout leftFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
         leftFooterLayout.setGravity(Gravity.START);
         FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(leftFooterLayout.getContext()).inflate(R.layout.dis_button_frame_layout, leftFooterLayout, false);
-        final ImageButton disactivateListButton = (ImageButton) LayoutInflater.from(disButtonFrameLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
+        ListImageButton disactivateListButton = (ListImageButton) LayoutInflater.from(disButtonFrameLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         list.setDisButton(disactivateListButton);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             disactivateListButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
         } else {
             disactivateListButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/confirm_button_64");
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/check_48");
         disactivateListButton.setImageURI(uri);
         disactivateListButton.setAlpha(0.5f);
+        disactivateListButton.setList(list);
+
         disButtonFrameLayout.addView(disactivateListButton);
         leftFooterLayout.addView(disButtonFrameLayout);
         LinearLayout rightFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
         rightFooterLayout.setGravity(Gravity.END);
+        FrameLayout redactButtonFrameLayout = (FrameLayout) LayoutInflater.from(rightFooterLayout.getContext()).inflate(R.layout.dis_button_frame_layout, rightFooterLayout, false);
+        ListImageButton redactButton = (ListImageButton) LayoutInflater.from(redactButtonFrameLayout.getContext()).inflate(R.layout.done_button, redactButtonFrameLayout, false);
 
+        View.OnClickListener redactListButtonOnClickListenner = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redactList((ListImageButton) v);
+            }
+        };
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            redactButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+        } else {
+            redactButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        }
+        Uri uri2 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/redact_document_48");
+        redactButton.setImageURI(uri2);
+        redactButton.setAlpha(0.5f);
+        redactButton.setList(list);
+        redactButton.setOnClickListener(redactListButtonOnClickListenner);
+
+        list.setRedactButton(redactButton);
+        redactButtonFrameLayout.addView(redactButton);
+        rightFooterLayout.addView(redactButtonFrameLayout);
         footerLayout.addView(leftFooterLayout);
         footerLayout.addView(rightFooterLayout);
         listogramLayout.addView(footerLayout);
@@ -171,6 +210,15 @@ public class ActiveFragmentHistory extends Fragment {
             button.setFocusable(false);
             button.setClickable(false);
             activity.resendList(button.getList());
+        }
+    }
+
+    private void redactList(ListImageButton button){
+        if(button.getList() != null){
+            ActiveListsActivity activity = (ActiveListsActivity) getActivity();
+            button.setFocusable(false);
+            button.setClickable(false);
+            activity.redactList(button.getList());
         }
     }
 

@@ -137,9 +137,9 @@ public class ActiveListsActivity extends WithLoginActivity
         registrationFragment = null;
 
         adapter.startUpdate(viewPager);
-        activeFragment = (ActiveListsFragment) adapter.instantiateItem(viewPager, 0);
         offlineFragment = (ActiveFragmentOffline) adapter.instantiateItem(viewPager, 1);
         historyFragment = (ActiveFragmentHistory) adapter.instantiateItem(viewPager, 2);
+        activeFragment = (ActiveListsFragment) adapter.instantiateItem(viewPager, 0);
         adapter.finishUpdate(viewPager);
 
         viewPager.setCurrentItem(1);
@@ -480,18 +480,18 @@ public class ActiveListsActivity extends WithLoginActivity
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             String message = "Want To Kill List?";
-            String button1String = "Confirm";
-            String button2String = "Cancel";
+            String button1String = "Yes";
+            String button2String = "No";
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
-            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
                             .show();
                 }
             });
-            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     activeActivityProvider.activeActivityDisactivateList(list);
                     Toast.makeText(getActivity(), "Processing",

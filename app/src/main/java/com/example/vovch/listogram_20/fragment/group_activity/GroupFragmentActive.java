@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
+import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.ListImageButton;
 import com.example.vovch.listogram_20.data_types.Item;
@@ -38,11 +39,13 @@ public class GroupFragmentActive extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
-    public void checkRootView(ViewGroup container, LayoutInflater inflater){
-        if(rootView == null){
+
+    public void checkRootView(ViewGroup container, LayoutInflater inflater) {
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.group_fragment_active, container, false);
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,14 +55,25 @@ public class GroupFragmentActive extends Fragment {
         activity.onActiveReady();
         return rootView;
     }
-    private void disactivateGroupList(ListImageButton button){
-        if(button.getList() != null) {
+
+    private void redactList(ListImageButton button) {
+        if (button.getList() != null) {
+            Group2Activity activity = (Group2Activity) getActivity();
+            button.setFocusable(false);
+            button.setClickable(false);
+            activity.redactList(button.getList());
+        }
+    }
+
+    private void disactivateGroupList(ListImageButton button) {
+        if (button.getList() != null) {
             Group2Activity activity = (Group2Activity) getActivity();
             activity.disactivateGroupList(button);
         }
     }
-    private void onItemMarkButtonTouchedAction(ItemButton button){
-        if(button.getItem() != null) {
+
+    private void onItemMarkButtonTouchedAction(ItemButton button) {
+        if (button.getItem() != null) {
             button.setFocusable(false);
             button.setClickable(false);
             button.getItem().getLayout().setAlpha(0.5f);
@@ -68,7 +82,7 @@ public class GroupFragmentActive extends Fragment {
         }
     }
 
-    private void makeListogramLine(Item item, LinearLayout listogramLayout){
+    private void makeListogramLine(Item item, LinearLayout listogramLayout) {
         FrameLayout addingFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_element_frame_layout, listogramLayout, false);
         LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingFrameLayout, false);
 
@@ -115,13 +129,15 @@ public class GroupFragmentActive extends Fragment {
         addingFrameLayout.addView(groupButton);
         listogramLayout.addView(addingFrameLayout);
     }
+
     public void listsListMaker(SList[] result) {
         int listsNumber = result.length;
-        for(int i = 0; i < listsNumber; i++){
+        for (int i = 0; i < listsNumber; i++) {
             listsLayoutDrawer(result[i]);
         }
     }
-    public void listsLayoutDrawer(SList list){
+
+    public void listsLayoutDrawer(SList list) {
         LinearLayout basicLayout;
         basicLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
         CardView listCard = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
@@ -132,12 +148,12 @@ public class GroupFragmentActive extends Fragment {
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = list.getOwnerName();
+            listOwner = "From: " + list.getOwnerName();
         }
         else{
-            listOwner = "You";
+            listOwner = "Your List";
         }
-        listNameTextView.setText("From: " + listOwner);
+        listNameTextView.setText(listOwner);
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         if(list.getCreationTime() != null){
@@ -148,7 +164,17 @@ public class GroupFragmentActive extends Fragment {
         leftHeaderLayout.addView(listCreationTimeTextView);
         headerLayout.addView(leftHeaderLayout);
         FrameLayout imageButtonFrame = (FrameLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, headerLayout, false);
-        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, imageButtonFrame, false);
+        ListImageButton resendButton = (ListImageButton) LayoutInflater.from(imageButtonFrame.getContext()).inflate(R.layout.done_button, imageButtonFrame, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            resendButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+        } else {
+            resendButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        }
+        Uri uri3 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/resend_48");
+        resendButton.setImageURI(uri3);
+        resendButton.setList(list);
+
         imageButtonFrame.addView(resendButton);
         headerLayout.addView(imageButtonFrame);
         listogramLayout.addView(headerLayout);
@@ -168,11 +194,9 @@ public class GroupFragmentActive extends Fragment {
         View.OnClickListener disactivateListButtonOnClickListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListImageButton button = (ListImageButton) v;
-                disactivateGroupList(button);
+                disactivateGroupList((ListImageButton) v);
             }
         };
-
 
         LinearLayout footerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_footer_layout, listogramLayout, false);
         LinearLayout leftFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
@@ -180,100 +204,129 @@ public class GroupFragmentActive extends Fragment {
         FrameLayout disButtonFrameLayout = (FrameLayout) LayoutInflater.from(leftFooterLayout.getContext()).inflate(R.layout.dis_button_frame_layout, leftFooterLayout, false);
         ListImageButton disactivateListButton = (ListImageButton) LayoutInflater.from(disButtonFrameLayout.getContext()).inflate(R.layout.done_button, disButtonFrameLayout, false);
         list.setDisButton(disactivateListButton);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             disactivateListButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
         } else {
             disactivateListButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/confirm_button_64");
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/check_48");
         disactivateListButton.setImageURI(uri);
-        disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
         disactivateListButton.setList(list);
+        disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
+
         disButtonFrameLayout.addView(disactivateListButton);
         leftFooterLayout.addView(disButtonFrameLayout);
         LinearLayout rightFooterLayout = (LinearLayout) LayoutInflater.from(footerLayout.getContext()).inflate(R.layout.list_footer_half_layout, footerLayout, false);
         rightFooterLayout.setGravity(Gravity.END);
+        FrameLayout redactButtonFrameLayout = (FrameLayout) LayoutInflater.from(rightFooterLayout.getContext()).inflate(R.layout.dis_button_frame_layout, rightFooterLayout, false);
+        ListImageButton redactButton = (ListImageButton) LayoutInflater.from(redactButtonFrameLayout.getContext()).inflate(R.layout.done_button, redactButtonFrameLayout, false);
 
+        View.OnClickListener redactListButtonOnClickListenner = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redactList((ListImageButton) v);
+            }
+        };
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            redactButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+        } else {
+            redactButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        }
+        Uri uri2 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/redact_document_48");
+        redactButton.setImageURI(uri2);
+        redactButton.setList(list);
+        redactButton.setOnClickListener(redactListButtonOnClickListenner);
+
+        list.setRedactButton(redactButton);
+        redactButtonFrameLayout.addView(redactButton);
+        rightFooterLayout.addView(redactButtonFrameLayout);
         footerLayout.addView(leftFooterLayout);
         footerLayout.addView(rightFooterLayout);
         listogramLayout.addView(footerLayout);
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
     }
-    public void activeFragmentCleaner(){
+
+    public void activeFragmentCleaner() {
         LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
         layoutScrollingActiveListsContainer.removeAllViews();
     }
-    public void fragmentShowGood(SList[] result){
+
+    public void fragmentShowGood(SList[] result) {
         listsListMaker(result);
     }
-    public void fragmentShowBad(SList[] result){
+
+    public void fragmentShowBad(SList[] result) {
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
         TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
         parentLayout.addView(emptyInformer);
     }
 
-    public void fragmentShowSecondGood(SList result){
+    public void fragmentShowSecondGood(SList result) {
         CardView cardView = result.getCardView();
         cardView.setVisibility(View.GONE);
     }
-    public void fragmentShowSecondBad(SList result){                                                //TODO remember result is always null
-        if(result != null){
+
+    public void fragmentShowSecondBad(SList result) {                                                //TODO remember result is always null
+        if (result != null) {
             ImageButton button = result.getDisButton();
-            if(button != null){
+            if (button != null) {
                 button.setFocusable(true);
                 button.setClickable(true);
             }
         }
     }
-    public void fragmentShowThirdGood(Item item){
+
+    public void fragmentShowThirdGood(Item item) {
         LinearLayout itemMarkLayout = item.getLayout();
         itemMarkLayout.setAlpha(1f);
         ItemButton itemMarkTouchedButton = item.getButton();
         itemMarkTouchedButton.setFocusable(true);
         itemMarkTouchedButton.setClickable(true);
-        if(item.getState()){
+        if (item.getState()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else{
+            } else {
                 itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
             }
-        }
-        else{
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else{
+            } else {
                 itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
             }
         }
     }
-    public void fragmentShowThirdBad(Item item){
-        if(item != null) {
+
+    public void fragmentShowThirdBad(Item item) {
+        if (item != null) {
             LinearLayout layout = item.getLayout();
-            if(layout != null) {
+            if (layout != null) {
                 layout.setAlpha(1);
             }
             ItemButton itemMarkButton = item.getButton();
-            if(itemMarkButton != null) {
+            if (itemMarkButton != null) {
                 itemMarkButton.setClickable(true);
                 itemMarkButton.setFocusable(true);
                 itemMarkButton.setGravity(Gravity.CENTER_HORIZONTAL);
             }
         }
     }
-    public void fragmentShowProcessing(Item item){
+
+    public void fragmentShowProcessing(Item item) {
         LinearLayout layout = item.getLayout();
         layout.setAlpha(0.5f);
     }
 
-    public void setRefresher(){
+    public void setRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
-        if(refreshLayout != null) {
+        if (refreshLayout != null) {
             refreshLayout.setFocusable(true);
             refreshLayout.setRefreshing(false);
             refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -284,31 +337,36 @@ public class GroupFragmentActive extends Fragment {
             });
         }
     }
-    public void unsetRefresher(){
+
+    public void unsetRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
-        if(refreshLayout != null) {
+        if (refreshLayout != null) {
             refreshLayout.setFocusable(false);
             refreshLayout.setRefreshing(false);
         }
     }
-    public void setRefresherRefreshing(){
+
+    public void setRefresherRefreshing() {
         SwipeRefreshLayout refresher = getRefresher();
         refresher.setRefreshing(true);
     }
-    public void setRefresherNotRefreshing(){
+
+    public void setRefresherNotRefreshing() {
         SwipeRefreshLayout refresher = getRefresher();
         refresher.setRefreshing(false);
     }
-    public void refresh(){
+
+    public void refresh() {
         Group2Activity activity = (Group2Activity) getActivity();
         activity.refreshActiveLists();
     }
-    public SwipeRefreshLayout getRefresher(){
-        return  (SwipeRefreshLayout) rootView.findViewById(R.id.group_active_fragment_refresher);
+
+    public SwipeRefreshLayout getRefresher() {
+        return (SwipeRefreshLayout) rootView.findViewById(R.id.group_active_fragment_refresher);
     }
 
-    private void resend(ListImageButton button){
-        if(button.getList() != null){
+    private void resend(ListImageButton button) {
+        if (button.getList() != null) {
             Group2Activity activity = (Group2Activity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);

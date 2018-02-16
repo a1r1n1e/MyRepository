@@ -78,7 +78,7 @@ public class CreateListogramActivity extends WithLoginActivity {
 
         loadType = getIntent().getExtras().getInt("loadtype");                                      //gettitg information what type of action is it
 
-        if(loadType == 1){
+        if(loadType == 1 || loadType == 3){
             UserGroup currentGroup = provider.getActiveGroup();
             if(currentGroup != null){
                 groupId = currentGroup.getId();
@@ -126,7 +126,7 @@ public class CreateListogramActivity extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         Intent intent = null;
-        if(loadType == 1) {
+        if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         } else if (loadType == 0 || loadType == 2) {
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
@@ -261,7 +261,9 @@ public class CreateListogramActivity extends WithLoginActivity {
         else if(loadType == 0){
             provider.createListogramOffline(items, CreateListogramActivity.this);
         } else if(loadType == 2){
-            provider.redactOfflineListogram(items, provider.getResendingList() ,CreateListogramActivity.this);
+            provider.redactOfflineListogram(items, provider.getResendingList(), CreateListogramActivity.this);
+        } else if(loadType == 3){
+            provider.redactOnlineListogram(items, provider.getResendingList(), CreateListogramActivity.this);
         }
     }
 
@@ -281,7 +283,19 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         startActivity(intent);
     }
+
     public void showAddListOfflineBad(){
+
+    }
+
+    public void showAddListOnlineGood(){
+        TempItems.clear();
+        TempItems.trimToSize();
+        Intent intent;
+        intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+        startActivity(intent);
+    }
+    public void showAddListOnlineBad(){
 
     }
 }

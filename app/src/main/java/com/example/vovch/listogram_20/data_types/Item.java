@@ -29,6 +29,8 @@ public class Item /*implements Parcelable*/ {
         state = newState;
     }
     public Item(String newName, String newComment) {
+        id = 0;
+        state = true;
         name = newName;
         comment = newComment;
     }

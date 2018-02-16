@@ -33,6 +33,7 @@ import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineCreateListogr
 import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineDisactivateTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.OnlineItemmarkTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RedactOfflineListTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.RedactOnlineListTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RegistrationTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RemoveAddedUserTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.ResendListToGroupTask;
@@ -416,6 +417,22 @@ public class ActiveActivityProvider extends Application {
         OnlineCreateListogramTask onlineCreateListogramTask = new OnlineCreateListogramTask();
         onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, activity);
     }
+
+    public void redactOnlineListogram(Item[] items, SList redactingList ,WithLoginActivity activity){
+        RedactOnlineListTask redactOnlineListTask = new RedactOnlineListTask();
+        redactOnlineListTask.execute(redactingList, items, activity, ActiveActivityProvider.this);
+    }
+
+    public void showOnlineListRedactedGood(SList resultList, WithLoginActivity incomingActivity){
+        if (getActiveActivityNumber() == 6 && incomingActivity instanceof CreateListogramActivity) {
+            CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
+            activity.showAddListOnlineGood();
+        }
+    }
+
+    public void showOnlineListRedactedBad(SList resultList, WithLoginActivity activity){
+
+    }           //TODO
 
     public void redactOfflineListogram(Item[] items, SList redactingList ,WithLoginActivity activity){
         RedactOfflineListTask redactOfflineListTask = new RedactOfflineListTask();
