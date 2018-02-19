@@ -19,4 +19,6 @@
     <string name="error_no_user">No Such User(</string>
     <string name="some_error">Something Went Wrong</string>
     <string name="leave_group">Leave Group</string>
+    <string name="version">0_97_2</string>
+    <string name="server_pie">xedgvfv</string>
 </resources>

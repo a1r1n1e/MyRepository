@@ -1,5 +1,8 @@
 package com.example.vovch.listogram_20.data_layer;
 
+import android.content.res.Resources;
+
+import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.data_types.ListInformer;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.Item;
@@ -49,6 +52,8 @@ public class WebCall {
             postDataParams.put("third", loginPair[2]);
             postDataParams.put("action", loginPair[3]);
             postDataParams.put("itemmarkgroup", loginPair[6]);
+            postDataParams.put("version", loginPair[5]);
+            postDataParams.put("key", loginPair[4]);
 
             conn.setDoOutput(true);                                                 // Enable POST stream
             conn.setDoInput(true);
