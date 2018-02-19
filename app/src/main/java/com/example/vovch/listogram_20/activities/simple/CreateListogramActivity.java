@@ -297,7 +297,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         startActivity(intent);
     }
-    public void showAddListOnlineBad(){
+    public void showAddListOnlineBad(){                                                                 //TODO
 
     }
 }
