@@ -52,6 +52,7 @@ import java.util.List;
 public class ActiveListsActivity extends WithLoginActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ActiveActivityProvider provider;
+    private int loadType = -1;
 
     private Dialog dialog;
 
@@ -111,6 +112,8 @@ public class ActiveListsActivity extends WithLoginActivity
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
 
+        loadType = provider.getActiveListsActivityLoadType();
+
         fragmentManager = getSupportFragmentManager();
         viewPager = (ViewPager) findViewById(R.id.active_lists_viewpager);
         viewPager.setOffscreenPageLimit(2);
@@ -142,7 +145,9 @@ public class ActiveListsActivity extends WithLoginActivity
         activeFragment = (ActiveListsFragment) adapter.instantiateItem(viewPager, 0);
         adapter.finishUpdate(viewPager);
 
-        viewPager.setCurrentItem(1);
+        if( -1 < loadType && loadType < 3) {                                                           //setting current page of viewPager
+            viewPager.setCurrentItem(loadType);
+        }
         fabActionOne(fab);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -162,6 +167,7 @@ public class ActiveListsActivity extends WithLoginActivity
         super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
+        loadType = provider.getActiveListsActivityLoadType();
     }
 
     @Override

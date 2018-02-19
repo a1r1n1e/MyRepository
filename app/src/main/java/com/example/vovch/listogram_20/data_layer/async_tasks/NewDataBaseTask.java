@@ -10,19 +10,15 @@ import com.example.vovch.listogram_20.data_types.SList;
  * Created by vovch on 24.12.2017.
  */
 
-public class NewDataBaseTask extends AsyncTask<String, Void, SList[]> {
-    private Context applicationContext;
+public class NewDataBaseTask extends AsyncTask<Object, Void, SList[]> {
     private ActiveActivityProvider activeActivityProvider;
     private boolean type = false;
 
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public SList[] doInBackground(String... loginPair){
-        type = Boolean.parseBoolean(loginPair[0]);
+    public SList[] doInBackground(Object... loginPair){
+        type = (Boolean) loginPair[0];
         SList[] result;
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
         if(type) {
             result = activeActivityProvider.dataExchanger.getOfflineActiveData();
         }
@@ -47,5 +43,6 @@ public class NewDataBaseTask extends AsyncTask<String, Void, SList[]> {
                     activeActivityProvider.showOfflineHistoryListsGood(result);
                 }
             }
+            activeActivityProvider = null;
     }
 }

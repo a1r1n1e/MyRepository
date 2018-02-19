@@ -49,13 +49,6 @@ public class GroupFragmentHistory extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.group_fragment_history, container, false);
         unsetRefresher();
-        /*HistoryScrollView historyScrollView = (HistoryScrollView) rootView.findViewById(R.id.grouphistoryscroll);
-        historyScrollView.setOnTopReachedListener(new HistoryScrollView.OnTopReachedListener() {
-            @Override
-            public void onTopReached() {
-                historyLoad();
-            }
-        });*/
         Group2Activity activity = (Group2Activity) getActivity();
         activity.tempFunction();
         return rootView;
@@ -233,13 +226,6 @@ public class GroupFragmentHistory extends Fragment {
         for (int i = 0; i < listsNumber; i++) {
             listsLayoutDrawer(result[i]);
         }
-        /*getScrollView().post(new Runnable() {
-
-            @Override
-            public void run() {
-                getScrollView().scrollTo(500, 0);
-            }
-        });*/
     }
 
     public void historyFragmentCleaner() {
@@ -248,6 +234,7 @@ public class GroupFragmentHistory extends Fragment {
     }
 
     public void fragmentShowGood(SList[] result) {
+        historyFragmentCleaner();
         listsListMaker(result);
     }
     public HistoryScrollView getScrollView(){

@@ -177,7 +177,7 @@ public class NewGroup extends WithLoginActivity {
                 @Override
                 public boolean onLongClick(View v) {
                     UserButton button = (UserButton) v;
-                    provider.removeAddedUser(button.getUser(), getThisActivityType());
+                    provider.removeAddedUser(button.getUser(), NewGroup.this);
                     return false;
                 }
             };

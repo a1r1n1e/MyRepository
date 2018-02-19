@@ -51,5 +51,7 @@ public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGrou
                 activeActivityProvider.resendListToGroupBad(null);
             }
         }
+        activeActivityProvider = null;
+        activity = null;
     }
 }

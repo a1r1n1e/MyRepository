@@ -10,18 +10,14 @@ import com.example.vovch.listogram_20.data_types.ListInformer;
  * Created by vovch on 07.01.2018.
  */
 
-public class ActiveListsInformerTask extends AsyncTask <String, Void, ListInformer[]> {
-    private Context applicationContext;
+public class ActiveListsInformerTask extends AsyncTask <Object, Void, ListInformer[]> {
     private ActiveActivityProvider activeActivityProvider;
 
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public ListInformer[] doInBackground(String... loginPair){
+    public ListInformer[] doInBackground(Object... loginPair){
         ListInformer[] result;
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        result = activeActivityProvider.dataExchanger.getListInformers(loginPair[0]);
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
+        result = activeActivityProvider.dataExchanger.getListInformers((String) loginPair[0]);
         return result;
     }
     @Override

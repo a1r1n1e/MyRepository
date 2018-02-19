@@ -9,23 +9,18 @@ import com.example.vovch.listogram_20.ActiveActivityProvider;
  * Created by vovch on 09.01.2018.
  */
 
-public class RegistrationTask extends AsyncTask<String, Void, String> {
-    private Context applicationContext;
+public class RegistrationTask extends AsyncTask<Object, Void, String> {
     private ActiveActivityProvider activeActivityProvider;
     private String userLogin;
     private String userPassword;
 
-    public void setApplicationContext(Context ctf) {
-        applicationContext = ctf;
-    }
-
     @Override
-    public String doInBackground(String... loginPair) {
+    public String doInBackground(Object... loginPair) {
         String result;
-        userLogin = loginPair[0];
-        userPassword = loginPair[1];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        result = activeActivityProvider.dataExchanger.registrationTry(loginPair[0], loginPair[1]);
+        userLogin = (String) loginPair[0];
+        userPassword = (String) loginPair[1];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[2];
+        result = activeActivityProvider.dataExchanger.registrationTry(userLogin, userPassword);
         return result;
     }
 
@@ -42,5 +37,6 @@ public class RegistrationTask extends AsyncTask<String, Void, String> {
             }
             activeActivityProvider.badRegistrationTry(result);
         }
+        activeActivityProvider = null;
     }
 }

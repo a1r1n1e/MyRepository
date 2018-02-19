@@ -255,10 +255,12 @@ public class GroupFragmentActive extends Fragment {
     }
 
     public void fragmentShowGood(SList[] result) {
+        activeFragmentCleaner();
         listsListMaker(result);
     }
 
     public void fragmentShowBad(SList[] result) {
+        activeFragmentCleaner();
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
         TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
         parentLayout.addView(emptyInformer);

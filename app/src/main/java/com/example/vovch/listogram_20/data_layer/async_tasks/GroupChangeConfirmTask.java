@@ -10,19 +10,15 @@ import com.example.vovch.listogram_20.data_types.UserGroup;
  * Created by vovch on 18.01.2018.
  */
 
-public class GroupChangeConfirmTask extends AsyncTask<UserGroup, Void, UserGroup> {
-    private Context applicationContext;
+public class GroupChangeConfirmTask extends AsyncTask<Object, Void, UserGroup> {
     private ActiveActivityProvider activeActivityProvider;
     private UserGroup group;
-    public void setApplicationContext(Context ctf) {
-        applicationContext = ctf;
-    }
 
     @Override
-    public UserGroup doInBackground(UserGroup... loginPair) {
+    public UserGroup doInBackground(Object... loginPair) {
         UserGroup result = null;
-        group = loginPair[0];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
+        group = (UserGroup) loginPair[0];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
         result = activeActivityProvider.dataExchanger.confirmGroupChanges(group);
         return result;
     }
@@ -34,5 +30,6 @@ public class GroupChangeConfirmTask extends AsyncTask<UserGroup, Void, UserGroup
         } else {
             activeActivityProvider.showGroupSettingsChangeBad(group);
         }
+        activeActivityProvider = null;
     }
 }

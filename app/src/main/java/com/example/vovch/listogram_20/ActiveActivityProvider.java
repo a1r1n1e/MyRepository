@@ -52,6 +52,7 @@ public class ActiveActivityProvider extends Application {
 
     private Context activeActivity;
     private int activeActivityNumber;
+    private int activeListsActivityLoadType;
     private UserGroup activeGroup;
     private SList list;
     public DataExchanger dataExchanger;
@@ -60,6 +61,7 @@ public class ActiveActivityProvider extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        activeListsActivityLoadType = 1;
         Log.w("MY", "onCreate WhoBuys ActiveActivityProvider");
         dataExchanger = DataExchanger.getInstance(ActiveActivityProvider.this);
         userSessionData = UserSessionData.getInstance(ActiveActivityProvider.this);
@@ -73,6 +75,14 @@ public class ActiveActivityProvider extends Application {
     public void setActiveActivity(int whichOne, Context context) {
         activeActivity = context;
         activeActivityNumber = whichOne;
+    }
+
+    public int getActiveListsActivityLoadType(){
+        return activeListsActivityLoadType;
+    }
+
+    public void setActiveListsActivityLoadType(int newType){
+        activeListsActivityLoadType = newType;
     }
 
     public void setActiveGroup(UserGroup newActiveGroup) {
@@ -146,8 +156,7 @@ public class ActiveActivityProvider extends Application {
 
     public void tryToLoginWeb(String login, String password) {
         LoginnerTask loginnerTask = new LoginnerTask();
-        loginnerTask.setApplicationContext(ActiveActivityProvider.this);
-        loginnerTask.execute(login, password);
+        loginnerTask.execute(login, password, ActiveActivityProvider.this);
     }
 
     public void badLoginTry(String result) {
@@ -166,8 +175,7 @@ public class ActiveActivityProvider extends Application {
 
     public void registrationTry(String login, String password) {
         RegistrationTask registrationTask = new RegistrationTask();
-        registrationTask.setApplicationContext(ActiveActivityProvider.this);
-        registrationTask.execute(login, password);
+        registrationTask.execute(login, password, ActiveActivityProvider.this);
     }
 
     public void goodRegistrationTry(String result) {
@@ -187,20 +195,17 @@ public class ActiveActivityProvider extends Application {
 
     public void startOfflineGetterDatabaseTask(boolean type) {
         NewDataBaseTask newDataBaseTask = new NewDataBaseTask();
-        newDataBaseTask.setApplicationContext(ActiveActivityProvider.this);
-        newDataBaseTask.execute(String.valueOf(type));
+        newDataBaseTask.execute(type, ActiveActivityProvider.this);
     }
 
     public void activeActivityDisactivateList(SList list) {
         OfflineDisactivateTask offlineDisactivateTask = new OfflineDisactivateTask();
-        offlineDisactivateTask.setApplicationContext(ActiveActivityProvider.this);
-        offlineDisactivateTask.execute(list);
+        offlineDisactivateTask.execute(list, ActiveActivityProvider.this);
     }
 
     public void activeListsItemmark(Item item) {
         OfflineItemmarkTask offlineItemmarkTask = new OfflineItemmarkTask();
-        offlineItemmarkTask.setApplicationContext(ActiveActivityProvider.this);
-        offlineItemmarkTask.execute(item);
+        offlineItemmarkTask.execute(item, ActiveActivityProvider.this);
     }
 
     public void createListogramOffline(Item[] items, WithLoginActivity activity) {
@@ -210,8 +215,7 @@ public class ActiveActivityProvider extends Application {
 
     public void getActiveActivityActiveLists() {
         ActiveListsInformerTask activeListsInformerTask = new ActiveListsInformerTask();
-        activeListsInformerTask.setApplicationContext(ActiveActivityProvider.this);
-        activeListsInformerTask.execute(String.valueOf(userSessionData.getId()));
+        activeListsInformerTask.execute(String.valueOf(userSessionData.getId()), ActiveActivityProvider.this);
     }
 
     public void showListInformersGottenGood(ListInformer[] result) {
@@ -231,8 +235,7 @@ public class ActiveActivityProvider extends Application {
 
     public void confirmGroupSettingsChange(UserGroup changedGroup) {
         GroupChangeConfirmTask groupChangeConfirmTask = new GroupChangeConfirmTask();
-        groupChangeConfirmTask.setApplicationContext(ActiveActivityProvider.this);
-        groupChangeConfirmTask.execute(changedGroup);
+        groupChangeConfirmTask.execute(changedGroup, ActiveActivityProvider.this);
     }
 
     public void showGroupSettingsChangeGood(UserGroup result) {
@@ -321,16 +324,9 @@ public class ActiveActivityProvider extends Application {
         addUserTask.execute(userId, activityType);
     }
 
-    public void removeAddedUser(AddingUser user, String activityType) {                                //TODO костыль
-        if (activityType.equals("NewGroup")) {
-            RemoveAddedUserTask removeAddedUserTask = new RemoveAddedUserTask();
-            removeAddedUserTask.setApplicationContext(ActiveActivityProvider.this);
-            removeAddedUserTask.execute(user, user);
-        } else if (activityType.equals("GroupSettingsActivity")) {
-            RemoveAddedUserTask removeAddedUserTask = new RemoveAddedUserTask();
-            removeAddedUserTask.setApplicationContext(ActiveActivityProvider.this);
-            removeAddedUserTask.execute(user, null);
-        }
+    public void removeAddedUser(AddingUser user, WithLoginActivity activity) {
+        RemoveAddedUserTask removeAddedUserTask = new RemoveAddedUserTask();
+        removeAddedUserTask.execute(user, user, activity);
     }
 
     public void showRemoveAddedUserNewGroupGood(AddingUser result) {
@@ -402,14 +398,12 @@ public class ActiveActivityProvider extends Application {
 
     public void disactivateGroupList(SList list) {
         OnlineDisactivateTask onlineDisactivateTask = new OnlineDisactivateTask();
-        onlineDisactivateTask.setApplicationContext(ActiveActivityProvider.this);
-        onlineDisactivateTask.execute(list);
+        onlineDisactivateTask.execute(list, ActiveActivityProvider.this);
     }
 
     public void itemmark(Item item) {
         OnlineItemmarkTask onlineItemmarkTask = new OnlineItemmarkTask();
-        onlineItemmarkTask.setApplicationContext(ActiveActivityProvider.this);
-        onlineItemmarkTask.execute(item);
+        onlineItemmarkTask.execute(item, ActiveActivityProvider.this);
     }
 
 

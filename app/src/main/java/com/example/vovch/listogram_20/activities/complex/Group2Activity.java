@@ -163,11 +163,11 @@ public class Group2Activity extends WithLoginActivity {
     }
     @Override
     public void onBackPressed(){
-        cleaner();
         if(provider.getActiveActivityNumber() == 3) {
             provider.nullActiveActivity();
         }
         provider.setActiveGroup(null);
+        provider.setActiveListsActivityLoadType(0);
         Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
         intentGroupList.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intentGroupList);
@@ -175,20 +175,7 @@ public class Group2Activity extends WithLoginActivity {
     }
     @Override
     protected void onDestroy(){
-        cleaner();
         super.onDestroy();
-    }
-    private void cleaner(){
-        if(activeFragment != null) {
-            if(activeReady) {
-                activeFragment.activeFragmentCleaner();
-            }
-        }
-        if(historyFragment != null) {
-            if(historyReady) {
-                historyFragment.historyFragmentCleaner();
-            }
-        }
     }
 
     @Override

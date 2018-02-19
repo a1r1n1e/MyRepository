@@ -76,7 +76,7 @@ public class CreateListogramActivity extends WithLoginActivity {
 
         setContentView(R.layout.activity_create_listogram);
 
-        loadType = getIntent().getExtras().getInt("loadtype");                                      //gettitg information what type of action is it
+        loadType = getIntent().getExtras().getInt("loadtype");                                      //getting information what type of action is it
 
         if(loadType == 1 || loadType == 3){
             UserGroup currentGroup = provider.getActiveGroup();
@@ -129,6 +129,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         } else if (loadType == 0 || loadType == 2) {
+            provider.setActiveListsActivityLoadType(1);
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         }
         startActivity(intent);
@@ -280,6 +281,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         TempItems.clear();
         TempItems.trimToSize();
         Intent intent;
+        provider.setActiveListsActivityLoadType(1);
         intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         startActivity(intent);
     }

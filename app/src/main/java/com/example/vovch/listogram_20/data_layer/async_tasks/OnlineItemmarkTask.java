@@ -10,19 +10,15 @@ import com.example.vovch.listogram_20.data_types.Item;
  * Created by vovch on 06.01.2018.
  */
 
-public class OnlineItemmarkTask extends AsyncTask <Item, Item, Item>{
-    private Context applicationContext;
+public class OnlineItemmarkTask extends AsyncTask <Object, Item, Item>{
     private ActiveActivityProvider activeActivityProvider;
     private Item markedItem;
 
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public Item doInBackground(Item... loginPair) {
+    public Item doInBackground(Object... loginPair) {
         Item result = null;
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        markedItem = loginPair[0];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
+        markedItem = (Item) loginPair[0];
         if (markedItem != null){
             publishProgress(markedItem);
             result = activeActivityProvider.dataExchanger.itemmarkOnline(markedItem);

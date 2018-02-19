@@ -10,18 +10,14 @@ import com.example.vovch.listogram_20.data_types.Item;
  * Created by vovch on 24.12.2017.
  */
 
-public class OfflineItemmarkTask extends AsyncTask <Item, Void, Item>{
-    private Context applicationContext;
+public class OfflineItemmarkTask extends AsyncTask <Object, Void, Item>{
     private ActiveActivityProvider activeActivityProvider;
 
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public Item doInBackground(Item... loginPair){
+    public Item doInBackground(Object... loginPair){
         Item result;
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        result = activeActivityProvider.dataExchanger.itemmarkOffline(loginPair[0]);
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
+        result = activeActivityProvider.dataExchanger.itemmarkOffline((Item) loginPair[0]);
         return result;
     }
     @Override
