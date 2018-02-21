@@ -20,14 +20,13 @@ public class LoginnerTask extends AsyncTask<Object, Void, String> {
         userLogin = (String) loginPair[0];
         userPassword = (String) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
-        result = activeActivityProvider.dataExchanger.loginTry(userLogin, userPassword);
+        result = activeActivityProvider.userSessionData.startSession(userLogin, userPassword);
         return result;
     }
 
     @Override
     public void onPostExecute(String result) {
         if (result != null && result.substring(0, 3).equals("200")) {
-            activeActivityProvider.userSessionData.checkUserData(result.substring(3), userLogin, userPassword);
             activeActivityProvider.goodLoginTry(result.substring(3));
         } else {
             if (result != null && result.substring(0, 3).equals("403")) {

@@ -3,8 +3,14 @@ package com.example.vovch.listogram_20.data_layer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.vovch.listogram_20.data_layer.async_tasks.LogouterTask;
+
+import org.json.JSONArray;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +21,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * Created by vovch on 05.01.2018.
  */
@@ -23,8 +31,8 @@ public class UserSessionData {
     private Context context;
     private static UserSessionData instance;
     public static final String APP_PREFERENCES = "autentification";
-    private static final String  APP_PREFERENCES_TOKEN= "token";
-    private static final String  APP_PREFERENCES_USERID= "user_id";
+    private static final String APP_PREFERENCES_TOKEN = "token";
+    private static final String APP_PREFERENCES_USERID = "user_id";
     private static final String APP_PREFERENCES_LOGIN = "login";
     private static final String APP_PREFERENCES_PASSWORD = "password";
     private SharedPreferences preferences;
@@ -33,8 +41,15 @@ public class UserSessionData {
     private String password;
     private String login;
     private String token;
+    private String session;
+    private static final String CLIENT_VERSION = "98";
+    private static final String CLIENT_TYPE = "1";
+    private static final String ACTION_LOGIN = "login";
+    private static final String ACTION_LOGOUT = "logout";
+    private static final String ACTION_CHECK = "check_session";
+    private static final String DEFAULT_NOT_EXISTING_SESSION_VALUE = "-100";
 
-    private UserSessionData(Context newContext){
+    private UserSessionData(Context newContext) {
         context = newContext;
         preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         login = preferences.getString(APP_PREFERENCES_LOGIN, null);
@@ -42,64 +57,95 @@ public class UserSessionData {
         token = preferences.getString(APP_PREFERENCES_TOKEN, null);
         id = preferences.getString(APP_PREFERENCES_USERID, null);
     }
-    public static UserSessionData getInstance(Context newContext){
-        if(instance == null){
+
+    public static UserSessionData getInstance(Context newContext) {
+        if (instance == null) {
             instance = new UserSessionData(newContext);
         }
         return instance;
     }
-    public boolean isLoginned(){
+
+    public boolean isLoginned() {
         boolean result = false;
-        if(id != null && login != null && password != null && token != null){
+        if (id != null && login != null && password != null && token != null && isSession()) {
             result = true;
         }
         return result;
     }
-    public String getId(){
+
+    private boolean isSession(){
+        boolean result = false;
+        if(session != null){
+            result = true;
+        }
+        return result;
+    }
+
+    public String getId() {
         return id;
     }
-    public String getToken(){
+
+    public String getToken() {
         return token;
     }
-    public void  setToken(String newToken){
+
+    public void setToken(String newToken) {
         token = newToken;
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(APP_PREFERENCES_TOKEN, token);
         editor.apply();
     }
-    public String getLogin(){return login;}
-    public String getPassword(){return password;}
-    public void setUserData(String newId, String newName, String newLogin, String newPassword){
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setUserData(String newId, String newName, String newLogin, String newPassword) {
         id = newId;
         name = newName;
         login = newLogin;
         password = newPassword;
     }
-    public void checkUserData(String newId, String newLogin, String newPassword){
-        if(id == null || !newId.equals(id)){
+
+    public void checkUserData(String newId, String newLogin, String newPassword) {
+        if (id == null || !newId.equals(id)) {
             id = newId;
         }
-        if(login == null){
+        if (login == null) {
             login = newLogin;
         }
-        if(password == null){
+        if (password == null) {
             password = newPassword;
         }
         savePrefs(newId, newLogin, newPassword);
     }
-    public boolean isAnyPrefsData(){
+
+    public boolean isAnyPrefsData() {
         boolean result = false;
-        if(     preferences != null &&
+        if (preferences != null &&
                 preferences.getString(APP_PREFERENCES_TOKEN, null) != null &&
                 preferences.getString(APP_PREFERENCES_LOGIN, null) != null &&
                 preferences.getString(APP_PREFERENCES_PASSWORD, null) != null
-                ){
+                ) {
             result = true;
         }
         return result;
     }
-    public void savePrefs(final String userId, final String userName, final String userPassword){    // Should be used not from UI thread
-        if(userId != null && userName != null && userPassword != null) {
+
+    public String getClientVersion(){
+        return CLIENT_VERSION;
+    }
+
+    public String getClientType(){
+        return CLIENT_TYPE;
+    }
+
+    public void savePrefs(final String userId, final String userName, final String userPassword) {    // Should be used not from UI thread
+        if (userId != null && userName != null && userPassword != null) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(APP_PREFERENCES_LOGIN, userName);
             editor.putString(APP_PREFERENCES_USERID, userId);
@@ -107,18 +153,28 @@ public class UserSessionData {
             editor.apply();
         }
     }
-    public void exit(){
-        webExit(id, password);
+
+    public void exit() {
+        LogouterTask logouterTask = new LogouterTask();
+        logouterTask.execute(context);
+    }
+
+    public void showExitGood(){
         id = null;
         name = null;
         password = null;
-        savePrefs(id, name, password);
+        savePrefs(null, null, null);
     }
-    public void registerForPushes(){
+
+    public void showExitBad(){                                                                          //TODO
+
+    }
+
+    public void registerForPushes() {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(isAnyPrefsData()){
+                if (isAnyPrefsData()) {
                     sendTokenToServer(preferences.getString(APP_PREFERENCES_TOKEN, null), preferences.getString(APP_PREFERENCES_USERID, null), preferences.getString(APP_PREFERENCES_PASSWORD, null));
                 }
             }
@@ -126,20 +182,105 @@ public class UserSessionData {
         Thread thread = new Thread(runnable);
         thread.start();
     }
-    private void webExit(final String userId, final String userPassword){
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if(userId != null && userPassword != null) {
-                    sendTokenToServer(null, userId, userPassword);
-                }
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
+
+    protected String getSession(){
+        return session;
     }
+
+    protected void setSession(String newSession){
+        session = newSession;
+    }
+
+    public String startSession(String newLogin, String newPassword){                                                                       //should be used not from UI Thread
+        StringBuilder result = null;
+        String tempResult = doSMTHWithSession(DEFAULT_NOT_EXISTING_SESSION_VALUE, ACTION_LOGIN, newLogin, newPassword);
+        String prefixString = tempResult.substring(0, 3);
+        String postfixString = tempResult.substring(3);
+        if (prefixString.equals("200")) {
+            result = new StringBuilder("");
+            WebCall webCall = new WebCall();
+            result.append(prefixString);
+            String newId = webCall.getStringFromJsonString(postfixString, "id");
+            result.append(newId);
+            setSession(webCall.getStringFromJsonString(postfixString, "session_id"));
+            checkUserData(newId, newLogin, newPassword);
+            return result.toString();
+        }
+        else{
+            return prefixString;
+        }
+    }
+
+    public String endSession(){                                                                         //should be used not from UI Thread
+        return  doSMTHWithSession(session, ACTION_LOGOUT, login, password);
+    }
+
+    public String checkSession(){
+        return doSMTHWithSession(session, ACTION_CHECK, login, password);
+    }
+
+    private String doSMTHWithSession(String session_id, String action, String incomingLogin, String incomingPassword){                                 //should be used not from UI Thread
+        String response = null;
+        if (token != null && incomingPassword != null && incomingLogin != null && session_id != null && action != null ) {
+            try {
+                URL url;
+                HashMap<String, String> postDataParams = new HashMap<String, String>();
+                if(!action.equals(ACTION_CHECK)) {
+                    url = new URL("http://217.10.35.250/who_buys_sessioner.php");
+                }
+                else{
+                    url = new URL("http://217.10.35.250/who_buys_controller.php");
+                    JSONArray object = new JSONArray();
+                    String jsonString = object.toString();
+                    postDataParams.put("data_json", jsonString);
+                }
+                postDataParams.put("uname", incomingLogin);
+                postDataParams.put("upassword", incomingPassword);
+                postDataParams.put("session_id", session_id);
+                postDataParams.put("action", action);
+                postDataParams.put("token", token);
+                postDataParams.put("version", CLIENT_VERSION);
+                postDataParams.put("client_type", CLIENT_TYPE);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);                                                 // Enable POST stream
+                conn.setDoInput(true);
+                conn.setRequestMethod("POST");
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(getPostDataString(postDataParams));
+
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+
+                response = "";
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    response += String.valueOf(responseCode);
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+                } else {
+                    response += String.valueOf(responseCode);
+                }
+
+                conn.disconnect();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return response;
+    }
+
     private void sendTokenToServer(String token, String userId, String password) {                 //Should be used not from UI thread
-        if(token != null && userId != null && password != null) {
+        if (token != null && userId != null && password != null) {
             try {
                 URL url = new URL("http://217.10.35.250/java_token_refresh.php");
                 HashMap<String, String> postDataParams = new HashMap<String, String>();
@@ -167,10 +308,11 @@ public class UserSessionData {
             }
         }
     }
+
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             if (first)
                 first = false;
             else

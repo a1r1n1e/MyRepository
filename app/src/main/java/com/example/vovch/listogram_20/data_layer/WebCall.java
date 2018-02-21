@@ -44,16 +44,21 @@ public class WebCall {
 
         HttpURLConnection conn = null;
         try {
-            URL url = new URL("http://217.10.35.250/java_listenner_2.php");
+            URL url = new URL("http://217.10.35.250/who_buys_controller.php");
             conn = (HttpURLConnection) url.openConnection();
             HashMap<String, String> postDataParams = new HashMap<String, String>();
+
             postDataParams.put("uname", loginPair[0]);
             postDataParams.put("upassword", loginPair[1]);
-            postDataParams.put("third", loginPair[2]);
+            postDataParams.put("token", loginPair[2]);
             postDataParams.put("action", loginPair[3]);
-            postDataParams.put("itemmarkgroup", loginPair[6]);
-            postDataParams.put("version", loginPair[5]);
-            postDataParams.put("key", loginPair[4]);
+            postDataParams.put("session_id", loginPair[4]);
+            postDataParams.put("client_type", loginPair[5]);
+            postDataParams.put("third", "rrr");
+            postDataParams.put("version", loginPair[6]);
+            JSONArray object = new JSONArray();
+            String jsonString = object.toString();
+            postDataParams.put("data_json", jsonString);
 
             conn.setDoOutput(true);                                                 // Enable POST stream
             conn.setDoInput(true);
@@ -67,6 +72,7 @@ public class WebCall {
             writer.close();
             os.close();
 
+
             int responseCode = conn.getResponseCode();
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
@@ -79,7 +85,6 @@ public class WebCall {
             } else {
                 response += String.valueOf(responseCode);
             }
-
             conn.disconnect();
         } catch (MalformedURLException e) {
             if (loginPair[3].equals("itemmark")) {

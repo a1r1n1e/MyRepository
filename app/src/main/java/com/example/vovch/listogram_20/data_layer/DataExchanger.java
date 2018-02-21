@@ -48,6 +48,7 @@ public class DataExchanger{
                 result = new StringBuilder(tempResult.substring(0, 3));
                 if (tempResult.substring(0, 3).equals("200")) {
                     result.append(webCall.getStringFromJsonString(tempResult.substring(3), "id"));
+                    provider.userSessionData.setSession(webCall.getStringFromJsonString(tempResult.substring(3), "session_id"));
                 }
             }
         }
@@ -84,8 +85,9 @@ public class DataExchanger{
         ListInformer[] informers = null;
         WebCall webCall = new WebCall();
         String resultJsonString = null;
+        ActiveActivityProvider provider = (ActiveActivityProvider) context;
         if(userId != null) {
-            resultJsonString = webCall.callServer(userId, "2", "2", "checkactives", context.getString(R.string.server_pie), context.getString(R.string.version), "5", "5");
+            resultJsonString = webCall.callServer(userId, "2", provider.userSessionData.getToken(), "checkactives", provider.userSessionData.getSession(), provider.userSessionData.getClientVersion(), provider.userSessionData.getClientVersion());
             if (resultJsonString.substring(0, 3).equals("200")) {
                 informers = webCall.getListInformersFromJsonString(resultJsonString.substring(3));
                 informers = storage.setListInformers(informers);
