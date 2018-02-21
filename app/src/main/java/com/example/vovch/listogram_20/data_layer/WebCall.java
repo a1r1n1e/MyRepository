@@ -39,7 +39,7 @@ public class WebCall {
     public WebCall() {
     }
 
-    protected String callServer(String... loginPair) {
+    protected String callServer(Object... loginPair) {
         String response = "";
 
         HttpURLConnection conn = null;
@@ -48,17 +48,17 @@ public class WebCall {
             conn = (HttpURLConnection) url.openConnection();
             HashMap<String, String> postDataParams = new HashMap<String, String>();
 
-            postDataParams.put("uname", loginPair[0]);
-            postDataParams.put("upassword", loginPair[1]);
-            postDataParams.put("token", loginPair[2]);
-            postDataParams.put("action", loginPair[3]);
-            postDataParams.put("session_id", loginPair[4]);
-            postDataParams.put("client_type", loginPair[5]);
-            postDataParams.put("third", "rrr");
-            postDataParams.put("version", loginPair[6]);
-            JSONArray object = new JSONArray();
-            String jsonString = object.toString();
-            postDataParams.put("data_json", jsonString);
+            postDataParams.put("uname", (String) loginPair[0]);
+            postDataParams.put("upassword", (String) loginPair[1]);
+            postDataParams.put("third", (String) loginPair[2]);
+            postDataParams.put("action", (String) loginPair[3]);
+            postDataParams.put("data_json", (String) loginPair[4]);
+
+            UserSessionData userSessionData = (UserSessionData) loginPair[5];
+            postDataParams.put("session_id", userSessionData.getSession());
+            postDataParams.put("client_type", userSessionData.getClientType());
+            postDataParams.put("version", userSessionData.getClientVersion());
+            postDataParams.put("token", userSessionData.getToken());
 
             conn.setDoOutput(true);                                                 // Enable POST stream
             conn.setDoInput(true);

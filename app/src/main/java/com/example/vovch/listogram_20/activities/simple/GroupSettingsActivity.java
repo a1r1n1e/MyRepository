@@ -132,9 +132,8 @@ public class GroupSettingsActivity extends NewGroup {
 
     @Override
     protected void providerAddNewGroup(String newGroupName) {
-        UserGroup changedGroup = new UserGroup(newGroupName, provider.getActiveGroup().getId());
-        changedGroup.setOwner(provider.getActiveGroup().getOwner());
-        provider.confirmGroupSettingsChange(changedGroup);
+        UserGroup changingGroup = provider.getActiveGroup();
+        provider.confirmGroupSettingsChange(changingGroup, newGroupName);
     }
 
     public void confirmGood(UserGroup result) {

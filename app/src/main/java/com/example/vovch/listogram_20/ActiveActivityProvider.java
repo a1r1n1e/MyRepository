@@ -37,6 +37,7 @@ import com.example.vovch.listogram_20.data_layer.async_tasks.RedactOnlineListTas
 import com.example.vovch.listogram_20.data_layer.async_tasks.RegistrationTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RemoveAddedUserTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.ResendListToGroupTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.SessionCheckerTask;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ListInformer;
@@ -135,7 +136,7 @@ public class ActiveActivityProvider extends Application {
             internetCheck = true;
         }
         if (prefCheck && internetCheck) {
-            tryToLoginWeb(userSessionData.getLogin(), userSessionData.getPassword());
+            checkSessionWeb();
         } else if (internetCheck) {
             badLoginTry("Log Yourself In");
         } else {
@@ -157,6 +158,19 @@ public class ActiveActivityProvider extends Application {
     public void tryToLoginWeb(String login, String password) {
         LoginnerTask loginnerTask = new LoginnerTask();
         loginnerTask.execute(login, password, ActiveActivityProvider.this);
+    }
+
+    public void  checkSessionWeb(){
+        SessionCheckerTask sessionCheckerTask = new SessionCheckerTask();
+        sessionCheckerTask.execute(ActiveActivityProvider.this);
+    }
+
+    public void goodSessionCheck(){
+        goodLoginTry(null);
+    }
+
+    public void badSessionCheck(){
+        badLoginTry("Some Mistake :(");
     }
 
     public void badLoginTry(String result) {
@@ -233,9 +247,9 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void confirmGroupSettingsChange(UserGroup changedGroup) {
+    public void confirmGroupSettingsChange(UserGroup changedGroup, String newGroupName) {
         GroupChangeConfirmTask groupChangeConfirmTask = new GroupChangeConfirmTask();
-        groupChangeConfirmTask.execute(changedGroup, ActiveActivityProvider.this);
+        groupChangeConfirmTask.execute(changedGroup, newGroupName, ActiveActivityProvider.this);
     }
 
     public void showGroupSettingsChangeGood(UserGroup result) {
@@ -326,7 +340,7 @@ public class ActiveActivityProvider extends Application {
 
     public void removeAddedUser(AddingUser user, WithLoginActivity activity) {
         RemoveAddedUserTask removeAddedUserTask = new RemoveAddedUserTask();
-        removeAddedUserTask.execute(user, user, activity);
+        removeAddedUserTask.execute(user, activity, ActiveActivityProvider.this);
     }
 
     public void showRemoveAddedUserNewGroupGood(AddingUser result) {
@@ -457,8 +471,7 @@ public class ActiveActivityProvider extends Application {
 
     public void getGroups() {
         GroupsGetterTask groupsGetterTask = new GroupsGetterTask();
-        groupsGetterTask.setApplicationContext(ActiveActivityProvider.this);
-        groupsGetterTask.execute();
+        groupsGetterTask.execute(ActiveActivityProvider.this);
     }
 
     public void showGroupsGottenGood(UserGroup[] result) {

@@ -105,6 +105,7 @@ public class NewGroup extends WithLoginActivity {
         }
         provider.clearNewGroupPossibleMembers();
         Intent intent = new Intent(getThisActivityContext(), cls);
+        intent.putExtra("loadtype", 0);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         this.finish();
@@ -162,17 +163,11 @@ public class NewGroup extends WithLoginActivity {
             newUserButton.setTextColor(getResources().getColor(R.color.whoBuysGray));
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            newUserButton.setBackground(getDrawable(R.color.elementLayoutColor2));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            newUserButton.setBackground(getResources().getDrawable(R.color.elementLayoutColor2));
-        } else {
-            newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor2));
-        }
-
         if (loadType) {
             user.setButton(newUserButton);
+            newUserButton.setFocusable(true);
             newUserButton.setLongClickable(true);
+            newUserButton.setUser(user);
             View.OnLongClickListener addedUserListener = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -182,7 +177,21 @@ public class NewGroup extends WithLoginActivity {
                 }
             };
             newUserButton.setOnLongClickListener(addedUserListener);
-            newUserButton.setUser(user);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                newUserButton.setBackground(getDrawable(R.color.elementLayoutColor2));
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                newUserButton.setBackground(getResources().getDrawable(R.color.elementLayoutColor2));
+            } else {
+                newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor2));
+            }
+        } else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                newUserButton.setBackground(getDrawable(R.color.elementLayoutColor1));
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                newUserButton.setBackground(getResources().getDrawable(R.color.elementLayoutColor1));
+            } else {
+                newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor1));
+            }
         }
         addingUsersLayout.addView(newUserButton);
     }
