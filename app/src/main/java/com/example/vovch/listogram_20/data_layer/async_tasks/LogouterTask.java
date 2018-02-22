@@ -14,7 +14,7 @@ public class LogouterTask extends AsyncTask<Object, Void, String> {
     @Override
     public String doInBackground(Object... loginPair) {
         String result;
-        activeActivityProvider = (ActiveActivityProvider) loginPair[2];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[0];
         result = activeActivityProvider.userSessionData.endSession();
         return result;
     }

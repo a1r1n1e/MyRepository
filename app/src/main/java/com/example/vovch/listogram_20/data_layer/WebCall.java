@@ -44,7 +44,12 @@ public class WebCall {
 
         HttpURLConnection conn = null;
         try {
-            URL url = new URL("http://217.10.35.250/who_buys_controller.php");
+            URL url;
+            if(!((String) loginPair[3]).equals("registration")) {
+                url = new URL("http://217.10.35.250/who_buys_controller.php");
+            } else{
+                url = new URL("http://217.10.35.250/who_buys_sessioner.php");
+            }
             conn = (HttpURLConnection) url.openConnection();
             HashMap<String, String> postDataParams = new HashMap<String, String>();
 

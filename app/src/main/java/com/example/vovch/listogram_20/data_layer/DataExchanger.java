@@ -61,7 +61,7 @@ public class DataExchanger{
             return null;
         }
     }*/
-    public String registrationTry(String login, String password){
+    /*public String registrationTry(String login, String password){
         StringBuilder result = null;
         String tempResult;
         WebCall webCall = new WebCall();
@@ -82,7 +82,7 @@ public class DataExchanger{
         else {
             return null;
         }
-    }
+    }*/
     public ListInformer[] getListInformers(String userId){
         ListInformer[] informers = null;
         WebCall webCall = new WebCall();

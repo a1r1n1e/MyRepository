@@ -20,15 +20,14 @@ public class RegistrationTask extends AsyncTask<Object, Void, String> {
         userLogin = (String) loginPair[0];
         userPassword = (String) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
-        result = activeActivityProvider.dataExchanger.registrationTry(userLogin, userPassword);
+        result = activeActivityProvider.userSessionData.registration(userLogin, userPassword);
         return result;
     }
 
     @Override
     public void onPostExecute(String result) {
         if (result.substring(0, 3).equals("200")) {
-            activeActivityProvider.goodRegistrationTry(result.substring(3));                                                //TODO IMPORTANT
-            activeActivityProvider.userSessionData.checkUserData(result.substring(3), userLogin, userPassword, null);
+            activeActivityProvider.goodRegistrationTry(result.substring(3));
         } else {
             if (result.substring(0, 3).equals("403")) {
                 result = "Username Is Already Used";

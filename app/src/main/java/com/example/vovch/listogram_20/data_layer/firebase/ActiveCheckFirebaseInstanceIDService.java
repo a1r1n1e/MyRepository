@@ -27,11 +27,6 @@ import java.util.Map;
 
 public class ActiveCheckFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = "MyAndroidFCMIIDService";
-    public static final String APP_PREFERENCES = "autentification";
-    private static final String  APP_PREFERENCES_TOKEN= "token";
-    private static final String  APP_PREFERENCES_USERID= "userid";
-    public static final String APP_PREFERENCES_PASSWORD = "password";
-    private SharedPreferences tokenPreferences;
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
@@ -39,6 +34,6 @@ public class ActiveCheckFirebaseInstanceIDService extends FirebaseInstanceIdServ
         provider.userSessionData.setToken(refreshedToken);
         //Log the token
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-        provider.userSessionData.registerForPushes();
+        //provider.userSessionData.registerForPushes();
     }
 }

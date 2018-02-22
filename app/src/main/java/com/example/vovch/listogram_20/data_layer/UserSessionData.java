@@ -3,6 +3,8 @@ package com.example.vovch.listogram_20.data_layer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.vovch.listogram_20.ActiveActivityProvider;
+import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.data_layer.async_tasks.LogouterTask;
 
 import org.json.JSONArray;
@@ -169,18 +171,18 @@ public class UserSessionData {
 
     }
 
-    public void registerForPushes() {
+    /*public void registerForPushes() {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (isAnyPrefsData()) {
-                    sendTokenToServer(preferences.getString(APP_PREFERENCES_TOKEN, null), preferences.getString(APP_PREFERENCES_USERID, null), preferences.getString(APP_PREFERENCES_PASSWORD, null));
+                    sendTokenToServer(preferences.getString(APP_PREFERENCES_TOKEN, null), preferences.getString(APP_PREFERENCES_USERID, null), preferences.getString(APP_PREFERENCES_PASSWORD, null), preferences.getString(APP_PREFERENCES_SESSION, null));
                 }
             }
         };
         Thread thread = new Thread(runnable);
         thread.start();
-    }
+    }*/
 
     protected String getSession(){
         return session;
@@ -287,7 +289,36 @@ public class UserSessionData {
         return response;
     }
 
-    private void sendTokenToServer(String token, String userId, String password) {                 //Should be used not from UI thread
+    public String registration(String newLogin, String newPassword){
+        StringBuilder loginResult = null;
+        String tempResult;
+        WebCall webCall = new WebCall();
+        JSONArray jsonArray = new JSONArray();
+        String jsonString = jsonArray.toString();
+        if (token != null && newLogin != null && newPassword != null) {
+            tempResult = webCall.callServer(newLogin, newPassword, DEFAULT_NOT_EXISTING_SESSION_VALUE, "registration", jsonString, UserSessionData.this);
+            if(tempResult != null) {
+                String prefixString = tempResult.substring(0, 3);
+                String postfixString = tempResult.substring(3);
+                loginResult = new StringBuilder(prefixString);
+                if (prefixString.equals("200")) {
+                    String newSessionId = webCall.getStringFromJsonString(postfixString, "session_id");
+                    setSession(newSessionId);
+                    String newId = webCall.getStringFromJsonString(postfixString, "id");
+                    checkUserData(newId, newLogin, newPassword, newSessionId);
+                    loginResult.append(newId);
+                }
+            }
+        }
+        if(loginResult != null) {
+            return loginResult.toString();
+        }
+        else {
+            return null;
+        }
+    }
+
+    /*private void sendTokenToServer(String token, String userId, String password, String userSession) {                 //Should be used not from UI thread
         if (token != null && userId != null && password != null) {
             try {
                 URL url = new URL("http://217.10.35.250/java_token_refresh.php");
@@ -295,6 +326,10 @@ public class UserSessionData {
                 postDataParams.put("newusertoken", token);
                 postDataParams.put("userid", userId);
                 postDataParams.put("userpassword", password);
+
+                postDataParams.put("session_id", userSession);
+                postDataParams.put("version", CLIENT_VERSION);
+                postDataParams.put("client_type", CLIENT_TYPE);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setDoOutput(true);                                                 // Enable POST stream
@@ -315,7 +350,7 @@ public class UserSessionData {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
