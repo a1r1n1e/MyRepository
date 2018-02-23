@@ -145,14 +145,12 @@ public class UserSessionData {
     }
 
     public void savePrefs(final String userId, final String userName, final String userPassword, final String userSession) {    // Should be used not from UI thread
-        if (userId != null && userName != null && userPassword != null && userSession != null) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(APP_PREFERENCES_LOGIN, userName);
-            editor.putString(APP_PREFERENCES_USERID, userId);
-            editor.putString(APP_PREFERENCES_PASSWORD, userPassword);
-            editor.putString(APP_PREFERENCES_SESSION, userSession);
-            editor.apply();
-        }
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(APP_PREFERENCES_LOGIN, userName);
+        editor.putString(APP_PREFERENCES_USERID, userId);
+        editor.putString(APP_PREFERENCES_PASSWORD, userPassword);
+        editor.putString(APP_PREFERENCES_SESSION, userSession);
+        editor.apply();
     }
 
     public void exit() {
@@ -164,25 +162,13 @@ public class UserSessionData {
         id = null;
         name = null;
         password = null;
+        session = null;
         savePrefs(null, null, null, null);
     }
 
     public void showExitBad(){                                                                          //TODO
 
     }
-
-    /*public void registerForPushes() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isAnyPrefsData()) {
-                    sendTokenToServer(preferences.getString(APP_PREFERENCES_TOKEN, null), preferences.getString(APP_PREFERENCES_USERID, null), preferences.getString(APP_PREFERENCES_PASSWORD, null), preferences.getString(APP_PREFERENCES_SESSION, null));
-                }
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }*/
 
     protected String getSession(){
         return session;
@@ -317,40 +303,6 @@ public class UserSessionData {
             return null;
         }
     }
-
-    /*private void sendTokenToServer(String token, String userId, String password, String userSession) {                 //Should be used not from UI thread
-        if (token != null && userId != null && password != null) {
-            try {
-                URL url = new URL("http://217.10.35.250/java_token_refresh.php");
-                HashMap<String, String> postDataParams = new HashMap<String, String>();
-                postDataParams.put("newusertoken", token);
-                postDataParams.put("userid", userId);
-                postDataParams.put("userpassword", password);
-
-                postDataParams.put("session_id", userSession);
-                postDataParams.put("version", CLIENT_VERSION);
-                postDataParams.put("client_type", CLIENT_TYPE);
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);                                                 // Enable POST stream
-                conn.setDoInput(true);
-                conn.setRequestMethod("POST");
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(getPostDataString(postDataParams));
-
-                writer.flush();
-                writer.close();
-                os.close();
-
-                conn.disconnect();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
