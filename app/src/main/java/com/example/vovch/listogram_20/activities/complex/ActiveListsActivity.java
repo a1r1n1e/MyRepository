@@ -250,13 +250,8 @@ public class ActiveListsActivity extends WithLoginActivity
             ClipboardManager clipboard = (ClipboardManager) ActiveListsActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("", provider.userSessionData.getId());
             clipboard.setPrimaryClip(clip);
-            dialog = new Dialog(ActiveListsActivity.this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_view);
-            TextView text = (TextView) dialog.findViewById(R.id.dialogTextView);
-            text.setText("Your Id Copied");
-            text.setBackgroundColor(Color.GRAY);
-            dialog.show();
+            Toast.makeText(ActiveListsActivity.this, "Your Id Copied", Toast.LENGTH_LONG)
+                    .show();
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -747,9 +742,9 @@ public class ActiveListsActivity extends WithLoginActivity
         if (activeListsOnlineFragment != null) {
             fab.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add, getTheme()));
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.square_arrow_48, getTheme()));
             } else {
-                fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.square_arrow_48));
             }
             fab.setOnClickListener(fabOnClickListener);
         } else {
@@ -760,9 +755,9 @@ public class ActiveListsActivity extends WithLoginActivity
     private void fabActionOne(FloatingActionButton fab) {
         fab.show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.plus_32, getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
         } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.plus_32));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.WithLoginActivity;
+import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.UserButton;
@@ -106,7 +107,7 @@ public class NewGroup extends WithLoginActivity {
         provider.clearNewGroupPossibleMembers();
         Intent intent = new Intent(getThisActivityContext(), cls);
         intent.putExtra("loadtype", 0);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);                                             //troubles
         startActivity(intent);
         this.finish();
     }

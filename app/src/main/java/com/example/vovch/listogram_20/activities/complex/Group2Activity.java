@@ -115,9 +115,9 @@ public class Group2Activity extends WithLoginActivity {
                 if(position == 0){
                     fab.show();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send, getTheme()));
+                        fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
                     } else {
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send));
+                        fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
                     }
                 }
                 else if(position == 1){
@@ -135,9 +135,9 @@ public class Group2Activity extends WithLoginActivity {
         adapter.finishUpdate(viewPager);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send, getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
         } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_send));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,7 +169,7 @@ public class Group2Activity extends WithLoginActivity {
         provider.setActiveGroup(null);
         provider.setActiveListsActivityLoadType(0);
         Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
-        intentGroupList.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intentGroupList.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intentGroupList);
         this.finish();
     }
@@ -341,6 +341,7 @@ public class Group2Activity extends WithLoginActivity {
                             Toast.LENGTH_LONG).show();
                     activeActivityProvider.setResendingList(list);
                     Intent intent = new Intent(activity, GroupList2Activity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 2);
                     startActivity(intent);
                     activity.finish();
@@ -485,7 +486,7 @@ public class Group2Activity extends WithLoginActivity {
 
     public void sendListogram(){
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra("loadtype", 1);
         startActivity(intent);
     }

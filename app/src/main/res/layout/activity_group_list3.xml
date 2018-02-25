@@ -11,7 +11,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/group_list_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="72dp"
         android:background="@color/elementLayoutColor1">
                 <TextView
                     android:id="@+id/group_list_textview"
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +56,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:id="@+id/group_add_fab"
-                app:srcCompat="@android:drawable/ic_menu_add"/>
+                app:srcCompat="@drawable/add_48"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

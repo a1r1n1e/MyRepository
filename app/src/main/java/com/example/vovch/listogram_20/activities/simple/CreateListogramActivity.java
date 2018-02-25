@@ -2,6 +2,7 @@ package com.example.vovch.listogram_20.activities.simple;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.text.Selection;
 import android.view.KeyEvent;
@@ -91,13 +92,22 @@ public class CreateListogramActivity extends WithLoginActivity {
                 sendListogram();
             }
         };
-        ImageButton sendListogramButton = (ImageButton) findViewById(R.id.listogramsenddownbutton);
+        ImageButton sendListogramButton = (ImageButton) findViewById(R.id.create_listogram_send_list_button);
         sendListogramButton.setOnClickListener(sendListagramListener);
         scrollToEnd();
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.create_listogram_add_punct_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createPunct(null);
+            }
+        });
     }
     @Override
     protected void onStart(){
         super.onStart();
+        //clearer();
         getAndShowTempItemsState();
     }
     @Override
@@ -121,7 +131,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
     @Override
     public void onBackPressed(){
-        clearer();
+        //clearer();
         if(provider.getActiveActivityNumber() == 6) {
             provider.nullActiveActivity();
         }
@@ -230,7 +240,11 @@ public class CreateListogramActivity extends WithLoginActivity {
     public void saveTempItemsState(){
         TempItem[] tempItems = new TempItem[TempItems.size()];
         if(tempItems.length > -1) {
-            tempItems = TempItems.toArray(tempItems);
+            for(int i = 0; i < tempItems.length; i++){
+                tempItems[i] = new TempItem();
+                tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
+                tempItems[i].setComment(TempItems.get(i).getItemCommentEditText().getText().toString());
+            }
             provider.saveTempItems(tempItems);
         }
     }
@@ -272,6 +286,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         TempItems.clear();
         TempItems.trimToSize();
         Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
     public void showBad(){
@@ -295,6 +310,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         TempItems.trimToSize();
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
     public void showAddListOnlineBad(){                                                                 //TODO

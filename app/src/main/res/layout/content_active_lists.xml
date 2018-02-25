@@ -30,5 +30,5 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="110dp"
         android:layout_gravity="bottom|center"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/add_48" />
 </android.support.design.widget.CoordinatorLayout>

@@ -20,75 +20,32 @@ import org.json.JSONObject;
  * Created by vovch on 24.12.2017.
  */
 
-public class DataExchanger{
+public class DataExchanger {
     private DataStorage storage;
     private static DataExchanger instance;
     private static final String BLANK_WEBCALL_FIELD = "100000";
     private static final String NULL_LAST_LIST_CREATION_TIME = "0000";
     private Context context;
-    private DataExchanger(Context newContext){
+
+    private DataExchanger(Context newContext) {
         storage = DataStorage.getInstance();
         context = newContext;
     }
-    public static DataExchanger getInstance(Context newContext){
-        if(instance == null){
+
+    public static DataExchanger getInstance(Context newContext) {
+        if (instance == null) {
             instance = new DataExchanger(newContext);
         }
         return instance;
     }
 
 
-    /*public String loginTry(String login, String password) {
-        StringBuilder result = null;
-        String tempResult = null;
-        WebCall webCall = new WebCall();
-        ActiveActivityProvider provider = (ActiveActivityProvider) context;
-        String token = provider.userSessionData.getToken();
-        if (token != null && login != null && password != null) {
-            tempResult = webCall.callServer(login, password, token, "login", context.getString(R.string.server_pie), "5", "5", "5");
-            if(tempResult != null) {
-                result = new StringBuilder(tempResult.substring(0, 3));
-                if (tempResult.substring(0, 3).equals("200")) {
-                    result.append(webCall.getStringFromJsonString(tempResult.substring(3), "id"));
-                    provider.userSessionData.setSession(webCall.getStringFromJsonString(tempResult.substring(3), "session_id"));
-                }
-            }
-        }
-        if(result != null) {
-            return result.toString();
-        }
-        else {
-            return null;
-        }
-    }*/
-    /*public String registrationTry(String login, String password){
-        StringBuilder result = null;
-        String tempResult;
-        WebCall webCall = new WebCall();
-        ActiveActivityProvider provider = (ActiveActivityProvider) context;
-        String token = provider.userSessionData.getToken();
-        if (token != null && login != null && password != null) {
-            tempResult = webCall.callServer(login, password, token, "registration", context.getString(R.string.server_pie), context.getString(R.string.version), "5", "5");
-            if(tempResult != null) {
-                result = new StringBuilder(tempResult.substring(0, 3));
-                if (tempResult.substring(0, 3).equals("200")) {
-                    result.append(webCall.getStringFromJsonString(tempResult.substring(3), "id"));
-                }
-            }
-        }
-        if(result != null) {
-            return result.toString();
-        }
-        else {
-            return null;
-        }
-    }*/
-    public ListInformer[] getListInformers(String userId){
+    public ListInformer[] getListInformers(String userId) {
         ListInformer[] informers = null;
         WebCall webCall = new WebCall();
         String resultJsonString = null;
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
-        if(userId != null) {
+        if (userId != null) {
             JSONArray jsonArray = new JSONArray();
             String jsonString = jsonArray.toString();
             resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkactives", jsonString, provider.userSessionData);
@@ -101,12 +58,11 @@ public class DataExchanger{
     }
 
 
-
-
-    public void clearAddingUsers(){
+    public void clearAddingUsers() {
         storage.clearAddingUsers();
     }
-    public UserGroup newGroupAdding(String name){
+
+    public UserGroup newGroupAdding(String name) {
         UserGroup result = null;
         UserGroup[] tempResult = null;
         String resultString = null;
@@ -114,7 +70,7 @@ public class DataExchanger{
         int length = users.length;
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
-            if(provider.userSessionData.getId() != null && name != null) {
+            if (provider.userSessionData.getId() != null && name != null) {
                 JSONArray members = new JSONArray();
                 JSONObject tempMember;
                 for (int i = 0; i < length; i++) {
@@ -133,19 +89,16 @@ public class DataExchanger{
                     clearAddingUsers();
                 }
             }
-        }
-        catch(JSONException e){                                                                         //TODO
+        } catch (JSONException e) {                                                                         //TODO
 
         }
         return result;
     }
 
 
-
-
-    private String checkUserWeb(String id){
+    private String checkUserWeb(String id) {
         String result = null;
-        if(id != null) {
+        if (id != null) {
             String tempResultString = null;
             WebCall webCall = new WebCall();
             JSONArray jsonArray = new JSONArray();
@@ -158,7 +111,8 @@ public class DataExchanger{
         }
         return result;
     }
-    public boolean checkUserRAM(String id){
+
+    public boolean checkUserRAM(String id) {
         AddingUser[] allUsers = storage.getAddingUsers();
         for (AddingUser user : allUsers) {
             if (user.getUserId().equals(id)) {
@@ -167,10 +121,11 @@ public class DataExchanger{
         }
         return false;
     }
-    public AddingUser addUser(String userId){
+
+    public AddingUser addUser(String userId) {
         AddingUser newUser = null;
         String result = checkUserWeb(userId);
-        if(result != null){
+        if (result != null) {
             newUser = new AddingUser();
             newUser.setData(result, userId);
             storage.addOneAddingUser(newUser);
@@ -178,20 +133,23 @@ public class DataExchanger{
         }
         return newUser;
     }
-    public AddingUser removeUser(AddingUser user){
-        if(user != null){
-            if(storage.isAddingUser(user)) {
+
+    public AddingUser removeUser(AddingUser user) {
+        if (user != null) {
+            if (storage.isAddingUser(user)) {
                 user = storage.removeOneAddingUser(user);
             }
         }
         return user;
     }
-    public AddingUser[] getAddingUsers(){
+
+    public AddingUser[] getAddingUsers() {
         return storage.getAddingUsers();
     }
-    public AddingUser[] makeAllUsersPossible(UserGroup group){
+
+    public AddingUser[] makeAllUsersPossible(UserGroup group) {
         AddingUser[] users = null;
-        if(group != null && group.getMembers() != null){
+        if (group != null && group.getMembers() != null) {
             storage.clearAddingUsers();
             storage.setAddingUsers(group.getMembers());
             users = getAddingUsers();
@@ -200,24 +158,24 @@ public class DataExchanger{
     }
 
 
-
-
-    public boolean checkGroupActiveData(UserGroup group){
+    public boolean checkGroupActiveData(UserGroup group) {
         boolean result = false;
-        if(group != null && group.getId() != null) {
+        if (group != null && group.getId() != null) {
             result = storage.isAnyGroupActiveLists(group);
         }
         return result;
     }
-    public SList[] getGroupActiveData(UserGroup group){
+
+    public SList[] getGroupActiveData(UserGroup group) {
         SList[] lists;
-                                            // this way just now
+        // this way just now
         lists = getGroupActiveDataFromWeb(group);
         return lists;
     }
-    private SList[] getGroupActiveDataFromWeb(UserGroup group){
+
+    private SList[] getGroupActiveDataFromWeb(UserGroup group) {
         SList[] lists = null;
-        if(group != null && group.getId() != null) {
+        if (group != null && group.getId() != null) {
             WebCall webCall = new WebCall();
             JSONArray jsonArray = new JSONArray();
             String jsonString = jsonArray.toString();
@@ -232,13 +190,14 @@ public class DataExchanger{
     }
 
 
-    public SList[] getGroupHistoryData(UserGroup group){
+    public SList[] getGroupHistoryData(UserGroup group) {
         SList[] lists;
-                    // this way just now
+        // this way just now
         lists = getGroupDataFromWeb(group);
         return lists;
     }
-    private SList[] getGroupDataFromWeb(UserGroup group){
+
+    private SList[] getGroupDataFromWeb(UserGroup group) {
         SList[] lists = null;
         if (group != null) {
             WebCall webCall = new WebCall();
@@ -259,40 +218,43 @@ public class DataExchanger{
     }
 
 
-    private void setHistoryListsToGroup(UserGroup group, SList[] lists){
-        if(group != null){
+    private void setHistoryListsToGroup(UserGroup group, SList[] lists) {
+        if (group != null) {
             group.setHistoryLists(lists);
             int length = lists.length;
-            for(int i = 0; i < length; i++){
+            for (int i = 0; i < length; i++) {
                 lists[i].setGroup(group);
             }
         }
     }
-    private void setActiveListsToGroup(UserGroup group, SList[] lists){
-        if(group != null){
+
+    private void setActiveListsToGroup(UserGroup group, SList[] lists) {
+        if (group != null) {
             group.setActiveLists(lists);
             int length = lists.length;
-            for(int i = 0; i < length; i++){
+            for (int i = 0; i < length; i++) {
                 lists[i].setGroup(group);
             }
         }
     }
-    public boolean updateGroupData(String groupId, String groupName){
+
+    public boolean updateGroupData(String groupId, String groupName) {
         UserGroup[] groups = storage.getGroups();
         int i = 0;
         int length = groups.length;
-        for(i = 0; i < length; i++){
-            if(groups[i].getId().equals(groupId)) {
+        for (i = 0; i < length; i++) {
+            if (groups[i].getId().equals(groupId)) {
                 break;
             }
         }
-        if(i == length){
-                UserGroup newGroup = new UserGroup(groupName, groupId);
-                storage.addGroup(newGroup);
+        if (i == length) {
+            UserGroup newGroup = new UserGroup(groupName, groupId);
+            storage.addGroup(newGroup);
         }
         return true;
     }
-    public UserGroup confirmGroupChanges(UserGroup group, String newGroupName){
+
+    public UserGroup confirmGroupChanges(UserGroup group, String newGroupName) {
         UserGroup result = null;
         String resultString;
         AddingUser[] oldUsers;
@@ -302,16 +264,14 @@ public class DataExchanger{
         if (group.getOwner().equals(provider.userSessionData.getId())) {
             mergingUsersNeeded = false;
         }
-        if(group.getMembers() != null && mergingUsersNeeded) {
+        if (group.getMembers() != null && mergingUsersNeeded) {
             oldUsers = group.getMembers();
-        }
-        else{
+        } else {
             oldUsers = new AddingUser[0];
         }
-        if(storage.getAddingUsers() != null) {
+        if (storage.getAddingUsers() != null) {
             newUsers = storage.getAddingUsers();
-        }
-        else{
+        } else {
             newUsers = new AddingUser[0];
         }
 
@@ -328,64 +288,63 @@ public class DataExchanger{
             String jsonString = members.toString();
             WebCall webCall = new WebCall();
             resultString = webCall.callServer(group.getId(), newGroupName, BLANK_WEBCALL_FIELD, "changegroup", jsonString, provider.userSessionData);
-            if(resultString.substring(0, 3).equals("200")){
-                if(group.getOwner() != null) {
+            if (resultString.substring(0, 3).equals("200")) {
+                if (group.getOwner() != null) {
                     UserGroup newGroup = new UserGroup(newGroupName, group.getId(), group.getActiveLists(), group.getHistoryLists(), users);
                     newGroup.setOwner(group.getOwner());
                     result = storage.updateGroup(group, newGroup, mergingUsersNeeded);
-                    if(result != null){
+                    if (result != null) {
                         provider.setActiveGroup(result);
                     }
                 }
             }
-        }
-        catch(JSONException e){                                                                         //TODO
+        } catch (JSONException e) {                                                                         //TODO
 
         }
         storage.clearAddingUsers();
         return result;
     }
-    public UserGroup leaveGroup(UserGroup group){
+
+    public UserGroup leaveGroup(UserGroup group) {
         String resultString = null;
         WebCall webCall = new WebCall();
         JSONArray jsonArray = new JSONArray();
         String jsonString = jsonArray.toString();
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
-        resultString = webCall.callServer(provider.userSessionData.getId(), group.getId(), BLANK_WEBCALL_FIELD, "leavegroup",jsonString, provider.userSessionData);
-        if(!resultString.substring(0, 3).equals("200")){
+        resultString = webCall.callServer(provider.userSessionData.getId(), group.getId(), BLANK_WEBCALL_FIELD, "leavegroup", jsonString, provider.userSessionData);
+        if (!resultString.substring(0, 3).equals("200")) {
             group = null;
-        }
-        else{
+        } else {
             storage.removeGroup(group);
         }
         return group;
     }
 
 
-    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group){
+    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group) {
         UserGroup resultGroup = null;
         String result = null;
-        if(itemsArray!= null && group != null){
+        if (itemsArray != null && group != null) {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             WebCall webCall = new WebCall();
             String jsonString = webCall.prepareItemsJSONString(itemsArray);
             result = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, group.getId(), "sendlistogram", jsonString, provider.userSessionData);
-            if(result.substring(0, 3).equals("200")){
+            if (result.substring(0, 3).equals("200")) {
                 resultGroup = group;
             }
         }
         return resultGroup;
     }
 
-    public UserGroup resendListToGroup(SList list, UserGroup group){
+    public UserGroup resendListToGroup(SList list, UserGroup group) {
         UserGroup resultGroup = null;
         String jsonString;
-        if(list != null && group != null && list.getItems() != null){
+        if (list != null && group != null && list.getItems() != null) {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             WebCall webCall = new WebCall();
             String itemsJSONString = webCall.prepareItemsJSONString(list.getItems());
             jsonString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), group.getId(), "resendlist", itemsJSONString, provider.userSessionData);
-            if(jsonString.substring(0,3).equals("200")){
+            if (jsonString.substring(0, 3).equals("200")) {
                 resultGroup = group;
             }
         }
@@ -393,22 +352,22 @@ public class DataExchanger{
     }
 
 
-    public UserGroup[] getGroupsFromWeb(){
+    public UserGroup[] getGroupsFromWeb() {
         UserGroup[] groups = null;
         WebCall webCall = new WebCall();
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         JSONArray jsonArray = new JSONArray();
         String jsonString = jsonArray.toString();
         String userId = String.valueOf(provider.userSessionData.getId());
-        String resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "groupsearch", jsonString,provider.userSessionData);
-        if(resultJsonString.substring(0, 3).equals("200")) {
+        String resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "groupsearch", jsonString, provider.userSessionData);
+        if (resultJsonString.substring(0, 3).equals("200")) {
             groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
             groups = storage.setGroups(groups);
         }
         return groups;
     }
 
-    public SList disactivateOnlineList(SList list){
+    public SList disactivateOnlineList(SList list) {
         SList result = null;
         if (list != null && list.getGroup() != null) {
             UserGroup group = list.getGroup();
@@ -427,9 +386,10 @@ public class DataExchanger{
         }
         return result;
     }
-    public Item itemmarkOnline(Item item){
+
+    public Item itemmarkOnline(Item item) {
         Item result = null;
-        if(item != null && item.getList() != null && item.getList().getGroup() != null) {
+        if (item != null && item.getList() != null && item.getList().getGroup() != null) {
             WebCall webCall = new WebCall();
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String userId = String.valueOf(provider.userSessionData.getId());
@@ -451,8 +411,7 @@ public class DataExchanger{
                         group.itemmark(item);
                     }
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -460,11 +419,10 @@ public class DataExchanger{
     }
 
 
-
-    public Item itemmarkOffline(Item item){
+    public Item itemmarkOffline(Item item) {
         Item[] items = storage.getOfflineItemsOfActiveLists();
         Item result = null;
-        if(item != null){
+        if (item != null) {
             result = item;
             DataBaseTask2 memoryTask = new DataBaseTask2(context);
             memoryTask.itemMarkOffline(String.valueOf(result.getId()));
@@ -474,75 +432,79 @@ public class DataExchanger{
 
         return result;
     }
-    public SList disactivateOfflineList(SList list){
+
+    public SList disactivateOfflineList(SList list) {
         SList result = null;
-        if(list != null){
+        if (list != null) {
             result = list;
             DataBaseTask2 memoryTask = new DataBaseTask2(context);
             memoryTask.disactivateOfflineList(String.valueOf(result.getId()));
         }
 
-        if(result != null) {
+        if (result != null) {
             storage.removeOfflineListFromActive(result);
         }
 
         return result;
     }
-    public SList addOfflineList(Item[] items){
+
+    public SList addOfflineList(Item[] items) {
         SList list;
         DataBaseTask2 addTask = new DataBaseTask2(context);
         list = addTask.addList(items);
 
-        if(list != null) {
+        if (list != null) {
             storage.addNewList(list);
         }
 
         return list;
     }
 
-    public TempItem[]  makeTempItemsFromItems(Item[] items){
+    public TempItem[] makeTempItemsFromItems(Item[] items) {
         TempItem[] tempItems = null;
-        if(items != null){
+        if (items != null) {
             tempItems = new TempItem[items.length];
-            for(int i = 0; i < items.length; i++){
+            for (int i = 0; i < items.length; i++) {
                 tempItems[i] = new TempItem(items[i].getName(), items[i].getComment());
                 tempItems[i].setId(items[i].getId());
                 tempItems[i].setState(items[i].getState());
             }
         }
-        return  tempItems;
+        return tempItems;
     }
 
-    public void saveTempItems(TempItem[] tempItems){
+    public void saveTempItems(TempItem[] tempItems) {
         storage.setTempItems(tempItems);
     }
-    public TempItem[] getTempItems(){
+
+    public TempItem[] getTempItems() {
         TempItem[] result;
         result = storage.getTempItems();
         return result;
     }
-    public void clearTempItems(){
+
+    public void clearTempItems() {
         storage.clearTempItems();
     }
 
 
-    public SList redactOfflineList(SList list, Item[] items){
+    public SList redactOfflineList(SList list, Item[] items) {
         SList resultList = null;
-        if(list != null && items != null){
+        if (list != null && items != null) {
             DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
             resultList = dataBaseTask2.redactOfflineList(list, items);
         }
         return resultList;
     }
 
-    public SList redactOnlineList(SList list, Item[] items){
+    public SList redactOnlineList(SList list, Item[] items) {
         SList resultList = null;
-        if(list != null && items != null && list.getGroup().getId() != null){
+        if (list != null && items != null && list.getGroup().getId() != null) {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             WebCall webCall = new WebCall();
             String itemsJSONString = webCall.prepareItemsJSONString(items);
             String resultString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), list.getGroup().getId(), "redactlist", itemsJSONString, provider.userSessionData);
-            if(resultString.substring(0, 3).equals("200")){
+            if (resultString.substring(0, 3).equals("200")) {
                 list.setItems(items);
                 resultList = list;
             }
@@ -551,54 +513,57 @@ public class DataExchanger{
     }
 
 
-    public SList[] getOfflineActiveData(){
+    public SList[] getOfflineActiveData() {
         SList[] lists;
-        if(storage.isAnyOfflineActive()){
+        if (storage.isAnyOfflineActive()) {
             lists = storage.getOfflineListsActive();
-        }
-        else{
+        } else {
             lists = getOfflineActiveDataFromMemory();
-            if(lists != null) {
+            if (lists != null) {
                 storage.setOfflineActiveData(lists);
             }
         }
         return lists;
     }
-    public boolean checkOfflineActiveLists(){
+
+    public boolean checkOfflineActiveLists() {
         boolean result = false;
         result = storage.isAnyOfflineActive();
         return result;
     }
-    public SList[] getOfflineHistoryData(){
+
+    public SList[] getOfflineHistoryData() {
         SList[] lists;
-        if(storage.isAnyOfflineHistory()){
+        if (storage.isAnyOfflineHistory()) {
             lists = storage.getOfflineListsHistory();
-        }
-        else{
+        } else {
             lists = getOfflineHistoryDataFromMemory();
-            if(lists != null) {
+            if (lists != null) {
                 storage.setOfflineHistoryData(lists);
             }
         }
         return lists;
     }
 
-    private SList[] getOfflineActiveDataFromMemory(){
+    private SList[] getOfflineActiveDataFromMemory() {
         SList[] lists;
         DataBaseTask2 task2 = new DataBaseTask2(context);
         lists = task2.getOffline(1);
         return lists;
     }
-    private SList[] getOfflineHistoryDataFromMemory(){
+
+    private SList[] getOfflineHistoryDataFromMemory() {
         SList[] lists;
         DataBaseTask2 task2 = new DataBaseTask2(context);
         lists = task2.getOffline(0);
         return lists;
     }
-    public void setOfflineActiveDataToDataStorage(SList[] lists){
+
+    public void setOfflineActiveDataToDataStorage(SList[] lists) {
 
     }
-    public void setOfflineHistoryDataToDataStorage(SList[] lists){
+
+    public void setOfflineHistoryDataToDataStorage(SList[] lists) {
 
     }
 }

@@ -100,7 +100,7 @@ public class GroupList2Activity extends WithLoginActivity {
         }
         provider.setActiveListsActivityLoadType(0);
         Intent intent = new Intent(GroupList2Activity.this, ActiveListsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         this.finish();
     }

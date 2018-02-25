@@ -6,6 +6,8 @@
     android:background="@color/elementLayoutColor1"
     android:focusable="true"
     android:clickable="true"
+    android:layout_gravity="start"
+    android:gravity="start"
     android:textAllCaps="false"
     android:textSize="20sp"
     android:textColor="@color/whoBuysGray">

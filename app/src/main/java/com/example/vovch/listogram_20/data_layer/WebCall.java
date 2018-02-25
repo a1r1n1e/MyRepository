@@ -36,85 +36,97 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WebCall {
 
+    private static final String DATA_1 = "uname";
+    private static final String DATA_2  = "upassword";
+    private static final String DATA_3 = "third";
+    private static final String ACTION = "action";
+    private static final String DATA_JSON = "data_json";
+    private static final String SESSION_ID = "session_id";
+    private static final String TOKEN = "token";
+    private static final String CLIENT_TYPE = "client_type";
+    private static final String VERSION = "version";
+
+    private static final String NO_INTERNET = "400";
+    private static final String ONLINE_ACTIONS_DENIED_INFORMER = "000";
+
     public WebCall() {
     }
 
     protected String callServer(Object... loginPair) {
-        String response = "";
+        UserSessionData userSessionData;
+        if(loginPair[5] != null && loginPair[5] instanceof UserSessionData) {
+            userSessionData = (UserSessionData) loginPair[5];
+            if (userSessionData.isSession()) {
+                String response = "";
+                HttpURLConnection conn = null;
+                try {
+                    URL url;
+                    if (!((String) loginPair[3]).equals("registration")) {
+                        url = new URL("http://217.10.35.250/who_buys_controller.php");
+                    } else {
+                        url = new URL("http://217.10.35.250/who_buys_sessioner.php");
+                    }
+                    conn = (HttpURLConnection) url.openConnection();
+                    HashMap<String, String> postDataParams = new HashMap<String, String>();
 
-        HttpURLConnection conn = null;
-        try {
-            URL url;
-            if(!((String) loginPair[3]).equals("registration")) {
-                url = new URL("http://217.10.35.250/who_buys_controller.php");
-            } else{
-                url = new URL("http://217.10.35.250/who_buys_sessioner.php");
-            }
-            conn = (HttpURLConnection) url.openConnection();
-            HashMap<String, String> postDataParams = new HashMap<String, String>();
+                    postDataParams.put(DATA_1, (String) loginPair[0]);
+                    postDataParams.put(DATA_2, (String) loginPair[1]);
+                    postDataParams.put(DATA_3, (String) loginPair[2]);
+                    postDataParams.put(ACTION, (String) loginPair[3]);
+                    postDataParams.put(DATA_JSON, (String) loginPair[4]);
 
-            postDataParams.put("uname", (String) loginPair[0]);
-            postDataParams.put("upassword", (String) loginPair[1]);
-            postDataParams.put("third", (String) loginPair[2]);
-            postDataParams.put("action", (String) loginPair[3]);
-            postDataParams.put("data_json", (String) loginPair[4]);
+                    postDataParams.put(SESSION_ID, userSessionData.getSession());
+                    postDataParams.put(CLIENT_TYPE, userSessionData.getClientType());
+                    postDataParams.put(VERSION, userSessionData.getClientVersion());
+                    postDataParams.put(TOKEN, userSessionData.getToken());
 
-            UserSessionData userSessionData = (UserSessionData) loginPair[5];
-            postDataParams.put("session_id", userSessionData.getSession());
-            postDataParams.put("client_type", userSessionData.getClientType());
-            postDataParams.put("version", userSessionData.getClientVersion());
-            postDataParams.put("token", userSessionData.getToken());
+                    conn.setDoOutput(true);                                                 // Enable POST stream
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+                    InputStream is = null;
+                    OutputStream os = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(getPostDataString(postDataParams));
 
-            conn.setDoOutput(true);                                                 // Enable POST stream
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");
-            InputStream is = null;
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(postDataParams));
-
-            writer.flush();
-            writer.close();
-            os.close();
+                    writer.flush();
+                    writer.close();
+                    os.close();
 
 
-            int responseCode = conn.getResponseCode();
+                    int responseCode = conn.getResponseCode();
 
-            if (responseCode == HttpsURLConnection.HTTP_OK) {
-                response += String.valueOf(responseCode);
-                String line;
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line = br.readLine()) != null) {
-                    response += line;
+                    if (responseCode == HttpsURLConnection.HTTP_OK) {
+                        response += String.valueOf(responseCode);
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        while ((line = br.readLine()) != null) {
+                            response += line;
+                        }
+                    } else {
+                        response += String.valueOf(responseCode);
+                    }
+                    conn.disconnect();
+                } catch (IOException e) {
+                    if (loginPair[3].equals("itemmark")) {
+                        StringBuilder tempString = new StringBuilder("");
+                        tempString.append("400");
+                        tempString.append(loginPair[1]);
+                        response = tempString.toString();
+                    } else if (loginPair[3].equals("login")) {
+                        response = NO_INTERNET;
+                    }
+                } finally {
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
                 }
+                return response;
             } else {
-                response += String.valueOf(responseCode);
+                return ONLINE_ACTIONS_DENIED_INFORMER;
             }
-            conn.disconnect();
-        } catch (MalformedURLException e) {
-            if (loginPair[3].equals("itemmark")) {
-                StringBuilder tempString = new StringBuilder("");
-                tempString.append("400");
-                tempString.append(loginPair[1]);
-                response = tempString.toString();
-            } else if (loginPair[3].equals("login")) {
-                response = "400No Internet Acesess";
-            }
-        } catch (IOException e) {
-            if (loginPair[3].equals("itemmark")) {
-                StringBuilder tempString = new StringBuilder("");
-                tempString.append("400");
-                tempString.append(loginPair[1]);
-                response = tempString.toString();
-            } else if (loginPair[3].equals("login")) {
-                response = "400No Internet Acesess";
-            }
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
+        } else {
+            return ONLINE_ACTIONS_DENIED_INFORMER;
         }
-        return response;
     }
 
     protected UserGroup[] getGroupsFromJsonString(String result) {
