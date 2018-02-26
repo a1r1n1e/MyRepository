@@ -183,8 +183,8 @@ public class DataExchanger {
             String resultJsonString = webCall.callServer(group.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "gettinglistograms", jsonString, provider.userSessionData);
             if (resultJsonString.substring(0, 3).equals("200")) {
                 lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
+                setActiveListsToGroup(group, lists);
             }
-            setActiveListsToGroup(group, lists);
         }
         return lists;
     }
@@ -211,8 +211,8 @@ public class DataExchanger {
             String resultJsonString = webCall.callServer(group.getId(), lastListCreationTime, BLANK_WEBCALL_FIELD, "gettinghistory", jsonString, provider.userSessionData);
             if (resultJsonString.substring(0, 3).equals("200")) {
                 lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
+                setHistoryListsToGroup(group, lists);
             }
-            setHistoryListsToGroup(group, lists);
         }
         return lists;
     }
@@ -405,10 +405,20 @@ public class DataExchanger {
                 String jsonString = jsonArray.toString();
                 String resultString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "itemmark", jsonString, provider.userSessionData);
                 if (resultString != null) {
-                    if (resultString.codePointAt(0) == '2') {
+                    UserGroup group = item.getList().getGroup();
+                    if (resultString.substring(0, 3).equals("205")) {
                         result = item;
-                        UserGroup group = item.getList().getGroup();
                         group.itemmark(item);
+                        item.setOwner(null);
+                        item.setOwnerName(null);
+                    }
+                    if(resultString.substring(0, 3).equals("200")){
+                        result = item;
+                        group.itemmark(item);
+                        String ownerId = webCall.getStringFromJsonString(resultString.substring(3), "owner_id");
+                        String ownerName = webCall.getStringFromJsonString(resultString.substring(3), "owner_name");
+                        item.setOwner(ownerId);
+                        item.setOwnerName(ownerName);
                     }
                 }
             } catch (Exception e) {

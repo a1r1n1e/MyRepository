@@ -3,6 +3,7 @@ package com.example.vovch.listogram_20.data_types;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Created by vovch on 23.12.2017.
@@ -15,24 +16,34 @@ public class Item /*implements Parcelable*/ {
     private SList list;
     private boolean state;
     private LinearLayout layout;
+    private LinearLayout verticalLayout;
     private ItemButton button;
+    private String owner;
+    private String ownerName;
+    private TextView ownerTextView;
     public Item(int newId, String newName, String newComment, boolean newState){
         id = newId;
         name = newName;
         comment = newComment;
         state = newState;
+        owner = null;
+        ownerName = null;
     }
     public Item(String newName, String newComment, boolean newState){
         id = 0;
         name = newName;
         comment = newComment;
         state = newState;
+        owner = null;
+        ownerName = null;
     }
     public Item(String newName, String newComment) {
         id = 0;
         state = true;
         name = newName;
         comment = newComment;
+        owner = null;
+        ownerName = null;
     }
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -83,8 +94,30 @@ public class Item /*implements Parcelable*/ {
     public ItemButton getButton(){
         return button;
     }
-
-
+    public void setOwner(String newOwner){
+        owner = newOwner;
+    }
+    public String getOwner(){
+        return owner;
+    }
+    public void setOwnerName(String newOwnerName){
+        ownerName = newOwnerName;
+    }
+    public String getOwnerName(){
+        return ownerName;
+    }
+    public void setOwnerTextView(TextView newTextView){
+        ownerTextView = newTextView;
+    }
+    public TextView getOwnerTextView(){
+        return ownerTextView;
+    }
+    public void setVerticalLayout(LinearLayout newLayout){
+        verticalLayout = newLayout;
+    }
+    public LinearLayout getVerticalLayout(){
+        return verticalLayout;
+    }
     /*protected Item(Parcel in) {
         id = in.readInt();
         name = in.readString();

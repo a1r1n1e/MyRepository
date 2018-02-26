@@ -166,7 +166,9 @@ public class GroupFragmentHistory extends Fragment {
 
     private void makeListogramLine(Item item, LinearLayout listogramLayout) {
         FrameLayout addingFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_element_frame_layout, listogramLayout, false);
-        LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingFrameLayout, false);
+        LinearLayout addingVerticalLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_vertical_layout, addingFrameLayout, false);
+        LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingVerticalLayout, false);
+        addingLayout.setAlpha(0.5f);
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
@@ -191,14 +193,19 @@ public class GroupFragmentHistory extends Fragment {
                 addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
             }
         }
-        addingLayout.setAlpha(0.5f);
-        groupButton.setFocusable(false);
-        groupButton.setClickable(false);
         addingLayout.addView(itemName);
         addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
-        addingFrameLayout.addView(addingLayout);
+        addingVerticalLayout.addView(addingLayout);
+        item.setVerticalLayout(addingVerticalLayout);
+        if(item.getOwnerName() != null && item.getOwner() != null){
+            TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
+            itemOwnerTextView.setText( "By " + item.getOwnerName());
+            addingVerticalLayout.addView(itemOwnerTextView);
+            item.setOwnerTextView(itemOwnerTextView);
+        }
+        addingFrameLayout.addView(addingVerticalLayout);
         addingFrameLayout.addView(groupButton);
         listogramLayout.addView(addingFrameLayout);
     }

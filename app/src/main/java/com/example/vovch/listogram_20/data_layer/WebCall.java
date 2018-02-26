@@ -226,11 +226,17 @@ public class WebCall {
                         String itemComment = encodedItems.getJSONObject(j).getString("item_comment");
                         int itemId = encodedItems.getJSONObject(j).getInt("item_id");
                         String itemStateString = encodedItems.getJSONObject(j).getString("item_state");
+                        String itemOwner = encodedItems.getJSONObject(j).getString("item_owner_id");
+                        String itemOwnerName = encodedItems.getJSONObject(j).getString("item_owner_name");
                         boolean itemState = false;
                         if (itemStateString.equals("t")) {
                             itemState = true;
                         }
                         tempItem = new Item(itemId, itemName, itemComment, itemState);
+                        if(!itemOwner.equals("null") && !itemOwnerName.equals("null")) {
+                            tempItem.setOwner(itemOwner);
+                            tempItem.setOwnerName(itemOwnerName);
+                        }
                         items[j] = tempItem;
                     }
                     int listId = tempListObject.getInt("list_id");

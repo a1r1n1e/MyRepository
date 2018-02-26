@@ -84,7 +84,8 @@ public class GroupFragmentActive extends Fragment {
 
     private void makeListogramLine(Item item, LinearLayout listogramLayout) {
         FrameLayout addingFrameLayout = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_element_frame_layout, listogramLayout, false);
-        LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingFrameLayout, false);
+        LinearLayout addingVerticalLayout = (LinearLayout) LayoutInflater.from(addingFrameLayout.getContext()).inflate(R.layout.list_element_vertical_layout, addingFrameLayout, false);
+        LinearLayout addingLayout = (LinearLayout) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_linear_layout, addingVerticalLayout, false);
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
@@ -125,7 +126,15 @@ public class GroupFragmentActive extends Fragment {
         addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
-        addingFrameLayout.addView(addingLayout);
+        addingVerticalLayout.addView(addingLayout);
+        item.setVerticalLayout(addingVerticalLayout);
+        if(item.getOwnerName() != null && item.getOwner() != null){
+            TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
+            itemOwnerTextView.setText( "By " + item.getOwnerName());
+            addingVerticalLayout.addView(itemOwnerTextView);
+            item.setOwnerTextView(itemOwnerTextView);
+        }
+        addingFrameLayout.addView(addingVerticalLayout);
         addingFrameLayout.addView(groupButton);
         listogramLayout.addView(addingFrameLayout);
     }
@@ -283,6 +292,25 @@ public class GroupFragmentActive extends Fragment {
 
     public void fragmentShowThirdGood(Item item) {
         LinearLayout itemMarkLayout = item.getLayout();
+        LinearLayout verticalLayout = item.getVerticalLayout();
+        if(!item.getState()) {
+            TextView itemOwnerTextView = (TextView) LayoutInflater.from(verticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, verticalLayout, false);
+            String ownerNameString = "";
+            if(item.getOwnerName() != null){
+                ownerNameString = item.getOwnerName();
+            }
+            itemOwnerTextView.setText("By " + ownerNameString);
+            verticalLayout.addView(itemOwnerTextView);
+            item.setOwnerTextView(itemOwnerTextView);
+        }
+        else{
+            TextView itemOwnerTextView = item.getOwnerTextView();
+            if(itemOwnerTextView != null) {
+                itemOwnerTextView.setVisibility(View.GONE);
+            }
+            item.setOwnerTextView(null);
+        }
+
         itemMarkLayout.setAlpha(1f);
         ItemButton itemMarkTouchedButton = item.getButton();
         itemMarkTouchedButton.setFocusable(true);
