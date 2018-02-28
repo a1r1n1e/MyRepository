@@ -50,7 +50,7 @@ public class ActiveFragmentOffline extends Fragment {
         refreshLayout.setFocusable(false);
         refreshLayout.setRefreshing(false);
         ActiveListsActivity activeListsActivity = (ActiveListsActivity) getActivity();
-        activeListsActivity.onOfflineFragmentStart();
+        activeListsActivity.onOfflineFragmentStart(ActiveFragmentOffline.this);
         return rootView;
     }
     public void listsLayoutDrawer(SList list){

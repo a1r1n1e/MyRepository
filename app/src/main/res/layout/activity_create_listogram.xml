@@ -8,6 +8,28 @@
     android:layout_gravity="bottom"
     android:fitsSystemWindows="true"
     tools:context="com.example.vovch.listogram_20.activities.simple.CreateListogramActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/create_listogram_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@color/elementLayoutColor1">
+        <TextView
+            android:id="@+id/create_listogram_toolbar_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="0.8"
+            android:text="Pick Items"
+            android:maxLines="1"
+            android:textAllCaps="false"
+            android:textColor="@color/whoBuysGray"
+            android:textSize="30sp"
+            android:gravity="start"
+            android:layout_gravity="center" />
+    </android.support.v7.widget.Toolbar>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +39,7 @@
         android:id="@+id/createlistogramscrollview"
         android:scrollbars="none"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="72dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,10 +56,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/add_48"
+                app:fabSize="mini"
                 android:id="@+id/create_listogram_add_punct_button"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginStart="4dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"/>
         </LinearLayout>
     </ScrollView>
 
@@ -48,5 +72,6 @@
         android:layout_marginBottom="96dp"
         android:layout_gravity="bottom|center"
         android:elevation="16dp"
+        app:fabSize="normal"
         app:srcCompat="@drawable/check_48"/>
 </android.support.design.widget.CoordinatorLayout>

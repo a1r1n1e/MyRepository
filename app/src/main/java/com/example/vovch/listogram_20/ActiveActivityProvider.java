@@ -598,7 +598,7 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineListogramCreatedGood() {
         if (getActiveActivityNumber() == 6) {
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
-            activity.showGood();
+            activity.showAddListOnlineGood();
         }
     }
 

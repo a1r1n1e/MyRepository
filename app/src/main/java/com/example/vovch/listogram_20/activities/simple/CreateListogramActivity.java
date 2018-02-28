@@ -1,18 +1,30 @@
 package com.example.vovch.listogram_20.activities.simple;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.Selection;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
@@ -22,6 +34,7 @@ import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.CreateListEditText;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
+import com.example.vovch.listogram_20.data_types.SList;
 import com.example.vovch.listogram_20.data_types.TempItem;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
@@ -77,6 +90,12 @@ public class CreateListogramActivity extends WithLoginActivity {
 
         setContentView(R.layout.activity_create_listogram);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.create_listogram_toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(24);
+        }
+        setSupportActionBar(toolbar);
+
         loadType = getIntent().getExtras().getInt("loadtype");                                      //getting information what type of action is it
 
         if(loadType == 1 || loadType == 3){
@@ -107,7 +126,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        //clearer();
+        clearer();
         getAndShowTempItemsState();
     }
     @Override
@@ -126,12 +145,10 @@ public class CreateListogramActivity extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         saveTempItemsState();
-        clearer();
         super.onStop();
     }
     @Override
     public void onBackPressed(){
-        //clearer();
         if(provider.getActiveActivityNumber() == 6) {
             provider.nullActiveActivity();
         }
@@ -204,20 +221,26 @@ public class CreateListogramActivity extends WithLoginActivity {
         itemKommentEditText.setTempItem(tempItem);
         itemKommentEditText.setOnEditorActionListener(editorListenerTwo);
         addingListogramLayout.addView(itemKommentEditText);
-        ItemButton addingButton = (ItemButton) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_element_right_side_button, addingListogramLayout, false);
-        addingButton.setText("Delete");
-        View.OnLongClickListener deleteListenner = new View.OnLongClickListener() {
+        FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, addingListogramLayout, false);
+        ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/cross_48");
+        imageButton.setImageURI(uri);
+        imageButton.setFocusable(false);
+        imageButton.setClickable(false);
+        ItemButton addingButton = (ItemButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_element_button, buttonFrame, false);
+        View.OnClickListener deleteListenner = new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 deletePunct((ItemButton) v);
-                return false;
             }
         };
         addingButton.setFocusable(true);
         addingButton.setLongClickable(true);
         addingButton.setClickable(true);
-        addingButton.setOnLongClickListener(deleteListenner);
-        addingListogramLayout.addView(addingButton);
+        addingButton.setOnClickListener(deleteListenner);
+        buttonFrame.addView(imageButton);
+        buttonFrame.addView(addingButton);
+        addingListogramLayout.addView(buttonFrame);
         cardView.addView(addingListogramLayout);
         tempItem.setButton(addingButton);
         tempItem.setItemNameEditText(itemNameEditText);
@@ -269,29 +292,78 @@ public class CreateListogramActivity extends WithLoginActivity {
         return tempItems;
     }
     public void sendListogram(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);
         Item[] items = makeSendingItemsArray();
-        if(loadType == 1) {
-            provider.createOnlineListogram(provider.getActiveGroup(), items, CreateListogramActivity.this);
-        }
-        else if(loadType == 0){
-            provider.createListogramOffline(items, CreateListogramActivity.this);
-        } else if(loadType == 2){
-            provider.redactOfflineListogram(items, provider.getResendingList(), CreateListogramActivity.this);
-        } else if(loadType == 3){
-            provider.redactOnlineListogram(items, provider.getResendingList(), CreateListogramActivity.this);
+        if(items != null){
+            CompleteDialogFragment dialogFragment = new CompleteDialogFragment();
+            dialogFragment.setActiveActivityProvider(provider);
+            dialogFragment.setItems(items);
+            dialogFragment.setLoadType(loadType);
+            dialogFragment.setFab(fab);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            dialogFragment.show(transaction, "dialog");
         }
     }
 
-    public void showGood(){
-        TempItems.clear();
-        TempItems.trimToSize();
-        Intent intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-    }
-    public void showBad(){
+    public static class CompleteDialogFragment extends DialogFragment {
+        private int loadType;
+        private boolean clickable;
+        private Item[] items;
+        private FloatingActionButton fab;
+        private ActiveActivityProvider activeActivityProvider;
+        protected void setFab(FloatingActionButton newFab){
+            fab = newFab;
+        }
+        protected void setLoadType(int newLoadType){
+            loadType = newLoadType;
+        }
+        protected void setItems(Item[] newItems){
+            items = newItems;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            clickable = true;
+            String message = "Are You Sure?";
+            String button2String = "Yes";
+            String button1String = "No";
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    clickable = false;
+                    if(loadType == 1) {
+                        activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items, (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                    }
+                    else if(loadType == 0){
+                        activeActivityProvider.createListogramOffline(items, (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                    } else if(loadType == 2){
+                        activeActivityProvider.redactOfflineListogram(items, activeActivityProvider.getResendingList(), (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                    } else if(loadType == 3){
+                        activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList(), (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                    }
+                    Toast.makeText(getActivity(), "Processing",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            fab.setFocusable(clickable);
+            fab.setClickable(clickable);
+            builder.setCancelable(false);
+            return builder.create();
+        }
     }
+
     public void showAddListOfflineGood(){
         TempItems.clear();
         TempItems.trimToSize();
@@ -302,7 +374,9 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
 
     public void showAddListOfflineBad(){
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);
+        fab.setFocusable(true);
+        fab.setClickable(true);
     }
 
     public void showAddListOnlineGood(){
@@ -313,7 +387,9 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
-    public void showAddListOnlineBad(){                                                                 //TODO
-
+    public void showAddListOnlineBad(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);
+        fab.setFocusable(true);
+        fab.setClickable(true);
     }
 }

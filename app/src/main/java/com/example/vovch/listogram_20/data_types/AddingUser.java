@@ -2,6 +2,7 @@ package com.example.vovch.listogram_20.data_types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v7.widget.CardView;
 
 /**
  * Created by vovch on 07.01.2018.
@@ -10,11 +11,11 @@ import android.os.Parcelable;
 public class AddingUser /*implements Parcelable*/ {
     private String userName;
     private String userId;
-    private UserButton button;
+    private CardView cardView;
     public AddingUser(){
         userId = null;
         userName = null;
-        button = null;
+        cardView = null;
     }
     public void setData(String newName, String newId){
         userId = newId;
@@ -26,11 +27,11 @@ public class AddingUser /*implements Parcelable*/ {
     public String getUserName(){
         return userName;
     }
-    public UserButton getButton(){
-        return  button;
+    public CardView getCardView(){
+        return  cardView;
     }
-    public void setButton(UserButton newButton){
-        button = newButton;
+    public void setCardView(CardView newCardView){
+        cardView = newCardView;
     }
 
     /*protected AddingUser(Parcel in) {

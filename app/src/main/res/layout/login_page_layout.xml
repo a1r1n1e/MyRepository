@@ -13,7 +13,7 @@
             android:gravity="center_horizontal"
             android:textSize="40sp"
             android:visibility="visible"/>
-        <EditText
+        <com.example.vovch.listogram_20.data_types.CreateListEditText
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
@@ -21,7 +21,7 @@
             android:textSize="25sp"
             android:hint="Login"
             android:id="@+id/edittext100"/>
-        <EditText
+        <com.example.vovch.listogram_20.data_types.CreateListEditText
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"

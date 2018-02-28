@@ -54,7 +54,7 @@ public class Group2Activity extends WithLoginActivity {
     View.OnClickListener groupSettingsButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(Group2Activity.this, GroupSettingsActivity.class);
+                Intent intent = new Intent(Group2Activity.this, GroupSettingsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             if(provider.getActiveActivityNumber() == 3) {

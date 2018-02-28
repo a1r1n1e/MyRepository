@@ -201,7 +201,7 @@ public class GroupFragmentHistory extends Fragment {
         item.setVerticalLayout(addingVerticalLayout);
         if(item.getOwnerName() != null && item.getOwner() != null){
             TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
-            itemOwnerTextView.setText( "By " + item.getOwnerName());
+            itemOwnerTextView.setText( "By: " + item.getOwnerName());
             addingVerticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
         }

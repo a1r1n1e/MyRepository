@@ -1,21 +1,25 @@
 package com.example.vovch.listogram_20.activities.simple;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 
+import android.support.v7.widget.CardView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
-import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.UserGroup;
@@ -40,7 +44,7 @@ public class GroupSettingsActivity extends NewGroup {
 
     @Override
     protected void initLayout(){
-        final EditText groupNameEditText = (EditText) findViewById(R.id.newgroupnameview);
+        final EditText groupNameEditText = (EditText) findViewById(R.id.group_settings_group_name_textview);
         groupNameEditText.setText(provider.getActiveGroup().getName());
         groupNameEditText.setFocusable(false);
         groupNameEditText.setOnTouchListener(new View.OnTouchListener() {
@@ -69,13 +73,15 @@ public class GroupSettingsActivity extends NewGroup {
         Button leaveGroupButton = (Button) findViewById(R.id.leavegroupbutton);
         leaveGroupButton.setFocusable(true);
         leaveGroupButton.setClickable(true);
-        leaveGroupButton.setVisibility(View.VISIBLE);
         leaveGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 leaveGroup();
             }
         });
+
+        CardView leaveCardView = (CardView) findViewById(R.id.group_settings_leave_button_cardview);
+        leaveCardView.setVisibility(View.VISIBLE);
 
         AddingUser[] users;
         if (!provider.getActiveGroup().getOwner().equals(provider.userSessionData.getId())) {
@@ -105,12 +111,6 @@ public class GroupSettingsActivity extends NewGroup {
         }
     }
 
-    public void drawNewMembers(AddingUser[] newMembers) {
-        for (AddingUser newMember : newMembers) {
-            drawNewUserLayout(newMember, true);
-        }
-    }
-
     @Override
     protected boolean providerCheckUser(String id){
         return provider.checkUser(id) || isOldMember(id);
@@ -130,10 +130,69 @@ public class GroupSettingsActivity extends NewGroup {
     }
 
 
+    public static class ConfirmDialogFragment extends DialogFragment {
+        private ActiveActivityProvider activeActivityProvider;
+        private String name;
+        private Button confirmButton;
+        boolean clickable;
+        protected void setConfirmButton(Button newButton){
+            confirmButton = newButton;
+        }
+        protected void setNewName(String newName){
+            name = newName;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            clickable = true;
+
+            String message = "Are You Sure?";
+            String button2String = "Yes";
+            String button1String = "No";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    clickable = false;
+                    UserGroup changingGroup = activeActivityProvider.getActiveGroup();
+                    activeActivityProvider.confirmGroupSettingsChange(changingGroup, name);
+                    Toast.makeText(getActivity(), "Processing",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            confirmButton.setFocusable(clickable);
+            confirmButton.setClickable(clickable);
+            builder.setCancelable(false);
+            return builder.create();
+        }
+    }
+
+
     @Override
     protected void providerAddNewGroup(String newGroupName) {
-        UserGroup changingGroup = provider.getActiveGroup();
-        provider.confirmGroupSettingsChange(changingGroup, newGroupName);
+
+        Button confirmButton = (Button) findViewById(R.id.newgroupsubmitbutton);
+        confirmButton.setFocusable(false);
+        confirmButton.setClickable(false);
+
+        ConfirmDialogFragment dialogFragment = new ConfirmDialogFragment();
+        dialogFragment.setActiveActivityProvider(provider);
+        dialogFragment.setNewName(newGroupName);
+        dialogFragment.setConfirmButton(confirmButton);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        dialogFragment.show(transaction, "dialog");
     }
 
     public void confirmGood(UserGroup result) {
@@ -146,8 +205,8 @@ public class GroupSettingsActivity extends NewGroup {
     }
 
     private void writeSomeError(){
-        TextView erView = (TextView) findViewById(R.id.newgrouperrorreporter);
-        erView.setText(R.string.some_error);
+        Toast.makeText(GroupSettingsActivity.this, "Something Went Wrong", Toast.LENGTH_LONG)
+                .show();
     }
 
     public void leaveGroup() {

@@ -70,7 +70,9 @@ public class DataStorage {
         AddingUser[] result = new AddingUser[0];
         if(AddingUsers.size() > 0){
             result = new AddingUser[AddingUsers.size()];
-            result = AddingUsers.toArray(result);
+            for(int i = 0; i < result.length; i++){
+                result[i] = AddingUsers.get(i);
+            }
         }
         return result;
     }

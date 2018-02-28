@@ -54,8 +54,6 @@ public class ActiveListsActivity extends WithLoginActivity
     private ActiveActivityProvider provider;
     private int loadType = -1;
 
-    private Dialog dialog;
-
     protected FragmentManager fragmentManager;
     private ActiveFragmentOffline offlineFragment;
     private ActiveFragmentHistory historyFragment;
@@ -168,6 +166,12 @@ public class ActiveListsActivity extends WithLoginActivity
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
         loadType = provider.getActiveListsActivityLoadType();
+
+        //adapter.startUpdate(viewPager);
+        //offlineFragment = (ActiveFragmentOffline) adapter.instantiateItem(viewPager, 1);
+        //historyFragment = (ActiveFragmentHistory) adapter.instantiateItem(viewPager, 2);
+        //activeFragment = (ActiveListsFragment) adapter.instantiateItem(viewPager, 0);
+        //adapter.finishUpdate(viewPager);
     }
 
     @Override
@@ -279,15 +283,17 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-    public void onOfflineFragmentStart() {
-        if (offlineFragment != null) {
+    public void onOfflineFragmentStart(ActiveFragmentOffline fragment) {
+        if(fragment != null){
+            offlineFragment = fragment;
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             refreshOfflineLists();
         }
     }
 
-    public void onHistoryFragmentStart() {
-        if (historyFragment != null) {
+    public void onHistoryFragmentStart(ActiveFragmentHistory fragment) {
+        if (fragment != null) {
+            historyFragment = fragment;
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             refreshOfflineHistory();
         }

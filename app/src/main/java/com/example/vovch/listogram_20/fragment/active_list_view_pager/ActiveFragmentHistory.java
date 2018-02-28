@@ -51,7 +51,7 @@ public class ActiveFragmentHistory extends Fragment {
         refreshLayout.setFocusable(false);
         refreshLayout.setRefreshing(false);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.onHistoryFragmentStart();
+        activity.onHistoryFragmentStart(ActiveFragmentHistory.this);
         return rootView;
     }
 

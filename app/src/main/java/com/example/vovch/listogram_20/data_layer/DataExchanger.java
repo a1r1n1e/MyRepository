@@ -126,9 +126,9 @@ public class DataExchanger {
         AddingUser newUser = null;
         String result = checkUserWeb(userId);
         if (result != null) {
+
             newUser = new AddingUser();
             newUser.setData(result, userId);
-            storage.addOneAddingUser(newUser);
             storage.addOneAddingUser(newUser);
         }
         return newUser;

@@ -1,15 +1,29 @@
 package com.example.vovch.listogram_20.activities.simple;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
+import android.text.Selection;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
@@ -17,6 +31,8 @@ import com.example.vovch.listogram_20.activities.WithLoginActivity;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.AddingUser;
+import com.example.vovch.listogram_20.data_types.CreateListEditText;
+import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.UserButton;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
@@ -36,6 +52,19 @@ public class NewGroup extends WithLoginActivity {
         return "NewGroup";
     }
 
+    TextView.OnEditorActionListener editorListenerOne = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEND|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                addUser();
+                return true;
+            }
+            else {
+                return true;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +73,12 @@ public class NewGroup extends WithLoginActivity {
         provider.setActiveActivity(getThisActivityNumber(), getThisActivityContext());
 
         setContentView(R.layout.activity_new_group);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.group_settings_toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(24);
+        }
+        setSupportActionBar(toolbar);
 
         Button addUserButton = (Button) findViewById(R.id.newgroupadduserbutton);
         View.OnClickListener addUserButtonListener = new View.OnClickListener() {
@@ -63,11 +98,24 @@ public class NewGroup extends WithLoginActivity {
         };
         confirmGroupAdding.setOnClickListener(confirmListener);
 
+        CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
+        editText.setOnEditorActionListener(editorListenerOne);
+
         initLayout();
     }
 
     protected void initLayout(){
-        provider.addUserToGroup(String.valueOf(provider.userSessionData.getId()), getThisActivityType());
+        if(!providerCheckUser(provider.userSessionData.getId())) {
+            provider.addUserToGroup(provider.userSessionData.getId(), getThisActivityType());
+        }
+        AddingUser[] users = provider.getPossibleMembers();
+        drawNewMembers(users);
+    }
+
+    public void drawNewMembers(AddingUser[] newMembers) {
+        for (AddingUser newMember : newMembers) {
+            drawNewUserLayout(newMember, true);
+        }
     }
 
     @Override
@@ -116,14 +164,15 @@ public class NewGroup extends WithLoginActivity {
         String id = getAddingUserId();
         if (id != null) {
             if (providerCheckUser(id)) { // if user already added
-                TextView erView = (TextView) findViewById(R.id.newgrouperrorreporter);
-                erView.setText(R.string.user_added_error);
+                Toast.makeText(NewGroup.this, "User Already Added", Toast.LENGTH_LONG)
+                        .show();
             } else {
+                nullUserIdEditText();
                 providerAddUser(id); // error id checked inside
             }
         } else {
-            TextView erView = (TextView) findViewById(R.id.newgrouperrorreporter);
-            erView.setText(R.string.no_user_id_error);
+            Toast.makeText(NewGroup.this, "Enter Any User Id", Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -149,9 +198,11 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void drawNewUserLayout(AddingUser user, boolean loadType) {
-        LinearLayout.LayoutParams addedUserButtonParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
         LinearLayout addingUsersLayout = (LinearLayout) findViewById(R.id.group_members_linear_layout);
-        UserButton newUserButton = new UserButton(addingUsersLayout.getContext());
+        CardView cardView = (CardView) LayoutInflater.from(addingUsersLayout.getContext()).inflate(R.layout.list_card, addingUsersLayout, false);
+        LinearLayout.LayoutParams addedUserButtonParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        UserButton newUserButton = new UserButton(cardView.getContext());
         newUserButton.setLayoutParams(addedUserButtonParameters);
         newUserButton.setGravity(Gravity.CENTER_HORIZONTAL);
         newUserButton.setText(user.getUserName());
@@ -165,7 +216,7 @@ public class NewGroup extends WithLoginActivity {
         }
 
         if (loadType) {
-            user.setButton(newUserButton);
+            user.setCardView(cardView);
             newUserButton.setFocusable(true);
             newUserButton.setLongClickable(true);
             newUserButton.setUser(user);
@@ -194,16 +245,18 @@ public class NewGroup extends WithLoginActivity {
                 newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor1));
             }
         }
-        addingUsersLayout.addView(newUserButton);
+        cardView.addView(newUserButton);
+        addingUsersLayout.addView(cardView);
     }
 
     public void showRemoveUserGood(AddingUser user) {
-        Button button = user.getButton();
-        button.setVisibility(View.GONE);
+        CardView cardView = user.getCardView();
+        cardView.setVisibility(View.GONE);
     }
 
-    public void showRemoveUserBad(AddingUser user) {                                                  //TODO ?
-
+    public void showRemoveUserBad(AddingUser user) {
+        Toast.makeText(NewGroup.this, "You Can't remove This User :)", Toast.LENGTH_LONG)
+                .show();
     }
 
     protected void nullUserIdEditText() {
@@ -213,18 +266,76 @@ public class NewGroup extends WithLoginActivity {
     }
 
     protected void confirmAll() {
-        EditText nameTextView = (EditText) findViewById(R.id.newgroupnameview);
+        EditText nameTextView = (EditText) findViewById(R.id.group_settings_group_name_textview);
         String newGroupName = nameTextView.getText().toString();
         if (!newGroupName.equals("")) {
             providerAddNewGroup(newGroupName);
         } else {
-            TextView erText = (TextView) findViewById(R.id.newgrouperrorreporter);
-            erText.setText(R.string.enter_your_group_name);
+            Toast.makeText(NewGroup.this, "Enter Your Group Name", Toast.LENGTH_LONG)
+                    .show();
+        }
+    }
+
+    public static class ConfirmDialogFragment extends DialogFragment {
+        private ActiveActivityProvider activeActivityProvider;
+        private String name;
+        private Button confirmButton;
+        boolean clickable;
+        protected void setConfirmButton(Button newButton){
+            confirmButton = newButton;
+        }
+        protected void setNewName(String newName){
+            name = newName;
+        }
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            clickable = true;
+
+            String message = "Are You Sure?";
+            String button2String = "Yes";
+            String button1String = "No";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+            builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    clickable = false;
+                    activeActivityProvider.addNewGroup(name);
+                    Toast.makeText(getActivity(), "Processing",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            confirmButton.setFocusable(clickable);
+            confirmButton.setClickable(clickable);
+            builder.setCancelable(false);
+            return builder.create();
         }
     }
 
     protected void providerAddNewGroup(String newGroupName){
-        provider.addNewGroup(newGroupName);
+
+        Button confirmButton = (Button) findViewById(R.id.newgroupsubmitbutton);
+        confirmButton.setFocusable(false);
+        confirmButton.setClickable(false);
+
+        ConfirmDialogFragment dialogFragment = new ConfirmDialogFragment();
+        dialogFragment.setActiveActivityProvider(provider);
+        dialogFragment.setNewName(newGroupName);
+        dialogFragment.setConfirmButton(confirmButton);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        dialogFragment.show(transaction, "dialog");
     }
 
     public void showGood(UserGroup result) {
@@ -235,7 +346,9 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void showBad(UserGroup result) {
-
+        Button confirmButton = (Button) findViewById(R.id.newgroupsubmitbutton);
+        confirmButton.setFocusable(true);
+        confirmButton.setClickable(true);
     }
 
     public void showUserCheckGood(AddingUser result) {
@@ -243,7 +356,7 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void showUserCheckBad(AddingUser result) {
-        TextView tView = (TextView) findViewById(R.id.newgrouperrorreporter);
-        tView.setText(R.string.error_no_user);
+        Toast.makeText(NewGroup.this, "No Such User :(", Toast.LENGTH_LONG)
+                .show();
     }
 }

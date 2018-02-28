@@ -4,10 +4,10 @@
     android:gravity="start"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="0dp"
+    android:paddingBottom="12dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingTop="0dp"
+    android:paddingTop="8dp"
     android:baselineAligned="false"
     android:background="@drawable/no_corners_layout_color_1">
 </LinearLayout>

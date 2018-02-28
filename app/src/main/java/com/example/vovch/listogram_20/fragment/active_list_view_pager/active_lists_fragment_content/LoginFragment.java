@@ -2,15 +2,19 @@ package com.example.vovch.listogram_20.fragment.active_list_view_pager.active_li
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Selection;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
+import com.example.vovch.listogram_20.data_types.CreateListEditText;
 import com.example.vovch.listogram_20.fragment.active_list_view_pager.ActiveListsFragment;
 
 /**
@@ -19,6 +23,21 @@ import com.example.vovch.listogram_20.fragment.active_list_view_pager.ActiveList
 
 public class LoginFragment extends ActiveListsFragment {
     private View rootView;
+
+    TextView.OnEditorActionListener editorListenerOne = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEND|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                CreateListEditText passwordEditText = (CreateListEditText) rootView.findViewById(R.id.edittext200);
+                Selection.setSelection(passwordEditText.getText(), passwordEditText.getSelectionStart());
+                passwordEditText.requestFocus();
+                return true;
+            }
+            else {
+                return true;
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +71,9 @@ public class LoginFragment extends ActiveListsFragment {
         Btn1.setOnClickListener(NewListenner1);
         Button Btn2 = (Button) rootView.findViewById(R.id.button200);
         Btn2.setOnClickListener(NewListenner2);
+        CreateListEditText loginEditText = (CreateListEditText) rootView.findViewById(R.id.edittext100);
+        loginEditText.setOnEditorActionListener(editorListenerOne);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        //activity.loginFragmentOnStart();
         activity.loginFragmentStart();
         return rootView;
     }
