@@ -3,9 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="start"
+    android:layout_marginLeft="4dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginRight="4dp"
+    android:paddingTop="8dp"
     android:gravity="start"
     android:textAllCaps="false"
+    android:textSize="20sp"
     android:textColor="@color/whoBuysGray"
     android:background="@android:color/transparent">
 </com.example.vovch.listogram_20.data_types.GroupButton>

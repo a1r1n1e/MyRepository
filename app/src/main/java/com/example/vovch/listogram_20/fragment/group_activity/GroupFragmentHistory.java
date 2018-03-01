@@ -173,8 +173,8 @@ public class GroupFragmentHistory extends Fragment {
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
-        TextView itemComment = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
-        itemComment.setText(item.getComment());
+        //TextView itemComment = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
+        //itemComment.setText(item.getComment());
         ItemButton groupButton = (ItemButton) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_button, addingFrameLayout, false);
         groupButton.setItem(item);
         if (item.getState()) {
@@ -195,7 +195,7 @@ public class GroupFragmentHistory extends Fragment {
             }
         }
         addingLayout.addView(itemName);
-        addingLayout.addView(itemComment);
+        //addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
         addingVerticalLayout.addView(addingLayout);

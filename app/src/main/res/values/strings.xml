@@ -10,11 +10,11 @@
     <string name="title_activity_group_settings">GroupSettingsActivity</string>
     <string name="enter_group_name">Enter Group Name</string>
     <string name="members">Members</string>
-    <string name="enter_new_user_id">Enter New User Id</string>
+    <string name="enter_new_user_id">Enter User Id</string>
     <string name="add_user">Add User</string>
     <string name="confirm">Confirm All</string>
     <string name="user_added_error">User Already Added</string>
-    <string name="no_user_id_error">Enter Any User Id</string>
+    <string name="no_user_id_error">Enter User Id</string>
     <string name="enter_your_group_name">Enter Your Group Name</string>
     <string name="error_no_user">No Such User(</string>
     <string name="some_error">Something Went Wrong</string>

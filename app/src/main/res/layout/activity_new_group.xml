@@ -11,15 +11,13 @@
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
         android:id="@+id/group_settings_toolbar"
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="72dp"
         android:background="@color/elementLayoutColor1">
         <EditText
             android:id="@+id/group_settings_group_name_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:layout_weight="0.8"
             android:focusable="true"
             android:clickable="true"
@@ -29,12 +27,12 @@
             android:background="@android:color/transparent"
             android:textColor="@color/whoBuysGray"
             android:textSize="30sp"
-            android:gravity="start"
+            android:gravity="center"
             android:layout_gravity="center" />
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none">
         <LinearLayout
@@ -80,52 +78,37 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:orientation="vertical"/>
-                    <com.example.vovch.listogram_20.data_types.CreateListEditText
-                        android:id="@+id/new_user_id_edittext"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="center_horizontal"
-                        android:hint="@string/enter_new_user_id"
-                        android:inputType="number"
-                        android:singleLine="true" />
-
-                    <android.support.v7.widget.CardView
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginRight="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginBottom="8dp"
-                        card_view:cardUseCompatPadding="false"
-                        card_view:contentPaddingLeft="8dp"
-                        card_view:cardCornerRadius="2dp"
-                        card_view:contentPaddingBottom="8dp"
-                        card_view:contentPaddingRight="8dp"
-                        card_view:contentPaddingTop="8dp"
-                        card_view:cardElevation="3dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:background="@color/elementLayoutColor1">
-                            <Button
-                                android:id="@+id/newgroupadduserbutton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:background="@color/elementLayoutColor1"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:text="@string/add_user"
-                                android:textAllCaps="false"
-                                android:textColor="@color/whoBuysGreen"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-                    </android.support.v7.widget.CardView>
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="104dp"
+                        android:layout_marginStart="104dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+                        <com.example.vovch.listogram_20.data_types.CreateListEditText
+                            android:id="@+id/new_user_id_edittext"
+                            android:layout_width="0dp"
+                            android:layout_height="72dp"
+                            android:layout_weight="0.5"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:gravity="center_horizontal"
+                            android:hint="@string/enter_new_user_id"
+                            android:inputType="number"
+                            android:singleLine="true" />
+                        <android.support.design.widget.FloatingActionButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
+                            android:id="@+id/group_settings_add_user_fab"/>
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -144,6 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     android:background="@color/elementLayoutColor1">
                     <Button
                         android:id="@+id/newgroupsubmitbutton"
@@ -159,7 +143,7 @@
                         android:visibility="visible"
                         android:text="@string/confirm"
                         android:textAllCaps="false"
-                        android:textColor="@color/whoBuysGreen"
+                        android:textColor="@color/whoBuysGray"
                         android:textSize="25sp" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -182,6 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     android:background="@color/elementLayoutColor1">
                     <Button
                         android:id="@+id/leavegroupbutton"

@@ -210,9 +210,9 @@ public class CreateListogramActivity extends WithLoginActivity {
         }
         itemNameEditText.setHint("Name");
         itemNameEditText.setTempItem(tempItem);
-        itemNameEditText.setOnEditorActionListener(editorListenerOne);
+        itemNameEditText.setOnEditorActionListener(editorListenerTwo);
         addingListogramLayout.addView(itemNameEditText);
-        CreateListEditText itemKommentEditText;
+        /*CreateListEditText itemKommentEditText;
         itemKommentEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
         if(hasData){
             itemKommentEditText.setText(tempItem.getComment());
@@ -220,7 +220,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         itemKommentEditText.setHint("Comment");
         itemKommentEditText.setTempItem(tempItem);
         itemKommentEditText.setOnEditorActionListener(editorListenerTwo);
-        addingListogramLayout.addView(itemKommentEditText);
+        addingListogramLayout.addView(itemKommentEditText);*/
         FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, addingListogramLayout, false);
         ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
         Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/cross_48");
@@ -235,7 +235,6 @@ public class CreateListogramActivity extends WithLoginActivity {
             }
         };
         addingButton.setFocusable(true);
-        addingButton.setLongClickable(true);
         addingButton.setClickable(true);
         addingButton.setOnClickListener(deleteListenner);
         buttonFrame.addView(imageButton);
@@ -244,7 +243,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         cardView.addView(addingListogramLayout);
         tempItem.setButton(addingButton);
         tempItem.setItemNameEditText(itemNameEditText);
-        tempItem.setItemCommentEditText(itemKommentEditText);
+        //tempItem.setItemCommentEditText(itemKommentEditText);
         tempItem.setCardView(cardView);
         TempItems.add(tempItem);
         addingButton.setTempItem(tempItem);
@@ -266,7 +265,7 @@ public class CreateListogramActivity extends WithLoginActivity {
             for(int i = 0; i < tempItems.length; i++){
                 tempItems[i] = new TempItem();
                 tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
-                tempItems[i].setComment(TempItems.get(i).getItemCommentEditText().getText().toString());
+                //tempItems[i].setComment(TempItems.get(i).getItemCommentEditText().getText().toString());
             }
             provider.saveTempItems(tempItems);
         }
@@ -287,7 +286,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         tempItems = TempItems.toArray(tempItems);
         for(int i = 0; i < tempItems.length; i++){
             tempItems[i].setName(tempItems[i].getNameEditText().getText().toString());
-            tempItems[i].setComment(tempItems[i].getItemCommentEditText().getText().toString());
+            //tempItems[i].setComment(tempItems[i].getItemCommentEditText().getText().toString());
         }
         return tempItems;
     }
