@@ -179,23 +179,30 @@ public class UserSessionData {
     }
 
     public String startSession(String newLogin, String newPassword){                                                                       //should be used not from UI Thread
-        StringBuilder result = null;
-        String tempResult = doSMTHWithSession(DEFAULT_NOT_EXISTING_SESSION_VALUE, ACTION_LOGIN, newLogin, newPassword);
-        String prefixString = tempResult.substring(0, 3);
-        String postfixString = tempResult.substring(3);
-        if (prefixString.equals("200")) {
-            result = new StringBuilder("");
-            WebCall webCall = new WebCall();
-            result.append(prefixString);
-            String newId = webCall.getStringFromJsonString(postfixString, "id");
-            result.append(newId);
-            String sessionValue = webCall.getStringFromJsonString(postfixString, "session_id");
-            setSession(sessionValue);
-            checkUserData(newId, newLogin, newPassword, sessionValue);
-            return result.toString();
-        }
-        else{
-            return prefixString;
+        try {
+            StringBuilder result = null;
+            String tempResult = doSMTHWithSession(DEFAULT_NOT_EXISTING_SESSION_VALUE, ACTION_LOGIN, newLogin, newPassword);
+            String prefixString = null;
+            String postfixString = null;
+            if(tempResult != null) {
+                prefixString = tempResult.substring(0, 3);
+                postfixString = tempResult.substring(3);
+            }
+            if (prefixString.equals("200")) {
+                result = new StringBuilder("");
+                WebCall webCall = new WebCall();
+                result.append(prefixString);
+                String newId = webCall.getStringFromJsonString(postfixString, "id");
+                result.append(newId);
+                String sessionValue = webCall.getStringFromJsonString(postfixString, "session_id");
+                setSession(sessionValue);
+                checkUserData(newId, newLogin, newPassword, sessionValue);
+                return result.toString();
+            } else {
+                return prefixString;
+            }
+        } catch (Exception e){
+            return  "700";
         }
     }
 
@@ -274,30 +281,33 @@ public class UserSessionData {
     }
 
     public String registration(String newLogin, String newPassword){
-        StringBuilder loginResult = null;
-        String tempResult;
-        WebCall webCall = new WebCall();
-        JSONArray jsonArray = new JSONArray();
-        String jsonString = jsonArray.toString();
-        if (token != null && newLogin != null && newPassword != null) {
-            tempResult = webCall.callServer(newLogin, newPassword, DEFAULT_NOT_EXISTING_SESSION_VALUE, "registration", jsonString, UserSessionData.this);
-            if(tempResult != null) {
-                String prefixString = tempResult.substring(0, 3);
-                String postfixString = tempResult.substring(3);
-                loginResult = new StringBuilder(prefixString);
-                if (prefixString.equals("200")) {
-                    String newSessionId = webCall.getStringFromJsonString(postfixString, "session_id");
-                    setSession(newSessionId);
-                    String newId = webCall.getStringFromJsonString(postfixString, "id");
-                    checkUserData(newId, newLogin, newPassword, newSessionId);
-                    loginResult.append(newId);
+        try {
+            StringBuilder loginResult = null;
+            String tempResult;
+            WebCall webCall = new WebCall();
+            JSONArray jsonArray = new JSONArray();
+            String jsonString = jsonArray.toString();
+            if (token != null && newLogin != null && newPassword != null) {
+                tempResult = webCall.callServer(newLogin, newPassword, DEFAULT_NOT_EXISTING_SESSION_VALUE, "registration", jsonString, UserSessionData.this);
+                if (tempResult != null) {
+                    String prefixString = tempResult.substring(0, 3);
+                    String postfixString = tempResult.substring(3);
+                    loginResult = new StringBuilder(prefixString);
+                    if (prefixString.equals("200")) {
+                        String newSessionId = webCall.getStringFromJsonString(postfixString, "session_id");
+                        setSession(newSessionId);
+                        String newId = webCall.getStringFromJsonString(postfixString, "id");
+                        checkUserData(newId, newLogin, newPassword, newSessionId);
+                        loginResult.append(newId);
+                    }
                 }
             }
-        }
-        if(loginResult != null) {
-            return loginResult.toString();
-        }
-        else {
+            if (loginResult != null) {
+                return loginResult.toString();
+            } else {
+                return null;
+            }
+        } catch (Exception e){
             return null;
         }
     }

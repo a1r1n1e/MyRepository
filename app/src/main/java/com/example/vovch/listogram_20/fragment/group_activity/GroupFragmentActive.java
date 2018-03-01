@@ -52,7 +52,8 @@ public class GroupFragmentActive extends Fragment {
         rootView = inflater.inflate(R.layout.group_fragment_active, container, false);
         unsetRefresher();
         Group2Activity activity = (Group2Activity) getActivity();
-        activity.onActiveReady();
+        activity.onActiveReady(GroupFragmentActive.this);
+        setRefresher();
         return rootView;
     }
 

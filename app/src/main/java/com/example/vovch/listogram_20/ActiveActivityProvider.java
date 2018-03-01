@@ -152,7 +152,17 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void tryToLoginFromForms(String login, String password) {
-        tryToLoginWeb(login, password);
+        boolean internetCheck = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            internetCheck = true;
+        }
+        if(internetCheck) {
+            tryToLoginWeb(login, password);
+        } else{
+            activeListsNoInternet();
+        }
     }
 
     public void tryToLoginWeb(String login, String password) {

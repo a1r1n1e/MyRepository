@@ -50,7 +50,8 @@ public class GroupFragmentHistory extends Fragment {
         rootView = inflater.inflate(R.layout.group_fragment_history, container, false);
         unsetRefresher();
         Group2Activity activity = (Group2Activity) getActivity();
-        activity.tempFunction();
+        activity.onHistoryReady(GroupFragmentHistory.this);
+        setRefresher();
         return rootView;
     }
 

@@ -73,7 +73,7 @@ public class ActiveListsActivity extends WithLoginActivity
         public void onClick(View v) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
             intent.putExtra("loadtype", 0);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             ActiveListsActivity.this.finish();
         }
@@ -166,12 +166,6 @@ public class ActiveListsActivity extends WithLoginActivity
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(2, ActiveListsActivity.this);
         loadType = provider.getActiveListsActivityLoadType();
-
-        //adapter.startUpdate(viewPager);
-        //offlineFragment = (ActiveFragmentOffline) adapter.instantiateItem(viewPager, 1);
-        //historyFragment = (ActiveFragmentHistory) adapter.instantiateItem(viewPager, 2);
-        //activeFragment = (ActiveListsFragment) adapter.instantiateItem(viewPager, 0);
-        //adapter.finishUpdate(viewPager);
     }
 
     @Override
@@ -241,12 +235,17 @@ public class ActiveListsActivity extends WithLoginActivity
         if (id == R.id.nav_camera) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
             intent.putExtra("loadtype", 0);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             this.finish();
         } else if (id == R.id.nav_share) {
-            provider.userSessionData.exit();
-            activeToLoginFragmentChange();
+            loginFailed = "You Logged Out";
+            ExitDialogFragment exitDialogFragment = new ExitDialogFragment();
+            exitDialogFragment.setActiveActivityProvider(provider);
+            exitDialogFragment.setActiveListsActivity(ActiveListsActivity.this);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            exitDialogFragment.show(transaction, "dialog");
         } else if (id == R.id.nav_copy_id) {
             //ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
             //ClipData clip = ClipData.newPlainText("", usersId);
@@ -261,6 +260,41 @@ public class ActiveListsActivity extends WithLoginActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static class ExitDialogFragment extends DialogFragment {
+        private ActiveActivityProvider activeActivityProvider;
+        private ActiveListsActivity activeListsActivity;
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        protected void setActiveListsActivity(ActiveListsActivity newActivity){
+            activeListsActivity = newActivity;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = "Want To Logout?";
+            String button1String = "Yes";
+            String button2String = "No";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+            builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    activeActivityProvider.userSessionData.exit();
+                    activeListsActivity.activeToLoginFragmentChange();
+                }
+            });
+            builder.setCancelable(true);
+            return builder.create();
+        }
     }
 
     public void refreshActiveLists() {
@@ -313,7 +347,10 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void loginFragmentStart() {
-        tryToLoginFromPrefs();
+        if(loginFailed == null) {
+            tryToLoginFromPrefs();
+        }
+        checkLoginBadInformNeeded();
     }
 
     public void onLoginFailed(String result) {                                                        //TODO cases
@@ -329,12 +366,9 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-    public void loginFragmentOnStart() {
-        checkLoginBadInformNeeded();
-    }
-
-    public void loginToActiveFragmentChange() {                                                      //TODO same class for moving to activeListsOnlineFragment
+    public void loginToActiveFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        activeFragment.unsetRefresher();
         if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             activeListsOnlineFragment = new ActiveListsOnlineFragment();
             transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
@@ -346,6 +380,7 @@ public class ActiveListsActivity extends WithLoginActivity
         }
         registrationFragment = null;
         loginFragment = null;
+        loginFailed = null;
         transaction.commit();
     }
 
@@ -362,6 +397,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void loginToRegistrationFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        activeFragment.unsetRefresher();
         if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             registrationFragment = new RegistrationFragment();
             transaction.add(R.id.active_lists_page_one, registrationFragment);
@@ -382,6 +418,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void registrationToActiveListsOnlineFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        activeFragment.unsetRefresher();
         if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             activeListsOnlineFragment = new ActiveListsOnlineFragment();
             transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
@@ -405,7 +442,8 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void activeToLoginFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
+        activeFragment.unsetRefresher();
+        if (activeListsOnlineFragment == null && registrationFragment == null) {
             loginFragment = new LoginFragment();
             transaction.add(R.id.active_lists_page_one, loginFragment);
         } else if (activeListsOnlineFragment != null) {
@@ -426,6 +464,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void registrationToLoginFragmentChange() {
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        activeFragment.unsetRefresher();
         if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
             loginFragment = new LoginFragment();
             transaction.add(R.id.active_lists_page_one, loginFragment);
@@ -446,7 +485,6 @@ public class ActiveListsActivity extends WithLoginActivity
             activeFragment.noInternet();
         }
     }
-
 
     public void update() {
         provider.getActiveActivityActiveLists();
@@ -553,6 +591,7 @@ public class ActiveListsActivity extends WithLoginActivity
                     activeActivityProvider.setResendingList(list);
                     activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 2);
                     startActivity(intent);
                     activity.finish();
@@ -638,6 +677,7 @@ public class ActiveListsActivity extends WithLoginActivity
             return builder.create();
         }
     }
+
     public void itemmark(Item item) {
         provider.activeListsItemmark(item);
     }
@@ -667,10 +707,24 @@ public class ActiveListsActivity extends WithLoginActivity
             if (group.getId() != null && group.getName() != null) {
                 provider.setActiveGroup(group);
                 Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
                 finisher();
             }
+        }
+    }
+
+    public void showActiveFragmentGood(){
+        if(activeFragment != null && viewPager != null){
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowGood(null);
+        }
+    }
+
+    public void showActiveFragmentBad(){
+        if(activeFragment != null && viewPager != null){
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.fragmentShowBad(null);
         }
     }
 

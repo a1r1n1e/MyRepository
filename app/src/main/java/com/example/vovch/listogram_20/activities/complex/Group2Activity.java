@@ -54,10 +54,10 @@ public class Group2Activity extends WithLoginActivity {
     View.OnClickListener groupSettingsButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-                Intent intent = new Intent(Group2Activity.this, GroupSettingsActivity.class);
+            Intent intent = new Intent(Group2Activity.this, GroupSettingsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
-            if(provider.getActiveActivityNumber() == 3) {
+            if (provider.getActiveActivityNumber() == 3) {
                 provider.nullActiveActivity();
             }
             Group2Activity.this.finish();
@@ -108,25 +108,26 @@ public class Group2Activity extends WithLoginActivity {
         }
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
-                if(position == 0){
+                if (position == 0) {
                     fab.show();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
                     } else {
                         fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
                     }
-                }
-                else if(position == 1){
+                } else if (position == 1) {
                     fab.hide();
                 }
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
 
         adapter.startUpdate(viewPager);
@@ -151,95 +152,105 @@ public class Group2Activity extends WithLoginActivity {
             }
         });
     }
+
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
     }
+
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(3, Group2Activity.this);
     }
+
     @Override
-    public void onBackPressed(){
-        if(provider.getActiveActivityNumber() == 3) {
+    public void onBackPressed() {
+        if (provider.getActiveActivityNumber() == 3) {
             provider.nullActiveActivity();
         }
         provider.setActiveGroup(null);
         provider.setActiveListsActivityLoadType(0);
         Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
-        //intentGroupList.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intentGroupList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intentGroupList);
         this.finish();
     }
+
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
     }
+
     @Override
-    public void onStop(){
-        if(provider.getActiveActivityNumber() == 3) {
+    public void onStop() {
+        if (provider.getActiveActivityNumber() == 3) {
             provider.nullActiveActivity();
         }
         super.onStop();
     }
-    public void update(){
-        if(activeFragment != null){
+
+    public void update() {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.setRefresherRefreshing();
         }
         provider.getGroupActiveLists(provider.getActiveGroup());
     }
-    public void refreshActiveLists(){
-        if(activeFragment != null){
-            if(activeReady) {
+
+    public void refreshActiveLists() {
+        if (activeFragment != null) {
+            if (activeReady) {
                 activeFragment.checkRootView(viewPager, getLayoutInflater());
                 activeFragment.setRefresherRefreshing();
                 update();
             }
         }
     }
-    public void onActiveReady(){
+
+    public void onActiveReady(GroupFragmentActive fragment) {
         activeReady = true;
-        if(activeFragment != null) {
-            activeFragment.setRefresher();
+        if (fragment != null) {
+            activeFragment = fragment;
+            refreshActiveLists();
         }
-        refreshActiveLists();
     }
-    public void refreshHistoryLists(){
-        if(historyFragment != null){
-            if(historyReady) {
+
+    public void refreshHistoryLists() {
+        if (historyFragment != null) {
+            if (historyReady) {
                 historyFragment.checkRootView(viewPager, getLayoutInflater());
                 historyFragment.setRefresherRefreshing();
                 historyLoad();
             }
         }
     }
-    public void onHistoryReady(){
-        if(historyFragment != null) {
+
+    public void onHistoryReady(GroupFragmentHistory fragment) {
+        if (fragment != null) {
             historyReady = true;
-            historyFragment.setRefresher();
+            historyFragment = fragment;
+            refreshHistoryLists();
         }
     }
-    public void tempFunction(){
-        onHistoryReady();
-        refreshHistoryLists();
-    }
-    public void historyLoad(){
+
+    public void historyLoad() {
         provider.getGroupHistoryLists(provider.getActiveGroup());
     }
-    public void itemmark(Item item){
+
+    public void itemmark(Item item) {
         provider.itemmark(item);
     }
-    public void disactivateGroupList(ListImageButton button){
+
+    public void disactivateGroupList(ListImageButton button) {
         SList list = button.getList();
-        if(list != null) {
+        if (list != null) {
             DisactivateDialogFragment dialogFragment = new DisactivateDialogFragment();
             dialogFragment.setList(list);
             dialogFragment.setActiveActivityProvider(provider);
@@ -248,15 +259,19 @@ public class Group2Activity extends WithLoginActivity {
             dialogFragment.show(transaction, "dialog");
         }
     }
+
     public static class DisactivateDialogFragment extends DialogFragment {
         private SList list;
         private ActiveActivityProvider activeActivityProvider;
-        protected void setList(SList newList){
+
+        protected void setList(SList newList) {
             list = newList;
         }
-        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider) {
             activeActivityProvider = newActiveActivityProvider;
         }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -285,16 +300,18 @@ public class Group2Activity extends WithLoginActivity {
             return builder.create();
         }
     }
-    public void showGroupDataSettledGood(){
+
+    public void showGroupDataSettledGood() {
 
     }
-    public void showGroupDataSettledBad(){
+
+    public void showGroupDataSettledBad() {
 
     }
 
-    public void resendList(ListImageButton button){
+    public void resendList(ListImageButton button) {
         SList list = button.getList();
-        if(list != null){
+        if (list != null) {
             ResendDialogFragment dialogFragment = new ResendDialogFragment();
             dialogFragment.setList(list);
             dialogFragment.setActiveActivityProvider(provider);
@@ -309,15 +326,19 @@ public class Group2Activity extends WithLoginActivity {
         private SList list;
         private ActiveActivityProvider activeActivityProvider;
         private Group2Activity activity;
-        protected void setActivity(Group2Activity newActivity){
+
+        protected void setActivity(Group2Activity newActivity) {
             activity = newActivity;
         }
-        protected void setList(SList newList){
+
+        protected void setList(SList newList) {
             list = newList;
         }
-        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider) {
             activeActivityProvider = newActiveActivityProvider;
         }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -341,7 +362,7 @@ public class Group2Activity extends WithLoginActivity {
                             Toast.LENGTH_LONG).show();
                     activeActivityProvider.setResendingList(list);
                     Intent intent = new Intent(activity, GroupList2Activity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 2);
                     startActivity(intent);
                     activity.finish();
@@ -360,8 +381,8 @@ public class Group2Activity extends WithLoginActivity {
         }
     }
 
-    public void redactList(SList list){
-        if(list != null){
+    public void redactList(SList list) {
+        if (list != null) {
             RedactDialogFragment dialogFragment = new RedactDialogFragment();
             dialogFragment.setList(list);
             dialogFragment.setActiveActivityProvider(provider);
@@ -376,15 +397,19 @@ public class Group2Activity extends WithLoginActivity {
         private SList list;
         private ActiveActivityProvider activeActivityProvider;
         private Group2Activity activity;
-        protected void setActivity(Group2Activity newActivity){
+
+        protected void setActivity(Group2Activity newActivity) {
             activity = newActivity;
         }
-        protected void setList(SList newList){
+
+        protected void setList(SList newList) {
             list = newList;
         }
-        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider) {
             activeActivityProvider = newActiveActivityProvider;
         }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -401,6 +426,7 @@ public class Group2Activity extends WithLoginActivity {
                     activeActivityProvider.setResendingList(list);
                     activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 3);
                     startActivity(intent);
                     activity.finish();
@@ -420,73 +446,79 @@ public class Group2Activity extends WithLoginActivity {
     }
 
 
-    public void historyLoadOnGood(SList[] result){
-        if(historyFragment != null) {
+    public void historyLoadOnGood(SList[] result) {
+        if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
-            onHistoryReady();                                                                        //strange solution
             historyFragment.historyFragmentCleaner();
             historyFragment.setRefresherNotRefreshing();
             historyFragment.fragmentShowGood(result);
         }
     }
-    public void historyLoadOnBad(String result){
-        if(historyFragment != null) {
+
+    public void historyLoadOnBad(String result) {
+        if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
-            onHistoryReady();                                                                        //strange solution
             historyFragment.setRefresherNotRefreshing();
             historyFragment.fragmentShowBad(result);
         }
     }
-    public void showGood(SList[] result){
-        if(activeFragment != null) {
+
+    public void showGood(SList[] result) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.activeFragmentCleaner();
             activeFragment.fragmentShowGood(result);
             activeFragment.setRefresherNotRefreshing();
         }
     }
-    public void showBad(SList[] result){
-        if(activeFragment != null) {
+
+    public void showBad(SList[] result) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.activeFragmentCleaner();
             activeFragment.fragmentShowBad(result);
             activeFragment.setRefresherNotRefreshing();
         }
     }
-    public void showSecondGood(SList result){
-        if(activeFragment != null) {
+
+    public void showSecondGood(SList result) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowSecondGood(result);
         }
     }
-    public void showSecondBad(SList result){
-        if(activeFragment != null) {
+
+    public void showSecondBad(SList result) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowSecondBad(result);
         }
     }
-    public void showThirdGood(Item result){
-        if(activeFragment != null) {
+
+    public void showThirdGood(Item result) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowThirdGood(result);
         }
     }
-    public void showThirdBad(Item result){
-        if(activeFragment != null) {
+
+    public void showThirdBad(Item result) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowThirdBad(result);
         }
     }
-    public void showItemmarkProcessing(Item item){
-        if(activeFragment != null) {
+
+    public void showItemmarkProcessing(Item item) {
+        if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowProcessing(item);
         }
     }
 
-    public void sendListogram(){
+    public void sendListogram() {
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra("loadtype", 1);
         startActivity(intent);
     }
@@ -498,6 +530,7 @@ public class Group2Activity extends WithLoginActivity {
         adapter.addFragment(new GroupFragmentHistory(), "History");
         viewPager.setAdapter(adapter);
     }
+
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -505,10 +538,12 @@ public class Group2Activity extends WithLoginActivity {
         protected Adapter(FragmentManager manager) {
             super(manager);
         }
-        private void clean(){
+
+        private void clean() {
             mFragmentList.clear();
             mFragmentTitleList.clear();
         }
+
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);

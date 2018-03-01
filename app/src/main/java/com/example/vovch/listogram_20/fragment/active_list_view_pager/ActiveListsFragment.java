@@ -3,11 +3,13 @@ package com.example.vovch.listogram_20.fragment.active_list_view_pager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
@@ -33,6 +35,7 @@ public class ActiveListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.active_lists_page_one_container, container, false);
+        unsetRefresher();
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
         activity.loginFragmentStart();
         return rootView;
@@ -44,9 +47,38 @@ public class ActiveListsFragment extends Fragment {
         layout.removeAllViewsInLayout();
     }
     public void noInternet(){
-        cleaner();
-        FrameLayout layout = (FrameLayout) rootView.findViewById(R.id.active_lists_page_one);
-        TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_internet_informer_text_view, layout, false);
-        layout.addView(messageTextView);
+        //cleaner();
+        setRefreresher();
+        Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_LONG)
+                .show();
+    }
+
+    public void setRefreresher(){
+        SwipeRefreshLayout refreshLayout = getRefresher();
+        refreshLayout.setEnabled(true);
+        refreshLayout.setFocusable(true);
+        refreshLayout.setRefreshing(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+    }
+
+    public  void unsetRefresher(){
+        SwipeRefreshLayout refreshLayout = getRefresher();
+        refreshLayout.setEnabled(false);
+        refreshLayout.setFocusable(false);
+        refreshLayout.setRefreshing(false);
+    }
+
+    public void refresh(){
+        ActiveListsActivity activity = (ActiveListsActivity) getActivity();
+        activity.tryToLoginFromPrefs();
+    }
+
+    public SwipeRefreshLayout getRefresher() {
+        return (SwipeRefreshLayout) rootView.findViewById(R.id.active_lists_container_refresher);
     }
 }

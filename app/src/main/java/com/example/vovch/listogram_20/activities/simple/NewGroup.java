@@ -340,7 +340,7 @@ public class NewGroup extends WithLoginActivity {
 
     public void showGood(UserGroup result) {
         Intent intent = new Intent(getThisActivityContext(), Group2Activity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         provider.setActiveGroup(result);
         startActivity(intent);
     }

@@ -49,7 +49,7 @@ public class DataExchanger {
             JSONArray jsonArray = new JSONArray();
             String jsonString = jsonArray.toString();
             resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkactives", jsonString, provider.userSessionData);
-            if (resultJsonString.substring(0, 3).equals("200")) {
+            if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
                 informers = webCall.getListInformersFromJsonString(resultJsonString.substring(3));
                 informers = storage.setListInformers(informers);
             }
@@ -82,7 +82,7 @@ public class DataExchanger {
                 String jsonString = members.toString();
                 WebCall webCall = new WebCall();
                 resultString = webCall.callServer(provider.userSessionData.getId(), name, BLANK_WEBCALL_FIELD, "newgroup", jsonString, provider.userSessionData);
-                if (resultString.substring(0, 3).equals("200")) {
+                if (resultString != null && resultString.length() > 2 &&  resultString.substring(0, 3).equals("200")) {
                     tempResult = webCall.getGroupsFromJsonString(resultString.substring(3));
                     result = tempResult[0];
                     storage.addGroup(result);
@@ -105,7 +105,7 @@ public class DataExchanger {
             String jsonString = jsonArray.toString();
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             tempResultString = webCall.callServer(id, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkuser", jsonString, provider.userSessionData);
-            if (tempResultString != null && tempResultString.substring(0, 3).equals("200")) {
+            if (tempResultString != null &&  tempResultString.length() > 2 && tempResultString.substring(0, 3).equals("200")) {
                 result = webCall.getStringFromJsonString(tempResultString.substring(3), "name");
             }
         }
@@ -181,7 +181,7 @@ public class DataExchanger {
             String jsonString = jsonArray.toString();
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String resultJsonString = webCall.callServer(group.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "gettinglistograms", jsonString, provider.userSessionData);
-            if (resultJsonString.substring(0, 3).equals("200")) {
+            if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
                 lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
                 setActiveListsToGroup(group, lists);
             }
@@ -209,7 +209,7 @@ public class DataExchanger {
             String jsonString = jsonArray.toString();
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String resultJsonString = webCall.callServer(group.getId(), lastListCreationTime, BLANK_WEBCALL_FIELD, "gettinghistory", jsonString, provider.userSessionData);
-            if (resultJsonString.substring(0, 3).equals("200")) {
+            if (resultJsonString != null && resultJsonString.length() > 2 &&  resultJsonString.substring(0, 3).equals("200")) {
                 lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
                 setHistoryListsToGroup(group, lists);
             }
@@ -288,7 +288,7 @@ public class DataExchanger {
             String jsonString = members.toString();
             WebCall webCall = new WebCall();
             resultString = webCall.callServer(group.getId(), newGroupName, BLANK_WEBCALL_FIELD, "changegroup", jsonString, provider.userSessionData);
-            if (resultString.substring(0, 3).equals("200")) {
+            if (resultString != null && resultString.length() > 2 &&  resultString.substring(0, 3).equals("200")) {
                 if (group.getOwner() != null) {
                     UserGroup newGroup = new UserGroup(newGroupName, group.getId(), group.getActiveLists(), group.getHistoryLists(), users);
                     newGroup.setOwner(group.getOwner());
@@ -312,10 +312,10 @@ public class DataExchanger {
         String jsonString = jsonArray.toString();
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         resultString = webCall.callServer(provider.userSessionData.getId(), group.getId(), BLANK_WEBCALL_FIELD, "leavegroup", jsonString, provider.userSessionData);
-        if (!resultString.substring(0, 3).equals("200")) {
-            group = null;
-        } else {
+        if (resultString != null && resultString.length() > 2 &&  resultString.substring(0, 3).equals("200")) {
             storage.removeGroup(group);
+        } else {
+            group = null;
         }
         return group;
     }
@@ -329,7 +329,7 @@ public class DataExchanger {
             WebCall webCall = new WebCall();
             String jsonString = webCall.prepareItemsJSONString(itemsArray);
             result = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, group.getId(), "sendlistogram", jsonString, provider.userSessionData);
-            if (result.substring(0, 3).equals("200")) {
+            if (result != null && result.length() > 2 &&  result.substring(0, 3).equals("200")) {
                 resultGroup = group;
             }
         }
@@ -344,7 +344,7 @@ public class DataExchanger {
             WebCall webCall = new WebCall();
             String itemsJSONString = webCall.prepareItemsJSONString(list.getItems());
             jsonString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), group.getId(), "resendlist", itemsJSONString, provider.userSessionData);
-            if (jsonString.substring(0, 3).equals("200")) {
+            if (jsonString != null && jsonString.length() > 2 &&  jsonString.substring(0, 3).equals("200")) {
                 resultGroup = group;
             }
         }
@@ -360,7 +360,7 @@ public class DataExchanger {
         String jsonString = jsonArray.toString();
         String userId = String.valueOf(provider.userSessionData.getId());
         String resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "groupsearch", jsonString, provider.userSessionData);
-        if (resultJsonString.substring(0, 3).equals("200")) {
+        if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
             groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
             groups = storage.setGroups(groups);
         }
@@ -379,7 +379,7 @@ public class DataExchanger {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String userId = String.valueOf(provider.userSessionData.getId());
             String resultString = webCall.callServer(groupId, listId, userId, "disactivatelist", jsonString, provider.userSessionData);
-            if (resultString.substring(0, 3).equals("200")) {
+            if (resultString != null && resultString.length() > 2 &&  resultString.substring(0, 3).equals("200")) {
                 group.disactivateList(list);
                 result = list;
             }
@@ -404,7 +404,7 @@ public class DataExchanger {
                 jsonArray.put(3, itemId);
                 String jsonString = jsonArray.toString();
                 String resultString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "itemmark", jsonString, provider.userSessionData);
-                if (resultString != null) {
+                if (resultString != null && resultString.length() > 2) {
                     UserGroup group = item.getList().getGroup();
                     if (resultString.substring(0, 3).equals("205")) {
                         result = item;
@@ -514,7 +514,7 @@ public class DataExchanger {
             WebCall webCall = new WebCall();
             String itemsJSONString = webCall.prepareItemsJSONString(items);
             String resultString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), list.getGroup().getId(), "redactlist", itemsJSONString, provider.userSessionData);
-            if (resultString.substring(0, 3).equals("200")) {
+            if (resultString != null && resultString.length() > 2 &&  resultString.substring(0, 3).equals("200")) {
                 list.setItems(items);
                 resultList = list;
             }

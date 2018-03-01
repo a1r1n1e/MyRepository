@@ -384,7 +384,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         TempItems.trimToSize();
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
     public void showAddListOnlineBad(){

@@ -31,8 +31,10 @@ public class LoginnerTask extends AsyncTask<Object, Void, String> {
         } else {
             if (result != null && result.substring(0, 3).equals("403")) {
                 result = "No Such User";
-            } else {
-                result = "Logged Off";
+            } else if(result == null){
+                result = "No Internet";
+            } else{
+                result = "Something Went Bad :(";
             }
             activeActivityProvider.badLoginTry(result);
         }
