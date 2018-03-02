@@ -6,5 +6,5 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
-    android:background="@color/elementLayoutColor2">
+    android:background="@android:color/transparent">
 </FrameLayout>

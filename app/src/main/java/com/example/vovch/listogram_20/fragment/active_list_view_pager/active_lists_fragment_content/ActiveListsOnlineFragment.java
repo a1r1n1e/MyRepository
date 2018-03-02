@@ -1,5 +1,8 @@
 package com.example.vovch.listogram_20.fragment.active_list_view_pager.active_lists_fragment_content;
 
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,13 +64,22 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(frameLayout.getContext()).inflate(R.layout.active_lists_linear_layout, frameLayout, false);
         TextView groupNameTextView = (TextView) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.active_actvity_text_view_1, listogramLayout,false);
         groupNameTextView.setText(informer.getName());
-        TextView listOwnerTextView = (TextView) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.active_activity_text_view_2, listogramLayout,false);
 
-        String  tempString = "New list";                                                                //strings TODO
-        listOwnerTextView.setText(tempString);
+        FrameLayout attentionButtonFrame = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, listogramLayout, false);
+
+        ImageButton attentionButton = (ImageButton) LayoutInflater.from(attentionButtonFrame.getContext()).inflate(R.layout.done_button, attentionButtonFrame, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            attentionButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+        } else {
+            attentionButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        }
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/attention_48");
+        attentionButton.setImageURI(uri);
 
         listogramLayout.addView(groupNameTextView);
-        listogramLayout.addView(listOwnerTextView);
+
+        attentionButtonFrame.addView(attentionButton);
+        listogramLayout.addView(attentionButtonFrame);
         GroupButton frameButton = (GroupButton) LayoutInflater.from(frameLayout.getContext()).inflate(R.layout.group_button, frameLayout, false);
 
         frameButton.setGroup(informer.getGroup());
