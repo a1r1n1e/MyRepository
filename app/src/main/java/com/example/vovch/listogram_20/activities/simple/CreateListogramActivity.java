@@ -159,6 +159,7 @@ public class CreateListogramActivity extends WithLoginActivity {
             provider.setActiveListsActivityLoadType(1);
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         CreateListogramActivity.this.finish();
     }
@@ -369,6 +370,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         Intent intent;
         provider.setActiveListsActivityLoadType(1);
         intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
@@ -383,6 +385,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         TempItems.trimToSize();
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }

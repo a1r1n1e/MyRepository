@@ -54,7 +54,6 @@ public class GroupList2Activity extends WithLoginActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GroupList2Activity.this, NewGroup.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             }
         };
@@ -174,6 +173,7 @@ public class GroupList2Activity extends WithLoginActivity {
     }
     public void goToGroup(UserGroup group){
         provider.setActiveGroup(group);
+        provider.makeAllMembersPossible(group);
         Intent intent = new Intent(GroupList2Activity.this, Group2Activity.class);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);

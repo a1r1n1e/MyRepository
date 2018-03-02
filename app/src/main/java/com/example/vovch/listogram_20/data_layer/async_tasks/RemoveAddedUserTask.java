@@ -8,6 +8,7 @@ import com.example.vovch.listogram_20.activities.WithLoginActivity;
 import com.example.vovch.listogram_20.activities.simple.GroupSettingsActivity;
 import com.example.vovch.listogram_20.activities.simple.NewGroup;
 import com.example.vovch.listogram_20.data_types.AddingUser;
+import com.example.vovch.listogram_20.data_types.UserGroup;
 
 /**
  * Created by vovch on 07.01.2018.

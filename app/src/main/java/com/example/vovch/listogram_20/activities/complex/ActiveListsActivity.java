@@ -73,7 +73,6 @@ public class ActiveListsActivity extends WithLoginActivity
         public void onClick(View v) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
             intent.putExtra("loadtype", 0);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             ActiveListsActivity.this.finish();
         }
@@ -235,7 +234,6 @@ public class ActiveListsActivity extends WithLoginActivity
         if (id == R.id.nav_camera) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
             intent.putExtra("loadtype", 0);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             this.finish();
         } else if (id == R.id.nav_share) {
@@ -591,7 +589,6 @@ public class ActiveListsActivity extends WithLoginActivity
                     activeActivityProvider.setResendingList(list);
                     activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 2);
                     startActivity(intent);
                     activity.finish();
@@ -706,8 +703,8 @@ public class ActiveListsActivity extends WithLoginActivity
         if (group != null) {
             if (group.getId() != null && group.getName() != null) {
                 provider.setActiveGroup(group);
+                provider.makeAllMembersPossible(group);
                 Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
                 finisher();
             }
@@ -823,9 +820,6 @@ public class ActiveListsActivity extends WithLoginActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.putExtra("name", "");
-                intent.putExtra("groupid", "");
                 intent.putExtra("loadtype", false);
                 startActivity(intent);
             }

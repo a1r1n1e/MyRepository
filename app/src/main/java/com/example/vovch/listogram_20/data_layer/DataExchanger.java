@@ -295,13 +295,13 @@ public class DataExchanger {
                     result = storage.updateGroup(group, newGroup, mergingUsersNeeded);
                     if (result != null) {
                         provider.setActiveGroup(result);
+                        provider.makeAllMembersPossible(result);
                     }
                 }
             }
         } catch (JSONException e) {                                                                         //TODO
 
         }
-        storage.clearAddingUsers();
         return result;
     }
 

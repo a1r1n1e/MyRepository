@@ -86,11 +86,11 @@ public class GroupSettingsActivity extends NewGroup {
         AddingUser[] users;
         if (!provider.getActiveGroup().getOwner().equals(provider.userSessionData.getId())) {
             drawOldMembers();
-            users = provider.getPossibleMembers();
-        } else {
-            users = provider.makeAllMembersPossible();
         }
-        drawNewMembers(users);
+        users = provider.getPossibleMembers();
+        if(users != null) {
+            drawNewMembers(users);
+        }
     }
 
     @Override

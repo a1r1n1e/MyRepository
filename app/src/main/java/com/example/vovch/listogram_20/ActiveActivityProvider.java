@@ -310,10 +310,11 @@ public class ActiveActivityProvider extends Application {
         return users;
     }
 
-    public AddingUser[] makeAllMembersPossible() {
+    public AddingUser[] makeAllMembersPossible(UserGroup group) {
+        clearNewGroupPossibleMembers();
         AddingUser[] users = null;
         if (getActiveGroup() != null) {
-            users = dataExchanger.makeAllUsersPossible(getActiveGroup());
+            users = dataExchanger.makeAllUsersPossible(group);
         }
         return users;
     }

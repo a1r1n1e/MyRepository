@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.text.Selection;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,8 +21,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,11 +28,9 @@ import android.widget.Toast;
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.activities.WithLoginActivity;
-import com.example.vovch.listogram_20.activities.complex.ActiveListsActivity;
 import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.CreateListEditText;
-import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.UserButton;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
@@ -162,10 +156,9 @@ public class NewGroup extends WithLoginActivity {
         if (provider.getActiveActivityNumber() == getThisActivityNumber()) {
             provider.nullActiveActivity();
         }
-        provider.clearNewGroupPossibleMembers();
         Intent intent = new Intent(getThisActivityContext(), cls);
         intent.putExtra("loadtype", 0);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);                                             //troubles
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         this.finish();
     }
@@ -350,7 +343,8 @@ public class NewGroup extends WithLoginActivity {
 
     public void showGood(UserGroup result) {
         Intent intent = new Intent(getThisActivityContext(), Group2Activity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        provider.makeAllMembersPossible(result);
         provider.setActiveGroup(result);
         startActivity(intent);
     }

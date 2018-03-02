@@ -55,7 +55,6 @@ public class Group2Activity extends WithLoginActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(Group2Activity.this, GroupSettingsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             if (provider.getActiveActivityNumber() == 3) {
                 provider.nullActiveActivity();
@@ -362,7 +361,6 @@ public class Group2Activity extends WithLoginActivity {
                             Toast.LENGTH_LONG).show();
                     activeActivityProvider.setResendingList(list);
                     Intent intent = new Intent(activity, GroupList2Activity.class);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 2);
                     startActivity(intent);
                     activity.finish();
@@ -426,7 +424,6 @@ public class Group2Activity extends WithLoginActivity {
                     activeActivityProvider.setResendingList(list);
                     activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.putExtra("loadtype", 3);
                     startActivity(intent);
                     activity.finish();
@@ -518,7 +515,6 @@ public class Group2Activity extends WithLoginActivity {
 
     public void sendListogram() {
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra("loadtype", 1);
         startActivity(intent);
     }
