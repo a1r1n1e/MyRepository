@@ -292,10 +292,13 @@ public class DataExchanger {
                 if (group.getOwner() != null) {
                     UserGroup newGroup = new UserGroup(newGroupName, group.getId(), group.getActiveLists(), group.getHistoryLists(), users);
                     newGroup.setOwner(group.getOwner());
-                    result = storage.updateGroup(group, newGroup, mergingUsersNeeded);
+                    result = storage.updateGroup(group, newGroup);
                     if (result != null) {
                         provider.setActiveGroup(result);
-                        provider.makeAllMembersPossible(result);
+                        storage.clearAddingUsers();
+                        if(result.getOwner().equals(provider.userSessionData.getId())) {
+                            provider.makeAllMembersPossible(result);
+                        }
                     }
                 }
             }

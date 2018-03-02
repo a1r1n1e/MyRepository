@@ -130,21 +130,11 @@ public class DataStorage {
     }
 
 
-    protected UserGroup updateGroup(UserGroup oldVersionOfGroup, UserGroup newVersionOfGroup, boolean membersAppendingNeeded){
-        UserGroup result = null;
-        if(oldVersionOfGroup != null && newVersionOfGroup != null){
-            int changingGroupNumber = Groups.indexOf(oldVersionOfGroup);
-            AddingUser[] users;
-            if(membersAppendingNeeded){
-                users = new AddingUser[oldVersionOfGroup.getMembers().length + newVersionOfGroup.getMembers().length];
-                System.arraycopy(oldVersionOfGroup.getMembers(), 0, users, 0, oldVersionOfGroup.getMembers().length);
-                System.arraycopy(newVersionOfGroup.getMembers(), 0, users, oldVersionOfGroup.getMembers().length, newVersionOfGroup.getMembers().length);
-                newVersionOfGroup.setMembers(users);
-            }
-            Groups.remove(changingGroupNumber);
-            Groups.add(newVersionOfGroup);
-            result = newVersionOfGroup;
-        }
+    protected UserGroup updateGroup(UserGroup oldVersionOfGroup, UserGroup newVersionOfGroup){
+        UserGroup result;
+        Groups.remove(oldVersionOfGroup);
+        Groups.add(newVersionOfGroup);
+        result = newVersionOfGroup;
         return result;
     }
     protected UserGroup[] getGroups(){
