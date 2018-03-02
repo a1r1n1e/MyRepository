@@ -173,7 +173,9 @@ public class GroupList2Activity extends WithLoginActivity {
     }
     public void goToGroup(UserGroup group){
         provider.setActiveGroup(group);
-        provider.makeAllMembersPossible(group);
+        if(group.getOwner().equals(provider.userSessionData.getId())) {
+            provider.makeAllMembersPossible(group);
+        }
         Intent intent = new Intent(GroupList2Activity.this, Group2Activity.class);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);

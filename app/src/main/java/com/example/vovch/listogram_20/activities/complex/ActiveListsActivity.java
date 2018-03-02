@@ -703,7 +703,9 @@ public class ActiveListsActivity extends WithLoginActivity
         if (group != null) {
             if (group.getId() != null && group.getName() != null) {
                 provider.setActiveGroup(group);
-                provider.makeAllMembersPossible(group);
+                if(group.getOwner().equals(provider.userSessionData.getId())) {
+                    provider.makeAllMembersPossible(group);
+                }
                 Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
                 startActivity(intent);
                 finisher();
