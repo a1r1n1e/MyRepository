@@ -29,7 +29,7 @@ public class RedactOnlineListTask extends AsyncTask<Object, Void, SList> {
         if (result != null) {
             activeActivityProvider.showOnlineListRedactedGood(result, activity);
         } else {
-            activeActivityProvider.showOnlineListRedactedBad(result, activity);
+            activeActivityProvider.showOnlineListRedactedBad(null, activity);
         }
         activity = null;
         activeActivityProvider = null;

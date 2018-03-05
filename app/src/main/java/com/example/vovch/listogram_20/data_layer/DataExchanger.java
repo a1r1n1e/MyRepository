@@ -481,6 +481,8 @@ public class DataExchanger {
                 tempItems[i] = new TempItem(items[i].getName(), items[i].getComment());
                 tempItems[i].setId(items[i].getId());
                 tempItems[i].setState(items[i].getState());
+                tempItems[i].setOwner(items[i].getOwner());
+                tempItems[i].setOwnerName(items[i].getOwnerName());
             }
         }
         return tempItems;

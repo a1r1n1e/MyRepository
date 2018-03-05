@@ -174,7 +174,13 @@ public class WebCall {
             for(int i = 0; i < length; i++){
                 JSONObject item = new JSONObject();
                 item.put("item_name", items[i].getName());
-                item.put("item_comment", items[i].getComment());
+                String ownerId;
+                if(items[i].getOwner() != null){
+                    ownerId = items[i].getOwner();
+                } else {
+                    ownerId = "0";
+                }
+                item.put("item_owner", ownerId);
                 if(items[i].getId() != 0){
                     item.put("item_id", items[i].getId());
                 }

@@ -442,6 +442,9 @@ public class ActiveListsActivity extends WithLoginActivity
         FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
         activeFragment.unsetRefresher();
         if (activeListsOnlineFragment == null && registrationFragment == null) {
+            if(loginFragment != null){
+                transaction.remove(loginFragment);
+            }
             loginFragment = new LoginFragment();
             transaction.add(R.id.active_lists_page_one, loginFragment);
         } else if (activeListsOnlineFragment != null) {
@@ -710,20 +713,6 @@ public class ActiveListsActivity extends WithLoginActivity
                 startActivity(intent);
                 finisher();
             }
-        }
-    }
-
-    public void showActiveFragmentGood(){
-        if(activeFragment != null && viewPager != null){
-            activeFragment.checkRootView(viewPager, getLayoutInflater());
-            activeFragment.fragmentShowGood(null);
-        }
-    }
-
-    public void showActiveFragmentBad(){
-        if(activeFragment != null && viewPager != null){
-            activeFragment.checkRootView(viewPager, getLayoutInflater());
-            activeFragment.fragmentShowBad(null);
         }
     }
 
