@@ -66,7 +66,14 @@ public class WebCall {
                     } else {
                         url = new URL("http://217.10.35.250/who_buys_sessioner.php");
                     }
+                    
                     conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(10000);
+                    conn.setReadTimeout(10000);
+                    conn.setDoOutput(true);                                                 // Enable POST stream
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+
                     HashMap<String, String> postDataParams = new HashMap<String, String>();
 
                     postDataParams.put(DATA_1, (String) loginPair[0]);
@@ -80,9 +87,6 @@ public class WebCall {
                     postDataParams.put(VERSION, userSessionData.getClientVersion());
                     postDataParams.put(TOKEN, userSessionData.getToken());
 
-                    conn.setDoOutput(true);                                                 // Enable POST stream
-                    conn.setDoInput(true);
-                    conn.setRequestMethod("POST");
                     InputStream is = null;
                     OutputStream os = conn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));

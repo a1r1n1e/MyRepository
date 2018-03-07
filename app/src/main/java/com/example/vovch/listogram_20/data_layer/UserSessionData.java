@@ -246,6 +246,8 @@ public class UserSessionData {
                 postDataParams.put("client_type", CLIENT_TYPE);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
                 conn.setDoOutput(true);                                                 // Enable POST stream
                 conn.setDoInput(true);
                 conn.setRequestMethod("POST");

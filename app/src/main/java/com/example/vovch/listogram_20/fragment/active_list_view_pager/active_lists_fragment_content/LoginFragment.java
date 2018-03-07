@@ -28,7 +28,7 @@ public class LoginFragment extends ActiveListsFragment {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEND|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                CreateListEditText passwordEditText = (CreateListEditText) rootView.findViewById(R.id.edittext200);
+                CreateListEditText passwordEditText = (CreateListEditText) rootView.findViewById(R.id.login_fragment_password_edittext);
                 Selection.setSelection(passwordEditText.getText(), passwordEditText.getSelectionStart());
                 passwordEditText.requestFocus();
                 return true;
@@ -55,23 +55,23 @@ public class LoginFragment extends ActiveListsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.login_page_layout, container, false);
-        View.OnClickListener NewListenner1 = new View.OnClickListener() {
+        View.OnClickListener loginListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tryToLoginFromForms();
             }
         };
-        View.OnClickListener NewListenner2 = new View.OnClickListener() {
+        View.OnClickListener registrationListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setRegisterFragment();
             }
         };
-        Button Btn1 = (Button) rootView.findViewById(R.id.button100);
-        Btn1.setOnClickListener(NewListenner1);
-        Button Btn2 = (Button) rootView.findViewById(R.id.button200);
-        Btn2.setOnClickListener(NewListenner2);
-        CreateListEditText loginEditText = (CreateListEditText) rootView.findViewById(R.id.edittext100);
+        Button Btn1 = (Button) rootView.findViewById(R.id.login_fragment_login_button);
+        Btn1.setOnClickListener(loginListener);
+        Button Btn2 = (Button) rootView.findViewById(R.id.login_fragment_registration_button);
+        Btn2.setOnClickListener(registrationListener);
+        CreateListEditText loginEditText = (CreateListEditText) rootView.findViewById(R.id.login_fragment_login_edittext);
         loginEditText.setOnEditorActionListener(editorListenerOne);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
         if(activity != null) {
@@ -86,8 +86,8 @@ public class LoginFragment extends ActiveListsFragment {
             TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
             errorTextView.setText("");
             if (activity.getToken() != null) {
-                EditText editText1 = (EditText) rootView.findViewById(R.id.edittext100);
-                EditText editText2 = (EditText) rootView.findViewById(R.id.edittext200);
+                EditText editText1 = (EditText) rootView.findViewById(R.id.login_fragment_login_edittext);
+                EditText editText2 = (EditText) rootView.findViewById(R.id.login_fragment_password_edittext);
                 String uName = editText1.getText().toString();
                 String uPassword = editText2.getText().toString();
                 if (!uName.equals("") && !uPassword.equals("")) {

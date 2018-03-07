@@ -7,48 +7,52 @@
     android:id="@+id/registration_page_layout"
     tools:context="com.example.vovch.listogram_20.activities.complex.ActiveListsActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ScrollView
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/registration_error_textview"
+        android:layout_width="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:textSize="25sp"
-            android:visibility="visible"/>
-        <com.example.vovch.listogram_20.data_types.CreateListEditText
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:textSize="25sp"
-            android:hint="Enter Login"
-            android:id="@+id/registration_login"/>
-        <com.example.vovch.listogram_20.data_types.CreateListEditText
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:textSize="25sp"
-            android:hint="Enter Password"
-            android:id="@+id/registration_pasword"/>
-        <Button
-            android:id="@+id/registration_button"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Confirm"
-            android:textAllCaps="false"
-            android:textSize="30sp"
-            android:textColor="@color/whoBuysGreen"
-            android:background="@color/whoBuysGray"/>
-
-    </LinearLayout>
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/registration_error_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:textSize="25sp"
+                android:visibility="visible"/>
+            <com.example.vovch.listogram_20.data_types.CreateListEditText
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:hint="Enter Login"
+                android:id="@+id/registration_login"/>
+            <com.example.vovch.listogram_20.data_types.CreateListEditText
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:hint="Enter Password"
+                android:id="@+id/registration_pasword"/>
+            <Button
+                android:id="@+id/registration_button"
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Confirm"
+                android:textAllCaps="false"
+                android:textSize="30sp"
+                android:textColor="@color/whoBuysGreen"
+                android:background="@color/whoBuysGray"/>
+        </LinearLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
