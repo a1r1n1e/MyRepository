@@ -39,6 +39,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Group2Activity extends WithLoginActivity {
+
+    private static final String INTENT_LOAD_TYPE = "loadtype";
+    private static final String TAB_LAYOUT_PAGE_0 = "Active";
+    private static final String TAB_LAYOUT_PAGE_1 = "History";
+    private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
+
     private String groupName;
     private String groupId;
     protected FragmentManager fragmentManager;
@@ -97,8 +103,8 @@ public class Group2Activity extends WithLoginActivity {
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs_group);
         tabs.removeAllTabs();
-        tabs.addTab(tabs.newTab().setText("Active"));
-        tabs.addTab(tabs.newTab().setText("History"));
+        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_0));
+        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_1));
         tabs.setupWithViewPager(viewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.group_fab);
@@ -256,7 +262,7 @@ public class Group2Activity extends WithLoginActivity {
             dialogFragment.setActiveActivityProvider(provider);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
     }
 
@@ -275,22 +281,22 @@ public class Group2Activity extends WithLoginActivity {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "Want To Kill List?";
-            String button2String = "Yes";
-            String button1String = "No";
+            String message = getString(R.string.dialog_kill_question);
+            String button2String = getString(R.string.Yes);
+            String button1String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
                             .show();
                 }
             });
             builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     activeActivityProvider.disactivateGroupList(list);
-                    Toast.makeText(getActivity(), "Processing",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_kill_action_processing),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -318,7 +324,7 @@ public class Group2Activity extends WithLoginActivity {
             dialogFragment.setActivity(Group2Activity.this);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
     }
 
@@ -342,34 +348,34 @@ public class Group2Activity extends WithLoginActivity {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "What To Do?";
-            String button1String = "Send To Group";
-            String button2String = "Save";
-            String button3String = "Cancel";
+            String message = getString(R.string.dialog_resend_question);
+            String button1String = getString(R.string.Resend_List);
+            String button2String = getString(R.string.Copy);
+            String button3String = getString(R.string.Cancel);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "List Downloaded", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.list_downloaded_informer), Toast.LENGTH_LONG)
                             .show();
                     activeActivityProvider.createListogramOffline(list.getItems(), activity);
                 }
             });
             builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Chose Where To:)",
+                    Toast.makeText(getActivity(), getString(R.string.resend_where_informer),
                             Toast.LENGTH_LONG).show();
                     activeActivityProvider.setResendingList(list);
                     Intent intent = new Intent(activity, GroupList2Activity.class);
-                    intent.putExtra("loadtype", 2);
+                    intent.putExtra(INTENT_LOAD_TYPE, 2);
                     startActivity(intent);
                     activity.finish();
                 }
             });
             builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -388,7 +394,7 @@ public class Group2Activity extends WithLoginActivity {
             dialogFragment.setActivity(Group2Activity.this);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
     }
 
@@ -412,27 +418,27 @@ public class Group2Activity extends WithLoginActivity {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "Whant To Redact List?";
-            String button1String = "Yes";
-            String button2String = "No";
+            String message = getString(R.string.dialog_redact_question);
+            String button1String = getString(R.string.Yes);
+            String button2String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Redacting", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_redact_action_procesing), Toast.LENGTH_LONG)
                             .show();
                     activeActivityProvider.setResendingList(list);
                     activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
-                    intent.putExtra("loadtype", 3);
+                    intent.putExtra(INTENT_LOAD_TYPE, 3);
                     startActivity(intent);
                     activity.finish();
                 }
             });
             builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -516,15 +522,15 @@ public class Group2Activity extends WithLoginActivity {
 
     public void sendListogram() {
         Intent intent = new Intent(Group2Activity.this, CreateListogramActivity.class);
-        intent.putExtra("loadtype", 1);
+        intent.putExtra(INTENT_LOAD_TYPE, 1);
         startActivity(intent);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
         adapter.clean();
-        adapter.addFragment(new GroupFragmentActive(), "Active");
-        adapter.addFragment(new GroupFragmentHistory(), "History");
+        adapter.addFragment(new GroupFragmentActive(), TAB_LAYOUT_PAGE_0);
+        adapter.addFragment(new GroupFragmentHistory(), TAB_LAYOUT_PAGE_1);
         viewPager.setAdapter(adapter);
     }
 

@@ -51,6 +51,13 @@ import java.util.List;
 
 public class ActiveListsActivity extends WithLoginActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String INTENT_LOAD_TYPE = "loadtype";
+    private static final String TAB_LAYOUT_PAGE_0 = "Online";
+    private static final String TAB_LAYOUT_PAGE_1 = "Offline";
+    private static final String TAB_LAYOUT_PAGE_2 = "History";
+    private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
+
     private ActiveActivityProvider provider;
     private int loadType = -1;
 
@@ -72,7 +79,7 @@ public class ActiveListsActivity extends WithLoginActivity
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
-            intent.putExtra("loadtype", 0);
+            intent.putExtra(INTENT_LOAD_TYPE, 0);
             startActivity(intent);
             ActiveListsActivity.this.finish();
         }
@@ -120,9 +127,9 @@ public class ActiveListsActivity extends WithLoginActivity
             tabs.setElevation(24);
         }
         tabs.removeAllTabs();
-        tabs.addTab(tabs.newTab().setText("Online"));
-        tabs.addTab(tabs.newTab().setText("Offline"));
-        tabs.addTab(tabs.newTab().setText("History"));
+        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_0));
+        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_1));
+        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_2));
         tabs.setupWithViewPager(viewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.active_lists_fab);
@@ -132,15 +139,15 @@ public class ActiveListsActivity extends WithLoginActivity
 
         viewPager.addOnPageChangeListener(pageChangeListener);
 
-        activeListsOnlineFragment = null;
-        loginFragment = null;
-        registrationFragment = null;
-
         adapter.startUpdate(viewPager);
         offlineFragment = (ActiveFragmentOffline) adapter.instantiateItem(viewPager, 1);
         historyFragment = (ActiveFragmentHistory) adapter.instantiateItem(viewPager, 2);
         activeFragment = (ActiveListsFragment) adapter.instantiateItem(viewPager, 0);
         adapter.finishUpdate(viewPager);
+
+        loginFragment = new LoginFragment();
+        registrationFragment = new RegistrationFragment();
+        activeListsOnlineFragment = new ActiveListsOnlineFragment();
 
         if( -1 < loadType && loadType < 3) {                                                           //setting current page of viewPager
             viewPager.setCurrentItem(loadType);
@@ -233,17 +240,17 @@ public class ActiveListsActivity extends WithLoginActivity
 
         if (id == R.id.nav_camera) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
-            intent.putExtra("loadtype", 0);
+            intent.putExtra(INTENT_LOAD_TYPE, 0);
             startActivity(intent);
             this.finish();
         } else if (id == R.id.nav_share) {
-            loginFailed = "You Logged Out";
+            loginFailed = getString(R.string.login_failed);
             ExitDialogFragment exitDialogFragment = new ExitDialogFragment();
             exitDialogFragment.setActiveActivityProvider(provider);
             exitDialogFragment.setActiveListsActivity(ActiveListsActivity.this);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            exitDialogFragment.show(transaction, "dialog");
+            exitDialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         } else if (id == R.id.nav_copy_id) {
             //ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
             //ClipData clip = ClipData.newPlainText("", usersId);
@@ -251,7 +258,7 @@ public class ActiveListsActivity extends WithLoginActivity
             ClipboardManager clipboard = (ClipboardManager) ActiveListsActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("", provider.userSessionData.getId());
             clipboard.setPrimaryClip(clip);
-            Toast.makeText(ActiveListsActivity.this, "Your Id Copied", Toast.LENGTH_LONG)
+            Toast.makeText(ActiveListsActivity.this, R.string.id_copied_informer, Toast.LENGTH_LONG)
                     .show();
         }
 
@@ -272,15 +279,15 @@ public class ActiveListsActivity extends WithLoginActivity
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "Want To Logout?";
-            String button1String = "Yes";
-            String button2String = "No";
+            String message = getString(R.string.dialog_logout_question);
+            String button1String = getString(R.string.Yes);
+            String button2String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
                             .show();
                 }
             });
@@ -365,20 +372,15 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void loginToActiveFragmentChange() {
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        activeFragment.unsetRefresher();
-        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
-            activeListsOnlineFragment = new ActiveListsOnlineFragment();
-            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
-        } else if (loginFragment != null) {
-            transaction.remove(loginFragment);
-            loginFragment.onDestroy();
-            activeListsOnlineFragment = new ActiveListsOnlineFragment();
-            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
+        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+        if(fragment != null) {
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitNow();
         }
-        registrationFragment = null;
-        loginFragment = null;
-        loginFailed = null;
+
+        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
         transaction.commit();
     }
 
@@ -388,25 +390,22 @@ public class ActiveListsActivity extends WithLoginActivity
             fabActionZero(fab);
         }
         if (activeListsOnlineFragment != null) {
+            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
             activeListsOnlineFragment.setRefresher();
         }
         update();
     }
 
     public void loginToRegistrationFragmentChange() {
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        activeFragment.unsetRefresher();
-        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
-            registrationFragment = new RegistrationFragment();
-            transaction.add(R.id.active_lists_page_one, registrationFragment);
-        } else if (loginFragment != null) {
-            transaction.remove(loginFragment);
-            loginFragment.onDestroy();
-            registrationFragment = new RegistrationFragment();
-            transaction.add(R.id.active_lists_page_one, registrationFragment);
+        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+        if(fragment != null) {
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitNow();
         }
-        activeListsOnlineFragment = null;
-        loginFragment = null;
+
+        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.active_lists_page_one, registrationFragment, "One");
         transaction.commit();
     }
 
@@ -415,19 +414,15 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void registrationToActiveListsOnlineFragmentChange() {
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        activeFragment.unsetRefresher();
-        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
-            activeListsOnlineFragment = new ActiveListsOnlineFragment();
-            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
-        } else if (registrationFragment != null) {
-            transaction.remove(registrationFragment);
-            registrationFragment.onDestroy();
-            activeListsOnlineFragment = new ActiveListsOnlineFragment();
-            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment);
+        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+        if(fragment != null) {
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitNow();
         }
-        registrationFragment = null;
-        loginFragment = null;
+
+        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
         transaction.commit();
     }
 
@@ -439,24 +434,17 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void activeToLoginFragmentChange() {
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        activeFragment.unsetRefresher();
-        if (activeListsOnlineFragment == null && registrationFragment == null) {
-            if(loginFragment != null){
-                transaction.remove(loginFragment);
-            }
-            loginFragment = new LoginFragment();
-            transaction.add(R.id.active_lists_page_one, loginFragment);
-        } else if (activeListsOnlineFragment != null) {
-            transaction.remove(activeListsOnlineFragment);
-            activeListsOnlineFragment.unsetRefresher();
-            activeListsOnlineFragment.onDestroy();
-            loginFragment = new LoginFragment();
-            transaction.add(R.id.active_lists_page_one, loginFragment);
+        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+        if(fragment != null) {
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitNow();
         }
-        registrationFragment = null;
-        activeListsOnlineFragment = null;
+
+        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.active_lists_page_one, loginFragment, "One");
         transaction.commit();
+
         if (viewPager.getCurrentItem() == 0) {
             fabActionZero(fab);
         }
@@ -464,19 +452,15 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void registrationToLoginFragmentChange() {
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        activeFragment.unsetRefresher();
-        if (loginFragment == null && activeListsOnlineFragment == null && registrationFragment == null) {
-            loginFragment = new LoginFragment();
-            transaction.add(R.id.active_lists_page_one, loginFragment);
-        } else if (registrationFragment != null) {
-            transaction.remove(registrationFragment);
-            registrationFragment.onDestroy();
-            loginFragment = new LoginFragment();
-            transaction.add(R.id.active_lists_page_one, loginFragment);
+        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+        if(fragment != null) {
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitNow();
         }
-        registrationFragment = null;
-        activeListsOnlineFragment = null;
+
+        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.active_lists_page_one, loginFragment, "One");
         transaction.commit();
     }
 
@@ -525,22 +509,23 @@ public class ActiveListsActivity extends WithLoginActivity
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "Want To Kill List?";
-            String button1String = "Yes";
-            String button2String = "No";
+            String message = getString(R.string.dialog_kill_question);
+            String button2String = getString(R.string.No);
+            String button1String = getString(R.string.Yes);
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
                             .show();
                 }
             });
             builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     activeActivityProvider.activeActivityDisactivateList(list);
-                    Toast.makeText(getActivity(), "Processing",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_kill_action_processing),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -579,27 +564,27 @@ public class ActiveListsActivity extends WithLoginActivity
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "Whant To Redact List?";
-            String button1String = "Yes";
-            String button2String = "No";
+            String message = getString(R.string.dialog_redact_question);
+            String button1String = getString(R.string.Yes);
+            String button2String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Redacting", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_redact_action_procesing), Toast.LENGTH_LONG)
                             .show();
                     activeActivityProvider.setResendingList(list);
                     activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
-                    intent.putExtra("loadtype", 2);
+                    intent.putExtra(INTENT_LOAD_TYPE, 2);
                     startActivity(intent);
                     activity.finish();
                 }
             });
             builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -618,7 +603,7 @@ public class ActiveListsActivity extends WithLoginActivity
             dialogFragment.setActivity(ActiveListsActivity.this);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
     }
 
@@ -638,16 +623,16 @@ public class ActiveListsActivity extends WithLoginActivity
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = "What To Do?";
-            String button1String = "Send To Group";
-            String button2String = "Copy";
-            String button3String = "Cancel";
+            String message = getString(R.string.dialog_resend_question);
+            String button1String = getString(R.string.Resend_List);
+            String button2String = getString(R.string.Copy);
+            String button3String = getString(R.string.Cancel);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "List Copied", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.list_copied_informer), Toast.LENGTH_LONG)
                             .show();
                     activeActivityProvider.createListogramOffline(list.getItems(), activity);
                 }
@@ -655,11 +640,11 @@ public class ActiveListsActivity extends WithLoginActivity
             if(activeActivityProvider.userSessionData.isLoginned()) {
                 builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(getActivity(), "Chose Where To :)",
+                        Toast.makeText(getActivity(), getString(R.string.resend_where_informer),
                                 Toast.LENGTH_LONG).show();
                         activeActivityProvider.setResendingList(list);
                         Intent intent = new Intent(activity, GroupList2Activity.class);
-                        intent.putExtra("loadtype", 1);
+                        intent.putExtra(INTENT_LOAD_TYPE, 1);
                         startActivity(intent);
                         activity.finish();
                     }
@@ -667,7 +652,7 @@ public class ActiveListsActivity extends WithLoginActivity
             }
             builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened:)",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -693,7 +678,7 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void showBad(ListInformer[] result) {
-        if (activeListsOnlineFragment != null) {
+        if (activeFragment != null) {
             activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
             activeListsOnlineFragment.fragmentShowBad(result);
             if (activeListsOnlineFragment.getRefresher() != null) {
@@ -785,9 +770,8 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-
     private void fabActionZero(FloatingActionButton fab) {
-        if (activeListsOnlineFragment != null) {
+        if (provider.userSessionData.isLoginned()) {
             fab.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fab.setImageDrawable(getResources().getDrawable(R.drawable.square_arrow_48, getTheme()));
@@ -811,7 +795,7 @@ public class ActiveListsActivity extends WithLoginActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
-                intent.putExtra("loadtype", false);
+                intent.putExtra(INTENT_LOAD_TYPE, false);
                 startActivity(intent);
             }
         });
@@ -824,9 +808,9 @@ public class ActiveListsActivity extends WithLoginActivity
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
         adapter.clean();
-        adapter.addFragment(new ActiveListsFragment(), "Online");
-        adapter.addFragment(new ActiveFragmentOffline(), "Offline");
-        adapter.addFragment(new ActiveFragmentHistory(), "History");
+        adapter.addFragment(new ActiveListsFragment(), TAB_LAYOUT_PAGE_0);
+        adapter.addFragment(new ActiveFragmentOffline(), TAB_LAYOUT_PAGE_1);
+        adapter.addFragment(new ActiveFragmentHistory(), TAB_LAYOUT_PAGE_2);
         viewPager.setAdapter(adapter);
     }
 

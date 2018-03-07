@@ -67,10 +67,10 @@ public class GroupFragmentHistory extends Fragment {
         listNameTextView.setAlpha(0.5f);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = "From: " + list.getOwnerName();
+            listOwner = getString(R.string.from) + " " + list.getOwnerName();
         }
         else{
-            listOwner = "Your List";
+            listOwner = getString(R.string.your_list);
         }
         listNameTextView.setText(listOwner);
 
@@ -173,8 +173,6 @@ public class GroupFragmentHistory extends Fragment {
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
-        //TextView itemComment = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
-        //itemComment.setText(item.getComment());
         ItemButton groupButton = (ItemButton) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_button, addingFrameLayout, false);
         groupButton.setItem(item);
         if (item.getState()) {
@@ -195,14 +193,13 @@ public class GroupFragmentHistory extends Fragment {
             }
         }
         addingLayout.addView(itemName);
-        //addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
         addingVerticalLayout.addView(addingLayout);
         item.setVerticalLayout(addingVerticalLayout);
         if(item.getOwnerName() != null && item.getOwner() != null){
             TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
-            itemOwnerTextView.setText( "By: " + item.getOwnerName());
+            itemOwnerTextView.setText(getString(R.string.by) + " " + item.getOwnerName());
             addingVerticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
         }
@@ -253,7 +250,7 @@ public class GroupFragmentHistory extends Fragment {
         LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
         TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
         if (!(result.equals(""))) {
-            emptyInformer.setText("We Failed");
+            emptyInformer.setText(getString(R.string.some_error));
         }
         parentLayout.addView(emptyInformer);
     }

@@ -37,19 +37,20 @@ public class ActiveListsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.active_lists_page_one_container, container, false);
         unsetRefresher();
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.loginFragmentStart();
+        if(activity != null) {
+            activity.loginFragmentStart();
+        }
         return rootView;
     }
     public void fragmentShowGood(ListInformer[] result){}
     public void fragmentShowBad(ListInformer[] result){}
-    private void cleaner(){
+    public void cleaner(){
         FrameLayout layout = (FrameLayout) rootView.findViewById(R.id.active_lists_page_one);
         layout.removeAllViewsInLayout();
     }
     public void noInternet(){
-        //cleaner();
         setRefreresher();
-        Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_LONG)
+        Toast.makeText(getActivity(), getString(R.string.no_internet), Toast.LENGTH_LONG)
                 .show();
     }
 

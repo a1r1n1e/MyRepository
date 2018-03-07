@@ -50,7 +50,9 @@ public class ActiveFragmentOffline extends Fragment {
         refreshLayout.setFocusable(false);
         refreshLayout.setRefreshing(false);
         ActiveListsActivity activeListsActivity = (ActiveListsActivity) getActivity();
-        activeListsActivity.onOfflineFragmentStart(ActiveFragmentOffline.this);
+        if(activeListsActivity != null) {
+            activeListsActivity.onOfflineFragmentStart(ActiveFragmentOffline.this);
+        }
         return rootView;
     }
     public void listsLayoutDrawer(SList list){
@@ -64,10 +66,10 @@ public class ActiveFragmentOffline extends Fragment {
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = "From: " + list.getOwnerName();
+            listOwner = getString(R.string.from)+ " " + list.getOwnerName();
         }
         else{
-            listOwner = "Your List";
+            listOwner = getString(R.string.your_list);
         }
         listNameTextView.setText(listOwner);
 
@@ -169,7 +171,9 @@ public class ActiveFragmentOffline extends Fragment {
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);
-            activity.disactivateList(button);
+            if(activity != null) {
+                activity.disactivateList(button);
+            }
         }
     }
     private void redactList(ListImageButton button){
@@ -177,7 +181,9 @@ public class ActiveFragmentOffline extends Fragment {
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);
-            activity.redactList(button.getList());
+            if(activity != null) {
+                activity.redactList(button.getList());
+            }
         }
     }
     private void resend(ListImageButton button){
@@ -185,7 +191,9 @@ public class ActiveFragmentOffline extends Fragment {
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);
-            activity.resendList(button.getList());
+            if(activity != null) {
+                activity.resendList(button.getList());
+            }
         }
     }
     private void onItemMarkButtonTouchedAction(ItemButton button){
@@ -193,7 +201,9 @@ public class ActiveFragmentOffline extends Fragment {
             button.setFocusable(false);
             button.setClickable(false);
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-            activity.itemmark(button.getItem());
+            if(activity != null) {
+                activity.itemmark(button.getItem());
+            }
         }
     }
     private void makeListogramLine(Item item, LinearLayout listogramLayout){
@@ -202,10 +212,10 @@ public class ActiveFragmentOffline extends Fragment {
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
-        //TextView itemComment = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
-        //itemComment.setText(item.getComment());
         ItemButton groupButton = (ItemButton) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_button, addingFrameLayout, false);
         groupButton.setItem(item);
+        groupButton.setFocusable(true);
+        groupButton.setClickable(true);
         View.OnClickListener ItemMarkButtonListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,8 +223,6 @@ public class ActiveFragmentOffline extends Fragment {
             }
         };
         if (item.getState()) {
-            groupButton.setFocusable(true);
-            groupButton.setClickable(true);
             groupButton.setOnClickListener(ItemMarkButtonListenner);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
@@ -224,8 +232,6 @@ public class ActiveFragmentOffline extends Fragment {
                 addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
             }
         } else {
-            groupButton.setFocusable(true);
-            groupButton.setClickable(true);
             groupButton.setOnClickListener(ItemMarkButtonListenner);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
@@ -236,7 +242,6 @@ public class ActiveFragmentOffline extends Fragment {
             }
         }
         addingLayout.addView(itemName);
-        //addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
         addingFrameLayout.addView(addingLayout);
@@ -244,65 +249,74 @@ public class ActiveFragmentOffline extends Fragment {
         listogramLayout.addView(addingFrameLayout);
     }
     public void listsListMaker(SList[] result) {
-        int listsNumber = result.length;
-        for(int i = 0; i < listsNumber; i++){
-            listsLayoutDrawer(result[i]);
+        if(rootView != null && getActivity() != null) {
+            int listsNumber = result.length;
+            for (int i = 0; i < listsNumber; i++) {
+                listsLayoutDrawer(result[i]);
+            }
         }
     }
     public void activeFragmentCleaner(){
-        LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
-        layoutScrollingActiveListsContainer.removeAllViews();
+        if(rootView != null) {
+            LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
+            layoutScrollingActiveListsContainer.removeAllViews();
+        }
     }
     public void fragmentShowGood(SList[] result){
         activeFragmentCleaner();
         listsListMaker(result);
     }
     public void fragmentShowBad(SList[] result){
-        LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
-        parentLayout.removeAllViewsInLayout();
-        TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
-        if(!(result == null || result.length == 0)) {
-            emptyInformer.setText("Our Fail");
+        if(rootView != null) {
+            LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
+            parentLayout.removeAllViewsInLayout();
+            TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
+            if (!(result == null || result.length == 0)) {
+                emptyInformer.setText(getString(R.string.some_error));
+            }
+            parentLayout.addView(emptyInformer);
         }
-        parentLayout.addView(emptyInformer);
     }
     public void fragmentShowSecondGood(Item result){
         Button itemMarkTouchedButton = result.getButton();
-        itemMarkTouchedButton.setFocusable(true);
-        itemMarkTouchedButton.setClickable(true);
-        LinearLayout itemMarkLayout = result.getLayout();
-        if(result.getState()){
+        if(itemMarkTouchedButton != null) {
             itemMarkTouchedButton.setFocusable(true);
             itemMarkTouchedButton.setClickable(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-                itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else{
-                itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
-            }
         }
-        else{
-            itemMarkTouchedButton.setFocusable(true);
-            itemMarkTouchedButton.setClickable(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-                itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else{
-                itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+        LinearLayout itemMarkLayout = result.getLayout();
+        if(itemMarkLayout != null && getActivity() != null) {
+            if (result.getState()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else {
+                    itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else {
+                    itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                }
             }
         }
     }
     public void fragmentShowSecondBad(Item result){
         Button itemMarkButton = result.getButton();
-        itemMarkButton.setClickable(true);
-        itemMarkButton.setFocusable(true);
-        itemMarkButton.setGravity(Gravity.CENTER_HORIZONTAL);
+        if(itemMarkButton != null) {
+            itemMarkButton.setClickable(true);
+            itemMarkButton.setFocusable(true);
+            itemMarkButton.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
     }
     public void fragmentDisactivateGood(SList result){
         CardView cardView = result.getCardView();
-        cardView.setVisibility(View.GONE);
+        if(cardView != null) {
+            cardView.setVisibility(View.GONE);
+        }
     }
     public void fragmentDisactivateBad(SList result){
         if(result != null) {
@@ -312,25 +326,35 @@ public class ActiveFragmentOffline extends Fragment {
     }
     public void setRefresher(){
         SwipeRefreshLayout refreshLayout = getRefresher();
-        refreshLayout.setFocusable(true);
-        refreshLayout.setRefreshing(false);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        if(refreshLayout != null) {
+            refreshLayout.setFocusable(true);
+            refreshLayout.setRefreshing(false);
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
+        }
     }
     public void unsetRefresher(){
         SwipeRefreshLayout refreshLayout = getRefresher();
-        refreshLayout.setFocusable(false);
-        refreshLayout.setRefreshing(false);
+        if(refreshLayout != null) {
+            refreshLayout.setFocusable(false);
+            refreshLayout.setRefreshing(false);
+        }
     }
     public void refresh(){
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.refreshOfflineLists();
+        if(activity != null) {
+            activity.refreshOfflineLists();
+        }
     }
     public SwipeRefreshLayout getRefresher(){
-        return  (SwipeRefreshLayout) rootView.findViewById(R.id.group_active_fragment_refresher);
+        SwipeRefreshLayout result = null;
+        if(rootView != null) {
+            result = (SwipeRefreshLayout) rootView.findViewById(R.id.group_active_fragment_refresher);
+        }
+        return result;
     }
 }

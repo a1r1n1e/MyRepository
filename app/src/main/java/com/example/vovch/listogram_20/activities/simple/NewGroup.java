@@ -35,7 +35,11 @@ import com.example.vovch.listogram_20.data_types.UserButton;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
 public class NewGroup extends WithLoginActivity {
+
+    private static final String INTENT_LOAD_TYPE = "loadtype";
+    private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
     private static final int THIS_ACTIVITY_NUMBER = 5;
+
     protected ActiveActivityProvider provider;
 
     protected int getThisActivityNumber(){
@@ -157,7 +161,7 @@ public class NewGroup extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         Intent intent = new Intent(getThisActivityContext(), cls);
-        intent.putExtra("loadtype", 0);
+        intent.putExtra(INTENT_LOAD_TYPE, 0);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         this.finish();
@@ -167,14 +171,14 @@ public class NewGroup extends WithLoginActivity {
         String id = getAddingUserId();
         if (id != null) {
             if (providerCheckUser(id)) { // if user already added
-                Toast.makeText(NewGroup.this, "User Already Added", Toast.LENGTH_LONG)
+                Toast.makeText(NewGroup.this, getString(R.string.user_added_inormer), Toast.LENGTH_LONG)
                         .show();
             } else {
                 nullUserIdEditText();
                 providerAddUser(id); // error id checked inside
             }
         } else {
-            Toast.makeText(NewGroup.this, "Enter Any User Id", Toast.LENGTH_LONG)
+            Toast.makeText(NewGroup.this, getString(R.string.enter_user_id_informer), Toast.LENGTH_LONG)
                     .show();
         }
     }
@@ -258,7 +262,7 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void showRemoveUserBad(AddingUser user) {
-        Toast.makeText(NewGroup.this, "You Can't remove This User :)", Toast.LENGTH_LONG)
+        Toast.makeText(NewGroup.this, getString(R.string.not_removable_user_error), Toast.LENGTH_LONG)
                 .show();
     }
 
@@ -274,7 +278,7 @@ public class NewGroup extends WithLoginActivity {
         if (!newGroupName.equals("")) {
             providerAddNewGroup(newGroupName);
         } else {
-            Toast.makeText(NewGroup.this, "Enter Your Group Name", Toast.LENGTH_LONG)
+            Toast.makeText(NewGroup.this, getString(R.string.enter_group_name), Toast.LENGTH_LONG)
                     .show();
         }
     }
@@ -299,15 +303,15 @@ public class NewGroup extends WithLoginActivity {
 
             clickable = true;
 
-            String message = "Are You Sure?";
-            String button2String = "Yes";
-            String button1String = "No";
+            String message = getString(R.string.dialog_confirm_question);
+            String button2String = getString(R.string.Yes);
+            String button1String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
                             .show();
                 }
             });
@@ -315,7 +319,7 @@ public class NewGroup extends WithLoginActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     clickable = false;
                     activeActivityProvider.addNewGroup(name);
-                    Toast.makeText(getActivity(), "Processing",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -338,7 +342,7 @@ public class NewGroup extends WithLoginActivity {
         dialogFragment.setConfirmButton(confirmButton);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        dialogFragment.show(transaction, "dialog");
+        dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
     }
 
     public void showGood(UserGroup result) {
@@ -360,7 +364,7 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void showUserCheckBad(AddingUser result) {
-        Toast.makeText(NewGroup.this, "No Such User :(", Toast.LENGTH_LONG)
+        Toast.makeText(NewGroup.this, getString(R.string.error_no_user), Toast.LENGTH_LONG)
                 .show();
     }
 }

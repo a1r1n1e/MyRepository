@@ -51,7 +51,9 @@ public class ActiveFragmentHistory extends Fragment {
         refreshLayout.setFocusable(false);
         refreshLayout.setRefreshing(false);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.onHistoryFragmentStart(ActiveFragmentHistory.this);
+        if(activity != null) {
+            activity.onHistoryFragmentStart(ActiveFragmentHistory.this);
+        }
         return rootView;
     }
 
@@ -67,10 +69,10 @@ public class ActiveFragmentHistory extends Fragment {
         listNameTextView.setAlpha(0.5f);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = "From: " + list.getOwnerName();
+            listOwner = getString(R.string.from) + " " + list.getOwnerName();
         }
         else{
-            listOwner = "Your List";
+            listOwner = getString(R.string.your_list);
         }
         listNameTextView.setText(listOwner);
 
@@ -171,8 +173,6 @@ public class ActiveFragmentHistory extends Fragment {
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
-        //TextView itemComment = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
-        //itemComment.setText(item.getComment());
         ItemButton groupButton = (ItemButton) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_button, addingFrameLayout, false);
         groupButton.setItem(item);
         if (item.getState()) {
@@ -196,7 +196,6 @@ public class ActiveFragmentHistory extends Fragment {
         groupButton.setFocusable(false);
         groupButton.setClickable(false);
         addingLayout.addView(itemName);
-        //addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
         addingFrameLayout.addView(addingLayout);
@@ -207,31 +206,39 @@ public class ActiveFragmentHistory extends Fragment {
     private void resend(ListImageButton button){
         if(button.getList() != null){
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-            button.setFocusable(false);
-            button.setClickable(false);
-            activity.resendList(button.getList());
+            if(activity != null) {
+                button.setFocusable(false);
+                button.setClickable(false);
+                activity.resendList(button.getList());
+            }
         }
     }
 
     private void redactList(ListImageButton button){
         if(button.getList() != null){
             ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-            button.setFocusable(false);
-            button.setClickable(false);
-            activity.redactList(button.getList());
+            if(activity != null) {
+                button.setFocusable(false);
+                button.setClickable(false);
+                activity.redactList(button.getList());
+            }
         }
     }
 
     public void listsListMaker(SList[] result) {
-        int listsNumber = result.length;
-        for (int i = 0; i < listsNumber; i++) {
-            listsLayoutDrawer(result[i]);
+        if(rootView != null && getActivity() != null) {
+            int listsNumber = result.length;
+            for (int i = 0; i < listsNumber; i++) {
+                listsLayoutDrawer(result[i]);
+            }
         }
     }
 
     public void historyFragmentCleaner() {
-        LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
-        layoutScrollingActiveListsContainer.removeAllViews();
+        if(rootView != null) {
+            LinearLayout layoutScrollingActiveListsContainer = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
+            layoutScrollingActiveListsContainer.removeAllViews();
+        }
     }
 
     public void fragmentShowGood(SList[] result) {
@@ -241,38 +248,50 @@ public class ActiveFragmentHistory extends Fragment {
 
     public void fragmentShowBad(SList[] result) {
         historyFragmentCleaner();
-        LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
-        TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
-        if (!(result == null || result.length == 0)) {
-            emptyInformer.setText("We Failed");
+        if(rootView != null) {
+            LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
+            TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
+            if (!(result == null || result.length == 0)) {
+                emptyInformer.setText(getString(R.string.some_error));
+            }
+            parentLayout.addView(emptyInformer);
         }
-        parentLayout.addView(emptyInformer);
     }
 
     public void setRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
-        refreshLayout.setFocusable(true);
-        refreshLayout.setRefreshing(false);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        if(refreshLayout != null) {
+            refreshLayout.setFocusable(true);
+            refreshLayout.setRefreshing(false);
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
+        }
     }
 
     public void unsetRefresher() {
         SwipeRefreshLayout refreshLayout = getRefresher();
-        refreshLayout.setFocusable(false);
-        refreshLayout.setRefreshing(false);
+        if(refreshLayout != null) {
+            refreshLayout.setFocusable(false);
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     public void refresh() {
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.refreshOfflineHistory();
+        if(activity != null) {
+            activity.refreshOfflineHistory();
+        }
     }
 
     public SwipeRefreshLayout getRefresher() {
-        return (SwipeRefreshLayout) rootView.findViewById(R.id.group_history_fragment_refresher);
+        SwipeRefreshLayout result = null;
+        if(rootView != null) {
+            result = (SwipeRefreshLayout) rootView.findViewById(R.id.group_history_fragment_refresher);
+        }
+        return result;
     }
 }

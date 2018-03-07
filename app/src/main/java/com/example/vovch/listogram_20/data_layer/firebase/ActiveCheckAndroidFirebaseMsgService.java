@@ -54,7 +54,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
         Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Something")
+                .setContentTitle("WhoBuys")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(notificationSoundURI)

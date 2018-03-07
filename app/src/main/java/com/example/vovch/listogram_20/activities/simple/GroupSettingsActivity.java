@@ -150,15 +150,15 @@ public class GroupSettingsActivity extends NewGroup {
 
             clickable = true;
 
-            String message = "Are You Sure?";
-            String button2String = "Yes";
-            String button1String = "No";
+            String message = getString(R.string.dialog_confirm_question);
+            String button2String = getString(R.string.Yes);
+            String button1String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
                             .show();
                 }
             });
@@ -167,7 +167,7 @@ public class GroupSettingsActivity extends NewGroup {
                     clickable = false;
                     UserGroup changingGroup = activeActivityProvider.getActiveGroup();
                     activeActivityProvider.confirmGroupSettingsChange(changingGroup, name);
-                    Toast.makeText(getActivity(), "Processing",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();
                 }
             });

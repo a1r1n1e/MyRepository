@@ -47,14 +47,18 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
         refreshLayout.setFocusable(false);
         refreshLayout.setRefreshing(false);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.activeListsOnlineFragmentStart();
+        if(activity != null) {
+            activity.activeListsOnlineFragmentStart();
+        }
         return rootView;
     }
     public void listsListMaker(ListInformer[] result) {
-        int i = 0;
-        int length = result.length;
-        for(i = 0; i < length; i++){
-            activeListLayoutDrawer(result[i]);
+        if(rootView != null && getActivity() != null) {
+            int i = 0;
+            int length = result.length;
+            for (i = 0; i < length; i++) {
+                activeListLayoutDrawer(result[i]);
+            }
         }
     }
     private void activeListLayoutDrawer(ListInformer informer){
@@ -106,9 +110,11 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
     @Override
     public void fragmentShowBad(ListInformer[] result){
         cleaner();
-        LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
-        TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
-        layout.addView(messageTextView);
+        if(rootView != null) {
+            LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
+            TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
+            layout.addView(messageTextView);
+        }
     }
     private void goToGroup(UserGroup group){
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
@@ -116,19 +122,23 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
     }
     public void setRefresher(){
         SwipeRefreshLayout refreshLayout = getRefresher();
-        refreshLayout.setFocusable(true);
-        refreshLayout.setRefreshing(false);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        if(refreshLayout != null) {
+            refreshLayout.setFocusable(true);
+            refreshLayout.setRefreshing(false);
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
+        }
     }
     public void unsetRefresher(){
         SwipeRefreshLayout refreshLayout = getRefresher();
-        refreshLayout.setFocusable(false);
-        refreshLayout.setRefreshing(false);
+        if(refreshLayout != null) {
+            refreshLayout.setFocusable(false);
+            refreshLayout.setRefreshing(false);
+        }
     }
     public void refresh(){
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
@@ -136,19 +146,29 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
     }
     public void setRefresherRefreshing(){
         SwipeRefreshLayout refresher = getRefresher();
-        refresher.setRefreshing(true);
+        if(refresher != null) {
+            refresher.setRefreshing(true);
+        }
     }
     public void setRefresherNotRefreshing(){
         SwipeRefreshLayout refresher = getRefresher();
-        refresher.setRefreshing(false);
+        if(refresher != null) {
+            refresher.setRefreshing(false);
+        }
     }
     public SwipeRefreshLayout getRefresher(){
-        SwipeRefreshLayout layout = (SwipeRefreshLayout) rootView.findViewById(R.id.active_lists_online_refresh);
-        layout.setFocusable(true);
+        SwipeRefreshLayout layout = null;
+        if(rootView != null) {
+            layout = (SwipeRefreshLayout) rootView.findViewById(R.id.active_lists_online_refresh);
+            layout.setFocusable(true);
+        }
         return  layout;
     }
-    private void cleaner(){
-        LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
-        layout.removeAllViewsInLayout();
+    @Override
+    public void cleaner(){
+        if(rootView != null) {
+            LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
+            layout.removeAllViewsInLayout();
+        }
     }
 }

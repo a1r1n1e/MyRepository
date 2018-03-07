@@ -61,7 +61,7 @@ public class RegistrationFragment extends ActiveListsFragment {
                 }
                 else{
                     TextView errorInformer = (TextView) rootView.findViewById(R.id.registration_error_textview);
-                    errorInformer.setText("Values Should Be Less Than 32 At Least 4 Characters Long:(");
+                    errorInformer.setText(getString(R.string.values_format));
                 }
             }
         };
@@ -73,21 +73,35 @@ public class RegistrationFragment extends ActiveListsFragment {
     }
     public boolean fieldCheck(){
         boolean result = false;
-        EditText loginTextView = (EditText) rootView.findViewById(R.id.registration_login);
-        EditText passwordTextView = (EditText) rootView.findViewById(R.id.registration_pasword);
-        String login = loginTextView.getText().toString();
-        String password = passwordTextView.getText().toString();
-        if(login.length() > 3 && password.length() > 3 && login.length() < 33 && password.length() < 33){
-            result = true;
+        if(rootView != null) {
+            EditText loginTextView = (EditText) rootView.findViewById(R.id.registration_login);
+            EditText passwordTextView = (EditText) rootView.findViewById(R.id.registration_pasword);
+            String login = loginTextView.getText().toString();
+            String password = passwordTextView.getText().toString();
+            if (login.length() > 3 && password.length() > 3 && login.length() < 33 && password.length() < 33) {
+                result = true;
+            }
         }
         return result;
     }
+
+    @Override
+    public void cleaner(){
+        if(rootView != null) {
+            rootView.setVisibility(View.GONE);
+        }
+    }
+
     public void tryToRegister(String login, String password){
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.tryToRegister(login, password);
+        if(activity != null) {
+            activity.tryToRegister(login, password);
+        }
     }
     public void badInform(String result){
-        TextView errorTextView = (TextView) rootView.findViewById(R.id.registration_error_textview);
-        errorTextView.setText(result);
+        if(rootView != null) {
+            TextView errorTextView = (TextView) rootView.findViewById(R.id.registration_error_textview);
+            errorTextView.setText(result);
+        }
     }
 }

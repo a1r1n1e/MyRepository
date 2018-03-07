@@ -74,36 +74,51 @@ public class LoginFragment extends ActiveListsFragment {
         CreateListEditText loginEditText = (CreateListEditText) rootView.findViewById(R.id.edittext100);
         loginEditText.setOnEditorActionListener(editorListenerOne);
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.loginFragmentStart();
+        if(activity != null) {
+            activity.loginFragmentStart();
+        }
         return rootView;
     }
 
     public void tryToLoginFromForms() {
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
-        errorTextView.setText("");
-        if (activity.getToken() != null) {
-            EditText editText1 = (EditText) rootView.findViewById(R.id.edittext100);
-            EditText editText2 = (EditText) rootView.findViewById(R.id.edittext200);
-            String uName = editText1.getText().toString();
-            String uPassword = editText2.getText().toString();
-            if (!uName.equals("") && !uPassword.equals("")) {
-                activity.tryToLoginFromForms(uName, uPassword);
+        if(rootView != null && activity != null) {
+            TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
+            errorTextView.setText("");
+            if (activity.getToken() != null) {
+                EditText editText1 = (EditText) rootView.findViewById(R.id.edittext100);
+                EditText editText2 = (EditText) rootView.findViewById(R.id.edittext200);
+                String uName = editText1.getText().toString();
+                String uPassword = editText2.getText().toString();
+                if (!uName.equals("") && !uPassword.equals("")) {
+                    activity.tryToLoginFromForms(uName, uPassword);
+                } else {
+                    errorTextView.setText(getString(R.string.missing_value));
+                }
             } else {
-                errorTextView.setText("Enter Missing Value");
+                errorTextView.setText(getString(R.string.reinstall));
             }
-        } else {
-            errorTextView.setText("Our Fail. Try to reinstall the app");
+        }
+    }
+
+    @Override
+    public void cleaner(){
+        if(rootView != null) {
+            rootView.setVisibility(View.GONE);
         }
     }
 
     public void setRegisterFragment() {
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
-        activity.loginToRegistrationFragmentChange();
+        if(activity != null) {
+            activity.loginToRegistrationFragmentChange();
+        }
     }
 
     public void badInform(String result) {
-        TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
-        errorTextView.setText(result);
+        if(rootView != null) {
+            TextView errorTextView = (TextView) rootView.findViewById(R.id.login_errors_textview);
+            errorTextView.setText(result);
+        }
     }
 }

@@ -58,10 +58,12 @@ public class ActiveActivityProvider extends Application {
     private SList list;
     public DataExchanger dataExchanger;
     public UserSessionData userSessionData;
+    public int debugger;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        debugger = 0;
         activeListsActivityLoadType = 1;
         Log.w("MY", "onCreate WhoBuys ActiveActivityProvider");
         dataExchanger = DataExchanger.getInstance(ActiveActivityProvider.this);
@@ -180,7 +182,7 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void badSessionCheck(){
-        badLoginTry("Some Mistake :(");
+        badLoginTry(getString(R.string.some_error));
     }
 
     public void badLoginTry(String result) {
@@ -613,8 +615,11 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void showOnlineListogramCreatedBad() {                                                 //TODO
-
+    public void showOnlineListogramCreatedBad() {
+        if (getActiveActivityNumber() == 6) {
+            CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
+            activity.showAddListOnlineBad();
+        }
     }
 
     public void showGroupHistoryListsGood(SList[] lists, String groupId) {

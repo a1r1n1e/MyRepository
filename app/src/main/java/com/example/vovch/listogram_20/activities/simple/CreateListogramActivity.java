@@ -41,6 +41,10 @@ import com.example.vovch.listogram_20.data_types.UserGroup;
 import java.util.ArrayList;
 
 public class CreateListogramActivity extends WithLoginActivity {
+
+    private static final String INTENT_LOAD_TYPE = "loadtype";
+    private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
+
     protected ArrayList<TempItem> TempItems = new ArrayList<>();
     private String groupId;
     private ActiveActivityProvider provider;
@@ -96,7 +100,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         }
         setSupportActionBar(toolbar);
 
-        loadType = getIntent().getExtras().getInt("loadtype");                                      //getting information what type of action is it
+        loadType = getIntent().getExtras().getInt(INTENT_LOAD_TYPE);                                      //getting information what type of action is it
 
         if(loadType == 1 || loadType == 3){
             UserGroup currentGroup = provider.getActiveGroup();
@@ -155,11 +159,12 @@ public class CreateListogramActivity extends WithLoginActivity {
         Intent intent = null;
         if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         } else if (loadType == 0 || loadType == 2) {
             provider.setActiveListsActivityLoadType(1);
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         CreateListogramActivity.this.finish();
     }
@@ -177,8 +182,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         });
     }
     private ScrollView getScrollView(){
-        ScrollView scrView = (ScrollView) findViewById(R.id.createlistogramscrollview);
-        return scrView;
+        return (ScrollView) findViewById(R.id.createlistogramscrollview);
     }
     public void createPunct(TempItem tempItem) {
         LinearLayout listogramContainerLayout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
@@ -213,15 +217,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         itemNameEditText.setTempItem(tempItem);
         itemNameEditText.setOnEditorActionListener(editorListenerTwo);
         addingListogramLayout.addView(itemNameEditText);
-        /*CreateListEditText itemKommentEditText;
-        itemKommentEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
-        if(hasData){
-            itemKommentEditText.setText(tempItem.getComment());
-        }
-        itemKommentEditText.setHint("Comment");
-        itemKommentEditText.setTempItem(tempItem);
-        itemKommentEditText.setOnEditorActionListener(editorListenerTwo);
-        addingListogramLayout.addView(itemKommentEditText);*/
         FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, addingListogramLayout, false);
         ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
         Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/cross_48");
@@ -244,7 +239,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         cardView.addView(addingListogramLayout);
         tempItem.setButton(addingButton);
         tempItem.setItemNameEditText(itemNameEditText);
-        //tempItem.setItemCommentEditText(itemKommentEditText);
         tempItem.setCardView(cardView);
         TempItems.add(tempItem);
         addingButton.setTempItem(tempItem);
@@ -266,7 +260,6 @@ public class CreateListogramActivity extends WithLoginActivity {
             for(int i = 0; i < tempItems.length; i++){
                 tempItems[i] = new TempItem();
                 tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
-                //tempItems[i].setComment(TempItems.get(i).getItemCommentEditText().getText().toString());
             }
             provider.saveTempItems(tempItems);
         }
@@ -287,7 +280,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         tempItems = TempItems.toArray(tempItems);
         for(int i = 0; i < tempItems.length; i++){
             tempItems[i].setName(tempItems[i].getNameEditText().getText().toString());
-            //tempItems[i].setComment(tempItems[i].getItemCommentEditText().getText().toString());
         }
         return tempItems;
     }
@@ -302,7 +294,7 @@ public class CreateListogramActivity extends WithLoginActivity {
             dialogFragment.setFab(fab);
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
     }
 
@@ -328,15 +320,15 @@ public class CreateListogramActivity extends WithLoginActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             clickable = true;
-            String message = "Are You Sure?";
-            String button2String = "Yes";
-            String button1String = "No";
+            String message = getString(R.string.dialog_confirm_question);
+            String button2String = getString(R.string.Yes);
+            String button1String = getString(R.string.No);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(message);
             builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), "Nothing Happened", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
                             .show();
                 }
             });
@@ -353,7 +345,7 @@ public class CreateListogramActivity extends WithLoginActivity {
                     } else if(loadType == 3){
                         activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList(), (WithLoginActivity) activeActivityProvider.getActiveActivity());
                     }
-                    Toast.makeText(getActivity(), "Processing",
+                    Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -386,7 +378,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
     public void showAddListOnlineBad(){

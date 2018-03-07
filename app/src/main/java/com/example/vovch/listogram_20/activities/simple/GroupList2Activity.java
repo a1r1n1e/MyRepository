@@ -22,6 +22,10 @@ import com.example.vovch.listogram_20.data_types.SList;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
 public class GroupList2Activity extends WithLoginActivity {
+
+    private static final String INTENT_LOAD_TYPE = "loadtype";
+    private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
+
     private ActiveActivityProvider provider;
     private int loadType;
     private SList resendingList;
@@ -30,7 +34,7 @@ public class GroupList2Activity extends WithLoginActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadType = getIntent().getExtras().getInt("loadtype");
+        loadType = getIntent().getExtras().getInt(INTENT_LOAD_TYPE);
 
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(4, GroupList2Activity.this);
@@ -46,7 +50,7 @@ public class GroupList2Activity extends WithLoginActivity {
         if(loadType == 1 || loadType == 2) {
             resendingList = provider.getResendingList();
             TextView headerTextView = (TextView) findViewById(R.id.group_list_textview);
-            headerTextView.setText("Choose Where To Send");
+            headerTextView.setText(getString(R.string.resend_where_informer));
         }
 
         FloatingActionButton groupAddButton = (FloatingActionButton) findViewById(R.id.group_add_fab);
@@ -177,7 +181,6 @@ public class GroupList2Activity extends WithLoginActivity {
             provider.makeAllMembersPossible(group);
         }
         Intent intent = new Intent(GroupList2Activity.this, Group2Activity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         this.finish();
     }

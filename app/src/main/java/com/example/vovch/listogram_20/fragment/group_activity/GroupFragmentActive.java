@@ -90,8 +90,6 @@ public class GroupFragmentActive extends Fragment {
 
         TextView itemName = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
         itemName.setText(item.getName());
-        //TextView itemComment = (TextView) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_text_view, addingLayout, false);
-        //itemComment.setText(item.getComment());
         ItemButton groupButton = (ItemButton) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_button, addingFrameLayout, false);
         groupButton.setItem(item);
         View.OnClickListener ItemMarkButtonListenner = new View.OnClickListener() {
@@ -124,14 +122,13 @@ public class GroupFragmentActive extends Fragment {
             }
         }
         addingLayout.addView(itemName);
-        //addingLayout.addView(itemComment);
         item.setLayout(addingLayout);
         item.setButton(groupButton);
         addingVerticalLayout.addView(addingLayout);
         item.setVerticalLayout(addingVerticalLayout);
         if(item.getOwnerName() != null && item.getOwner() != null){
             TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
-            itemOwnerTextView.setText( "By: " + item.getOwnerName());
+            itemOwnerTextView.setText( getString(R.string.by) + " " + item.getOwnerName());
             addingVerticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
         }
@@ -158,10 +155,10 @@ public class GroupFragmentActive extends Fragment {
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = "From: " + list.getOwnerName();
+            listOwner = getString(R.string.from) + " " + list.getOwnerName();
         }
         else{
-            listOwner = "Your List";
+            listOwner = getString(R.string.your_list);
         }
         listNameTextView.setText(listOwner);
 
@@ -300,7 +297,7 @@ public class GroupFragmentActive extends Fragment {
             if(item.getOwnerName() != null){
                 ownerNameString = item.getOwnerName();
             }
-            itemOwnerTextView.setText("By " + ownerNameString);
+            itemOwnerTextView.setText(getString(R.string.by) + " " + ownerNameString);
             verticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
         }
