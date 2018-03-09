@@ -201,7 +201,7 @@ public class ActiveListsActivity extends WithLoginActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (registrationFragment != null) {
+        } else if (activeFragment.getChildFragmentManager().findFragmentByTag("One").equals(registrationFragment)) {
             registrationToLoginFragmentChange();
         } else {
             if (provider.getActiveActivityNumber() == 2) {
@@ -774,9 +774,9 @@ public class ActiveListsActivity extends WithLoginActivity
         if (provider.userSessionData.isLoginned()) {
             fab.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.square_arrow_48, getTheme()));
+                fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
             } else {
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.square_arrow_48));
+                fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
             }
             fab.setOnClickListener(fabOnClickListener);
         } else {
@@ -787,9 +787,9 @@ public class ActiveListsActivity extends WithLoginActivity
     private void fabActionOne(FloatingActionButton fab) {
         fab.show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
         } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
+            fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

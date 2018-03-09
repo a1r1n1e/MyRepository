@@ -184,22 +184,24 @@ public class UserSessionData {
             String tempResult = doSMTHWithSession(DEFAULT_NOT_EXISTING_SESSION_VALUE, ACTION_LOGIN, newLogin, newPassword);
             String prefixString = null;
             String postfixString = null;
-            if(tempResult != null) {
+            if(tempResult != null && tempResult.length() > 2) {
                 prefixString = tempResult.substring(0, 3);
                 postfixString = tempResult.substring(3);
-            }
-            if (prefixString.equals("200")) {
-                result = new StringBuilder("");
-                WebCall webCall = new WebCall();
-                result.append(prefixString);
-                String newId = webCall.getStringFromJsonString(postfixString, "id");
-                result.append(newId);
-                String sessionValue = webCall.getStringFromJsonString(postfixString, "session_id");
-                setSession(sessionValue);
-                checkUserData(newId, newLogin, newPassword, sessionValue);
-                return result.toString();
+                if (prefixString.equals("200")) {
+                    result = new StringBuilder("");
+                    WebCall webCall = new WebCall();
+                    result.append(prefixString);
+                    String newId = webCall.getStringFromJsonString(postfixString, "id");
+                    result.append(newId);
+                    String sessionValue = webCall.getStringFromJsonString(postfixString, "session_id");
+                    setSession(sessionValue);
+                    checkUserData(newId, newLogin, newPassword, sessionValue);
+                    return result.toString();
+                } else {
+                    return prefixString;
+                }
             } else {
-                return prefixString;
+                return  null;
             }
         } catch (Exception e){
             return  "700";
@@ -213,7 +215,7 @@ public class UserSessionData {
     public Boolean checkSession(){                                                                      //should be used not from UI Thread
         boolean result = false;
         String tempResult = doSMTHWithSession(session, ACTION_CHECK, login, password);
-        if(tempResult.substring(0, 3).equals("200")){
+        if(tempResult != null && tempResult.length() >2 && tempResult.substring(0, 3).equals("200")){
             result = true;
         }
         return result;
@@ -291,7 +293,7 @@ public class UserSessionData {
             String jsonString = jsonArray.toString();
             if (token != null && newLogin != null && newPassword != null) {
                 tempResult = webCall.callServer(newLogin, newPassword, DEFAULT_NOT_EXISTING_SESSION_VALUE, "registration", jsonString, UserSessionData.this);
-                if (tempResult != null) {
+                if (tempResult != null && tempResult.length() > 2) {
                     String prefixString = tempResult.substring(0, 3);
                     String postfixString = tempResult.substring(3);
                     loginResult = new StringBuilder(prefixString);

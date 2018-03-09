@@ -178,7 +178,7 @@ public class GroupFragmentActive extends Fragment {
         } else {
             resendButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri3 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/resend_48");
+        Uri uri3 = Uri.parse("android.resource://com.example.vovch.listogram_20/mipmap/resend_custom_white_green");
         resendButton.setImageURI(uri3);
         resendButton.setList(list);
 
@@ -217,7 +217,7 @@ public class GroupFragmentActive extends Fragment {
         } else {
             disactivateListButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/check_48");
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/mipmap/delete_custom_white_green");
         disactivateListButton.setImageURI(uri);
         disactivateListButton.setList(list);
         disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
@@ -241,7 +241,7 @@ public class GroupFragmentActive extends Fragment {
         } else {
             redactButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri2 = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/redact_document_48");
+        Uri uri2 = Uri.parse("android.resource://com.example.vovch.listogram_20/mipmap/redact_custom_white_green");
         redactButton.setImageURI(uri2);
         redactButton.setList(list);
         redactButton.setOnClickListener(redactListButtonOnClickListenner);

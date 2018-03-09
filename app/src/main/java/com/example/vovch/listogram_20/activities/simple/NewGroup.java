@@ -91,9 +91,9 @@ public class NewGroup extends WithLoginActivity {
         };
         FloatingActionButton addUserButton = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            addUserButton.setImageDrawable(getDrawable(R.drawable.add_48));
+            addUserButton.setImageDrawable(getDrawable(R.mipmap.add_user_custom_green_white));
         } else {
-            addUserButton.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
+            addUserButton.setImageDrawable(getResources().getDrawable(R.mipmap.add_user_custom_green_white));
         }
         addUserButton.setOnClickListener(addUserButtonListener);
 

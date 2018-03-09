@@ -97,7 +97,7 @@ public class Group2Activity extends WithLoginActivity {
         TextView groupNameTextView = (TextView) findViewById(R.id.group_name_textview);
         groupNameTextView.setText(groupName);
         ImageButton settingsButton = (ImageButton) findViewById(R.id.group_settings_imagebutton);
-        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/ic_more_vertical_32");
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/mipmap/settings_more");
         settingsButton.setImageURI(uri);
         settingsButton.setOnClickListener(groupSettingsButtonListener);
 
@@ -141,9 +141,9 @@ public class Group2Activity extends WithLoginActivity {
         adapter.finishUpdate(viewPager);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
+            fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
         } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
+            fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

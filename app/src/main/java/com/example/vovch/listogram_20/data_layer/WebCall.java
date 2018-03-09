@@ -66,7 +66,7 @@ public class WebCall {
                     } else {
                         url = new URL("http://217.10.35.250/who_buys_sessioner.php");
                     }
-                    
+
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setConnectTimeout(10000);
                     conn.setReadTimeout(10000);

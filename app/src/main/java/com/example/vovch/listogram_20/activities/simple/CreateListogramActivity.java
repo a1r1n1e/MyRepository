@@ -34,7 +34,6 @@ import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.data_types.CreateListEditText;
 import com.example.vovch.listogram_20.data_types.Item;
 import com.example.vovch.listogram_20.data_types.ItemButton;
-import com.example.vovch.listogram_20.data_types.SList;
 import com.example.vovch.listogram_20.data_types.TempItem;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
@@ -159,14 +158,15 @@ public class CreateListogramActivity extends WithLoginActivity {
         Intent intent = null;
         if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         } else if (loadType == 0 || loadType == 2) {
             provider.setActiveListsActivityLoadType(1);
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        startActivity(intent);
-        CreateListogramActivity.this.finish();
+        if(intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            CreateListogramActivity.this.finish();
+        }
     }
     private void clearer(){
         LinearLayout layout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
@@ -219,7 +219,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         addingListogramLayout.addView(itemNameEditText);
         FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, addingListogramLayout, false);
         ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
-        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/drawable/cross_48");
+        Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/mipmap/delete_custom_white_green");
         imageButton.setImageURI(uri);
         imageButton.setFocusable(false);
         imageButton.setClickable(false);
