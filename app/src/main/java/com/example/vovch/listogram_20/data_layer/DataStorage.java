@@ -238,6 +238,12 @@ public class DataStorage {
         item.setState(!state);
     }
 
+    protected void addOfflineListToHistory(SList list){
+        if(list != null){
+            ListsOfflineHistory.add(list);
+        }
+    }
+
     protected void removeOfflineListFromActive(SList list){
         Item[] items = list.getItems();
         int length = items.length;

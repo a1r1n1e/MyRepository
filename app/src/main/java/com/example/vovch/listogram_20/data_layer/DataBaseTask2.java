@@ -27,6 +27,7 @@ public class DataBaseTask2 {
     public DataBaseTask2(Context context){
         applicationContext = context;
         provider = (ActiveActivityProvider) applicationContext;
+        dbHelper = new DbHelper(applicationContext);
     }
     public SList[] getOffline(int taskType){
         String typeTask;
@@ -58,7 +59,7 @@ public class DataBaseTask2 {
                 SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME,
                 SqLiteBaseContruct.Items.COLUMN_NAME_LIST};
         try {
-            dbHelper = new DbHelper(applicationContext);
+            //dbHelper = new DbHelper(applicationContext);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             listCursor = db.query(SqLiteBaseContruct.Lists.TABLE_NAME, listProjection, SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE + "=?", listArgs, null, null, null);
             if (listCursor != null) {
@@ -98,7 +99,7 @@ public class DataBaseTask2 {
                 }
             }
 
-            dbHelper.close();
+            //dbHelper.close();
             return sLists;
         }
         catch (SQLException e){
@@ -107,14 +108,14 @@ public class DataBaseTask2 {
     }
     public void disactivateOfflineList(String listId){                                           //REFACTOR FOR DATASTORAGE
         try {
-            dbHelper = new DbHelper(applicationContext);
+            //dbHelper = new DbHelper(applicationContext);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             String[] args = {listId};
             values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE, "f");
             db.update(SqLiteBaseContruct.Lists.TABLE_NAME, values, SqLiteBaseContruct.Lists._ID + "=?", args);
             values.clear();
-            dbHelper.close();
+            db.close();
             //return "1";
         }
         catch (SQLException e){
@@ -123,7 +124,7 @@ public class DataBaseTask2 {
     }
     public void itemMarkOffline(String itemId){                                           //REFACTOR FOR DATASTORAGE
         try {
-            dbHelper = new DbHelper(applicationContext);
+            //dbHelper = new DbHelper(applicationContext);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             String[] projection = { SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
                     SqLiteBaseContruct.Items._ID};
@@ -147,7 +148,7 @@ public class DataBaseTask2 {
                 db.update(SqLiteBaseContruct.Items.TABLE_NAME, values, SqLiteBaseContruct.Items._ID + "=?", args);
                 values.clear();
             }
-            dbHelper.close();
+            //dbHelper.close();
             //return resultType.toString() + itemId + "%";
         }
         catch (SQLException e){
@@ -161,7 +162,7 @@ public class DataBaseTask2 {
             length = items.length;
         }
         Item[] incomingItems = new Item[length];
-        dbHelper = new DbHelper(applicationContext);
+        //dbHelper = new DbHelper(applicationContext);
         SList result;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
@@ -186,7 +187,7 @@ public class DataBaseTask2 {
                 values.clear();
             }
             values.clear();
-            dbHelper.close();
+            //dbHelper.close();
             result = new SList(incomingItems, (int) listId, null, false, true, 0, null, creationTime);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
         } catch (SQLException e) {
             result = null;
@@ -197,7 +198,7 @@ public class DataBaseTask2 {
         SList resultList = null;
         if(list != null && items != null){
             try {
-                dbHelper = new DbHelper(applicationContext);
+                //dbHelper = new DbHelper(applicationContext);
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 ContentValues values = new ContentValues();
                 SimpleDateFormat dateFormat;
@@ -222,8 +223,8 @@ public class DataBaseTask2 {
                     items[i].setId((int) itemId);                                                                                   // long to int careful
                     values.clear();
                 }
-                db.close();
-                dbHelper.close();
+                //db.close();
+                //dbHelper.close();
                 list.setItems(items);
                 resultList = list;
             }

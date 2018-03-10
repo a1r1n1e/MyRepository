@@ -207,7 +207,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
 
     private void showViewsForPunct(TempItem tempItem, CardView cardView, boolean hasData){
-        LinearLayout addingListogramLayout = (LinearLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.list_element_linear_layout, cardView, false);
+        LinearLayout addingListogramLayout = (LinearLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.create_listogram_linearlayout, cardView, false);
         CreateListEditText itemNameEditText;
         itemNameEditText = (CreateListEditText) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.create_listogram_edittext, addingListogramLayout, false);
         if(hasData){
@@ -217,7 +217,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         itemNameEditText.setTempItem(tempItem);
         itemNameEditText.setOnEditorActionListener(editorListenerTwo);
         addingListogramLayout.addView(itemNameEditText);
-        FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, addingListogramLayout, false);
+        FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.small_image_button_frame, addingListogramLayout, false);
         ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
         Uri uri = Uri.parse("android.resource://com.example.vovch.listogram_20/mipmap/delete_custom_white_green");
         imageButton.setImageURI(uri);

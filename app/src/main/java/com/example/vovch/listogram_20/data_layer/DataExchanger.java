@@ -449,9 +449,11 @@ public class DataExchanger {
     public SList disactivateOfflineList(SList list) {
         SList result = null;
         if (list != null) {
+            list.setState(false);
             result = list;
             DataBaseTask2 memoryTask = new DataBaseTask2(context);
             memoryTask.disactivateOfflineList(String.valueOf(result.getId()));
+            storage.addOfflineListToHistory(list);
         }
 
         if (result != null) {
