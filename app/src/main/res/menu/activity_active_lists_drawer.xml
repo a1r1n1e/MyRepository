@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_groups"
             android:icon="@mipmap/groups_custom_people"
             android:title="MY GROUPS" />
         <item
@@ -15,9 +15,13 @@
     <item android:title="still processing">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_exit"
                 android:icon="@mipmap/exit_custom"
                 android:title="EXIT" />
+            <item
+                android:id="@+id/nav_troubleshot"
+                android:icon="@mipmap/bug_report_custom_white_gray"
+                android:title="any problem" />
         </menu>
     </item>
 

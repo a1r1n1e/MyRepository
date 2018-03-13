@@ -28,6 +28,9 @@
             android:name=".activities.simple.CreateListogramActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
+            android:name=".activities.simple.SendBugActivity"
+            android:theme="@style/AppTheme.NoActionBarExtended" />
+        <activity
             android:name=".activities.complex.ActiveListsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended">
             <intent-filter>

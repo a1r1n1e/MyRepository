@@ -33,6 +33,7 @@ import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.activities.simple.CreateListogramActivity;
 import com.example.vovch.listogram_20.activities.simple.GroupList2Activity;
 import com.example.vovch.listogram_20.activities.WithLoginActivity;
+import com.example.vovch.listogram_20.activities.simple.SendBugActivity;
 import com.example.vovch.listogram_20.data_types.ListImageButton;
 import com.example.vovch.listogram_20.fragment.active_list_view_pager.ActiveFragmentHistory;
 import com.example.vovch.listogram_20.fragment.active_list_view_pager.ActiveFragmentOffline;
@@ -238,12 +239,11 @@ public class ActiveListsActivity extends WithLoginActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_groups) {
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
             intent.putExtra(INTENT_LOAD_TYPE, 0);
             startActivity(intent);
-            this.finish();
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_exit) {
             loginFailed = getString(R.string.login_failed);
             ExitDialogFragment exitDialogFragment = new ExitDialogFragment();
             exitDialogFragment.setActiveActivityProvider(provider);
@@ -260,6 +260,10 @@ public class ActiveListsActivity extends WithLoginActivity
             clipboard.setPrimaryClip(clip);
             Toast.makeText(ActiveListsActivity.this, R.string.id_copied_informer, Toast.LENGTH_LONG)
                     .show();
+        } else if (id == R.id.nav_troubleshot) {
+            Intent intent = new Intent(ActiveListsActivity.this, SendBugActivity.class);
+            intent.putExtra(INTENT_LOAD_TYPE, 0);
+            startActivity(intent);
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

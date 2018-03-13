@@ -129,14 +129,14 @@ public class CreateListogramActivity extends WithLoginActivity {
     @Override
     protected void onStart(){
         super.onStart();
+        provider = (ActiveActivityProvider) getApplicationContext();
+        provider.setActiveActivity(6, CreateListogramActivity.this);
         clearer();
         getAndShowTempItemsState();
     }
     @Override
     protected void onResume(){
         super.onResume();
-        provider = (ActiveActivityProvider) getApplicationContext();
-        provider.setActiveActivity(6, CreateListogramActivity.this);
     }
     @Override
     protected void onPause(){
