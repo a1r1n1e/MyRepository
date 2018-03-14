@@ -390,6 +390,21 @@ public class DataExchanger {
         return result;
     }
 
+    public boolean sendBug(String text){
+        boolean result = false;
+        if(text != null){
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            WebCall webCall = new WebCall();
+            JSONArray jsonArray = new JSONArray();
+            String jsonString = jsonArray.toString();
+            String tempString = webCall.callServer(text, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "bugreport", jsonString, provider.userSessionData);
+            if(tempString != null && tempString.length() > 2 && tempString.substring(0, 3).equals("200")){
+                result = true;
+            }
+        }
+        return result;
+    }
+
     public Item itemmarkOnline(Item item) {
         Item result = null;
         if (item != null && item.getList() != null && item.getList().getGroup() != null) {

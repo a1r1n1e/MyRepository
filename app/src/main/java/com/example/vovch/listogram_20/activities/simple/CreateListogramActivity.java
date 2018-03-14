@@ -361,6 +361,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         TempItems.trimToSize();
         Intent intent;
         provider.setActiveListsActivityLoadType(1);
+        provider.nullActiveActivity();
         intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -375,6 +376,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     public void showAddListOnlineGood(){
         TempItems.clear();
         TempItems.trimToSize();
+        provider.nullActiveActivity();
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

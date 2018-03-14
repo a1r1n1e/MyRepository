@@ -13,6 +13,7 @@ import com.example.vovch.listogram_20.activities.complex.Group2Activity;
 import com.example.vovch.listogram_20.activities.simple.GroupList2Activity;
 import com.example.vovch.listogram_20.activities.simple.GroupSettingsActivity;
 import com.example.vovch.listogram_20.activities.simple.NewGroup;
+import com.example.vovch.listogram_20.activities.simple.SendBugActivity;
 import com.example.vovch.listogram_20.data_layer.DataExchanger;
 import com.example.vovch.listogram_20.data_layer.UserSessionData;
 import com.example.vovch.listogram_20.data_layer.async_tasks.ActiveListsInformerTask;
@@ -37,6 +38,7 @@ import com.example.vovch.listogram_20.data_layer.async_tasks.RedactOnlineListTas
 import com.example.vovch.listogram_20.data_layer.async_tasks.RegistrationTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.RemoveAddedUserTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.ResendListToGroupTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.SendBugTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.SessionCheckerTask;
 import com.example.vovch.listogram_20.data_types.AddingUser;
 import com.example.vovch.listogram_20.data_types.Item;
@@ -218,6 +220,24 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
+    public void sendBug(String text){
+        SendBugTask sendBugTask = new SendBugTask();
+        sendBugTask.execute(text, ActiveActivityProvider.this);
+    }
+
+    public void showSendBugGood(){
+        if (getActiveActivityNumber() == 8) {
+            SendBugActivity activity = (SendBugActivity) getActiveActivity();
+            activity.showGood();
+        }
+    }
+
+    public void showSendBugBad(){
+        if (getActiveActivityNumber() == 8) {
+            SendBugActivity activity = (SendBugActivity) getActiveActivity();
+            activity.showBad();
+        }
+    }
 
     public void startOfflineGetterDatabaseTask(boolean type) {
         NewDataBaseTask newDataBaseTask = new NewDataBaseTask();
