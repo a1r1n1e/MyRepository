@@ -22,7 +22,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_weight="0.8"
-            android:text="Tell Us About Any Bugs"
+            android:text="@string/bug_report_header"
             android:maxLines="1"
             android:textAllCaps="false"
             android:textColor="@color/whoBuysGray"

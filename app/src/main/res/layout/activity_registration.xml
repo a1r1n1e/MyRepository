@@ -29,7 +29,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:textSize="25sp"
-                android:hint="Enter Login"
+                android:hint="@string/enter_login"
                 android:id="@+id/registration_login"/>
             <com.example.vovch.listogram_20.data_types.CreateListEditText
                 android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:textSize="25sp"
-                android:hint="Enter Password"
+                android:hint="@string/enter_password"
                 android:id="@+id/registration_pasword"/>
             <Button
                 android:id="@+id/registration_button"
@@ -48,7 +48,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Confirm"
+                android:text="@string/confirm_registration"
                 android:textAllCaps="false"
                 android:textSize="30sp"
                 android:textColor="@color/whoBuysGreen"

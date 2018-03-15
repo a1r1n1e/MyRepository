@@ -21,7 +21,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="0.8"
-                    android:text="Your Groups"
+                    android:text="@string/your_groups"
                     android:maxLines="1"
                     android:textAllCaps="false"
                     android:textColor="@color/whoBuysGray"

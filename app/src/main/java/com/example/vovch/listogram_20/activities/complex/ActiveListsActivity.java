@@ -54,9 +54,6 @@ public class ActiveListsActivity extends WithLoginActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String INTENT_LOAD_TYPE = "loadtype";
-    private static final String TAB_LAYOUT_PAGE_0 = "Online";
-    private static final String TAB_LAYOUT_PAGE_1 = "Offline";
-    private static final String TAB_LAYOUT_PAGE_2 = "History";
     private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
 
     private ActiveActivityProvider provider;
@@ -128,9 +125,9 @@ public class ActiveListsActivity extends WithLoginActivity
             tabs.setElevation(24);
         }
         tabs.removeAllTabs();
-        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_0));
-        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_1));
-        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_2));
+        tabs.addTab(tabs.newTab().setText(getString(R.string.online)));
+        tabs.addTab(tabs.newTab().setText(getString(R.string.offline)));
+        tabs.addTab(tabs.newTab().setText(getString(R.string.history)));
         tabs.setupWithViewPager(viewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.active_lists_fab);
@@ -298,7 +295,6 @@ public class ActiveListsActivity extends WithLoginActivity
             builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     activeActivityProvider.userSessionData.exit();
-                    activeListsActivity.activeToLoginFragmentChange();
                 }
             });
             builder.setCancelable(true);
@@ -775,7 +771,7 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     private void fabActionZero(FloatingActionButton fab) {
-        if (provider.userSessionData.isLoginned()) {
+        if (provider.userSessionData.isLoginned() && provider.userSessionData.isSession()) {
             fab.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
@@ -812,9 +808,9 @@ public class ActiveListsActivity extends WithLoginActivity
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
         adapter.clean();
-        adapter.addFragment(new ActiveListsFragment(), TAB_LAYOUT_PAGE_0);
-        adapter.addFragment(new ActiveFragmentOffline(), TAB_LAYOUT_PAGE_1);
-        adapter.addFragment(new ActiveFragmentHistory(), TAB_LAYOUT_PAGE_2);
+        adapter.addFragment(new ActiveListsFragment(), getString(R.string.online));
+        adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.offline));
+        adapter.addFragment(new ActiveFragmentHistory(), getString(R.string.history));
         viewPager.setAdapter(adapter);
     }
 

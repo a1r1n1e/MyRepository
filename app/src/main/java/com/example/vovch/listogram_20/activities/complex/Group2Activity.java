@@ -103,8 +103,8 @@ public class Group2Activity extends WithLoginActivity {
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs_group);
         tabs.removeAllTabs();
-        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_0));
-        tabs.addTab(tabs.newTab().setText(TAB_LAYOUT_PAGE_1));
+        tabs.addTab(tabs.newTab().setText(getString(R.string.active)));
+        tabs.addTab(tabs.newTab().setText(getString(R.string.history)));
         tabs.setupWithViewPager(viewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.group_fab);
@@ -529,8 +529,8 @@ public class Group2Activity extends WithLoginActivity {
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
         adapter.clean();
-        adapter.addFragment(new GroupFragmentActive(), TAB_LAYOUT_PAGE_0);
-        adapter.addFragment(new GroupFragmentHistory(), TAB_LAYOUT_PAGE_1);
+        adapter.addFragment(new GroupFragmentActive(), getString(R.string.active));
+        adapter.addFragment(new GroupFragmentHistory(), getString(R.string.history));
         viewPager.setAdapter(adapter);
     }
 

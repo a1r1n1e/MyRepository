@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
+import com.example.vovch.listogram_20.R;
 
 /**
  * Created by vovch on 08.01.2018.
@@ -30,11 +31,11 @@ public class LoginnerTask extends AsyncTask<Object, Void, String> {
             activeActivityProvider.goodLoginTry(result.substring(3));
         } else {
             if (result != null && result.substring(0, 3).equals("403")) {
-                result = "No Such User";
+                result = activeActivityProvider.getResources().getString(R.string.error_no_user);
             } else if(result == null){
-                result = "No Internet";
+                result = activeActivityProvider.getResources().getString(R.string.no_internet);
             } else{
-                result = "Something Went Bad :(";
+                result = activeActivityProvider.getResources().getString(R.string.some_error);
             }
             activeActivityProvider.badLoginTry(result);
         }

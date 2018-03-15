@@ -22,7 +22,7 @@
             android:focusable="true"
             android:clickable="true"
             android:maxLines="1"
-            android:hint="Enter Group Name"
+            android:hint="@string/enter_group_name"
             android:textAllCaps="false"
             android:background="@android:color/transparent"
             android:textColor="@color/whoBuysGray"

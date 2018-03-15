@@ -164,10 +164,13 @@ public class UserSessionData {
         password = null;
         session = null;
         savePrefs(null, null, null, null);
+        ActiveActivityProvider provider = (ActiveActivityProvider) context;
+        provider.showExitGood();
     }
 
-    public void showExitBad(){                                                                          //TODO
-
+    public void showExitBad(){
+        ActiveActivityProvider provider = (ActiveActivityProvider) context;
+        provider.showExitBad();
     }
 
     protected String getSession(){
@@ -209,7 +212,12 @@ public class UserSessionData {
     }
 
     public String endSession(){                                                                         //should be used not from UI Thread
-        return  doSMTHWithSession(session, ACTION_LOGOUT, login, password);
+        String result = null;
+        result = doSMTHWithSession(session, ACTION_LOGOUT, login, password);
+        if(result != null && result.length() > 2 && result.substring(0, 3).equals("200")){
+            session = null;
+        }
+        return  result;
     }
 
     public Boolean checkSession(){                                                                      //should be used not from UI Thread

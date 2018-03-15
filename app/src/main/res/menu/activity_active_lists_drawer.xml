@@ -5,23 +5,23 @@
         <item
             android:id="@+id/nav_groups"
             android:icon="@mipmap/groups_custom_people"
-            android:title="MY GROUPS" />
+            android:title="@string/my_groups" />
         <item
             android:id="@+id/nav_copy_id"
             android:icon="@mipmap/copy_id_custom"
-            android:title="copy your id" />
+            android:title="@string/copy_your_id" />
     </group>
 
-    <item android:title="still processing">
+    <item android:title="@string/danger_zone">
         <menu>
             <item
                 android:id="@+id/nav_exit"
                 android:icon="@mipmap/exit_custom"
-                android:title="EXIT" />
+                android:title="@string/exit" />
             <item
                 android:id="@+id/nav_troubleshot"
                 android:icon="@mipmap/bug_report_custom_white_gray"
-                android:title="any problem" />
+                android:title="@string/any_problem" />
         </menu>
     </item>
 

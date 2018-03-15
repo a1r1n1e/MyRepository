@@ -142,9 +142,22 @@ public class ActiveActivityProvider extends Application {
         if (prefCheck && internetCheck) {
             checkSessionWeb();
         } else if (internetCheck) {
-            badLoginTry("Log Yourself In");
+            badLoginTry(getResources().getString(R.string.log_yourself_in));
         } else {
             activeListsNoInternet();
+        }
+    }
+
+    public void showExitGood(){
+        if (getActiveActivityNumber() == 2) {
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+            activity.activeToLoginFragmentChange();
+        }
+    }
+
+    public void showExitBad(){
+        if (getActiveActivityNumber() == 2) {
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();                   //TODO
         }
     }
 

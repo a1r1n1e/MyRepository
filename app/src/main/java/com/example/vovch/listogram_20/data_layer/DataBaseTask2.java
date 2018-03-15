@@ -24,12 +24,14 @@ public class DataBaseTask2 {
     DbHelper dbHelper;
     Context applicationContext;
     ActiveActivityProvider provider;
-    public DataBaseTask2(Context context){
+
+    public DataBaseTask2(Context context) {
         applicationContext = context;
         provider = (ActiveActivityProvider) applicationContext;
         dbHelper = new DbHelper(applicationContext);
     }
-    public SList[] getOffline(int taskType){
+
+    public SList[] getOffline(int taskType) {
         String typeTask;
         SList[] sLists = null;
         Item[] items;
@@ -37,10 +39,9 @@ public class DataBaseTask2 {
         SList tempSlist;
         Item tempItem;
         boolean type;
-        if(taskType == 1){
+        if (taskType == 1) {
             typeTask = "t";
-        }
-        else{
+        } else {
             typeTask = "f";
         }
         Cursor cursor;
@@ -77,7 +78,7 @@ public class DataBaseTask2 {
                         items = new Item[itemNumber];
                         for (int j = 0; j < itemNumber; j++) {
                             type = false;
-                            if(cursor.getString(2).equals("t")){
+                            if (cursor.getString(2).equals("t")) {
                                 type = true;
                             }
                             tempItem = new Item(cursor.getInt(3), cursor.getString(0), cursor.getString(1), type);
@@ -87,7 +88,7 @@ public class DataBaseTask2 {
                             }
                         }
                         type = false;
-                        if(listCursor.getString(1).equals("t")){
+                        if (listCursor.getString(1).equals("t")) {
                             type = true;
                         }
                         tempSlist = new SList(items, listCursor.getInt(0), null, false, type, 0, null, listCursor.getString(2));
@@ -101,12 +102,12 @@ public class DataBaseTask2 {
 
             //dbHelper.close();
             return sLists;
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             return sLists;
         }
     }
-    public void disactivateOfflineList(String listId){                                           //REFACTOR FOR DATASTORAGE
+
+    public void disactivateOfflineList(String listId) {                                           //REFACTOR FOR DATASTORAGE
         try {
             //dbHelper = new DbHelper(applicationContext);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -117,23 +118,23 @@ public class DataBaseTask2 {
             values.clear();
             db.close();
             //return "1";
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             //return "";
         }
     }
-    public void itemMarkOffline(String itemId){                                           //REFACTOR FOR DATASTORAGE
+
+    public void itemMarkOffline(String itemId) {                                           //REFACTOR FOR DATASTORAGE
         try {
             //dbHelper = new DbHelper(applicationContext);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            String[] projection = { SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
+            String[] projection = {SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
                     SqLiteBaseContruct.Items._ID};
             String[] args = {itemId};
             Cursor cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items._ID + "=?", args, null, null, null);
             ContentValues values = new ContentValues();
             String type;
             StringBuilder resultType = new StringBuilder("1");
-            if(cursor != null) {
+            if (cursor != null) {
                 cursor.moveToFirst();
                 if (cursor.getString(0).equals("t")) {
                     type = "f";
@@ -150,15 +151,15 @@ public class DataBaseTask2 {
             }
             //dbHelper.close();
             //return resultType.toString() + itemId + "%";
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             //return "";
         }
     }
+
     public SList addList(Item[] items) {                                                        //REFACTOR FOR DATASTORAGE
         int i, j;
         int length = 0;
-        if(items != null) {
+        if (items != null) {
             length = items.length;
         }
         Item[] incomingItems = new Item[length];
@@ -166,7 +167,7 @@ public class DataBaseTask2 {
         SList result;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
-            String creationTime =  dateFormat.format(Calendar.getInstance().getTime());
+            String creationTime = dateFormat.format(Calendar.getInstance().getTime());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE, "t");
@@ -194,9 +195,14 @@ public class DataBaseTask2 {
         }
         return result;
     }
-    protected SList redactOfflineList(SList list, Item[] items){
+
+    protected void dropHistory(){
+        
+    }
+
+    protected SList redactOfflineList(SList list, Item[] items) {
         SList resultList = null;
-        if(list != null && items != null){
+        if (list != null && items != null) {
             try {
                 //dbHelper = new DbHelper(applicationContext);
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -208,10 +214,10 @@ public class DataBaseTask2 {
                 for (int i = 0; i < items.length; i++) {
                     active.setLength(0);
                     dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
-                    creationTime =  dateFormat.format(Calendar.getInstance().getTime());
-                    if(items[i].getState()){
+                    creationTime = dateFormat.format(Calendar.getInstance().getTime());
+                    if (items[i].getState()) {
                         active.append("f");
-                    } else{
+                    } else {
                         active.append("t");
                     }
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, items[i].getName());
@@ -227,8 +233,7 @@ public class DataBaseTask2 {
                 //dbHelper.close();
                 list.setItems(items);
                 resultList = list;
-            }
-            catch (SQLException e){
+            } catch (SQLException e) {
 
             }
         }
