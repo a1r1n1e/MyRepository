@@ -197,7 +197,7 @@ public class DataBaseTask2 {
     }
 
     protected void dropHistory(){
-        
+
     }
 
     protected SList redactOfflineList(SList list, Item[] items) {
