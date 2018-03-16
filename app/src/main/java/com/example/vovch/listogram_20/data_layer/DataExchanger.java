@@ -405,6 +405,16 @@ public class DataExchanger {
         return result;
     }
 
+    public boolean dropHistory(){
+        boolean result;
+        DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+        result = dataBaseTask2.dropHistory();
+        if(result){
+            storage.clearOfflineHistory();
+        }
+        return result;
+    }
+
     public Item itemmarkOnline(Item item) {
         Item result = null;
         if (item != null && item.getList() != null && item.getList().getGroup() != null) {

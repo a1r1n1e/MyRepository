@@ -18,6 +18,7 @@ import com.example.vovch.listogram_20.data_layer.DataExchanger;
 import com.example.vovch.listogram_20.data_layer.UserSessionData;
 import com.example.vovch.listogram_20.data_layer.async_tasks.ActiveListsInformerTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.AddUserTask;
+import com.example.vovch.listogram_20.data_layer.async_tasks.DropHistoryTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.GroupActiveGetterTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.GroupChangeConfirmTask;
 import com.example.vovch.listogram_20.data_layer.async_tasks.GroupDataSetterTask;
@@ -230,6 +231,25 @@ public class ActiveActivityProvider extends Application {
         if (getActiveActivityNumber() == 2) {
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.badRegistrationTry(result);
+        }
+    }
+
+    public void dropHistory(){
+        DropHistoryTask dropHistoryTask = new DropHistoryTask();
+        dropHistoryTask.execute(ActiveActivityProvider.this);
+    }
+
+    public void showDropHistoryGood(){
+        if (getActiveActivityNumber() == 2) {
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+            activity.showDropHistoryGood();
+        }
+    }
+
+    public void showDropHistoryBad(){
+        if (getActiveActivityNumber() == 2) {
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+            activity.showDropHistoryBad();
         }
     }
 

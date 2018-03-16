@@ -249,9 +249,6 @@ public class ActiveListsActivity extends WithLoginActivity
             FragmentTransaction transaction = manager.beginTransaction();
             exitDialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         } else if (id == R.id.nav_copy_id) {
-            //ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
-            //ClipData clip = ClipData.newPlainText("", usersId);
-            //clipboard.setPrimaryClip(clip);
             ClipboardManager clipboard = (ClipboardManager) ActiveListsActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("", provider.userSessionData.getId());
             clipboard.setPrimaryClip(clip);
@@ -261,11 +258,47 @@ public class ActiveListsActivity extends WithLoginActivity
             Intent intent = new Intent(ActiveListsActivity.this, SendBugActivity.class);
             intent.putExtra(INTENT_LOAD_TYPE, 0);
             startActivity(intent);
+        } else if(id == R.id.nav_drop_history) {
+            DropHistoryDialogFragment dialogFragment = new DropHistoryDialogFragment();
+            dialogFragment.setActiveActivityProvider(provider);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static class DropHistoryDialogFragment extends DialogFragment {
+        private ActiveActivityProvider activeActivityProvider;
+        protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
+            activeActivityProvider = newActiveActivityProvider;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = getString(R.string.dialog_drop_history_question);
+            String button1String = getString(R.string.Yes);
+            String button2String = getString(R.string.No);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(message);
+            builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened), Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+            builder.setNegativeButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    activeActivityProvider.dropHistory();
+                }
+            });
+            builder.setCancelable(true);
+            return builder.create();
+        }
     }
 
     public static class ExitDialogFragment extends DialogFragment {
@@ -768,6 +801,14 @@ public class ActiveListsActivity extends WithLoginActivity
             offlineFragment.checkRootView(viewPager, getLayoutInflater());
             offlineFragment.fragmentShowSecondBad(result);
         }
+    }
+
+    public void showDropHistoryGood(){
+        refreshOfflineHistory();
+    }
+
+    public void showDropHistoryBad(){
+
     }
 
     private void fabActionZero(FloatingActionButton fab) {

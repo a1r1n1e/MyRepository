@@ -23,6 +23,7 @@
     <string name="my_groups">Groups</string>
     <string name="any_problem">any problem</string>
     <string name="copy_your_id">copy your id</string>
+    <string name="drop_history">drop history</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="group_down_button_string">Send New List</string>
     <string name="title_activity_group_settings">GroupSettingsActivity</string>
@@ -57,6 +58,7 @@
     <string name="list_downloaded_informer">List Downloaded</string>
     <string name="dialog_confirm_question">Are You Sure?</string>
     <string name="dialog_confirm_action_processing">Processing...</string>
+    <string name="dialog_drop_history_question">This Will Delete Your Offline History Forever</string>
     <string name="user_added_inormer">User Already Added</string>
     <string name="enter_user_id_informer">Enter Any User Id</string>
     <string name="not_removable_user_error">Can\'t Remove This User :)</string>

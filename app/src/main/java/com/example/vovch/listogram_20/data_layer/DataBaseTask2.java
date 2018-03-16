@@ -196,10 +196,6 @@ public class DataBaseTask2 {
         return result;
     }
 
-    protected void dropHistory(){
-
-    }
-
     protected SList redactOfflineList(SList list, Item[] items) {
         SList resultList = null;
         if (list != null && items != null) {
@@ -216,9 +212,9 @@ public class DataBaseTask2 {
                     dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
                     creationTime = dateFormat.format(Calendar.getInstance().getTime());
                     if (items[i].getState()) {
-                        active.append("f");
-                    } else {
                         active.append("t");
+                    } else {
+                        active.append("f");
                     }
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, items[i].getName());
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, items[i].getComment());
@@ -229,8 +225,6 @@ public class DataBaseTask2 {
                     items[i].setId((int) itemId);                                                                                   // long to int careful
                     values.clear();
                 }
-                //db.close();
-                //dbHelper.close();
                 list.setItems(items);
                 resultList = list;
             } catch (SQLException e) {
@@ -238,5 +232,15 @@ public class DataBaseTask2 {
             }
         }
         return resultList;
+    }
+
+    protected boolean dropHistory(){
+        try{
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + "= '" + "f" + "'");
+            return true;
+        } catch (Exception e){
+            return false;
+        }
     }
 }

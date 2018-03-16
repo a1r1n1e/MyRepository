@@ -121,9 +121,9 @@ public class Group2Activity extends WithLoginActivity {
                 if (position == 0) {
                     fab.show();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48, getTheme()));
+                        fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
                     } else {
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.add_48));
+                        fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
                     }
                 } else if (position == 1) {
                     fab.hide();
