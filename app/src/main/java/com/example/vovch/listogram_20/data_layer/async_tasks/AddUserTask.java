@@ -10,19 +10,16 @@ import com.example.vovch.listogram_20.data_types.AddingUser;
  * Created by vovch on 07.01.2018.
  */
 
-public class AddUserTask extends AsyncTask <String, Void, AddingUser>{
+public class AddUserTask extends AsyncTask <Object, Void, AddingUser>{
     private Context applicationContext;
     private ActiveActivityProvider activeActivityProvider;
     private String activityType;
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public AddingUser doInBackground(String... loginPair) {
+    public AddingUser doInBackground(Object... loginPair) {
         AddingUser result = null;
-        String checkingUserId = loginPair[0];
-        activityType = loginPair[1];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
+        String checkingUserId = (String) loginPair[0];
+        activityType = (String) loginPair[1];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[2];
         result = activeActivityProvider.dataExchanger.addUser(checkingUserId);
         return result;
     }

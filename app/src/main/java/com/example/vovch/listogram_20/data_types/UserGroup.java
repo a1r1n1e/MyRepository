@@ -25,6 +25,7 @@ public class UserGroup /*implements Parcelable*/ {
     private CardView cardView;
     private Button button;
     private String owner;
+    private boolean updateNeeded;
 
     public UserGroup(String newName, String newId, SList[] newActiveLists, SList[] newHistoryLists, AddingUser[] newMembers) {
         name = newName;
@@ -34,6 +35,7 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = new ArrayList<>(Arrays.asList(newHistoryLists));
         members = new ArrayList<>(Arrays.asList(newMembers));
         button = null;
+        updateNeeded = false;
     }
 
     public UserGroup(String newName, String newId, AddingUser[] newMembers) {
@@ -47,6 +49,7 @@ public class UserGroup /*implements Parcelable*/ {
         activeLists = null;
         historyLists = null;
         button = null;
+        updateNeeded = false;
     }
 
     public UserGroup(String newName, String newId) {
@@ -57,6 +60,7 @@ public class UserGroup /*implements Parcelable*/ {
         activeLists = null;
         historyLists = null;
         button = null;
+        updateNeeded = false;
     }
 
     public String getId() {
@@ -189,6 +193,14 @@ public class UserGroup /*implements Parcelable*/ {
             result = members.toArray(result);
         }
         return result;
+    }
+
+    public void changeUpdateNeededFlag(){
+        updateNeeded = !updateNeeded;
+    }
+
+    public boolean getUpdateNeededFlag(){
+        return updateNeeded;
     }
 
     /*protected UserGroup(Parcel in) {

@@ -356,8 +356,7 @@ public class ActiveActivityProvider extends Application {
 
     public void addNewGroup(String groupName) {
         NewGroupAdderTask newGroupAdderTask = new NewGroupAdderTask();
-        newGroupAdderTask.setApplicationContext(ActiveActivityProvider.this);
-        newGroupAdderTask.execute(groupName);
+        newGroupAdderTask.execute(groupName,ActiveActivityProvider.this);
     }
 
     public AddingUser[] getPossibleMembers() {
@@ -404,8 +403,7 @@ public class ActiveActivityProvider extends Application {
 
     public void addUserToGroup(String userId, String activityType) {
         AddUserTask addUserTask = new AddUserTask();
-        addUserTask.setApplicationContext(ActiveActivityProvider.this);
-        addUserTask.execute(userId, activityType);
+        addUserTask.execute(userId, activityType, ActiveActivityProvider.this);
     }
 
     public void removeAddedUser(AddingUser user, WithLoginActivity activity) {
@@ -702,6 +700,9 @@ public class ActiveActivityProvider extends Application {
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if (getActiveGroup().getId().equals(groupId)) {
                 activity.showGood(lists);
+                if(!getActiveGroup().getUpdateNeededFlag()) {
+                    getActiveGroup().changeUpdateNeededFlag();
+                }
             }
         }
     }
@@ -711,6 +712,9 @@ public class ActiveActivityProvider extends Application {
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if (getActiveGroup().getId().equals(groupId)) {
                 activity.showBad(lists);                                                                   //TODO error controlling
+                if(!getActiveGroup().getUpdateNeededFlag()) {
+                    getActiveGroup().changeUpdateNeededFlag();
+                }
             }
         }
     }

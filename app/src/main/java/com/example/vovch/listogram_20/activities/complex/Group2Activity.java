@@ -168,6 +168,9 @@ public class Group2Activity extends WithLoginActivity {
         super.onStart();
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(3, Group2Activity.this);
+        if(provider.getActiveGroup() != null && provider.getActiveGroup().getUpdateNeededFlag()){
+            refreshActiveLists();
+        }
     }
 
     @Override
@@ -467,12 +470,19 @@ public class Group2Activity extends WithLoginActivity {
         }
     }
 
+    public void updateNeededFlagTurnOff(){
+        if(provider.getActiveGroup() != null && provider.getActiveGroup().getUpdateNeededFlag()){
+            provider.getActiveGroup().changeUpdateNeededFlag();
+        }
+    }
+
     public void showGood(SList[] result) {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.activeFragmentCleaner();
             activeFragment.fragmentShowGood(result);
             activeFragment.setRefresherNotRefreshing();
+            updateNeededFlagTurnOff();
         }
     }
 
@@ -482,6 +492,7 @@ public class Group2Activity extends WithLoginActivity {
             activeFragment.activeFragmentCleaner();
             activeFragment.fragmentShowBad(result);
             activeFragment.setRefresherNotRefreshing();
+            updateNeededFlagTurnOff();
         }
     }
 
@@ -489,6 +500,7 @@ public class Group2Activity extends WithLoginActivity {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowSecondGood(result);
+            //updateNeededFlagTurnOff();
         }
     }
 
@@ -496,6 +508,7 @@ public class Group2Activity extends WithLoginActivity {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowSecondBad(result);
+            //updateNeededFlagTurnOff();
         }
     }
 
@@ -503,6 +516,7 @@ public class Group2Activity extends WithLoginActivity {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowThirdGood(result);
+            //updateNeededFlagTurnOff();
         }
     }
 
@@ -510,6 +524,7 @@ public class Group2Activity extends WithLoginActivity {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowThirdBad(result);
+            //updateNeededFlagTurnOff();
         }
     }
 

@@ -70,7 +70,7 @@ public class DataExchanger {
         UserGroup result = null;
         UserGroup[] tempResult = null;
         String resultString = null;
-        AddingUser[] users = storage.getDeletableUsers();
+        AddingUser[] users = storage.getAddedUsers();
         int length = users.length;
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
@@ -90,7 +90,7 @@ public class DataExchanger {
                     tempResult = webCall.getGroupsFromJsonString(resultString.substring(3));
                     result = tempResult[0];
                     storage.addGroup(result);
-                    clearDeletableUsers();
+                    clearAddedUsers();
                 }
             }
         } catch (JSONException e) {                                                                         //TODO

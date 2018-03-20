@@ -11,18 +11,15 @@ import com.example.vovch.listogram_20.data_types.UserGroup;
  * Created by vovch on 07.01.2018.
  */
 
-public class NewGroupAdderTask extends AsyncTask<String, Void, UserGroup> {
-    private Context applicationContext;
+public class NewGroupAdderTask extends AsyncTask<Object, Void, UserGroup> {
     private ActiveActivityProvider activeActivityProvider;
 
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
-    }
     @Override
-    public UserGroup doInBackground(String... loginPair) {
+    public UserGroup doInBackground(Object... loginPair) {
         UserGroup result = null;
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
-        result = activeActivityProvider.dataExchanger.newGroupAdding(loginPair[0]);
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
+        String groupName = (String) loginPair[0];
+        result = activeActivityProvider.dataExchanger.newGroupAdding(groupName);
         return result;
     }
     @Override
@@ -31,7 +28,8 @@ public class NewGroupAdderTask extends AsyncTask<String, Void, UserGroup> {
             activeActivityProvider.showNewGroupAddedGood(result);
         }
         else{
-            activeActivityProvider.showNewGroupAddedBad(result);
+            activeActivityProvider.showNewGroupAddedBad(null);
         }
+        activeActivityProvider = null;
     }
 }
