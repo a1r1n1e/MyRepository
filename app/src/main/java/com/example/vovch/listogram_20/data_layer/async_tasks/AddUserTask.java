@@ -32,14 +32,14 @@ public class AddUserTask extends AsyncTask <String, Void, AddingUser>{
             if (result != null) {
                 activeActivityProvider.showCheckUserNewGroupGood(result);
             } else {
-                activeActivityProvider.showCheckUserNewGroupBad(result);
+                activeActivityProvider.showCheckUserNewGroupBad(null);
             }
         }
         else if(activityType.equals("GroupSettingsActivity")){
             if (result != null) {
                 activeActivityProvider.showCheckUserSettingsGood(result);
             } else {
-                activeActivityProvider.showCheckUserSettingsBad(result);
+                activeActivityProvider.showCheckUserSettingsBad(null);
             }
         }
     }

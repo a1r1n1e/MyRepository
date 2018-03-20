@@ -164,13 +164,17 @@ public class UserSessionData {
         password = null;
         session = null;
         savePrefs(null, null, null, null);
-        ActiveActivityProvider provider = (ActiveActivityProvider) context;
-        provider.showExitGood();
+        if(context != null) {
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            provider.showExitGood();
+        }
     }
 
     public void showExitBad(){
-        ActiveActivityProvider provider = (ActiveActivityProvider) context;
-        provider.showExitBad();
+        if(context != null) {
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            provider.showExitBad();
+        }
     }
 
     protected String getSession(){

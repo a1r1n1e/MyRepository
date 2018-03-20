@@ -375,7 +375,11 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void clearNewGroupPossibleMembers() {
-        dataExchanger.clearAddingUsers();
+        dataExchanger.clearDeletableUsers();
+    }
+
+    public void clearAddedUsers(){
+        dataExchanger.clearAddedUsers();
     }
 
     public void showNewGroupAddedGood(UserGroup result) {
@@ -395,7 +399,7 @@ public class ActiveActivityProvider extends Application {
     public boolean checkUser(String id) {
         boolean result = false;
         result = dataExchanger.checkUserRAM(id);
-        return result;
+        return  result;
     }
 
     public void addUserToGroup(String userId, String activityType) {

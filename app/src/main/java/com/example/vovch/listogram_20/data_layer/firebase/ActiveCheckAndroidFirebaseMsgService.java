@@ -24,85 +24,105 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     }
     @Override
     public  void onMessageReceived(RemoteMessage remoteMessage){
-        String value = remoteMessage.toString();
-        if(remoteMessage.getData().get("type").equals("newlistogram") || remoteMessage.getData().get("type").equals("groupcontentchange")) {
-            updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
-        }
-        else if(remoteMessage.getData().get("type").equals("listogramdeleted")){
-            checkAndRemoveNotification();
+        try {
+            String value = remoteMessage.toString();
+            if (remoteMessage.getData().get("type").equals("newlistogram") || remoteMessage.getData().get("type").equals("groupcontentchange")) {
+                updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
+            } else if (remoteMessage.getData().get("type").equals("listogramdeleted")) {
+                checkAndRemoveNotification();
+            }
+        } catch (Exception e){
+
         }
     }
     private void updateActivities(String groupListAddedToId, String message, String type) {
+        try {
+            ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
+            if (provider.getActiveActivityNumber() != -1) {
+                activeUpdate();
+                groupUpdate(groupListAddedToId);
+            } else if (type.equals("newlistogram")) {
+                addNotification(message);
+            }
+        } catch (Exception e){
 
-        ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-
-        if(provider.getActiveActivityNumber() == 2){                                //провайдер устроен так, что если есть номер, то и контекст есть тоже
-            activeUpdate();
-        }
-        else if(provider.getActiveActivityNumber() == 3){
-            groupUpdate(groupListAddedToId);
-        } else if(provider.getActiveActivityNumber() == -1 && type.equals("newlistogram")){
-            addNotification(message);
         }
     }
     private void addNotification(String message){
-        Intent intent = new Intent(this, ActiveListsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent resultIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        try {
+            Intent intent = new Intent(this, ActiveListsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent resultIntent = PendingIntent.getActivity(this, 0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
 
-        Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("WhoBuys")
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(notificationSoundURI)
-                .setContentIntent(resultIntent);
+            Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("WhoBuys")
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(notificationSoundURI)
+                    .setContentIntent(resultIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0, mNotificationBuilder.build());
+            notificationManager.notify(0, mNotificationBuilder.build());
+        } catch (Exception e){
+
+        }
     }
     private void checkAndRemoveNotification(){
-        ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-        if(provider.dataExchanger != null && provider.userSessionData != null) {
-            if(provider.userSessionData.getId() != null) {
-                ListInformer[] informers = provider.dataExchanger.getListInformers(provider.userSessionData.getId());
-                if(informers == null || informers.length == 0){
+        try {
+            ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
+            if (provider.dataExchanger != null && provider.userSessionData != null) {
+                if (provider.userSessionData.getId() != null) {
+                    ListInformer[] informers = provider.dataExchanger.getListInformers(provider.userSessionData.getId());
+                    if (informers == null || informers.length == 0) {
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancelAll();
+                    }
                 }
             }
+        } catch (Exception e){
+
         }
     }
     private void groupUpdate(String groupId){
-        ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-        if(provider.getActiveActivity() != null && provider.getActiveActivityNumber() == 3){
-            final Group2Activity groupContext = (Group2Activity) provider.getActiveActivity();
-            if(provider.getActiveGroup().getId().equals(groupId)) {
-                Handler mainHandler = new Handler(groupContext.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {groupContext.refreshActiveLists();}
-                };
-                mainHandler.post(myRunnable);
+        try {
+            final ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
+            if(provider.getActiveGroup() != null) {
+                if (provider.getActiveGroup().getId().equals(groupId)) {
+                    Handler mainHandler = new Handler(provider.getMainLooper());
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if(provider.getActiveGroup() != null) {
+                                provider.getGroupActiveLists(provider.getActiveGroup());
+                                provider.getGroupHistoryLists(provider.getActiveGroup());
+                            }
+                        }
+                    };
+                    mainHandler.post(myRunnable);
+                }
             }
+        } catch (Exception e){
+
         }
     }
     private void activeUpdate(){
-        ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-        if(provider.getActiveActivityNumber() == 2){
-            final ActiveListsActivity activeActivity = (ActiveListsActivity) provider.getActiveActivity();
-            Handler mainHandler = new Handler(activeActivity.getMainLooper());
-
+        try {
+            final ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
+            Handler mainHandler = new Handler(provider.getMainLooper());
             Runnable myRunnable = new Runnable() {
-                @Override
-                public void run() {activeActivity.update();}
-            };
+                    @Override
+                    public void run() {
+                        provider.getActiveActivityActiveLists();
+                    }
+                };
             mainHandler.post(myRunnable);
+        } catch (Exception e){
+
         }
     }
 }

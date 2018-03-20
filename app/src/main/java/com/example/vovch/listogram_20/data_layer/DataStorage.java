@@ -22,7 +22,8 @@ public class DataStorage {
     private ArrayList<SList> ListsOfflineHistory = new ArrayList<>();
     private ArrayList<Item> ItemsOfflineOfHistoryLists = new ArrayList<>();
     private ArrayList<UserGroup> Groups = new ArrayList<>();
-    private ArrayList<AddingUser> AddingUsers = new ArrayList<>();
+    private ArrayList<AddingUser> AddedUsers = new ArrayList<>();
+    private ArrayList<AddingUser> DeletableUsers = new ArrayList<>();
     private ArrayList<ListInformer> ListInformers = new ArrayList<>();
     private ArrayList<TempItem> TempItems = new ArrayList();
 
@@ -56,29 +57,30 @@ public class DataStorage {
 
 
 
-    protected void setAddingUsers(AddingUser[] addingUsers){
+
+    protected void setDeletableUsers(AddingUser[] addingUsers){
         if(addingUsers != null) {
             if(addingUsers.length > 0) {
-                AddingUsers = new ArrayList<>(Arrays.asList(addingUsers));
+                DeletableUsers = new ArrayList<>(Arrays.asList(addingUsers));
             }
             else{
-                AddingUsers = new ArrayList<>();
+                DeletableUsers = new ArrayList<>();
             }
         }
     }
-    protected AddingUser[] getAddingUsers(){
+    protected AddingUser[] getDeletableUsers(){
         AddingUser[] result = new AddingUser[0];
-        if(AddingUsers.size() > 0){
-            result = new AddingUser[AddingUsers.size()];
+        if(DeletableUsers.size() > 0){
+            result = new AddingUser[DeletableUsers.size()];
             for(int i = 0; i < result.length; i++){
-                result[i] = AddingUsers.get(i);
+                result[i] = DeletableUsers.get(i);
             }
         }
         return result;
     }
-    protected void clearAddingUsers(){
-        AddingUsers = new ArrayList<>();
-        AddingUsers.trimToSize();
+    protected void clearDeletableUsers(){
+        DeletableUsers = new ArrayList<>();
+        DeletableUsers.trimToSize();
     }
 
 
@@ -104,25 +106,76 @@ public class DataStorage {
         }
         return informers;
     }
-    protected void addOneAddingUser(AddingUser user){
-        if(!AddingUsers.contains(user)){
-            AddingUsers.add(user);
+
+    protected void addOneAddedUser(AddingUser user){
+        if(!AddedUsers.contains(user)){
+            AddedUsers.add(user);
         }
     }
-    protected AddingUser removeOneAddingUser(AddingUser user){
-        if(AddingUsers.contains(user)){
-            AddingUsers.remove(user);
-            AddingUsers.trimToSize();
+    protected AddingUser removeOneAddedUser(AddingUser user){
+        if(AddedUsers.contains(user)){
+            AddedUsers.remove(user);
+            AddedUsers.trimToSize();
             return user;
         }
         else{
             return null;
         }
     }
-    protected boolean isAddingUser(AddingUser user){
+    protected boolean isAddedUser(AddingUser user){
         boolean result = false;
         if(user != null){
-            if(AddingUsers.contains(user)){
+            if(AddedUsers.contains(user)){
+                result = true;
+            }
+        }
+        return  result;
+    }
+
+    protected void setAddedUsers(AddingUser[] addingUsers){
+        if(addingUsers != null) {
+            if(addingUsers.length > 0) {
+                AddedUsers = new ArrayList<>(Arrays.asList(addingUsers));
+            }
+            else{
+                AddedUsers = new ArrayList<>();
+            }
+        }
+    }
+    protected AddingUser[] getAddedUsers(){
+        AddingUser[] result = new AddingUser[0];
+        if(AddedUsers.size() > 0){
+            result = new AddingUser[AddedUsers.size()];
+            for(int i = 0; i < result.length; i++){
+                result[i] = AddedUsers.get(i);
+            }
+        }
+        return result;
+    }
+    protected void clearAddedUsers(){
+        AddedUsers = new ArrayList<>();
+        AddedUsers.trimToSize();
+    }
+
+    protected void addOneDeletableUser(AddingUser user){
+        if(!DeletableUsers.contains(user)){
+            DeletableUsers.add(user);
+        }
+    }
+    protected AddingUser removeOneDeletableUser(AddingUser user){
+        if(DeletableUsers.contains(user)){
+            DeletableUsers.remove(user);
+            DeletableUsers.trimToSize();
+            return user;
+        }
+        else{
+            return null;
+        }
+    }
+    protected boolean isDeletableUser(AddingUser user){
+        boolean result = false;
+        if(user != null){
+            if(DeletableUsers.contains(user)){
                 result = true;
             }
         }
@@ -251,7 +304,6 @@ public class DataStorage {
             ItemsOfflineOfActiveLists.remove(items[i]);
         }
         ItemsOfflineOfActiveLists.trimToSize();
-
         ListsOfflineActive.remove(list);
         ListsOfflineActive.trimToSize();
     }

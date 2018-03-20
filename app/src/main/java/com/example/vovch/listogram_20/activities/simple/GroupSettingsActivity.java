@@ -85,20 +85,24 @@ public class GroupSettingsActivity extends NewGroup {
 
         AddingUser[] users;
         if (!provider.getActiveGroup().getOwner().equals(provider.userSessionData.getId())) {
-            drawOldMembers();
+            drawNotDeletableMembers();
         }
         users = provider.getPossibleMembers();
         if(users != null) {
-            drawNewMembers(users);
+            drawDeletableMembers(users);
         }
+
     }
 
     @Override
     public void onBackPressed(){
+        if(provider != null){
+            provider.clearAddedUsers();
+        }
         goOutOfActivity(Group2Activity.class);
     }
 
-    public void drawOldMembers() {
+    public void drawNotDeletableMembers() {
         AddingUser[] oldMembers = provider.getActiveGroup().getMembers();
         boolean type = false;
         if (oldMembers != null) {
@@ -113,7 +117,7 @@ public class GroupSettingsActivity extends NewGroup {
 
     @Override
     protected boolean providerCheckUser(String id){
-        return provider.checkUser(id) || isOldMember(id);
+        return provider.checkUser(id);
     }
 
     private boolean isOldMember(String id) {

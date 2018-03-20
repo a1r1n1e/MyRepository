@@ -58,15 +58,19 @@ public class DataExchanger {
     }
 
 
-    public void clearAddingUsers() {
-        storage.clearAddingUsers();
+    public void clearDeletableUsers() {
+        storage.clearDeletableUsers();
+    }
+
+    public void clearAddedUsers(){
+        storage.clearAddedUsers();
     }
 
     public UserGroup newGroupAdding(String name) {
         UserGroup result = null;
         UserGroup[] tempResult = null;
         String resultString = null;
-        AddingUser[] users = storage.getAddingUsers();
+        AddingUser[] users = storage.getDeletableUsers();
         int length = users.length;
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
@@ -86,7 +90,7 @@ public class DataExchanger {
                     tempResult = webCall.getGroupsFromJsonString(resultString.substring(3));
                     result = tempResult[0];
                     storage.addGroup(result);
-                    clearAddingUsers();
+                    clearDeletableUsers();
                 }
             }
         } catch (JSONException e) {                                                                         //TODO
@@ -113,8 +117,14 @@ public class DataExchanger {
     }
 
     public boolean checkUserRAM(String id) {
-        AddingUser[] allUsers = storage.getAddingUsers();
-        for (AddingUser user : allUsers) {
+        AddingUser[] allDeletableUsers = storage.getDeletableUsers();
+        for (AddingUser user : allDeletableUsers) {
+            if (user.getUserId().equals(id)) {
+                return true;
+            }
+        }
+        AddingUser[] allAddedUsers = storage.getAddedUsers();
+        for (AddingUser user : allAddedUsers) {
             if (user.getUserId().equals(id)) {
                 return true;
             }
@@ -129,29 +139,31 @@ public class DataExchanger {
 
             newUser = new AddingUser();
             newUser.setData(result, userId);
-            storage.addOneAddingUser(newUser);
+            storage.addOneAddedUser(newUser);
         }
         return newUser;
     }
 
     public AddingUser removeUser(AddingUser user) {
         if (user != null) {
-            if (storage.isAddingUser(user)) {
-                user = storage.removeOneAddingUser(user);
+            if (storage.isDeletableUser(user)) {
+                user = storage.removeOneDeletableUser(user);
+            } else if(storage.isAddedUser(user)){
+                user = storage.removeOneAddedUser(user);
             }
         }
         return user;
     }
 
     public AddingUser[] getAddingUsers() {
-        return storage.getAddingUsers();
+        return storage.getDeletableUsers();
     }
 
     public AddingUser[] makeAllUsersPossible(UserGroup group) {
         AddingUser[] users = null;
         if (group != null && group.getMembers() != null) {
-            storage.clearAddingUsers();
-            storage.setAddingUsers(group.getMembers());
+            storage.clearDeletableUsers();
+            storage.setDeletableUsers(group.getMembers());
             users = getAddingUsers();
         }
         return users;
@@ -258,7 +270,8 @@ public class DataExchanger {
         UserGroup result = null;
         String resultString;
         AddingUser[] oldUsers;
-        AddingUser[] newUsers;
+        AddingUser[] addedUsers;
+        AddingUser[]deletableUsers;
         boolean mergingUsersNeeded = true;
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         if (group.getOwner().equals(provider.userSessionData.getId())) {
@@ -269,15 +282,21 @@ public class DataExchanger {
         } else {
             oldUsers = new AddingUser[0];
         }
-        if (storage.getAddingUsers() != null) {
-            newUsers = storage.getAddingUsers();
+        if (storage.getDeletableUsers() != null) {
+            deletableUsers = storage.getDeletableUsers();
         } else {
-            newUsers = new AddingUser[0];
+            deletableUsers = new AddingUser[0];
+        }
+        if (storage.getAddedUsers() != null) {
+            addedUsers = storage.getAddedUsers();
+        } else {
+            addedUsers = new AddingUser[0];
         }
 
-        AddingUser[] users = new AddingUser[oldUsers.length + newUsers.length];
+        AddingUser[] users = new AddingUser[oldUsers.length + addedUsers.length + deletableUsers.length];
         System.arraycopy(oldUsers, 0, users, 0, oldUsers.length);
-        System.arraycopy(newUsers, 0, users, oldUsers.length, newUsers.length);
+        System.arraycopy(deletableUsers, 0, users, oldUsers.length, deletableUsers.length);
+        System.arraycopy(addedUsers, 0, users, oldUsers.length + deletableUsers.length, addedUsers.length);
 
         int length = users.length;
         try {
@@ -295,7 +314,7 @@ public class DataExchanger {
                     result = storage.updateGroup(group, newGroup);
                     if (result != null) {
                         provider.setActiveGroup(result);
-                        storage.clearAddingUsers();
+                        storage.clearDeletableUsers();
                         if(result.getOwner().equals(provider.userSessionData.getId())) {
                             provider.makeAllMembersPossible(result);
                         }

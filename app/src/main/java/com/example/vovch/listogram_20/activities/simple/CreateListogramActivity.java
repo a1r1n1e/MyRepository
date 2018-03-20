@@ -101,7 +101,7 @@ public class CreateListogramActivity extends WithLoginActivity {
 
         loadType = getIntent().getExtras().getInt(INTENT_LOAD_TYPE);                                      //getting information what type of action is it
 
-        if(loadType == 1 || loadType == 3){
+        if((loadType == 1 || loadType == 3) && provider != null ){
             UserGroup currentGroup = provider.getActiveGroup();
             if(currentGroup != null){
                 groupId = currentGroup.getId();
@@ -158,7 +158,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         Intent intent = null;
         if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        } else if (loadType == 0 || loadType == 2) {
+        } else if ((loadType == 0 || loadType == 2) && provider != null) {
             provider.setActiveListsActivityLoadType(1);
             intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         }
@@ -261,18 +261,22 @@ public class CreateListogramActivity extends WithLoginActivity {
                 tempItems[i] = new TempItem();
                 tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
             }
-            provider.saveTempItems(tempItems);
+            if(provider != null) {
+                provider.saveTempItems(tempItems);
+            }
         }
     }
     public void getAndShowTempItemsState(){
-        TempItem[] tempItems;
-        tempItems = provider.getTempItems();
-        int length = tempItems.length;
-        for(int i = 0; i < length; i++){
-            createPunct(tempItems[i]);
-        }
-        if(length == 0){
-            createPunct(null);
+        if(provider != null) {
+            TempItem[] tempItems;
+            tempItems = provider.getTempItems();
+            int length = tempItems.length;
+            for (int i = 0; i < length; i++) {
+                createPunct(tempItems[i]);
+            }
+            if (length == 0) {
+                createPunct(null);
+            }
         }
     }
     public Item[] makeSendingItemsArray(){
@@ -286,7 +290,7 @@ public class CreateListogramActivity extends WithLoginActivity {
     public void sendListogram(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);
         Item[] items = makeSendingItemsArray();
-        if(items != null){
+        if(items != null && provider != null){
             CompleteDialogFragment dialogFragment = new CompleteDialogFragment();
             dialogFragment.setActiveActivityProvider(provider);
             dialogFragment.setItems(items);
@@ -365,6 +369,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        CreateListogramActivity.this.finish();
     }
 
     public void showAddListOfflineBad(){
@@ -381,6 +386,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        CreateListogramActivity.this.finish();
     }
     public void showAddListOnlineBad(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);

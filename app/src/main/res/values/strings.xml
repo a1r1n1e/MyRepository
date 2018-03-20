@@ -10,7 +10,7 @@
     <string name="password_hint">Password</string>
     <string name="enter_login">Enter Login</string>
     <string name="enter_password">Enter Password</string>
-    <string name="Registration">Registration</string>
+    <string name="registration">Registration</string>
     <string name="confirm_registration">Confirm</string>
     <string name="log_yourself_in">Log Yourself In</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

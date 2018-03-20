@@ -57,7 +57,11 @@ public class NewGroup extends WithLoginActivity {
     TextView.OnEditorActionListener editorListenerOne = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEND|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+            if (actionId == EditorInfo.IME_ACTION_GO ||
+                    actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_NEXT ||
+                    actionId == EditorInfo.IME_ACTION_SEND ||
+                    actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
                 addUser();
                 return true;
             }
@@ -117,10 +121,10 @@ public class NewGroup extends WithLoginActivity {
             provider.addUserToGroup(provider.userSessionData.getId(), getThisActivityType());
         }
         AddingUser[] users = provider.getPossibleMembers();
-        drawNewMembers(users);
+        drawDeletableMembers(users);
     }
 
-    public void drawNewMembers(AddingUser[] newMembers) {
+    public void drawDeletableMembers(AddingUser[] newMembers) {
         for (AddingUser newMember : newMembers) {
             drawNewUserLayout(newMember, true);
         }
