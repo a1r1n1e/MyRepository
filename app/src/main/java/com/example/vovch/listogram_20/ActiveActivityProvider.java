@@ -48,6 +48,8 @@ import com.example.vovch.listogram_20.data_types.SList;
 import com.example.vovch.listogram_20.data_types.TempItem;
 import com.example.vovch.listogram_20.data_types.UserGroup;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 /**
  * Created by vovch on 09.11.2017.
  */
@@ -72,6 +74,11 @@ public class ActiveActivityProvider extends Application {
         dataExchanger = DataExchanger.getInstance(ActiveActivityProvider.this);
         userSessionData = UserSessionData.getInstance(ActiveActivityProvider.this);
         nullActiveActivity();
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("HelveticaNeueCyr-Roman.otf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
     }
 
     public Context getActiveActivity() {

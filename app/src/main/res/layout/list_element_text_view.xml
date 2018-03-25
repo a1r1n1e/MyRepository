@@ -8,6 +8,8 @@
     android:layout_weight="1"
     android:gravity="start"
     android:paddingLeft="8dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="16dp"
     android:paddingRight="16dp"
     android:background="@drawable/no_corners_edit_text"
     android:textSize="18sp"

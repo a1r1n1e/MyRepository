@@ -19,19 +19,22 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingService {
     private static final String TAG = "MyAndroidFCMService";
+
     public ActiveCheckAndroidFirebaseMsgService() {
         super();
     }
+
     @Override
-    public  void onMessageReceived(RemoteMessage remoteMessage){
+    public void onMessageReceived(RemoteMessage remoteMessage) {
         try {
             if (remoteMessage.getData().get("type").equals("newlistogram") || remoteMessage.getData().get("type").equals("groupcontentchange") || remoteMessage.getData().get("type").equals("listogramdeleted")) {
                 updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
+
     private void updateActivities(String groupListAddedToId, String message, String type) {
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
@@ -40,14 +43,15 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 groupUpdate(groupListAddedToId);
             } else if (type.equals("newlistogram")) {
                 addNotification(message);
-            } else if(type.equals("listogramdeleted")){
+            } else if (type.equals("listogramdeleted")) {
                 checkAndRemoveNotification();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    private void addNotification(String message){
+
+    private void addNotification(String message) {
         try {
             Intent intent = new Intent(this, ActiveListsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -56,7 +60,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
 
             Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.mipmap.ic_launcher_test)
                     .setContentTitle("WhoBuys")
                     .setContentText(message)
                     .setAutoCancel(true)
@@ -67,11 +71,12 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
             notificationManager.notify(0, mNotificationBuilder.build());
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    private void checkAndRemoveNotification(){
+
+    private void checkAndRemoveNotification() {
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
             if (provider.dataExchanger != null && provider.userSessionData != null) {
@@ -83,20 +88,21 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                     }
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    private void groupUpdate(String groupId){
+
+    private void groupUpdate(String groupId) {
         try {
             final ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-            if(provider.getActiveGroup() != null) {
+            if (provider.getActiveGroup() != null) {
                 if (provider.getActiveGroup().getId().equals(groupId)) {
                     Handler mainHandler = new Handler(provider.getMainLooper());
                     Runnable myRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            if(provider.getActiveGroup() != null) {
+                            if (provider.getActiveGroup() != null) {
                                 provider.getGroupActiveLists(provider.getActiveGroup());
                                 provider.getGroupHistoryLists(provider.getActiveGroup());
                             }
@@ -105,22 +111,23 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                     mainHandler.post(myRunnable);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    private void activeUpdate(){
+
+    private void activeUpdate() {
         try {
             final ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
             Handler mainHandler = new Handler(provider.getMainLooper());
             Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        provider.getActiveActivityActiveLists();
-                    }
-                };
+                @Override
+                public void run() {
+                    provider.getActiveActivityActiveLists();
+                }
+            };
             mainHandler.post(myRunnable);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

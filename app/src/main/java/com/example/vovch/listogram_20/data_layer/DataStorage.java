@@ -50,7 +50,7 @@ public class DataStorage {
         return result;
     }
     protected void clearTempItems(){
-        TempItems.clear();
+        TempItems = new ArrayList<>();
         TempItems.trimToSize();
     }
 

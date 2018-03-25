@@ -46,6 +46,7 @@ public class CreateListogramActivity extends WithLoginActivity {
 
     protected ArrayList<TempItem> TempItems = new ArrayList<>();
     private String groupId;
+    private boolean flag;
     private ActiveActivityProvider provider;
 
     private int loadType;
@@ -87,6 +88,8 @@ public class CreateListogramActivity extends WithLoginActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        flag = false;
 
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(6, CreateListogramActivity.this);
@@ -148,6 +151,9 @@ public class CreateListogramActivity extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         saveTempItemsState();
+        if(flag){
+            provider.dataExchanger.clearTempItems();
+        }
         super.onStop();
     }
     @Override
@@ -164,6 +170,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         }
         if(intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            flag = true;
             startActivity(intent);
             CreateListogramActivity.this.finish();
         }
