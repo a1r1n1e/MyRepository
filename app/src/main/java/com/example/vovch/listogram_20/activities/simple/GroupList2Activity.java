@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -63,8 +64,20 @@ public class GroupList2Activity extends WithLoginActivity {
         };
         groupAddButton.setClickable(true);
         groupAddButton.setOnClickListener(addGroupListenner);
+
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
+        refreshLayout.setFocusable(true);
+        refreshLayout.setRefreshing(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                update();
+            }
+        });
     }
     public void update(){
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
+        refreshLayout.setRefreshing(true);
         provider.getGroups();
     }
     private void clearer(){
@@ -110,6 +123,8 @@ public class GroupList2Activity extends WithLoginActivity {
 
     public void showGood(UserGroup[] result){
         clearer();
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
+        refreshLayout.setRefreshing(false);
         groupListMaker(result);
     }
     public void showBad(UserGroup[] result){
@@ -117,12 +132,10 @@ public class GroupList2Activity extends WithLoginActivity {
     }
 
     protected void groupListMaker(UserGroup[] result){
-        int length = result.length;
         LinearLayout basicLayout = (LinearLayout) findViewById(R.id.groupslayout);
-        int i = 0;
-        for(i = 0; i < length; i++)
+        for(UserGroup i : result)
         {
-                groupLayoutDrawer(basicLayout, result[i]);
+            groupLayoutDrawer(basicLayout, i);
         }
     }
     protected void groupLayoutDrawer(LinearLayout parentLayout, UserGroup group){

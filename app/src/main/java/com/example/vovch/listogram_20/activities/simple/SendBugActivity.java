@@ -75,7 +75,7 @@ public class SendBugActivity extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         provider.setActiveListsActivityLoadType(1);
-        Intent intent = null;
+        Intent intent;
         intent = new Intent(SendBugActivity.this, ActiveListsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -135,8 +135,10 @@ public class SendBugActivity extends WithLoginActivity {
                             Toast.LENGTH_LONG).show();
                 }
             });
-            fab.setFocusable(clickable);
-            fab.setClickable(clickable);
+            if(fab != null) {
+                fab.setFocusable(clickable);
+                fab.setClickable(clickable);
+            }
             builder.setCancelable(false);
             return builder.create();
         }

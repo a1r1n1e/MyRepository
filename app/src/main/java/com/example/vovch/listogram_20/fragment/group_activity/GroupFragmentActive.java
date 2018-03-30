@@ -138,9 +138,8 @@ public class GroupFragmentActive extends Fragment {
     }
 
     public void listsListMaker(SList[] result) {
-        int listsNumber = result.length;
-        for (int i = 0; i < listsNumber; i++) {
-            listsLayoutDrawer(result[i]);
+        for (SList i: result) {
+            listsLayoutDrawer(i);
         }
     }
 
@@ -186,7 +185,6 @@ public class GroupFragmentActive extends Fragment {
         headerLayout.addView(imageButtonFrame);
         listogramLayout.addView(headerLayout);
         Item[] items = list.getItems();
-        int length = items.length;
         list.setResendButton(resendButton);
         resendButton.setList(list);
         resendButton.setOnClickListener(new View.OnClickListener() {
@@ -195,8 +193,8 @@ public class GroupFragmentActive extends Fragment {
                 resend((ListImageButton) v);
             }
         });
-        for (int i = 0; i < length; i++) {
-            makeListogramLine(items[i], listogramLayout);
+        for (Item i: items) {
+            makeListogramLine(i, listogramLayout);
         }
         View.OnClickListener disactivateListButtonOnClickListenner = new View.OnClickListener() {
             @Override

@@ -211,7 +211,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.active_lists, menu);
         return true;
     }
@@ -221,12 +220,6 @@ public class ActiveListsActivity extends WithLoginActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -405,16 +398,18 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void loginToActiveFragmentChange() {
-        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-        if(fragment != null) {
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.remove(fragment);
-            transaction.commitNow();
-        }
+        if(activeFragment != null) {
+            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+            if (fragment != null) {
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.remove(fragment);
+                transaction.commitNow();
+            }
 
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
-        transaction.commit();
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
+            transaction.commit();
+        }
     }
 
     public void activeListsOnlineFragmentStart() {
@@ -430,16 +425,18 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void loginToRegistrationFragmentChange() {
-        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-        if(fragment != null) {
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.remove(fragment);
-            transaction.commitNow();
-        }
+        if(activeFragment != null) {
+            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+            if (fragment != null) {
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.remove(fragment);
+                transaction.commitNow();
+            }
 
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.active_lists_page_one, registrationFragment, "One");
-        transaction.commit();
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.active_lists_page_one, registrationFragment, "One");
+            transaction.commit();
+        }
     }
 
     public void tryToRegister(String login, String password) {
@@ -447,16 +444,18 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void registrationToActiveListsOnlineFragmentChange() {
-        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-        if(fragment != null) {
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.remove(fragment);
-            transaction.commitNow();
-        }
+        if(activeFragment != null) {
+            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+            if (fragment != null) {
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.remove(fragment);
+                transaction.commitNow();
+            }
 
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
-        transaction.commit();
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
+            transaction.commit();
+        }
     }
 
     public void badRegistrationTry(String result) {
@@ -467,34 +466,40 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void activeToLoginFragmentChange() {
-        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-        if(fragment != null) {
+        if(activeFragment != null) {
+            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+            if (fragment != null) {
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.remove(fragment);
+                transaction.commitNow();
+            }
+
             FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.remove(fragment);
-            transaction.commitNow();
-        }
+            transaction.add(R.id.active_lists_page_one, loginFragment, "One");
+            transaction.commit();
 
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.active_lists_page_one, loginFragment, "One");
-        transaction.commit();
-
-        if (viewPager.getCurrentItem() == 0) {
-            fabActionZero(fab);
+            if (viewPager.getCurrentItem() == 0) {
+                fabActionZero(fab);
+            }
+            if(drawer != null) {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
         }
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     public void registrationToLoginFragmentChange() {
-        Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-        if(fragment != null) {
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.remove(fragment);
-            transaction.commitNow();
-        }
+        if(activeFragment != null) {
+            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+            if (fragment != null) {
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.remove(fragment);
+                transaction.commitNow();
+            }
 
-        FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.active_lists_page_one, loginFragment, "One");
-        transaction.commit();
+            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.active_lists_page_one, loginFragment, "One");
+            transaction.commit();
+        }
     }
 
     public void noInternet() {
@@ -812,54 +817,62 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     private void fabActionZero(FloatingActionButton fab) {
-        if (provider.userSessionData.isLoginned() && provider.userSessionData.isSession()) {
+        if(fab != null) {
+            if (provider.userSessionData.isLoginned() && provider.userSessionData.isSession()) {
+                fab.show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
+                } else {
+                    fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
+                }
+                fab.setOnClickListener(fabOnClickListener);
+            } else {
+                fab.hide();
+            }
+        }
+    }
+
+    private void fabActionOne(FloatingActionButton fab) {
+        if(fab != null) {
             fab.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
             } else {
                 fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
             }
-            fab.setOnClickListener(fabOnClickListener);
-        } else {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
+                    intent.putExtra(INTENT_LOAD_TYPE, false);
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    private void fabActionTwo(FloatingActionButton fab) {
+        if(fab != null) {
             fab.hide();
         }
     }
 
-    private void fabActionOne(FloatingActionButton fab) {
-        fab.show();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
-        } else {
-            fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
-        }
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
-                intent.putExtra(INTENT_LOAD_TYPE, false);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void fabActionTwo(FloatingActionButton fab) {
-        fab.hide();
-    }
-
     private void setupViewPager(ViewPager viewPager) {
-        adapter = new Adapter(getSupportFragmentManager());
-        adapter.clean();
-        adapter.addFragment(new ActiveListsFragment(), getString(R.string.online));
-        adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.offline));
-        adapter.addFragment(new ActiveFragmentHistory(), getString(R.string.history));
-        viewPager.setAdapter(adapter);
+        if(viewPager != null) {
+            adapter = new Adapter(getSupportFragmentManager());
+            adapter.clean();
+            adapter.addFragment(new ActiveListsFragment(), getString(R.string.online));
+            adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.offline));
+            adapter.addFragment(new ActiveFragmentHistory(), getString(R.string.history));
+            viewPager.setAdapter(adapter);
+        }
     }
 
-    static class Adapter extends FragmentPagerAdapter {
+    private static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        protected Adapter(FragmentManager manager) {
+        private Adapter(FragmentManager manager) {
             super(manager);
         }
 
@@ -878,7 +891,7 @@ public class ActiveListsActivity extends WithLoginActivity
             return mFragmentList.size();
         }
 
-        protected void addFragment(Fragment fragment, String title) {
+        private void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }

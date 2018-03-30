@@ -178,7 +178,9 @@ public class CreateListogramActivity extends WithLoginActivity {
     private void clearer(){
         LinearLayout layout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
         layout.removeAllViewsInLayout();
-        TempItems.clear();
+        if(TempItems != null) {
+            TempItems.clear();
+        }
     }
     private void scrollToEnd(){
         getScrollView().post(new Runnable() {
@@ -205,7 +207,9 @@ public class CreateListogramActivity extends WithLoginActivity {
                 tempItem.getItemCommentEditText().setOnEditorActionListener(editorListenerTwo);
                 cardView.setVisibility(View.VISIBLE);
                 tempItem.setCardView(cardView);
-                TempItems.add(tempItem);
+                if(TempItems != null) {
+                    TempItems.add(tempItem);
+                }
             } else {
                 showViewsForPunct(tempItem, cardView, true);
             }
@@ -247,7 +251,9 @@ public class CreateListogramActivity extends WithLoginActivity {
         tempItem.setButton(addingButton);
         tempItem.setItemNameEditText(itemNameEditText);
         tempItem.setCardView(cardView);
-        TempItems.add(tempItem);
+        if(TempItems != null) {
+            TempItems.add(tempItem);
+        }
         addingButton.setTempItem(tempItem);
     }
 
@@ -256,20 +262,24 @@ public class CreateListogramActivity extends WithLoginActivity {
         if(button.getTempItem() != null){
             TempItem tempItem = button.getTempItem();
             tempItem.getCardView().setVisibility(View.GONE);
-            TempItems.remove(tempItem);
-            TempItems.trimToSize();
+            if(TempItems != null) {
+                TempItems.remove(tempItem);
+                TempItems.trimToSize();
+            }
             saveTempItemsState();
         }
     }
     public void saveTempItemsState(){
-        TempItem[] tempItems = new TempItem[TempItems.size()];
-        if(tempItems.length > -1) {
-            for(int i = 0; i < tempItems.length; i++){
-                tempItems[i] = new TempItem();
-                tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
-            }
-            if(provider != null) {
-                provider.saveTempItems(tempItems);
+        if(TempItems != null) {
+            TempItem[] tempItems = new TempItem[TempItems.size()];
+            if (tempItems.length > -1) {
+                for (int i = 0; i < tempItems.length; i++) {
+                    tempItems[i] = new TempItem();
+                    tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
+                }
+                if (provider != null) {
+                    provider.saveTempItems(tempItems);
+                }
             }
         }
     }
@@ -278,8 +288,8 @@ public class CreateListogramActivity extends WithLoginActivity {
             TempItem[] tempItems;
             tempItems = provider.getTempItems();
             int length = tempItems.length;
-            for (int i = 0; i < length; i++) {
-                createPunct(tempItems[i]);
+            for (TempItem i : tempItems) {
+                createPunct(i);
             }
             if (length == 0) {
                 createPunct(null);
@@ -289,8 +299,8 @@ public class CreateListogramActivity extends WithLoginActivity {
     public Item[] makeSendingItemsArray(){
         TempItem[] tempItems = new TempItem[TempItems.size()];
         tempItems = TempItems.toArray(tempItems);
-        for(int i = 0; i < tempItems.length; i++){
-            tempItems[i].setName(tempItems[i].getNameEditText().getText().toString());
+        for(TempItem i : tempItems){
+            i.setName(i.getNameEditText().getText().toString());
         }
         return tempItems;
     }
@@ -360,16 +370,20 @@ public class CreateListogramActivity extends WithLoginActivity {
                             Toast.LENGTH_LONG).show();
                 }
             });
-            fab.setFocusable(clickable);
-            fab.setClickable(clickable);
+            if(fab != null) {
+                fab.setFocusable(clickable);
+                fab.setClickable(clickable);
+            }
             builder.setCancelable(false);
             return builder.create();
         }
     }
 
     public void showAddListOfflineGood(){
-        TempItems.clear();
-        TempItems.trimToSize();
+        if(TempItems != null) {
+            TempItems.clear();
+            TempItems.trimToSize();
+        }
         Intent intent;
         provider.setActiveListsActivityLoadType(1);
         provider.nullActiveActivity();
@@ -386,8 +400,10 @@ public class CreateListogramActivity extends WithLoginActivity {
     }
 
     public void showAddListOnlineGood(){
-        TempItems.clear();
-        TempItems.trimToSize();
+        if(TempItems != null) {
+            TempItems.clear();
+            TempItems.trimToSize();
+        }
         provider.nullActiveActivity();
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);

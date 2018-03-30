@@ -54,12 +54,16 @@ public class UserSessionData {
 
     private UserSessionData(Context newContext) {
         context = newContext;
-        preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        login = preferences.getString(APP_PREFERENCES_LOGIN, null);
-        password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
-        token = preferences.getString(APP_PREFERENCES_TOKEN, null);
-        id = preferences.getString(APP_PREFERENCES_USERID, null);
-        session = preferences.getString(APP_PREFERENCES_SESSION, null);
+        if(context != null) {
+            preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+            if(preferences != null) {
+                login = preferences.getString(APP_PREFERENCES_LOGIN, null);
+                password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
+                token = preferences.getString(APP_PREFERENCES_TOKEN, null);
+                id = preferences.getString(APP_PREFERENCES_USERID, null);
+                session = preferences.getString(APP_PREFERENCES_SESSION, null);
+            }
+        }
     }
 
     public static UserSessionData getInstance(Context newContext) {
@@ -95,9 +99,11 @@ public class UserSessionData {
 
     public void setToken(String newToken) {
         token = newToken;
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(APP_PREFERENCES_TOKEN, token);
-        editor.apply();
+        if(token != null) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(APP_PREFERENCES_TOKEN, token);
+            editor.apply();
+        }
     }
 
     public String getLogin() {
@@ -154,8 +160,10 @@ public class UserSessionData {
     }
 
     public void exit() {
-        LogouterTask logouterTask = new LogouterTask();
-        logouterTask.execute(context);
+        if(context != null) {
+            LogouterTask logouterTask = new LogouterTask();
+            logouterTask.execute(context);
+        }
     }
 
     public void showExitGood(){

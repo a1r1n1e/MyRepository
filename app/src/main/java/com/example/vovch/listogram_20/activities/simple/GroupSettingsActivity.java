@@ -50,9 +50,7 @@ public class GroupSettingsActivity extends NewGroup {
         groupNameEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 groupNameEditText.setFocusableInTouchMode(true);
-
                 return false;
             }
         });
@@ -62,9 +60,7 @@ public class GroupSettingsActivity extends NewGroup {
         userIdEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 userIdEditText.setFocusableInTouchMode(true);
-
                 return false;
             }
         });
@@ -175,8 +171,10 @@ public class GroupSettingsActivity extends NewGroup {
                             Toast.LENGTH_LONG).show();
                 }
             });
-            confirmButton.setFocusable(clickable);
-            confirmButton.setClickable(clickable);
+            if(confirmButton != null) {
+                confirmButton.setFocusable(clickable);
+                confirmButton.setClickable(clickable);
+            }
             builder.setCancelable(false);
             return builder.create();
         }

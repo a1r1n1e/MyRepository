@@ -304,8 +304,10 @@ public class Group2Activity extends WithLoginActivity {
                 }
             });
             builder.setCancelable(true);
-            list.getDisButton().setFocusable(true);
-            list.getDisButton().setClickable(true);
+            if(list != null && list.getDisButton() != null) {
+                list.getDisButton().setFocusable(true);
+                list.getDisButton().setClickable(true);
+            }
             return builder.create();
         }
     }
@@ -383,8 +385,10 @@ public class Group2Activity extends WithLoginActivity {
                 }
             });
             builder.setCancelable(true);
-            list.getResendButton().setFocusable(true);
-            list.getResendButton().setClickable(true);
+            if(list != null && list.getDisButton() != null) {
+                list.getResendButton().setFocusable(true);
+                list.getResendButton().setClickable(true);
+            }
             return builder.create();
         }
     }
@@ -446,8 +450,10 @@ public class Group2Activity extends WithLoginActivity {
                 }
             });
             builder.setCancelable(true);
-            list.getRedactButton().setFocusable(true);
-            list.getRedactButton().setClickable(true);
+            if(list != null && list.getDisButton()!= null) {
+                list.getRedactButton().setFocusable(true);
+                list.getRedactButton().setClickable(true);
+            }
             return builder.create();
         }
     }
@@ -457,7 +463,9 @@ public class Group2Activity extends WithLoginActivity {
         if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             historyFragment.historyFragmentCleaner();
-            historyFragment.setRefresherNotRefreshing();
+            if(historyFragment.getRefresher() != null) {
+                historyFragment.setRefresherNotRefreshing();
+            }
             historyFragment.fragmentShowGood(result);
         }
     }
@@ -465,7 +473,9 @@ public class Group2Activity extends WithLoginActivity {
     public void historyLoadOnBad(String result) {
         if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
-            historyFragment.setRefresherNotRefreshing();
+            if(historyFragment.getRefresher() != null) {
+                historyFragment.setRefresherNotRefreshing();
+            }
             historyFragment.fragmentShowBad(result);
         }
     }
@@ -481,7 +491,9 @@ public class Group2Activity extends WithLoginActivity {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.activeFragmentCleaner();
             activeFragment.fragmentShowGood(result);
-            activeFragment.setRefresherNotRefreshing();
+            if(activeFragment.getRefresher() != null) {
+                activeFragment.setRefresherNotRefreshing();
+            }
             updateNeededFlagTurnOff();
         }
     }
@@ -491,7 +503,9 @@ public class Group2Activity extends WithLoginActivity {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.activeFragmentCleaner();
             activeFragment.fragmentShowBad(result);
-            activeFragment.setRefresherNotRefreshing();
+            if(activeFragment.getRefresher() != null) {
+                activeFragment.setRefresherNotRefreshing();
+            }
             updateNeededFlagTurnOff();
         }
     }
@@ -549,11 +563,11 @@ public class Group2Activity extends WithLoginActivity {
         viewPager.setAdapter(adapter);
     }
 
-    static class Adapter extends FragmentPagerAdapter {
+    private static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        protected Adapter(FragmentManager manager) {
+        private Adapter(FragmentManager manager) {
             super(manager);
         }
 

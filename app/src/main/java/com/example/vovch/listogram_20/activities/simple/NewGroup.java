@@ -327,8 +327,10 @@ public class NewGroup extends WithLoginActivity {
                             Toast.LENGTH_LONG).show();
                 }
             });
-            confirmButton.setFocusable(clickable);
-            confirmButton.setClickable(clickable);
+            if(confirmButton != null) {
+                confirmButton.setFocusable(clickable);
+                confirmButton.setClickable(clickable);
+            }
             builder.setCancelable(false);
             return builder.create();
         }
