@@ -2,6 +2,7 @@ package com.example.vovch.listogram_20.data_layer;
 
 import android.content.res.Resources;
 
+import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
 import com.example.vovch.listogram_20.data_types.ListInformer;
 import com.example.vovch.listogram_20.data_types.AddingUser;
@@ -61,10 +62,11 @@ public class WebCall {
                 HttpURLConnection conn = null;
                 try {
                     URL url;
+                    ActiveActivityProvider activeActivityProvider = (ActiveActivityProvider) userSessionData.getContext();
                     if (!((String) loginPair[3]).equals("registration")) {
-                        url = new URL("http://35.180.43.51/who_buys_controller.php");
+                        url = new URL(activeActivityProvider.getString(R.string.controller_page));
                     } else {
-                        url = new URL("http://35.180.43.51/who_buys_sessioner.php");
+                        url = new URL(activeActivityProvider.getString(R.string.session_page));
                     }
 
                     conn = (HttpURLConnection) url.openConnection();

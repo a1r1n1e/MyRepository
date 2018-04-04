@@ -73,6 +73,10 @@ public class UserSessionData {
         return instance;
     }
 
+    public Context getContext(){
+        return context;
+    }
+
     public boolean isLoginned() {
         boolean result = false;
         if (id != null && login != null && password != null && token != null && isSession()) {
@@ -251,17 +255,17 @@ public class UserSessionData {
 
     private String doSMTHWithSession(String session_id, String action, String incomingLogin, String incomingPassword){                                 //should be used not from UI Thread
         String response = null;
-        if (token != null && incomingPassword != null && incomingLogin != null && session_id != null && action != null ) {
+        if (context != null && token != null && incomingPassword != null && incomingLogin != null && session_id != null && action != null ) {
             try {
                 URL url;
                 HashMap<String, String> postDataParams = new HashMap<String, String>();
                 if(!action.equals(ACTION_CHECK)) {
-                    url = new URL("http://35.180.43.51/who_buys_sessioner.php");
+                    url = new URL(context.getString(R.string.session_page));
                     postDataParams.put("uname", incomingLogin);
                     postDataParams.put("upassword", incomingPassword);
                 }
                 else{
-                    url = new URL("http://35.180.43.51/who_buys_controller.php");
+                    url = new URL(context.getString(R.string.controller_page));
                     JSONArray object = new JSONArray();
                     String jsonString = object.toString();
                     postDataParams.put("data_json", jsonString);

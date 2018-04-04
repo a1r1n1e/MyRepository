@@ -128,7 +128,8 @@ public class GroupList2Activity extends WithLoginActivity {
         groupListMaker(result);
     }
     public void showBad(UserGroup[] result){
-
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
+        refreshLayout.setRefreshing(false);
     }
 
     protected void groupListMaker(UserGroup[] result){

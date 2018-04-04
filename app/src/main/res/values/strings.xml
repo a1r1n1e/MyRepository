@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">WhoBuys</string>
+    <string name="session_page">http://35.180.43.51/who_buys_sessioner.php</string>
+    <string name="controller_page">http://35.180.43.51/who_buys_controller.php</string>
     <string name="title_activity_active_lists">Your Active Lists</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
