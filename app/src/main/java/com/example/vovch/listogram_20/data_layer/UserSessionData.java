@@ -61,7 +61,7 @@ public class UserSessionData {
                 password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
                 token = preferences.getString(APP_PREFERENCES_TOKEN, null);
                 id = preferences.getString(APP_PREFERENCES_USERID, null);
-                session = preferences.getString(APP_PREFERENCES_SESSION, null);
+                session = preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE);
             }
         }
     }
@@ -83,7 +83,7 @@ public class UserSessionData {
 
     public boolean isSession(){
         boolean result = false;
-        if(session != null){
+        if(session != null && !session.equals(DEFAULT_NOT_EXISTING_SESSION_VALUE)){
             result = true;
         }
         return result;
@@ -125,7 +125,11 @@ public class UserSessionData {
         id = newId;
         login = newLogin;
         password = newPassword;
-        session = newSession;
+        if(newSession != null) {
+            session = newSession;
+        } else {
+            session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
+        }
         savePrefs(newId, newLogin, newPassword, newSession);
     }
 
@@ -135,7 +139,7 @@ public class UserSessionData {
                 preferences.getString(APP_PREFERENCES_TOKEN, null) != null &&
                 preferences.getString(APP_PREFERENCES_LOGIN, null) != null &&
                 preferences.getString(APP_PREFERENCES_PASSWORD, null) != null &&
-                preferences.getString(APP_PREFERENCES_SESSION, null) != null
+                !preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE).equals(DEFAULT_NOT_EXISTING_SESSION_VALUE)
                 ) {
             result = true;
         }
@@ -170,7 +174,7 @@ public class UserSessionData {
         id = null;
         name = null;
         password = null;
-        session = null;
+        session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
         savePrefs(null, null, null, null);
         if(context != null) {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
@@ -190,7 +194,11 @@ public class UserSessionData {
     }
 
     protected void setSession(String newSession){
-        session = newSession;
+        if(newSession != null) {
+            session = newSession;
+        } else {
+            session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
+        }
     }
 
     public String startSession(String newLogin, String newPassword){                                                                       //should be used not from UI Thread
@@ -227,7 +235,7 @@ public class UserSessionData {
         String result = null;
         result = doSMTHWithSession(session, ACTION_LOGOUT, login, password);
         if(result != null && result.length() > 2 && result.substring(0, 3).equals("200")){
-            session = null;
+            session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
         }
         return  result;
     }
@@ -248,18 +256,18 @@ public class UserSessionData {
                 URL url;
                 HashMap<String, String> postDataParams = new HashMap<String, String>();
                 if(!action.equals(ACTION_CHECK)) {
-                    url = new URL("http://217.10.35.250/who_buys_sessioner.php");
+                    url = new URL("http://35.180.43.51/who_buys_sessioner.php");
                     postDataParams.put("uname", incomingLogin);
                     postDataParams.put("upassword", incomingPassword);
                 }
                 else{
-                    url = new URL("http://217.10.35.250/who_buys_controller.php");
+                    url = new URL("http://35.180.43.51/who_buys_controller.php");
                     JSONArray object = new JSONArray();
                     String jsonString = object.toString();
                     postDataParams.put("data_json", jsonString);
-                    postDataParams.put("third", "rrr");
-                    postDataParams.put("uname", "hhh");
-                    postDataParams.put("upassword", "nnn");
+                    postDataParams.put("third", "rrrr");
+                    postDataParams.put("uname", "hhhh");
+                    postDataParams.put("upassword", "nnnn");
                 }
                 postDataParams.put("session_id", session_id);
                 postDataParams.put("action", action);

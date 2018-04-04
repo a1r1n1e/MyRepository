@@ -56,15 +56,15 @@ public class WebCall {
         UserSessionData userSessionData;
         if(loginPair[5] != null && loginPair[5] instanceof UserSessionData) {
             userSessionData = (UserSessionData) loginPair[5];
-            if (userSessionData.isSession()) {
+            if (userSessionData.isSession() ||  ((String) loginPair[3]).equals("registration")) {
                 String response = "";
                 HttpURLConnection conn = null;
                 try {
                     URL url;
                     if (!((String) loginPair[3]).equals("registration")) {
-                        url = new URL("http://217.10.35.250/who_buys_controller.php");
+                        url = new URL("http://35.180.43.51/who_buys_controller.php");
                     } else {
-                        url = new URL("http://217.10.35.250/who_buys_sessioner.php");
+                        url = new URL("http://35.180.43.51/who_buys_sessioner.php");
                     }
 
                     conn = (HttpURLConnection) url.openConnection();

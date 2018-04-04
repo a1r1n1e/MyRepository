@@ -218,7 +218,9 @@ public class DataStorage {
         return result;
     }
     protected UserGroup[] setGroups(UserGroup[] groups){
-        Groups = new ArrayList<>(Arrays.asList(groups));
+        if(groups != null) {
+            Groups = new ArrayList<>(Arrays.asList(groups));
+        }
         return groups;
     }
     protected boolean isAnyGroupActiveLists(UserGroup group){

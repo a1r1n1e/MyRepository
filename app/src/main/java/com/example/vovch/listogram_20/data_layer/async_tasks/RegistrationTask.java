@@ -26,10 +26,10 @@ public class RegistrationTask extends AsyncTask<Object, Void, String> {
 
     @Override
     public void onPostExecute(String result) {
-        if (result.substring(0, 3).equals("200")) {
+        if ( result != null && result.substring(0, 3).equals("200")) {
             activeActivityProvider.goodRegistrationTry(result.substring(3));
         } else {
-            if (result.substring(0, 3).equals("403")) {
+            if ( result != null && result.substring(0, 3).equals("403")) {
                 result = "Username Is Already Used";
             } else {
                 result = "Something Went Wrong";
