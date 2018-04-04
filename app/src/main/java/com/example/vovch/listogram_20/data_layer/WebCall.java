@@ -63,55 +63,57 @@ public class WebCall {
                 try {
                     URL url;
                     ActiveActivityProvider activeActivityProvider = (ActiveActivityProvider) userSessionData.getContext();
-                    if (!((String) loginPair[3]).equals("registration")) {
-                        url = new URL(activeActivityProvider.getString(R.string.controller_page));
-                    } else {
-                        url = new URL(activeActivityProvider.getString(R.string.session_page));
-                    }
-
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(10000);
-                    conn.setReadTimeout(10000);
-                    conn.setDoOutput(true);                                                 // Enable POST stream
-                    conn.setDoInput(true);
-                    conn.setRequestMethod("POST");
-
-                    HashMap<String, String> postDataParams = new HashMap<String, String>();
-
-                    postDataParams.put(DATA_1, (String) loginPair[0]);
-                    postDataParams.put(DATA_2, (String) loginPair[1]);
-                    postDataParams.put(DATA_3, (String) loginPair[2]);
-                    postDataParams.put(ACTION, (String) loginPair[3]);
-                    postDataParams.put(DATA_JSON, (String) loginPair[4]);
-
-                    postDataParams.put(SESSION_ID, userSessionData.getSession());
-                    postDataParams.put(CLIENT_TYPE, userSessionData.getClientType());
-                    postDataParams.put(VERSION, userSessionData.getClientVersion());
-                    postDataParams.put(TOKEN, userSessionData.getToken());
-
-                    InputStream is = null;
-                    OutputStream os = conn.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    writer.write(getPostDataString(postDataParams));
-
-                    writer.flush();
-                    writer.close();
-                    os.close();
-
-
-                    int responseCode = conn.getResponseCode();
-
-                    if (responseCode == HttpsURLConnection.HTTP_OK) {
-                        response += String.valueOf(responseCode);
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        while ((line = br.readLine()) != null) {
-                            response += line;
+                    if(activeActivityProvider != null) {
+                        if (!((String) loginPair[3]).equals("registration")) {
+                            url = new URL(activeActivityProvider.getString(R.string.controller_page));
+                        } else {
+                            url = new URL(activeActivityProvider.getString(R.string.session_page));
                         }
-                    } else {
-                        response += String.valueOf(responseCode);
+
+                        conn = (HttpURLConnection) url.openConnection();
+                        conn.setConnectTimeout(10000);
+                        conn.setReadTimeout(10000);
+                        conn.setDoOutput(true);                                                 // Enable POST stream
+                        conn.setDoInput(true);
+                        conn.setRequestMethod("POST");
+
+                        HashMap<String, String> postDataParams = new HashMap<String, String>();
+
+                        postDataParams.put(DATA_1, (String) loginPair[0]);
+                        postDataParams.put(DATA_2, (String) loginPair[1]);
+                        postDataParams.put(DATA_3, (String) loginPair[2]);
+                        postDataParams.put(ACTION, (String) loginPair[3]);
+                        postDataParams.put(DATA_JSON, (String) loginPair[4]);
+
+                        postDataParams.put(SESSION_ID, userSessionData.getSession());
+                        postDataParams.put(CLIENT_TYPE, userSessionData.getClientType());
+                        postDataParams.put(VERSION, userSessionData.getClientVersion());
+                        postDataParams.put(TOKEN, userSessionData.getToken());
+
+                        InputStream is = null;
+                        OutputStream os = conn.getOutputStream();
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                        writer.write(getPostDataString(postDataParams));
+
+                        writer.flush();
+                        writer.close();
+                        os.close();
+
+
+                        int responseCode = conn.getResponseCode();
+
+                        if (responseCode == HttpsURLConnection.HTTP_OK) {
+                            response += String.valueOf(responseCode);
+                            String line;
+                            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            while ((line = br.readLine()) != null) {
+                                response += line;
+                            }
+                        } else {
+                            response += String.valueOf(responseCode);
+                        }
+                        conn.disconnect();
                     }
-                    conn.disconnect();
                 } catch (IOException e) {
                     if (loginPair[3].equals("itemmark")) {
                         StringBuilder tempString = new StringBuilder("");
