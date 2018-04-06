@@ -209,7 +209,6 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void drawNewUserLayout(AddingUser user, boolean loadType) {
-
         LinearLayout addingUsersLayout = (LinearLayout) findViewById(R.id.group_members_linear_layout);
         CardView cardView = (CardView) LayoutInflater.from(addingUsersLayout.getContext()).inflate(R.layout.list_card, addingUsersLayout, false);
         LinearLayout.LayoutParams addedUserButtonParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -357,6 +356,7 @@ public class NewGroup extends WithLoginActivity {
         provider.makeAllMembersPossible(result);
         provider.setActiveGroup(result);
         startActivity(intent);
+        NewGroup.this.finish();
     }
 
     public void showBad(UserGroup result) {

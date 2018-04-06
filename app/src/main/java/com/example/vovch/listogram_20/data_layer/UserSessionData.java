@@ -59,7 +59,7 @@ public class UserSessionData {
             if(preferences != null) {
                 login = preferences.getString(APP_PREFERENCES_LOGIN, null);
                 password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
-                token = preferences.getString(APP_PREFERENCES_TOKEN, null);
+                token = preferences.getString(APP_PREFERENCES_TOKEN,  null);
                 id = preferences.getString(APP_PREFERENCES_USERID, null);
                 session = preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE);
             }

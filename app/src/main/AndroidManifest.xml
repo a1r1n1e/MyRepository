@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.vovch.listogram_20">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -42,7 +43,8 @@
         <activity
             android:name=".activities.simple.GroupSettingsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended"/>
-        <service android:name=".data_layer.firebase.ActiveCheckFirebaseInstanceIDService">
+        <service android:name=".data_layer.firebase.ActiveCheckFirebaseInstanceIDService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

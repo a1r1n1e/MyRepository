@@ -272,14 +272,12 @@ public class CreateListogramActivity extends WithLoginActivity {
     public void saveTempItemsState(){
         if(TempItems != null) {
             TempItem[] tempItems = new TempItem[TempItems.size()];
-            if (tempItems.length > -1) {
-                for (int i = 0; i < tempItems.length; i++) {
-                    tempItems[i] = new TempItem();
-                    tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
-                }
-                if (provider != null) {
-                    provider.saveTempItems(tempItems);
-                }
+            for (int i = 0; i < tempItems.length; i++) {
+                tempItems[i] = new TempItem();
+                tempItems[i].setName(TempItems.get(i).getNameEditText().getText().toString());
+            }
+            if (provider != null) {
+                provider.saveTempItems(tempItems);
             }
         }
     }
