@@ -26,7 +26,7 @@ public class GroupHistoryGetterTask extends AsyncTask<Object, Void, SList[]> {
         @Override
         public void onPostExecute(SList[] result) {
                 if (result == null || result.length == 0) {
-                        activeActivityProvider.showGroupHistoryListsBad(null, group.getId());
+                        activeActivityProvider.showGroupHistoryListsBad(group.getId());
                 } else {
                         activeActivityProvider.showGroupHistoryListsGood(result, group.getId());
                 }

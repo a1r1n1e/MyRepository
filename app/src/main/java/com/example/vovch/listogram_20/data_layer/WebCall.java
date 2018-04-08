@@ -1,5 +1,6 @@
 package com.example.vovch.listogram_20.data_layer;
 
+import android.content.Loader;
 import android.content.res.Resources;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
@@ -38,7 +39,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class WebCall {
 
     private static final String DATA_1 = "uname";
-    private static final String DATA_2  = "upassword";
+    private static final String DATA_2 = "upassword";
     private static final String DATA_3 = "third";
     private static final String ACTION = "action";
     private static final String DATA_JSON = "data_json";
@@ -55,15 +56,15 @@ public class WebCall {
 
     protected String callServer(Object... loginPair) {
         UserSessionData userSessionData;
-        if(loginPair[5] != null && loginPair[5] instanceof UserSessionData) {
+        String response = "";
+        if (loginPair[5] != null && loginPair[5] instanceof UserSessionData) {
             userSessionData = (UserSessionData) loginPair[5];
-            if (userSessionData.isSession() ||  ((String) loginPair[3]).equals("registration")) {
-                String response = "";
+            if (userSessionData.isSession() || ((String) loginPair[3]).equals("registration")) {
                 HttpURLConnection conn = null;
                 try {
                     URL url;
                     ActiveActivityProvider activeActivityProvider = (ActiveActivityProvider) userSessionData.getContext();
-                    if(activeActivityProvider != null) {
+                    if (activeActivityProvider != null) {
                         if (!((String) loginPair[3]).equals("registration")) {
                             url = new URL(activeActivityProvider.getString(R.string.controller_page));
                         } else {
@@ -120,21 +121,24 @@ public class WebCall {
                         tempString.append("400");
                         tempString.append(loginPair[1]);
                         response = tempString.toString();
-                    } else if (loginPair[3].equals("login")) {
-                        response = NO_INTERNET;
                     }
+                } catch (RuntimeException e) {
+                    response = "700";
                 } finally {
                     if (conn != null) {
                         conn.disconnect();
                     }
                 }
-                return response;
             } else {
-                return ONLINE_ACTIONS_DENIED_INFORMER;
+                response =  ONLINE_ACTIONS_DENIED_INFORMER;
             }
         } else {
-            return ONLINE_ACTIONS_DENIED_INFORMER;
+            response = ONLINE_ACTIONS_DENIED_INFORMER;
         }
+        if(response.equals("")){
+            response = ONLINE_ACTIONS_DENIED_INFORMER;
+        }
+        return response;
     }
 
     protected UserGroup[] getGroupsFromJsonString(String result) {
@@ -174,9 +178,9 @@ public class WebCall {
         return groups;
     }
 
-    protected String prepareItemsJSONString(Item[] items){
+    protected String prepareItemsJSONString(Item[] items) {
         String result = null;
-        if(items != null) {
+        if (items != null) {
             int length = items.length;
             JSONArray itemsArray = new JSONArray();
             try {
@@ -202,17 +206,17 @@ public class WebCall {
                 }
                 result = itemsArray.toString();
             } catch (JSONException e) {
-                                                                                                        //TODO
+                //TODO
             }
             return result;
         } else {
-            return  null;
+            return null;
         }
     }
 
     protected String getStringFromJsonString(String jsonString, String value) {
         String result = null;
-        if(jsonString != null && value != null) {
+        if (jsonString != null && value != null) {
             try {
                 JSONObject dataHolder = new JSONObject(jsonString);
                 result = dataHolder.getString(value);
@@ -227,7 +231,7 @@ public class WebCall {
 
     protected SList[] getGroupListsFromJsonString(String result, UserGroup group) {
         SList[] lists = null;
-        if(result != null && group != null) {
+        if (result != null && group != null) {
             try {
                 JSONArray fromJsonLists = new JSONArray(result);
                 int length = fromJsonLists.length();
@@ -296,7 +300,7 @@ public class WebCall {
     }
 
     protected ListInformer[] getListInformersFromJsonString(String result) {
-        if(result != null) {
+        if (result != null) {
             ListInformer[] informers = null;
             try {
                 JSONArray informersArray = new JSONArray(result);

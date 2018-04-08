@@ -12,12 +12,12 @@ import com.example.vovch.listogram_20.R;
 
 public class LoginnerTask extends AsyncTask<Object, Void, String> {
     private ActiveActivityProvider activeActivityProvider;
-    private String userLogin;
-    private String userPassword;
 
     @Override
     public String doInBackground(Object... loginPair) {
         String result;
+        String userLogin;
+        String userPassword;
         userLogin = (String) loginPair[0];
         userPassword = (String) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
@@ -32,7 +32,7 @@ public class LoginnerTask extends AsyncTask<Object, Void, String> {
         } else {
             if (result != null && result.substring(0, 3).equals("403")) {
                 result = activeActivityProvider.getResources().getString(R.string.error_no_user);
-            } else if(result == null){
+            } else if(result == null || result.equals("500")){
                 result = activeActivityProvider.getResources().getString(R.string.no_internet);
             } else{
                 result = activeActivityProvider.getResources().getString(R.string.some_error);

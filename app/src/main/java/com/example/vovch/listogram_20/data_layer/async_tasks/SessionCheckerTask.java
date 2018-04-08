@@ -8,12 +8,12 @@ import com.example.vovch.listogram_20.ActiveActivityProvider;
  * Created by vovch on 21.02.2018.
  */
 
-public class SessionCheckerTask extends AsyncTask<Object, Void, Boolean> {
+public class SessionCheckerTask extends AsyncTask<Object, Void, Integer> {
     private ActiveActivityProvider activeActivityProvider;
 
     @Override
-    public Boolean doInBackground(Object... loginPair) {
-        Boolean result = false;
+    public Integer doInBackground(Object... loginPair) {
+        int result = 0;
         activeActivityProvider = (ActiveActivityProvider) loginPair[0];
         if(activeActivityProvider.userSessionData.isSession()){
             result = activeActivityProvider.userSessionData.checkSession();
@@ -22,11 +22,14 @@ public class SessionCheckerTask extends AsyncTask<Object, Void, Boolean> {
     }
 
     @Override
-    public void onPostExecute(Boolean result) {
-        if(result){
-            activeActivityProvider.goodSessionCheck();
-        } else{
+    public void onPostExecute(Integer result) {
+        if(result == 1){                                                            //if there is bad connection to internet we allow user to log in
+            activeActivityProvider.goodSessionCheck();                              //in case he won't be able to do smth through web server with wrong session key
+        } else if(result == 0){
             activeActivityProvider.badSessionCheck();
+        } else if(result == 5){
+            activeActivityProvider.goodSessionCheck();
+            activeActivityProvider.activeListsNoInternet();
         }
         activeActivityProvider = null;
     }

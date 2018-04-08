@@ -470,13 +470,13 @@ public class Group2Activity extends WithLoginActivity {
         }
     }
 
-    public void historyLoadOnBad(String result) {
+    public void historyLoadOnBad(SList[] lists) {
         if (historyFragment != null) {
             historyFragment.checkRootView(viewPager, getLayoutInflater());
             if(historyFragment.getRefresher() != null) {
                 historyFragment.setRefresherNotRefreshing();
             }
-            historyFragment.fragmentShowBad(result);
+            historyFragment.fragmentShowBad(lists);
         }
     }
 

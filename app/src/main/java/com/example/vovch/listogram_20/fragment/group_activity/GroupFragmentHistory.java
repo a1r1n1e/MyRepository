@@ -245,14 +245,18 @@ public class GroupFragmentHistory extends Fragment {
     public HistoryScrollView getScrollView(){
         return  (HistoryScrollView) rootView.findViewById(R.id.grouphistoryscroll);
     }
-    public void fragmentShowBad(String result) {
-        historyFragmentCleaner();
-        LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
-        TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
-        if (!(result.equals(""))) {
-            emptyInformer.setText(getString(R.string.some_error));
+    public void fragmentShowBad(SList[] lists) {
+        if(rootView != null) {
+            historyFragmentCleaner();
+            if(lists == null) {
+                LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
+                TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
+                emptyInformer.setText(getString(R.string.some_error));
+                parentLayout.addView(emptyInformer);
+            } else {
+                listsListMaker(lists);
+            }
         }
-        parentLayout.addView(emptyInformer);
     }
 
     public void setRefresher() {

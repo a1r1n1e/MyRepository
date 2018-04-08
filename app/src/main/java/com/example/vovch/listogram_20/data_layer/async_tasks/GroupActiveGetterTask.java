@@ -26,7 +26,7 @@ public class GroupActiveGetterTask extends AsyncTask <Object, Void, SList[]> {
     @Override
     public void onPostExecute(SList[] result){
         if(result == null || result.length == 0){
-            activeActivityProvider.showGroupActiveListsBad(result, group.getId());
+            activeActivityProvider.showGroupActiveListsBad(group.getId());
         }  else {
             activeActivityProvider.showGroupActiveListsGood(result, group.getId());
         }

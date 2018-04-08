@@ -265,10 +265,16 @@ public class GroupFragmentActive extends Fragment {
     }
 
     public void fragmentShowBad(SList[] result) {
-        activeFragmentCleaner();
-        LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
-        TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
-        parentLayout.addView(emptyInformer);
+        if(rootView != null) {
+            if(result == null || result.length == 0) {
+                activeFragmentCleaner();
+                LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
+                TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
+                parentLayout.addView(emptyInformer);
+            } else {
+                listsListMaker(result);
+            }
+        }
     }
 
     public void fragmentShowSecondGood(SList result) {

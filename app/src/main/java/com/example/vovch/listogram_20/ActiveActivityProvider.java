@@ -179,14 +179,16 @@ public class ActiveActivityProvider extends Application {
     public void tryToLoginFromForms(String login, String password) {
         boolean internetCheck = false;
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            internetCheck = true;
-        }
-        if(internetCheck) {
-            tryToLoginWeb(login, password);
-        } else{
-            activeListsNoInternet();
+        if(connectivityManager != null) {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                internetCheck = true;
+            }
+            if (internetCheck) {
+                tryToLoginWeb(login, password);
+            } else {
+                activeListsNoInternet();
+            }
         }
     }
 
@@ -311,10 +313,11 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void showListInformersGottenBad(ListInformer[] result) {
+    public void showListInformersGottenBad() {
         if (getActiveActivityNumber() == 2) {
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
-            activity.showBad(result);
+            activity.showBad(dataExchanger.getListInformersRAM());
+            //activeListsNoInternet();                                                                  //TODO can be different reasons
         }
     }
 
@@ -693,11 +696,11 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void showGroupHistoryListsBad(String lists, String groupId) {
+    public void showGroupHistoryListsBad(String groupId) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if (getActiveGroup().getId().equals(groupId)) {
-                activity.historyLoadOnBad("");                                                          //TODO error controlling
+                activity.historyLoadOnBad(dataExchanger.getGroupHistoryDataRAM(getActiveGroup()));
             }
         }
     }
@@ -714,11 +717,11 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void showGroupActiveListsBad(SList[] lists, String groupId) {
+    public void showGroupActiveListsBad(String groupId) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if (getActiveGroup().getId().equals(groupId)) {
-                activity.showBad(lists);                                                                   //TODO error controlling
+                activity.showBad(dataExchanger.getGroupActiveDataRAM(getActiveGroup()));
                 if(!getActiveGroup().getUpdateNeededFlag()) {
                     getActiveGroup().changeUpdateNeededFlag();
                 }

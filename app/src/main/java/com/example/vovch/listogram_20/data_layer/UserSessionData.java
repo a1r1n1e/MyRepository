@@ -2,6 +2,9 @@ package com.example.vovch.listogram_20.data_layer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.icu.text.RelativeDateTimeFormatter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
@@ -18,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -231,7 +235,7 @@ public class UserSessionData {
                 return  null;
             }
         } catch (Exception e){
-            return  "700";
+            return  "500";
         }
     }
 
@@ -244,73 +248,75 @@ public class UserSessionData {
         return  result;
     }
 
-    public Boolean checkSession(){                                                                      //should be used not from UI Thread
-        boolean result = false;
+    public int checkSession(){                                                                      //should be used not from UI Thread
+        int result = 0;
         String tempResult = doSMTHWithSession(session, ACTION_CHECK, login, password);
-        if(tempResult != null && tempResult.length() >2 && tempResult.substring(0, 3).equals("200")){
-            result = true;
+        if(tempResult != null && tempResult.length() > 2){
+            if(tempResult.substring(0, 3).equals("200")) {
+                result = 1;
+            } else if(tempResult.substring(0, 3).equals("500")){
+                result = 5;
+            }
         }
         return result;
     }
 
     private String doSMTHWithSession(String session_id, String action, String incomingLogin, String incomingPassword){                                 //should be used not from UI Thread
         String response = null;
-        if (context != null && token != null && incomingPassword != null && incomingLogin != null && session_id != null && action != null ) {
-            try {
-                URL url;
-                HashMap<String, String> postDataParams = new HashMap<String, String>();
-                if(!action.equals(ACTION_CHECK)) {
-                    url = new URL(context.getString(R.string.session_page));
-                    postDataParams.put("uname", incomingLogin);
-                    postDataParams.put("upassword", incomingPassword);
-                }
-                else{
-                    url = new URL(context.getString(R.string.controller_page));
-                    JSONArray object = new JSONArray();
-                    String jsonString = object.toString();
-                    postDataParams.put("data_json", jsonString);
-                    postDataParams.put("third", "rrrr");
-                    postDataParams.put("uname", "hhhh");
-                    postDataParams.put("upassword", "nnnn");
-                }
-                postDataParams.put("session_id", session_id);
-                postDataParams.put("action", action);
-                postDataParams.put("token", token);
-                postDataParams.put("version", CLIENT_VERSION);
-                postDataParams.put("client_type", CLIENT_TYPE);
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
-                conn.setDoOutput(true);                                                 // Enable POST stream
-                conn.setDoInput(true);
-                conn.setRequestMethod("POST");
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(getPostDataString(postDataParams));
-
-                writer.flush();
-                writer.close();
-                os.close();
-
-                int responseCode = conn.getResponseCode();
-
-                response = "";
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    response += String.valueOf(responseCode);
-                    String line;
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    while ((line = br.readLine()) != null) {
-                        response += line;
+        if (token != null && incomingPassword != null && incomingLogin != null && action != null) {
+            if((session_id != null && !session_id.equals(DEFAULT_NOT_EXISTING_SESSION_VALUE)) || action.equals(ACTION_LOGIN)){
+                try {
+                    URL url;
+                    HashMap<String, String> postDataParams = new HashMap<String, String>();
+                    if (!action.equals(ACTION_CHECK)) {
+                        url = new URL(context.getString(R.string.session_page));
+                        postDataParams.put("uname", incomingLogin);
+                        postDataParams.put("upassword", incomingPassword);
+                    } else {
+                        url = new URL(context.getString(R.string.controller_page));
+                        JSONArray object = new JSONArray();
+                        String jsonString = object.toString();
+                        postDataParams.put("data_json", jsonString);
+                        postDataParams.put("third", "rrrr");
+                        postDataParams.put("uname", "hhhh");
+                        postDataParams.put("upassword", "nnnn");
                     }
-                } else {
-                    response += String.valueOf(responseCode);
+                    postDataParams.put("session_id", session_id);
+                    postDataParams.put("action", action);
+                    postDataParams.put("token", token);
+                    postDataParams.put("version", CLIENT_VERSION);
+                    postDataParams.put("client_type", CLIENT_TYPE);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(10000);
+                    conn.setReadTimeout(10000);
+                    conn.setDoOutput(true);                                                 // Enable POST stream
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+                    OutputStream os = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(getPostDataString(postDataParams));
+                    writer.flush();
+                    writer.close();
+                    os.close();
+                    int responseCode = conn.getResponseCode();
+                    response = "";
+                    if (responseCode == HttpsURLConnection.HTTP_OK) {
+                        response += String.valueOf(responseCode);
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        while ((line = br.readLine()) != null) {
+                            response += line;
+                            }
+                            } else {
+                        response += String.valueOf(responseCode);
+                    }
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if(e instanceof SocketTimeoutException) {
+                        response = "500";
+                    }
                 }
-
-                conn.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         return response;

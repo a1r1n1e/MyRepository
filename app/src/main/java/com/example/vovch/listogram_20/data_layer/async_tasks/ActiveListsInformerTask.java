@@ -23,7 +23,7 @@ public class ActiveListsInformerTask extends AsyncTask <Object, Void, ListInform
     @Override
     public void onPostExecute(ListInformer[] result){
         if(result == null || result.length == 0){
-            activeActivityProvider.showListInformersGottenBad(result);
+            activeActivityProvider.showListInformersGottenBad();
         }  else {
             activeActivityProvider.showListInformersGottenGood(result);
         }

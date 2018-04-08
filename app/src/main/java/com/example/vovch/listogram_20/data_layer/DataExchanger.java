@@ -57,6 +57,15 @@ public class DataExchanger {
         return informers;
     }
 
+    public ListInformer[] getListInformersRAM(){
+        ListInformer[] informers;
+        informers = storage.getListInformers();
+        if(informers == null){
+            informers = new ListInformer[0];
+        }
+        return informers;
+    }
+
 
     public void clearDeletableUsers() {
         storage.clearDeletableUsers();
@@ -185,6 +194,15 @@ public class DataExchanger {
         return lists;
     }
 
+    public SList[] getGroupActiveDataRAM(UserGroup group){
+        SList[] lists;
+        lists = storage.getGroupActive(group);
+        if(lists == null){
+            lists = new SList[0];
+        }
+        return lists;
+    }
+
     private SList[] getGroupActiveDataFromWeb(UserGroup group) {
         SList[] lists = null;
         if (group != null && group.getId() != null) {
@@ -206,6 +224,15 @@ public class DataExchanger {
         SList[] lists;
         // this way just now
         lists = getGroupDataFromWeb(group);
+        return lists;
+    }
+
+    public SList[] getGroupHistoryDataRAM(UserGroup group){
+        SList[] lists;
+        lists = storage.getGroupHistory(group);
+        if(lists == null){
+            lists = new SList[0];
+        }
         return lists;
     }
 

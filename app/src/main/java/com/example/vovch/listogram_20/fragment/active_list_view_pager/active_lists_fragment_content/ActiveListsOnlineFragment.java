@@ -109,11 +109,15 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
     }
     @Override
     public void fragmentShowBad(ListInformer[] result){
-        cleaner();
         if(rootView != null) {
-            LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
-            TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
-            layout.addView(messageTextView);
+            cleaner();
+            if (result != null && result.length > 0) {
+                listsListMaker(result);
+            } else {
+                LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
+                TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
+                layout.addView(messageTextView);
+            }
         }
     }
     private void goToGroup(UserGroup group){
