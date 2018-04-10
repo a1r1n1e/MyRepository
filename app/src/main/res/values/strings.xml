@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WhoBuys</string>
-    <string name="session_page">http://35.180.43.51/who_buys_sessioner.php</string>
-    <string name="controller_page">http://35.180.43.51/who_buys_controller.php</string>
+    <string name="session_page">http://www.whobuys.ru/who_buys_sessioner.php</string>
+    <string name="controller_page">http://www.whobuys.ru/who_buys_controller.php</string>
     <string name="title_activity_active_lists">Your Active Lists</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
@@ -39,13 +39,17 @@
     <string name="error_no_user">No Such User :(</string>
     <string name="some_error">Something Went Wrong</string>
     <string name="leave_group">Leave Group</string>
-    <string name="version">0_97_2</string>
+    <string name="version">0_99</string>
     <string name="server_pie">xedgvfv</string>
     <string name="login_failed">You Logged Out</string>
     <string name="id_copied_informer">Your Id Copied</string>
     <string name="dialog_logout_question">Want To Logout?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
+    <string name="dialog_want_to_leave_question">Want To Leave Group?</string>
+    <string name="dialog_stay">Stay</string>
+    <string name="dialog_leave">Leave</string>
+    <string name="dialog_you_are_still_in">You Are Still In :)</string>
     <string name="dialog_nothing_happened">Nothing Happened :)</string>
     <string name="dialog_redact_question">Want To Redact List?</string>
     <string name="dialog_redact_action_procesing">Processing...</string>
@@ -67,7 +71,8 @@
     <string name="missing_value">Enter Missing Value</string>
     <string name="reinstall">Something Went Wrong. Try To Reinstall The App</string>
     <string name="values_format"> We Need Smth Between 4 and 32 Characters:(</string>
-    <string name="no_internet">No Internet</string>
+    <string name="no_internet">Some Internet Problems</string>
+    <string name="wait_a_minute">Wait A Minute, We Didn\'t Get Your Device Id </string>
     <string name="by">By:</string>
     <string name="from">From:</string>
     <string name="your_list">Your List</string>

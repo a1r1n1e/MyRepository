@@ -559,10 +559,10 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void showGroupsGottenBad(UserGroup[] result) {
+    public void showGroupsGottenBad() {
         if (getActiveActivityNumber() == 4) {
             GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
-            activity.showBad(result);
+            activity.showBad(dataExchanger.getGroupsFromRAM());
         }
     }
 

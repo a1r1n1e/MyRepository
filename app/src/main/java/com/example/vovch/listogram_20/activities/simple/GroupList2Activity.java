@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
@@ -130,6 +131,9 @@ public class GroupList2Activity extends WithLoginActivity {
     public void showBad(UserGroup[] result){
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
         refreshLayout.setRefreshing(false);
+        groupListMaker(result);
+        Toast.makeText(GroupList2Activity.this, R.string.some_error, Toast.LENGTH_LONG)
+                .show();
     }
 
     protected void groupListMaker(UserGroup[] result){

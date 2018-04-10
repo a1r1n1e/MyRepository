@@ -207,30 +207,30 @@ public class GroupSettingsActivity extends NewGroup {
     }
 
     private void writeSomeError(){
-        Toast.makeText(GroupSettingsActivity.this, "Something Went Wrong", Toast.LENGTH_LONG)
+        Toast.makeText(GroupSettingsActivity.this, getString(R.string.some_error), Toast.LENGTH_LONG)
                 .show();
     }
 
     public void leaveGroup() {
         AlertDialog.Builder ad = new AlertDialog.Builder(getThisActivityContext());
-        ad.setMessage("Want To Leave?");
-        ad.setNegativeButton("Stay", new DialogInterface.OnClickListener() {
+        ad.setMessage(getString(R.string.dialog_want_to_leave_question));
+        ad.setNegativeButton(getString(R.string.dialog_stay), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-                Toast.makeText(getThisActivityContext(), "You Are Still In", Toast.LENGTH_LONG)
+                Toast.makeText(getThisActivityContext(), getString(R.string.dialog_you_are_still_in), Toast.LENGTH_LONG)
                         .show();
             }
         });
-        ad.setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+        ad.setPositiveButton(getString(R.string.dialog_leave), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
                 provider.leaveGroup();
-                Toast.makeText(getThisActivityContext(), "Processing",
+                Toast.makeText(getThisActivityContext(), getString(R.string.dialog_kill_action_processing),
                         Toast.LENGTH_LONG).show();
             }
         });
         ad.setCancelable(true);
         ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
-                Toast.makeText(getThisActivityContext(), "Nothing Happened",
+                Toast.makeText(getThisActivityContext(), getString(R.string.dialog_nothing_happened),
                         Toast.LENGTH_LONG).show();
             }
         });

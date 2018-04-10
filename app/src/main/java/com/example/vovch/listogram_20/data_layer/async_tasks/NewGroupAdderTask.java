@@ -1,7 +1,6 @@
 package com.example.vovch.listogram_20.data_layer.async_tasks;
 
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.vovch.listogram_20.ActiveActivityProvider;
@@ -16,7 +15,7 @@ public class NewGroupAdderTask extends AsyncTask<Object, Void, UserGroup> {
 
     @Override
     public UserGroup doInBackground(Object... loginPair) {
-        UserGroup result = null;
+        UserGroup result;
         activeActivityProvider = (ActiveActivityProvider) loginPair[1];
         String groupName = (String) loginPair[0];
         result = activeActivityProvider.dataExchanger.newGroupAdding(groupName);

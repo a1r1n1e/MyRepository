@@ -49,7 +49,7 @@ public class UserSessionData {
     private String login;
     private String token;
     private String session;
-    private static final String CLIENT_VERSION = "98";
+    private static final String CLIENT_VERSION = "99";
     private static final String CLIENT_TYPE = "1";
     private static final String ACTION_LOGIN = "login";
     private static final String ACTION_LOGOUT = "logout";
@@ -318,6 +318,8 @@ public class UserSessionData {
                     }
                 }
             }
+        } else if(token == null){
+            response = "600";
         }
         return response;
     }

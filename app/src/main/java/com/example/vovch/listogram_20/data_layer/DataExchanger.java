@@ -400,6 +400,14 @@ public class DataExchanger {
         return resultGroup;
     }
 
+    public UserGroup[] getGroupsFromRAM(){
+        UserGroup[] groups = null;
+        groups = storage.getGroups();
+        if(groups == null){
+            groups = new UserGroup[0];
+        }
+        return groups;
+    }
 
     public UserGroup[] getGroupsFromWeb() {
         UserGroup[] groups = null;

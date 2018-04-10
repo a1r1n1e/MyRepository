@@ -32,8 +32,10 @@ public class LoginnerTask extends AsyncTask<Object, Void, String> {
         } else {
             if (result != null && result.substring(0, 3).equals("403")) {
                 result = activeActivityProvider.getResources().getString(R.string.error_no_user);
-            } else if(result == null || result.equals("500")){
+            } else if(result == null || result.equals("500")) {
                 result = activeActivityProvider.getResources().getString(R.string.no_internet);
+            } else if(result.equals("600")){
+                result = activeActivityProvider.getString(R.string.wait_a_minute);
             } else{
                 result = activeActivityProvider.getResources().getString(R.string.some_error);
             }

@@ -27,7 +27,7 @@ public class GroupsGetterTask extends AsyncTask <Object, Void, UserGroup[]> {
             activeActivityProvider.showGroupsGottenGood(result);
         }
         else{
-            activeActivityProvider.showGroupsGottenBad(null);
+            activeActivityProvider.showGroupsGottenBad();
         }
     }
 }

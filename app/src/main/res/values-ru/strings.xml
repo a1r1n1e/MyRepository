@@ -44,6 +44,10 @@
     <string name="dialog_logout_question">Хотите Выйти?</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
+    <string name="dialog_want_to_leave_question">Покинуть Группу??</string>
+    <string name="dialog_stay">Остаться</string>
+    <string name="dialog_leave">Покинуть</string>
+    <string name="dialog_you_are_still_in">Вы Все Еще Здесь :)</string>
     <string name="dialog_nothing_happened">Ничего Не Произошло :)</string>
     <string name="dialog_redact_question">Отредактировать?</string>
     <string name="dialog_redact_action_procesing">Обрабатываем...</string>
@@ -65,7 +69,8 @@
     <string name="missing_value">Введите Что-Нибудь</string>
     <string name="reinstall">Нам Не Удалось Зарегистрировать Устройство :( Попробуйте Переустановить Приложение</string>
     <string name="values_format"> Нужно От 4 До 32 Символов :(</string>
-    <string name="no_internet">Нет Интернета</string>
+    <string name="no_internet">Проблемы С Соединением</string>
+    <string name="wait_a_minute">Подождите немного, нам нужно зарегистрировать устройство :)</string>
     <string name="by">Купил:</string>
     <string name="from">От:</string>
     <string name="your_list">Ваш Список:</string>
