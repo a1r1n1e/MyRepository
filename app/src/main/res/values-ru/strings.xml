@@ -52,7 +52,7 @@
     <string name="dialog_redact_question">Отредактировать?</string>
     <string name="dialog_redact_action_procesing">Обрабатываем...</string>
     <string name="dialog_resend_question">Что Сделать?</string>
-    <string name="Copy">Копировать</string>
+    <string name="Copy">Скачать</string>
     <string name="Cancel">Отмена</string>
     <string name="Resend_List">Отправить В Группу</string>
     <string name="resend_where_informer">Выберите Куда :)</string>

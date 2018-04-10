@@ -173,7 +173,7 @@ public class WebCall {
                 groups[i] = tempGroup;
             }
         } catch (JSONException e) {
-            //TODO
+            return null;
         }
         return groups;
     }
@@ -206,7 +206,7 @@ public class WebCall {
                 }
                 result = itemsArray.toString();
             } catch (JSONException e) {
-                //TODO
+                return null;
             }
             return result;
         } else {
@@ -274,9 +274,10 @@ public class WebCall {
                         String listOwnerName = tempListObject.getString("list_owner_name");
                         int listGroupId = tempListObject.getInt("list_group");
 
-
-                        if (Integer.parseInt(group.getId()) != listGroupId) {
-                            group = null;
+                        if(group != null) {
+                            if (Integer.parseInt(group.getId()) != listGroupId) {
+                                group = null;
+                            }
                         }
 
 
@@ -291,7 +292,7 @@ public class WebCall {
                     }
                 }
             } catch (JSONException e) {
-                // TODO
+                return null;
             }
             return lists;
         } else {
@@ -335,8 +336,8 @@ public class WebCall {
                     tempInformer.setGroup(tempGroup);
                     informers[i] = tempInformer;
                 }
-            } catch (JSONException e) {                                                                      //TODO
-
+            } catch (JSONException e) {
+                return null;
             }
             return informers;
         } else {
@@ -353,7 +354,6 @@ public class WebCall {
             } else {
                 result.append("&");
             }
-
             result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
