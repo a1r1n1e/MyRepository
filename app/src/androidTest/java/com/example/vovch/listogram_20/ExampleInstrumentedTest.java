@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.vovch.listogram_20", appContext.getPackageName());
+        assertEquals("com.vovch.vovch.whobuys", appContext.getPackageName());
     }
 }

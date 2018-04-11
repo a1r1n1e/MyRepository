@@ -7,31 +7,31 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".ActiveActivityProvider"
+        android:name="whobuys.vovch.vovch.whobuys.ActiveActivityProvider"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_test"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.WithLoginActivity" />
+        <activity android:name="whobuys.vovch.vovch.whobuys.activities.WithLoginActivity" />
         <activity
-            android:name=".activities.simple.GroupList2Activity"
+            android:name="whobuys.vovch.vovch.whobuys.activities.simple.GroupList2Activity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".activities.complex.Group2Activity"
+            android:name="whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".activities.simple.NewGroup"
+            android:name="whobuys.vovch.vovch.whobuys.activities.simple.NewGroup"
             android:theme="@style/AppTheme.NoActionBarExtended"/>
         <activity
-            android:name=".activities.simple.CreateListogramActivity"
+            android:name="whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".activities.simple.SendBugActivity"
+            android:name="whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name=".activities.complex.ActiveListsActivity"
+            android:name="whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,16 +40,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.simple.GroupSettingsActivity"
+            android:name="whobuys.vovch.vovch.whobuys.activities.simple.GroupSettingsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended"/>
-        <service android:name=".data_layer.firebase.ActiveCheckFirebaseInstanceIDService"
+        <service android:name="whobuys.vovch.vovch.whobuys.data_layer.firebase.ActiveCheckFirebaseInstanceIDService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".data_layer.firebase.ActiveCheckAndroidFirebaseMsgService"
+            android:name="whobuys.vovch.vovch.whobuys.data_layer.firebase.ActiveCheckAndroidFirebaseMsgService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

@@ -16,7 +16,7 @@
                     android:gravity="center_horizontal"
                     android:textSize="40sp"
                     android:visibility="visible"/>
-                <com.example.vovch.listogram_20.data_types.CreateListEditText
+                <whobuys.vovch.vovch.whobuys.data_types.CreateListEditText
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_gravity="center_horizontal"
@@ -24,7 +24,7 @@
                     android:textSize="25sp"
                     android:hint="@string/login_hint"
                     android:id="@+id/login_fragment_login_edittext"/>
-                <com.example.vovch.listogram_20.data_types.CreateListEditText
+                <whobuys.vovch.vovch.whobuys.data_types.CreateListEditText
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_gravity="center_horizontal"

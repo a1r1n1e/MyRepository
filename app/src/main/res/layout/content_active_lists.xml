@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="0dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.vovch.listogram_20.activities.complex.ActiveListsActivity"
+    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.complex.ActiveListsActivity"
     tools:showIn="@layout/app_bar_active_lists">
         <android.support.design.widget.TabLayout
             android:id="@+id/active_lists_tabs"

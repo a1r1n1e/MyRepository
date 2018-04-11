@@ -10,7 +10,38 @@
       "client_info": {
         "mobilesdk_app_id": "1:460535784345:android:fc807a800070afdb",
         "android_client_info": {
-          "package_name": "com.example.vovch.listogram_20"
+          "package_name": "whobuys.vovch.voch.whobuys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "460535784345-hn3mpfokojk5dls27lmlsgjrn1gitvuj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmLHQGlR3wwGsEy98PwsNqPhgqPIrfP_g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460535784345:android:b0b9670fecb90f9e",
+        "android_client_info": {
+          "package_name": "whobuys.vovch.vovch.whobuys"
         }
       },
       "oauth_client": [

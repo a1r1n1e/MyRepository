@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.vovch.listogram_20.activities.complex.Group2Activity"
+    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.complex.Group2Activity"
     android:orientation="vertical"
     android:layout_gravity="top"
     android:gravity="bottom"
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/group_history_fragment_refresher">
-            <com.example.vovch.listogram_20.data_types.HistoryScrollView
+            <whobuys.vovch.vovch.whobuys.data_types.HistoryScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
@@ -30,6 +30,6 @@
                     android:orientation="vertical"
                     android:id="@+id/passedlistogramslayout">
                 </LinearLayout>
-            </com.example.vovch.listogram_20.data_types.HistoryScrollView>
+            </whobuys.vovch.vovch.whobuys.data_types.HistoryScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
