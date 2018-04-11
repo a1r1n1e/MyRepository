@@ -97,7 +97,7 @@ public class Group2Activity extends WithLoginActivity {
         TextView groupNameTextView = (TextView) findViewById(R.id.group_name_textview);
         groupNameTextView.setText(groupName);
         ImageButton settingsButton = (ImageButton) findViewById(R.id.group_settings_imagebutton);
-        Uri uri = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/settings_more");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/settings_more");
         settingsButton.setImageURI(uri);
         settingsButton.setOnClickListener(groupSettingsButtonListener);
 

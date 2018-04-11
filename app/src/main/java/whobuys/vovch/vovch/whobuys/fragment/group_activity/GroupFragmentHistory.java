@@ -90,7 +90,7 @@ public class GroupFragmentHistory extends Fragment {
         } else {
             resendButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri3 = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/resend_custom_white_green");
+        Uri uri3 = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/resend_custom_white_green");
         resendButton.setImageURI(uri3);
         resendButton.setAlpha(0.5f);
         resendButton.setList(list);
@@ -124,7 +124,7 @@ public class GroupFragmentHistory extends Fragment {
         } else {
             disactivateListButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/delete_custom_white_green");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/delete_custom_white_green");
         disactivateListButton.setImageURI(uri);
         disactivateListButton.setAlpha(0.5f);
         disactivateListButton.setList(list);
@@ -148,7 +148,7 @@ public class GroupFragmentHistory extends Fragment {
         } else {
             redactButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri2 = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/redact_custom_white_green");
+        Uri uri2 = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/redact_custom_white_green");
         redactButton.setImageURI(uri2);
         redactButton.setAlpha(0.5f);
         redactButton.setList(list);
@@ -252,8 +252,12 @@ public class GroupFragmentHistory extends Fragment {
                 TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
                 emptyInformer.setText(getString(R.string.some_error));
                 parentLayout.addView(emptyInformer);
-            } else {
+            } else if(lists.length > 0){
                 listsListMaker(lists);
+            } else {
+                LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.passedlistogramslayout);
+                TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
+                parentLayout.addView(emptyInformer);
             }
         }
     }

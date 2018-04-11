@@ -74,4 +74,5 @@
     <string name="by">Купил:</string>
     <string name="from">От:</string>
     <string name="your_list">Ваш Список:</string>
+    <string name="no_lists">Нет Списков</string>
 </resources>

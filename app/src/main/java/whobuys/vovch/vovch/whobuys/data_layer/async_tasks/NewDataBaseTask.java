@@ -31,9 +31,9 @@ public class NewDataBaseTask extends AsyncTask<Object, Void, SList[]> {
     public void onPostExecute(SList[] result){
             if (result == null || result.length == 0) {
                 if (type) {
-                    activeActivityProvider.showOfflineActiveListsBad(null);
+                    activeActivityProvider.showOfflineActiveListsBad(result);
                 } else {
-                    activeActivityProvider.showOfflineHistoryListsBad(null);
+                    activeActivityProvider.showOfflineHistoryListsBad(result);
                 }
             } else {
                 if (type) {

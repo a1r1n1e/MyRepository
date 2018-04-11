@@ -112,6 +112,11 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
             cleaner();
             if (result != null && result.length > 0) {
                 listsListMaker(result);
+            } else if(result == null){
+                LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
+                TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
+                messageTextView.setText(getString(R.string.some_error));
+                layout.addView(messageTextView);
             } else {
                 LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
                 TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);

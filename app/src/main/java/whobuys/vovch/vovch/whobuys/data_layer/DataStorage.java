@@ -35,8 +35,20 @@ public class DataStorage {
         return instance;
     }
 
+    protected void clearAll(){
+        ListsOfflineActive = new ArrayList<>();
+        ItemsOfflineOfActiveLists = new ArrayList<>();
+        ListsOfflineHistory = new ArrayList<>();
+        ItemsOfflineOfHistoryLists = new ArrayList<>();
+        Groups = new ArrayList<>();
+        AddedUsers = new ArrayList<>();
+        DeletableUsers = new ArrayList<>();
+        ListInformers = new ArrayList<>();
+        TempItems = new ArrayList();
+    }
+
     protected void setTempItems(TempItem[] tempItem){
-        if(tempItem != null && tempItem.length > -1) {
+        if(tempItem != null) {
             TempItems = new ArrayList<>(Arrays.asList(tempItem));
         }
     }

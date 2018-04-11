@@ -240,10 +240,12 @@ public class ActiveListsActivity extends WithLoginActivity
             exitDialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         } else if (id == R.id.nav_copy_id) {
             ClipboardManager clipboard = (ClipboardManager) ActiveListsActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("", provider.userSessionData.getId());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(ActiveListsActivity.this, R.string.id_copied_informer, Toast.LENGTH_LONG)
-                    .show();
+            if(clipboard != null) {
+                ClipData clip = ClipData.newPlainText("", provider.userSessionData.getId());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(ActiveListsActivity.this, R.string.id_copied_informer, Toast.LENGTH_LONG)
+                        .show();
+            }
         } else if (id == R.id.nav_troubleshot) {
             Intent intent = new Intent(ActiveListsActivity.this, SendBugActivity.class);
             intent.putExtra(INTENT_LOAD_TYPE, 0);

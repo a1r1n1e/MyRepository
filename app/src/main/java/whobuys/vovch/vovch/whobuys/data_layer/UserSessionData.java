@@ -44,7 +44,7 @@ public class UserSessionData {
     private String login;
     private String token;
     private String session;
-    private static final String CLIENT_VERSION = "99";
+    private static final String CLIENT_VERSION = "100";
     private static final String CLIENT_TYPE = "1";
     private static final String ACTION_LOGIN = "login";
     private static final String ACTION_LOGOUT = "logout";
@@ -179,8 +179,9 @@ public class UserSessionData {
         password = null;
         session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
         savePrefs(null, null, null, null);
-        if(context != null) {
+        if(context != null){
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            provider.dataExchanger.clearStorage();
             provider.showExitGood();
         }
     }

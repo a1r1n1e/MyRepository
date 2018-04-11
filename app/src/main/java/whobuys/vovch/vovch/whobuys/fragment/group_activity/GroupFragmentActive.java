@@ -174,7 +174,7 @@ public class GroupFragmentActive extends Fragment {
         } else {
             resendButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri3 = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/resend_custom_white_green");
+        Uri uri3 = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/resend_custom_white_green");
         resendButton.setImageURI(uri3);
         resendButton.setList(list);
 
@@ -212,7 +212,7 @@ public class GroupFragmentActive extends Fragment {
         } else {
             disactivateListButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/delete_custom_white_green");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/delete_custom_white_green");
         disactivateListButton.setImageURI(uri);
         disactivateListButton.setList(list);
         disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
@@ -236,7 +236,7 @@ public class GroupFragmentActive extends Fragment {
         } else {
             redactButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri2 = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/redact_custom_white_green");
+        Uri uri2 = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/redact_custom_white_green");
         redactButton.setImageURI(uri2);
         redactButton.setList(list);
         redactButton.setOnClickListener(redactListButtonOnClickListenner);
@@ -263,13 +263,17 @@ public class GroupFragmentActive extends Fragment {
 
     public void fragmentShowBad(SList[] result) {
         if(rootView != null) {
-            if(result == null || result.length == 0) {
+            if(result == null) {
                 activeFragmentCleaner();
                 LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
                 TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
                 parentLayout.addView(emptyInformer);
-            } else {
+            } else if(result.length > 0){
                 listsListMaker(result);
+            } else {
+                LinearLayout parentLayout = (LinearLayout) rootView.findViewById(R.id.listogramslayout);
+                TextView emptyInformer = (TextView) LayoutInflater.from(parentLayout.getContext()).inflate(R.layout.no_listograms_text_view, parentLayout, false);
+                parentLayout.addView(emptyInformer);
             }
         }
     }

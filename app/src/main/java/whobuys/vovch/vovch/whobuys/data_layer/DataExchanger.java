@@ -37,6 +37,9 @@ public class DataExchanger {
         return instance;
     }
 
+    protected void clearStorage(){
+        storage.clearAll();
+    }
 
     public ListInformer[] getListInformers(String userId) {
         ListInformer[] informers = null;

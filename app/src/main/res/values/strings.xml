@@ -76,4 +76,5 @@
     <string name="by">By:</string>
     <string name="from">From:</string>
     <string name="your_list">Your List</string>
+    <string name="no_lists">No Lists</string>
 </resources>
