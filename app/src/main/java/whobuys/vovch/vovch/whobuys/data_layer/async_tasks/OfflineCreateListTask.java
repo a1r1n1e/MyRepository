@@ -32,7 +32,7 @@ public class OfflineCreateListTask extends AsyncTask<Object, Void, SList> {
             activeActivityProvider.showOfflineListCreatedGood(result, incomingActivity);
         }
         else{
-            activeActivityProvider.showOfflineListCreatedBad(result, incomingActivity);
+            activeActivityProvider.showOfflineListCreatedBad(null, incomingActivity);
         }
         activeActivityProvider = null;
         incomingActivity = null;

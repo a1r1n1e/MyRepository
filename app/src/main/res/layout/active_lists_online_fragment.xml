@@ -2,16 +2,16 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.complex.ActiveListsActivity"
+    tools:context="whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="15dp"
     android:id="@+id/active_lists_online_fragment">
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/active_lists_online_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp">
+        android:layout_height="match_parent">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

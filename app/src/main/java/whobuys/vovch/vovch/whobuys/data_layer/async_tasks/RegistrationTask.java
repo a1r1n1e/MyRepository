@@ -10,14 +10,12 @@ import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 
 public class RegistrationTask extends AsyncTask<Object, Void, String> {
     private ActiveActivityProvider activeActivityProvider;
-    private String userLogin;
-    private String userPassword;
 
     @Override
     public String doInBackground(Object... loginPair) {
         String result;
-        userLogin = (String) loginPair[0];
-        userPassword = (String) loginPair[1];
+        String userLogin = (String) loginPair[0];
+        String userPassword = (String) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
         result = activeActivityProvider.userSessionData.registration(userLogin, userPassword);
         return result;

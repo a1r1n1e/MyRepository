@@ -10,16 +10,15 @@ import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
  * Created by vovch on 18.01.2018.
  */
 
-public class GroupLeaverTask extends AsyncTask<UserGroup, Void, UserGroup> {
-    private Context applicationContext;
+public class GroupLeaverTask extends AsyncTask<Object, Void, UserGroup> {
     private ActiveActivityProvider activeActivityProvider;
     private UserGroup group;
 
     @Override
-    public UserGroup doInBackground(UserGroup... loginPair) {
+    public UserGroup doInBackground(Object... loginPair) {
         UserGroup result = null;
-        group = loginPair[0];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
+        group = (UserGroup) loginPair[0];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
         result = activeActivityProvider.dataExchanger.leaveGroup(group);
         return result;
     }
@@ -32,9 +31,7 @@ public class GroupLeaverTask extends AsyncTask<UserGroup, Void, UserGroup> {
         else{
             activeActivityProvider.leaveGroupGood(result);
         }
-    }
-    public void setApplicationContext(Context ctf){
-        applicationContext = ctf;
+        activeActivityProvider = null;
     }
 }
 

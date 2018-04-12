@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.simple.NewGroup"
+    tools:context="whobuys.vovch.vovch.whobuys.activities.simple.NewGroup"
     android:id="@+id/editing_group_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

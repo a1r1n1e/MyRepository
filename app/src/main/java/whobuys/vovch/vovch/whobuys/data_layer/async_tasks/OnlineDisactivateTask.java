@@ -29,5 +29,6 @@ public class OnlineDisactivateTask extends AsyncTask <Object, Void, SList>{
             activeActivityProvider.showOnlineDisactivateListBad(taskList);
         }
         taskList = null;
+        activeActivityProvider = null;
     }
 }

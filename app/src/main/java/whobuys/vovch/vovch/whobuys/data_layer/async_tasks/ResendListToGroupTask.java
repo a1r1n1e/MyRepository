@@ -30,5 +30,6 @@ public class ResendListToGroupTask extends AsyncTask<Object, Void, UserGroup> {
         else{
             activeActivityProvider.resendListToGroupBad(null);
         }
+        activeActivityProvider = null;
     }
 }

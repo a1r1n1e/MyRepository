@@ -27,5 +27,6 @@ public class LogouterTask extends AsyncTask<Object, Void, String> {
         else{
             activeActivityProvider.userSessionData.showExitBad();
         }
+        activeActivityProvider = null;
     }
 }

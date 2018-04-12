@@ -29,5 +29,6 @@ public class GroupActiveGetterTask extends AsyncTask <Object, Void, SList[]> {
         }  else {
             activeActivityProvider.showGroupActiveListsGood(result, group.getId());
         }
+        activeActivityProvider = null;
     }
 }

@@ -69,8 +69,9 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
 
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-            notificationManager.notify(0, mNotificationBuilder.build());
+            if(notificationManager != null) {
+                notificationManager.notify(0, mNotificationBuilder.build());
+            }
         } catch (Exception e) {
 
         }
@@ -84,7 +85,9 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                     ListInformer[] informers = provider.dataExchanger.getListInformers(provider.userSessionData.getId());
                     if (informers == null || informers.length == 0) {
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancelAll();
+                        if(notificationManager != null) {
+                            notificationManager.cancelAll();
+                        }
                     }
                 }
             }

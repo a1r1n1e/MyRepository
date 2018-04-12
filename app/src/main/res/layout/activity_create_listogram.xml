@@ -8,7 +8,7 @@
     android:layout_gravity="bottom"
     android:fitsSystemWindows="true"
     android:background="@color/elementLayoutColor1"
-    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.simple.CreateListogramActivity">
+    tools:context="whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/create_listogram_toolbar"

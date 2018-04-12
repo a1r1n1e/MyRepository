@@ -99,7 +99,6 @@ public class DataBaseTask2 {
             if(listCursor != null){
                 listCursor.close();
             }
-            //dbHelper.close();
             return sLists;
         } catch (SQLException e) {
             return sLists;

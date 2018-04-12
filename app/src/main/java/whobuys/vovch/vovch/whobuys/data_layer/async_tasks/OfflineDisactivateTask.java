@@ -28,5 +28,6 @@ public class OfflineDisactivateTask extends AsyncTask<Object, Void, SList>{
             activeActivityProvider.showOfflineActiveListsDisactivatedBad(tempList);
         }
         tempList = null;
+        activeActivityProvider = null;
     }
 }

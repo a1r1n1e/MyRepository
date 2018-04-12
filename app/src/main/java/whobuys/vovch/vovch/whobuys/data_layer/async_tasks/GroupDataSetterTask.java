@@ -9,22 +9,17 @@ import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
  * Created by vovch on 06.01.2018.
  */
 
-public class GroupDataSetterTask extends AsyncTask <String, Void, Boolean> {
-    private Context applicationContext;
+public class GroupDataSetterTask extends AsyncTask <Object, Void, Boolean> {
     private ActiveActivityProvider activeActivityProvider;
     private String groupId;
-    private String groupName;
 
-    public void setApplicationContext(Context ctf) {
-        applicationContext = ctf;
-    }
 
     @Override
-    public Boolean doInBackground(String... loginPair) {
+    public Boolean doInBackground(Object... loginPair) {
         Boolean result = false;
-        groupId = loginPair[0];
-        groupName = loginPair[1];
-        activeActivityProvider = (ActiveActivityProvider) applicationContext;
+        groupId = (String) loginPair[0];
+        String groupName = (String) loginPair[1];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[2];
         result = activeActivityProvider.dataExchanger.updateGroupData(groupId, groupName);
         return result;
     }
@@ -36,6 +31,7 @@ public class GroupDataSetterTask extends AsyncTask <String, Void, Boolean> {
         } else {
             activeActivityProvider.showGroupDataSettledBad(groupId);
         }
+        activeActivityProvider = null;
     }
 }
 

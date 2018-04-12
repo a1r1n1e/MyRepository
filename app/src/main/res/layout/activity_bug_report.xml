@@ -9,7 +9,7 @@
     android:layout_gravity="top"
     android:fitsSystemWindows="true"
     android:background="@color/elementLayoutColor1"
-    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.simple.SendBugActivity">
+    tools:context="whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/bug_report_toolbar"
         android:layout_width="match_parent"

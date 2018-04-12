@@ -37,5 +37,6 @@ public class OnlineItemmarkTask extends AsyncTask <Object, Item, Item>{
             activeActivityProvider.showOnlineItemmarkedBad(markedItem);
         }
         markedItem = null;
+        activeActivityProvider = null;
     }
 }

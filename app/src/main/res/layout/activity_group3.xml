@@ -7,7 +7,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.complex.Group2Activity"
+        tools:context="whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity"
         android:background="@color/elementLayoutColor1">
 
     <android.support.v7.widget.Toolbar

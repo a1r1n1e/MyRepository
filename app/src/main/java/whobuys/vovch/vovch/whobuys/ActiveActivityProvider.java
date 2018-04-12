@@ -145,16 +145,18 @@ public class ActiveActivityProvider extends Application {
             prefCheck = true;
         }
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            internetCheck = true;
-        }
-        if (prefCheck && internetCheck) {
-            checkSessionWeb();
-        } else if (internetCheck) {
-            badLoginTry(getResources().getString(R.string.log_yourself_in));
-        } else {
-            activeListsNoInternet();
+        if(connectivityManager != null) {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                internetCheck = true;
+            }
+            if (prefCheck && internetCheck) {
+                checkSessionWeb();
+            } else if (internetCheck) {
+                badLoginTry(getResources().getString(R.string.log_yourself_in));
+            } else {
+                activeListsNoInternet();
+            }
         }
     }
 
@@ -346,8 +348,7 @@ public class ActiveActivityProvider extends Application {
     public void leaveGroup() {
         UserGroup group = getActiveGroup();
         GroupLeaverTask groupLeaverTask = new GroupLeaverTask();
-        groupLeaverTask.setApplicationContext(ActiveActivityProvider.this);
-        groupLeaverTask.execute(group);
+        groupLeaverTask.execute(group, ActiveActivityProvider.this);
 
     }
 
@@ -602,8 +603,7 @@ public class ActiveActivityProvider extends Application {
 
     public void setGroupData(String id, String name) {
         GroupDataSetterTask groupDataSetterTask = new GroupDataSetterTask();
-        groupDataSetterTask.setApplicationContext(ActiveActivityProvider.this);
-        groupDataSetterTask.execute(id, name);
+        groupDataSetterTask.execute(id, name, ActiveActivityProvider.this);
     }
 
     public void showGroupDataSettledGood(String id) {

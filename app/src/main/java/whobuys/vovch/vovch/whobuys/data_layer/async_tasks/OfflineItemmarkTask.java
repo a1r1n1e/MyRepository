@@ -26,6 +26,7 @@ public class OfflineItemmarkTask extends AsyncTask <Object, Void, Item>{
         } else {
             activeActivityProvider.showOfflineActiveListsItemmarkedBad(null);
         }
+        activeActivityProvider = null;
     }
 }
 

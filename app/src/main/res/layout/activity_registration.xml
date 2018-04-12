@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/registration_page_layout"
-    tools:context="com.example.vovch.listogram_20.whobuys.example.vovch.listogram_20.activities.complex.ActiveListsActivity">
+    tools:context="whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity">
 
     <ScrollView
         android:layout_height="wrap_content"
