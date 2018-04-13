@@ -453,6 +453,8 @@ public class DataExchanger {
             resultString = webCall.callServer(provider.userSessionData.getId(), group.getId(), BLANK_WEBCALL_FIELD, "leavegroup", jsonString, provider.userSessionData);
             if (resultString != null && resultString.length() > 2 && resultString.substring(0, 3).equals("200")) {
                 storage.removeGroup(group);
+                clearAddedUsers();
+                clearDeletableUsers();
             } else {
                 group = null;
             }
