@@ -514,6 +514,7 @@ public class Group2Activity extends WithLoginActivity {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.fragmentShowSecondGood(result);
+            historyLoad();
             //updateNeededFlagTurnOff();
         }
     }
