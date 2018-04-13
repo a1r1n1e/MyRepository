@@ -111,15 +111,17 @@ public class WebCall {
                         }
                         conn.disconnect();
                     }
-                } catch (IOException e) {
-                    if (loginPair[3].equals("itemmark")) {
-                        StringBuilder tempString = new StringBuilder("");
-                        tempString.append("400");
-                        tempString.append(loginPair[1]);
-                        response = tempString.toString();
+                } catch (Exception e) {
+                    if(e instanceof IOException) {
+                        if (loginPair[3].equals("itemmark")) {
+                            StringBuilder tempString = new StringBuilder("");
+                            tempString.append("400");
+                            tempString.append(loginPair[1]);
+                            response = tempString.toString();
+                        }
+                    } else{
+                        response = "700";
                     }
-                } catch (RuntimeException e) {
-                    response = "700";
                 } finally {
                     if (conn != null) {
                         conn.disconnect();
@@ -168,7 +170,7 @@ public class WebCall {
                 tempGroup.setOwner(owner);
                 groups[i] = tempGroup;
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return null;
         }
         return groups;
@@ -201,7 +203,7 @@ public class WebCall {
                     itemsArray.put(item);
                 }
                 result = itemsArray.toString();
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 return null;
             }
             return result;
@@ -216,7 +218,7 @@ public class WebCall {
             try {
                 JSONObject dataHolder = new JSONObject(jsonString);
                 result = dataHolder.getString(value);
-            } catch (JSONException e) {                                                                         //TODO
+            } catch (Exception e) {                                                                         //TODO
 
             }
             return result;
@@ -283,11 +285,11 @@ public class WebCall {
                             items[k].setList(tempList);
                         }
                         lists[i] = tempList;
-                    } catch (JSONException e) {                                                                 //TODO
+                    } catch (Exception e) {                                                                 //TODO
                         String res = "123";
                     }
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 return null;
             }
             return lists;
@@ -332,7 +334,7 @@ public class WebCall {
                     tempInformer.setGroup(tempGroup);
                     informers[i] = tempInformer;
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 return null;
             }
             return informers;
