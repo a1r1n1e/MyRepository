@@ -18,7 +18,6 @@ public class ActiveCheckFirebaseInstanceIDService extends FirebaseInstanceIdServ
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
         provider.userSessionData.setToken(refreshedToken);
-        //Log the token
         Log.d(TAG, "Refreshed token: " + refreshedToken);
         //provider.userSessionData.registerForPushes();
     }

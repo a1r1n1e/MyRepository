@@ -284,7 +284,7 @@ public class DataStorage {
 
 
 
-    protected void clearOfflineActive(){
+    private void clearOfflineActive(){
         ListsOfflineActive.clear();
         ItemsOfflineOfActiveLists.clear();
     }

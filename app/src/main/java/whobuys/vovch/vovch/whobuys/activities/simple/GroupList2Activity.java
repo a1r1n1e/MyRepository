@@ -35,7 +35,9 @@ public class GroupList2Activity extends WithLoginActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadType = getIntent().getExtras().getInt(INTENT_LOAD_TYPE);
+        if(getIntent().getExtras() != null) {
+            loadType = getIntent().getExtras().getInt(INTENT_LOAD_TYPE);
+        }
 
         provider = (ActiveActivityProvider) getApplicationContext();
         provider.setActiveActivity(4, GroupList2Activity.this);

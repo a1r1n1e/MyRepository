@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
@@ -115,6 +116,7 @@ public class DataBaseTask2 {
             values.clear();
             db.close();
         } catch (SQLException e) {
+            Log.v("WhoBuys", "smth in DBT");
         }
     }
 
@@ -147,7 +149,7 @@ public class DataBaseTask2 {
                 cursor.close();
             }
         } catch (SQLException e) {
-
+            Log.v("WhoBuys", "smth in DBT");
         }
     }
 

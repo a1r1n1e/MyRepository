@@ -8,6 +8,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
@@ -31,7 +32,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
             }
         } catch (Exception e) {
-
+            Log.v("WhoBuys", "smthin msg service");
         }
     }
 
@@ -47,7 +48,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 checkAndRemoveNotification();
             }
         } catch (Exception e) {
-
+            Log.v("WhoBuys", "smthin msg service");
         }
     }
 
@@ -73,7 +74,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 notificationManager.notify(0, mNotificationBuilder.build());
             }
         } catch (Exception e) {
-
+            Log.v("WhoBuys", "smthin msg service");
         }
     }
 
@@ -92,7 +93,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 }
             }
         } catch (Exception e) {
-
+            Log.v("WhoBuys", "smthin msg service");
         }
     }
 
@@ -115,7 +116,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 }
             }
         } catch (Exception e) {
-
+            Log.v("WhoBuys", "smthin msg service");
         }
     }
 
@@ -131,7 +132,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
             };
             mainHandler.post(myRunnable);
         } catch (Exception e) {
-
+            Log.v("WhoBuys", "smthin msg service");
         }
     }
 }

@@ -1,6 +1,7 @@
 package whobuys.vovch.vovch.whobuys.data_layer;
 
 import android.content.Context;
+import android.util.Log;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
@@ -103,8 +104,8 @@ public class DataExchanger {
                     clearAddedUsers();
                 }
             }
-        } catch (JSONException e) {                                                                         //TODO
-
+        } catch (JSONException e) {
+            Log.v("WhoBuys", "smth in DE");
         }
         return result;
     }
@@ -349,8 +350,8 @@ public class DataExchanger {
                     }
                 }
             }
-        } catch (JSONException e) {                                                                         //TODO
-
+        } catch (JSONException e) {
+            Log.v("WhoBuys", "smth in DE");
         }
         return result;
     }
@@ -505,7 +506,7 @@ public class DataExchanger {
                     }
                 }
             } catch (Exception e) {
-
+                Log.v("WhoBuys", "smth in DE");
             }
         }
         return result;
