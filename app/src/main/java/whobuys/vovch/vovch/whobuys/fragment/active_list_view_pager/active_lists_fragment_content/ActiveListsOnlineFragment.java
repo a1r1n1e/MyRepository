@@ -103,25 +103,26 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
     }
     @Override
     public void fragmentShowGood(ListInformer[] result){
-        cleaner();
-        listsListMaker(result);
-    }
-    @Override
-    public void fragmentShowBad(ListInformer[] result){
         if(rootView != null) {
             cleaner();
-            if (result != null && result.length > 0) {
+            if (result.length > 0) {
                 listsListMaker(result);
-            } else if(result == null){
-                LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
-                TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
-                messageTextView.setText(getString(R.string.some_error));
-                layout.addView(messageTextView);
             } else {
                 LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
                 TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
                 layout.addView(messageTextView);
             }
+        }
+
+    }
+    @Override
+    public void fragmentShowBad(ListInformer[] result){
+        if(rootView != null) {
+            cleaner();
+            LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
+            TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
+            messageTextView.setText(getString(R.string.some_error));
+            layout.addView(messageTextView);
         }
     }
     private void goToGroup(UserGroup group){
