@@ -101,7 +101,7 @@ public class DataBaseTask2 {
                 listCursor.close();
             }
             return sLists;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             return sLists;
         }
     }
@@ -115,7 +115,7 @@ public class DataBaseTask2 {
             db.update(SqLiteBaseContruct.Lists.TABLE_NAME, values, SqLiteBaseContruct.Lists._ID + "=?", args);
             values.clear();
             db.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Log.v("WhoBuys", "smth in DBT");
         }
     }
@@ -148,7 +148,7 @@ public class DataBaseTask2 {
             if(cursor != null) {
                 cursor.close();
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Log.v("WhoBuys", "smth in DBT");
         }
     }
@@ -185,7 +185,7 @@ public class DataBaseTask2 {
             }
             values.clear();
             result = new SList(incomingItems, (int) listId, null, false, true, 0, null, creationTime);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
-        } catch (SQLException e) {
+        } catch (Exception e) {
             result = null;
         }
         return result;
@@ -221,7 +221,7 @@ public class DataBaseTask2 {
                 }
                 list.setItems(items);
                 resultList = list;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 return  null;
             }
         }

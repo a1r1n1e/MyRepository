@@ -76,7 +76,7 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
         } else {
             attentionButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://com.vovch.vovch.whobuys/mipmap/alarm_custom_green_white");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/alarm_custom_green_white");
         attentionButton.setImageURI(uri);
 
         listogramLayout.addView(groupNameTextView);
