@@ -145,6 +145,7 @@ public class DataBaseTask2 {
                 db.update(SqLiteBaseContruct.Items.TABLE_NAME, values, SqLiteBaseContruct.Items._ID + "=?", args);
                 values.clear();
             }
+            db.close();
             if(cursor != null) {
                 cursor.close();
             }
@@ -185,6 +186,7 @@ public class DataBaseTask2 {
             }
             values.clear();
             result = new SList(incomingItems, (int) listId, null, false, true, 0, null, creationTime);                       //BIG VALUES OF LISTID WILL BREAK EVERYTHING
+            db.close();
         } catch (Exception e) {
             result = null;
         }
@@ -221,6 +223,7 @@ public class DataBaseTask2 {
                 }
                 list.setItems(items);
                 resultList = list;
+                db.close();
             } catch (Exception e) {
                 return  null;
             }
@@ -232,6 +235,7 @@ public class DataBaseTask2 {
         try{
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + "= '" + "f" + "'");
+            db.close();
             return true;
         } catch (Exception e){
             return false;

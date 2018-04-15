@@ -70,6 +70,12 @@ public class NewGroup extends WithLoginActivity {
             }
         }
     };
+    TextView.OnEditorActionListener editorListenerTwo = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +184,11 @@ public class NewGroup extends WithLoginActivity {
                 Toast.makeText(NewGroup.this, getString(R.string.user_added_inormer), Toast.LENGTH_LONG)
                         .show();
             } else {
+                FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
+                button.setFocusable(false);
+                button.setClickable(false);
+                CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
+                editText.setOnEditorActionListener(editorListenerTwo);
                 nullUserIdEditText();
                 providerAddUser(id); // error id checked inside
             }
@@ -367,10 +378,20 @@ public class NewGroup extends WithLoginActivity {
 
     public void showUserCheckGood(AddingUser result) {
         drawNewUserLayout(result, true);
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
+        button.setFocusable(true);
+        button.setClickable(true);
+        CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
+        editText.setOnEditorActionListener(editorListenerOne);
     }
 
     public void showUserCheckBad(AddingUser result) {
         Toast.makeText(NewGroup.this, getString(R.string.error_no_user), Toast.LENGTH_LONG)
                 .show();
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
+        button.setFocusable(true);
+        button.setClickable(true);
+        CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
+        editText.setOnEditorActionListener(editorListenerOne);
     }
 }
