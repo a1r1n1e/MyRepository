@@ -76,7 +76,6 @@ public class ActiveListsActivity extends WithLoginActivity
             Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
             intent.putExtra(INTENT_LOAD_TYPE, 0);
             startActivity(intent);
-            ActiveListsActivity.this.finish();
         }
     };
     final ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -194,15 +193,17 @@ public class ActiveListsActivity extends WithLoginActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (activeFragment.getChildFragmentManager().findFragmentByTag("One").equals(registrationFragment)) {
-            registrationToLoginFragmentChange();
-        } else {
-            if (provider.getActiveActivityNumber() == 2) {
-                provider.nullActiveActivity();
+        if(drawer != null) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else if (activeFragment != null && activeFragment.getChildFragmentManager().findFragmentByTag("One").equals(registrationFragment)) {
+                registrationToLoginFragmentChange();
+            } else {
+                if (provider.getActiveActivityNumber() == 2) {
+                    provider.nullActiveActivity();
+                }
+                ActiveListsActivity.this.finish();
             }
-            ActiveListsActivity.this.finish();
         }
     }
 
