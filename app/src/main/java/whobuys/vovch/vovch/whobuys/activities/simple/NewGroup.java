@@ -169,6 +169,7 @@ public class NewGroup extends WithLoginActivity {
     protected void goOutOfActivity(Class<?> cls){
         if (provider.getActiveActivityNumber() == getThisActivityNumber()) {
             provider.nullActiveActivity();
+
         }
         Intent intent = new Intent(getThisActivityContext(), cls);
         intent.putExtra(INTENT_LOAD_TYPE, 0);
@@ -245,7 +246,7 @@ public class NewGroup extends WithLoginActivity {
                 @Override
                 public boolean onLongClick(View v) {
                     UserButton button = (UserButton) v;
-                    provider.removeAddedUser(button.getUser(), NewGroup.this);
+                    provider.removeAddedUser(button.getUser());
                     return false;
                 }
             };

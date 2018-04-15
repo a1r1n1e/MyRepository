@@ -24,7 +24,7 @@ public class DataStorage {
     private ArrayList<AddingUser> AddedUsers = new ArrayList<>();
     private ArrayList<AddingUser> DeletableUsers = new ArrayList<>();
     private ArrayList<ListInformer> ListInformers = new ArrayList<>();
-    private ArrayList<TempItem> TempItems = new ArrayList();
+    private ArrayList<TempItem> TempItems = new ArrayList<>();
 
     private DataStorage(){
     }
@@ -44,7 +44,7 @@ public class DataStorage {
         AddedUsers = new ArrayList<>();
         DeletableUsers = new ArrayList<>();
         ListInformers = new ArrayList<>();
-        TempItems = new ArrayList();
+        TempItems = new ArrayList<>();
     }
 
     protected void setTempItems(TempItem[] tempItem){

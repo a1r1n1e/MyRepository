@@ -259,6 +259,7 @@ public class ActiveListsActivity extends WithLoginActivity
             dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
         }
 
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -672,7 +673,7 @@ public class ActiveListsActivity extends WithLoginActivity
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), getString(R.string.list_copied_informer), Toast.LENGTH_LONG)
                             .show();
-                    activeActivityProvider.createListogramOffline(list.getItems(), activity);
+                    activeActivityProvider.createListogramOffline(list.getItems());
                 }
             });
             if(activeActivityProvider.userSessionData.isLoginned()) {

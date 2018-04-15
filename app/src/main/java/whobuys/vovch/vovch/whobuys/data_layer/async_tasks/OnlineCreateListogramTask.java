@@ -16,7 +16,7 @@ import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGroup>{
     private ActiveActivityProvider activeActivityProvider;
-    private WithLoginActivity activity;
+    private int activityType;
 
     @Override
     public UserGroup doInBackground(Object... loginPair){
@@ -24,20 +24,20 @@ public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGrou
         Item[] items = (Item[]) loginPair[0];
         UserGroup group = (UserGroup) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
-        activity = (WithLoginActivity) loginPair[3];
+        activityType = (Integer) loginPair[3];
         result = activeActivityProvider.dataExchanger.addOnlineList(items, group);
         return result;
     }
     @Override
     public void onPostExecute(UserGroup result){
-        if(activity instanceof  CreateListogramActivity) {
+        if(activityType == 6) {
             if (result != null) {
                 activeActivityProvider.showOnlineListogramCreatedGood();
                 activeActivityProvider.dataExchanger.clearTempItems();
             } else {
                 activeActivityProvider.showOnlineListogramCreatedBad();
             }
-        } else if(activity instanceof  GroupList2Activity){
+        } else if(activityType == 4){
             if(result != null){
                 activeActivityProvider.resendListToGroupGood(result);
             }
@@ -46,6 +46,5 @@ public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGrou
             }
         }
         activeActivityProvider = null;
-        activity = null;
     }
 }

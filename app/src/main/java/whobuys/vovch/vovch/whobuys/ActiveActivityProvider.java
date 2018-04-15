@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
 
@@ -300,9 +301,9 @@ public class ActiveActivityProvider extends Application {
         offlineItemmarkTask.execute(item, ActiveActivityProvider.this);
     }
 
-    public void createListogramOffline(Item[] items, WithLoginActivity activity) {
+    public void createListogramOffline(Item[] items) {
         OfflineCreateListTask offlineCreateListTask = new OfflineCreateListTask();
-        offlineCreateListTask.execute(items, activity, ActiveActivityProvider.this);
+        offlineCreateListTask.execute(items, getActiveActivityNumber(), ActiveActivityProvider.this);
     }
 
     public void getActiveActivityActiveLists() {
@@ -419,9 +420,9 @@ public class ActiveActivityProvider extends Application {
         addUserTask.execute(userId, activityType, ActiveActivityProvider.this);
     }
 
-    public void removeAddedUser(AddingUser user, WithLoginActivity activity) {
+    public void removeAddedUser(AddingUser user) {
         RemoveAddedUserTask removeAddedUserTask = new RemoveAddedUserTask();
-        removeAddedUserTask.execute(user, activity, ActiveActivityProvider.this);
+        removeAddedUserTask.execute(user, getActiveActivityNumber(), ActiveActivityProvider.this);
     }
 
     public void showRemoveAddedUserNewGroupGood(AddingUser result) {
@@ -502,42 +503,48 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void createOnlineListogram(UserGroup group, Item[] items, WithLoginActivity activity) {
+    public void createOnlineListogram(UserGroup group, Item[] items) {
         OnlineCreateListogramTask onlineCreateListogramTask = new OnlineCreateListogramTask();
-        onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, activity);
+        onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, getActiveActivityNumber());
     }
 
-    public void redactOnlineListogram(Item[] items, SList redactingList ,WithLoginActivity activity){
+    public void redactOnlineListogram(Item[] items, SList redactingList){
         RedactOnlineListTask redactOnlineListTask = new RedactOnlineListTask();
-        redactOnlineListTask.execute(redactingList, items, activity, ActiveActivityProvider.this);
+        redactOnlineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this);
     }
 
-    public void showOnlineListRedactedGood(SList resultList, WithLoginActivity incomingActivity){
-        if (getActiveActivityNumber() == 6 && incomingActivity instanceof CreateListogramActivity) {
+    public void showOnlineListRedactedGood(SList resultList, int incomingActivity){
+        if (getActiveActivityNumber() == 6 && incomingActivity == 6) {
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
             activity.showAddListOnlineGood();
         }
     }
 
-    public void showOnlineListRedactedBad(SList resultList, WithLoginActivity activity){
-
-    }           //TODO
-
-    public void redactOfflineListogram(Item[] items, SList redactingList ,WithLoginActivity activity){
-        RedactOfflineListTask redactOfflineListTask = new RedactOfflineListTask();
-        redactOfflineListTask.execute(redactingList, items, activity, ActiveActivityProvider.this);
+    public void showOnlineListRedactedBad(SList resultList, int activity){
+        if(getActiveActivity() != null) {
+            Toast.makeText(getActiveActivity(), getString(R.string.some_error), Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
-    public void showOfflineListRedactedGood(SList resultList, WithLoginActivity incomingActivity){
-        if (getActiveActivityNumber() == 6 && incomingActivity instanceof CreateListogramActivity) {
+    public void redactOfflineListogram(Item[] items, SList redactingList){
+        RedactOfflineListTask redactOfflineListTask = new RedactOfflineListTask();
+        redactOfflineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this);
+    }
+
+    public void showOfflineListRedactedGood(SList resultList, int incomingActivity){
+        if (getActiveActivityNumber() == 6 && incomingActivity == 6) {
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
             activity.showAddListOfflineGood();
         }
     }
 
-    public void showOfflineListRedactedBad(SList resultList, WithLoginActivity activity){
-
-    }           //TODO
+    public void showOfflineListRedactedBad(SList resultList, int activity){
+        if(getActiveActivity() != null) {
+            Toast.makeText(getActiveActivity(), getString(R.string.some_error), Toast.LENGTH_LONG)
+                    .show();
+        }
+    }
 
     public void saveTempItems(TempItem[] tempItems) {
         dataExchanger.saveTempItems(tempItems);
@@ -732,23 +739,23 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void showOfflineListCreatedGood(SList list, WithLoginActivity activity) {
-        if (getActiveActivityNumber() == 6 && activity instanceof CreateListogramActivity) {
+    public void showOfflineListCreatedGood(SList list, int activity) {
+        if (getActiveActivityNumber() == 6 && activity == 6) {
             CreateListogramActivity createListogramActivity = (CreateListogramActivity) getActiveActivity();
             createListogramActivity.showAddListOfflineGood();
         }
-        else if(getActiveActivityNumber() == 2 && activity instanceof ActiveListsActivity){
+        else if(getActiveActivityNumber() == 2 && activity == 2){
             ActiveListsActivity activeListsActivity = (ActiveListsActivity) getActiveActivity();
             activeListsActivity.refreshOfflineLists();
         }
     }
 
-    public void showOfflineListCreatedBad(SList list, WithLoginActivity activity) {
-        if (getActiveActivityNumber() == 6 && activity instanceof CreateListogramActivity) {
+    public void showOfflineListCreatedBad(SList list, int activity) {
+        if (getActiveActivityNumber() == 6 && activity == 6) {
             CreateListogramActivity createListogramActivity = (CreateListogramActivity) getActiveActivity();
             createListogramActivity.showAddListOfflineBad();
         }
-        else if(getActiveActivityNumber() == 2 && activity instanceof ActiveListsActivity){
+        else if(getActiveActivityNumber() == 2 && activity == 2){
             ActiveListsActivity activeListsActivity = (ActiveListsActivity) getActiveActivity();
             activeListsActivity.refreshOfflineLists();
         }

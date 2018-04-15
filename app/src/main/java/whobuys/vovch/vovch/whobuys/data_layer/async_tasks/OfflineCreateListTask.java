@@ -13,12 +13,12 @@ import whobuys.vovch.vovch.whobuys.data_types.SList;
 
 public class OfflineCreateListTask extends AsyncTask<Object, Void, SList> {
     private ActiveActivityProvider activeActivityProvider;
-    private WithLoginActivity incomingActivity;
+    private int incomingActivityType;
 
     @Override
     public SList doInBackground(Object... loginPair){
         Item[] items = (Item[]) loginPair[0];
-        incomingActivity = (WithLoginActivity) loginPair[1];
+        incomingActivityType = (Integer) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
         SList list;
 
@@ -29,12 +29,11 @@ public class OfflineCreateListTask extends AsyncTask<Object, Void, SList> {
     @Override
     public void onPostExecute(SList result){
         if(result != null){
-            activeActivityProvider.showOfflineListCreatedGood(result, incomingActivity);
+            activeActivityProvider.showOfflineListCreatedGood(result, incomingActivityType);
         }
         else{
-            activeActivityProvider.showOfflineListCreatedBad(null, incomingActivity);
+            activeActivityProvider.showOfflineListCreatedBad(null, incomingActivityType);
         }
         activeActivityProvider = null;
-        incomingActivity = null;
     }
 }

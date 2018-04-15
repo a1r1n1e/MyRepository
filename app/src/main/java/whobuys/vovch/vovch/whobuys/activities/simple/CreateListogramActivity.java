@@ -357,14 +357,14 @@ public class CreateListogramActivity extends WithLoginActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     clickable = false;
                     if(loadType == 1) {
-                        activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items, (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                        activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items);
                     }
                     else if(loadType == 0){
-                        activeActivityProvider.createListogramOffline(items, (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                        activeActivityProvider.createListogramOffline(items);
                     } else if(loadType == 2){
-                        activeActivityProvider.redactOfflineListogram(items, activeActivityProvider.getResendingList(), (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                        activeActivityProvider.redactOfflineListogram(items, activeActivityProvider.getResendingList());
                     } else if(loadType == 3){
-                        activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList(), (WithLoginActivity) activeActivityProvider.getActiveActivity());
+                        activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList());
                     }
                     Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();

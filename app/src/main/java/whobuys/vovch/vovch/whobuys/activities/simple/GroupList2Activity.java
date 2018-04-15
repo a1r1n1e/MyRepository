@@ -179,7 +179,7 @@ public class GroupList2Activity extends WithLoginActivity {
     protected void onGroupWhereTOSendChosenAction(UserGroup group){
         if(loadType == 1) {
             if (group != null && group.getId() != null) {
-                provider.createOnlineListogram(group, resendingList.getItems(), GroupList2Activity.this);
+                provider.createOnlineListogram(group, resendingList.getItems());
             }
         } else if(loadType == 2){
             if (group != null && group.getId() != null) {

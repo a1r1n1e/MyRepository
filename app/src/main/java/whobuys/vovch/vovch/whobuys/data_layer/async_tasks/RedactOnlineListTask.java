@@ -13,13 +13,13 @@ import whobuys.vovch.vovch.whobuys.data_types.SList;
 
 public class RedactOnlineListTask extends AsyncTask<Object, Void, SList> {
     private ActiveActivityProvider activeActivityProvider;
-    private WithLoginActivity activity;
+    private int activityType;
 
     @Override
     public SList doInBackground(Object... loginPair){
         SList list = (SList) loginPair[0];
         Item[] items = (Item[]) loginPair[1];
-        activity = (WithLoginActivity) loginPair[2];
+        activityType = (Integer) loginPair[2];
         activeActivityProvider = (ActiveActivityProvider) loginPair[3];
         list = activeActivityProvider.dataExchanger.redactOnlineList(list, items);
         return list;
@@ -27,11 +27,10 @@ public class RedactOnlineListTask extends AsyncTask<Object, Void, SList> {
     @Override
     public void onPostExecute(SList result) {
         if (result != null) {
-            activeActivityProvider.showOnlineListRedactedGood(result, activity);
+            activeActivityProvider.showOnlineListRedactedGood(result, activityType);
         } else {
-            activeActivityProvider.showOnlineListRedactedBad(null, activity);
+            activeActivityProvider.showOnlineListRedactedBad(null, activityType);
         }
-        activity = null;
         activeActivityProvider = null;
     }
 }
