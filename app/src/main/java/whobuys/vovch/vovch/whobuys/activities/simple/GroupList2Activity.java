@@ -56,7 +56,7 @@ public class GroupList2Activity extends WithLoginActivity {
             headerTextView.setText(getString(R.string.resend_where_informer));
         }
 
-        FloatingActionButton groupAddButton = (FloatingActionButton) findViewById(R.id.group_add_fab);
+        /*FloatingActionButton groupAddButton = (FloatingActionButton) findViewById(R.id.group_add_fab);
         View.OnClickListener addGroupListenner = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +65,7 @@ public class GroupList2Activity extends WithLoginActivity {
             }
         };
         groupAddButton.setClickable(true);
-        groupAddButton.setOnClickListener(addGroupListenner);
+        groupAddButton.setOnClickListener(addGroupListenner);*/
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
         refreshLayout.setFocusable(true);

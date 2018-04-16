@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
+
+import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
 import whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
@@ -94,6 +96,7 @@ public class GroupSettingsActivity extends NewGroup {
         if(provider != null){
             provider.clearAddedUsers();
         }
+        super.onBackPressed();
         goOutOfActivity(Group2Activity.class);
     }
 
@@ -237,7 +240,8 @@ public class GroupSettingsActivity extends NewGroup {
     }
 
     public void leaveGroupGood(UserGroup result) {
-        goOutOfActivity(GroupList2Activity.class);
+        provider.setActiveListsActivityLoadType(0);
+        goOutOfActivity(ActiveListsActivity.class);
     }
 
     public void leaveGroupBad(UserGroup result) {

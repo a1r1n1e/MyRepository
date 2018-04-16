@@ -2,6 +2,7 @@ package whobuys.vovch.vovch.whobuys.data_types;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 
 /**

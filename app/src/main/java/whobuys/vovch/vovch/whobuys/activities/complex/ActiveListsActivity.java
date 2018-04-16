@@ -30,6 +30,7 @@ import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity;
 import whobuys.vovch.vovch.whobuys.activities.simple.GroupList2Activity;
 import whobuys.vovch.vovch.whobuys.activities.WithLoginActivity;
+import whobuys.vovch.vovch.whobuys.activities.simple.NewGroup;
 import whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity;
 import whobuys.vovch.vovch.whobuys.data_types.ListImageButton;
 import whobuys.vovch.vovch.whobuys.fragment.active_list_view_pager.ActiveFragmentHistory;
@@ -73,7 +74,7 @@ public class ActiveListsActivity extends WithLoginActivity
     final View.OnClickListener fabOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
+            Intent intent = new Intent(ActiveListsActivity.this, NewGroup.class);
             intent.putExtra(INTENT_LOAD_TYPE, 0);
             startActivity(intent);
         }

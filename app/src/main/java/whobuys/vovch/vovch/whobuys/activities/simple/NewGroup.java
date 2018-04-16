@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,15 +31,16 @@ import android.widget.Toast;
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
 import whobuys.vovch.vovch.whobuys.activities.WithLoginActivity;
+import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
 import whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
 import whobuys.vovch.vovch.whobuys.data_types.CreateListEditText;
+import whobuys.vovch.vovch.whobuys.data_types.ItemButton;
 import whobuys.vovch.vovch.whobuys.data_types.UserButton;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 public class NewGroup extends WithLoginActivity {
 
-    private static final String INTENT_LOAD_TYPE = "loadtype";
     private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
     private static final int THIS_ACTIVITY_NUMBER = 5;
 
@@ -163,7 +167,9 @@ public class NewGroup extends WithLoginActivity {
 
     @Override
     public void onBackPressed() {
-        goOutOfActivity(GroupList2Activity.class);
+        provider.setActiveListsActivityLoadType(0);
+        super.onBackPressed();
+        //goOutOfActivity(ActiveListsActivity.class);
     }
 
     protected void goOutOfActivity(Class<?> cls){
@@ -172,8 +178,8 @@ public class NewGroup extends WithLoginActivity {
 
         }
         Intent intent = new Intent(getThisActivityContext(), cls);
-        intent.putExtra(INTENT_LOAD_TYPE, 0);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         this.finish();
     }

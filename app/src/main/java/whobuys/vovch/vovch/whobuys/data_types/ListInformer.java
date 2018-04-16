@@ -9,11 +9,13 @@ import android.widget.Button;
 public class ListInformer {
     private String id;
     private String name;
+    private String active;
     private UserGroup group;
     private Button button;
-    public ListInformer(String groupId, String groupName){
+    public ListInformer(String groupId, String groupName, String newActive){
         id = groupId;
         name = groupName;
+        active = newActive;
         button = null;
     }
     public String getId(){
@@ -21,6 +23,9 @@ public class ListInformer {
     }
     public String getName(){
         return name;
+    }
+    public boolean isActive(){
+        return active != null && active.equals("t");
     }
     public void setGroup(UserGroup newGroup){
         group = newGroup;

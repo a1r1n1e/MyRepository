@@ -314,12 +314,14 @@ public class WebCall {
                 AddingUser[] tempMembers;
                 JSONArray tempMembersArray;
                 String owner;
+                String active;
                 int tempMembersLength;
                 for (i = 0; i < length; i++) {
                     tempObject = informersArray.getJSONObject(i);
                     groupId = tempObject.getString("group_id");
                     groupName = tempObject.getString("group_name");
                     owner = tempObject.getString("group_owner");
+                    active = tempObject.getString("group_active");
                     tempMembersArray = tempObject.getJSONArray("group_members");
                     tempMembersLength = tempMembersArray.length();
                     tempMembers = new AddingUser[tempMembersLength];
@@ -328,7 +330,7 @@ public class WebCall {
                         tempMembers[j] = new AddingUser();
                         tempMembers[j].setData(tempObject.getString("name"), tempObject.getString("id"));
                     }
-                    tempInformer = new ListInformer(groupId, groupName);
+                    tempInformer = new ListInformer(groupId, groupName, active);
                     tempGroup = new UserGroup(groupName, groupId, tempMembers);
                     tempGroup.setOwner(owner);
                     tempInformer.setGroup(tempGroup);

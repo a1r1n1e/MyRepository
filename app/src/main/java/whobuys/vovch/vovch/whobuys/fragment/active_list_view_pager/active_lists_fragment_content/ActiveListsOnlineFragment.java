@@ -70,18 +70,20 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
 
         FrameLayout attentionButtonFrame = (FrameLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_imagebutton_frame, listogramLayout, false);
 
-        ImageButton attentionButton = (ImageButton) LayoutInflater.from(attentionButtonFrame.getContext()).inflate(R.layout.done_button, attentionButtonFrame, false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            attentionButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
-        } else {
-            attentionButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+        if(informer.isActive()) {
+            ImageButton attentionButton = (ImageButton) LayoutInflater.from(attentionButtonFrame.getContext()).inflate(R.layout.done_button, attentionButtonFrame, false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                attentionButton.setImageDrawable(getActivity().getDrawable(R.drawable.done_button_drawble));
+            } else {
+                attentionButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
+            }
+            Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/alarm_custom_green_white");
+            attentionButton.setImageURI(uri);
+            attentionButtonFrame.addView(attentionButton);
         }
-        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/alarm_custom_green_white");
-        attentionButton.setImageURI(uri);
 
         listogramLayout.addView(groupNameTextView);
 
-        attentionButtonFrame.addView(attentionButton);
         listogramLayout.addView(attentionButtonFrame);
         GroupButton frameButton = (GroupButton) LayoutInflater.from(frameLayout.getContext()).inflate(R.layout.group_button, frameLayout, false);
 
