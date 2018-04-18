@@ -191,9 +191,9 @@ public class NewGroup extends WithLoginActivity {
                 Toast.makeText(NewGroup.this, getString(R.string.user_added_inormer), Toast.LENGTH_LONG)
                         .show();
             } else {
-                FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
-                button.setFocusable(false);
-                button.setClickable(false);
+                //FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
+                //button.setFocusable(false);
+               //button.setClickable(false);
                 CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
                 editText.setOnEditorActionListener(editorListenerTwo);
                 nullUserIdEditText();
@@ -385,9 +385,9 @@ public class NewGroup extends WithLoginActivity {
 
     public void showUserCheckGood(AddingUser result) {
         drawNewUserLayout(result, true);
-        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
-        button.setFocusable(true);
-        button.setClickable(true);
+        //FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
+        //button.setFocusable(true);
+        //button.setClickable(true);
         CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
         editText.setOnEditorActionListener(editorListenerOne);
     }
@@ -395,9 +395,9 @@ public class NewGroup extends WithLoginActivity {
     public void showUserCheckBad(AddingUser result) {
         Toast.makeText(NewGroup.this, getString(R.string.error_no_user), Toast.LENGTH_LONG)
                 .show();
-        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
-        button.setFocusable(true);
-        button.setClickable(true);
+        //FloatingActionButton button = (FloatingActionButton) findViewById(R.id.group_settings_add_user_fab);
+        //button.setFocusable(true);
+        //button.setClickable(true);
         CreateListEditText editText = (CreateListEditText) findViewById(R.id.new_user_id_edittext);
         editText.setOnEditorActionListener(editorListenerOne);
     }

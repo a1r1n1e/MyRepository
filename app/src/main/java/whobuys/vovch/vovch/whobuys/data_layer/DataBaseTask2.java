@@ -33,28 +33,28 @@ public class DataBaseTask2 {
         int listNumber, itemNumber;
         SList tempSlist;
         Item tempItem;
-        boolean type;
-        if (taskType == 1) {
-            typeTask = "t";
-        } else {
-            typeTask = "f";
-        }
-        Cursor cursor;
-        Cursor listCursor;
-        String[] listArgs = {typeTask};
-        String[] listProjection = {
-                SqLiteBaseContruct.Lists._ID,
-                SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
-                SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME};
-        String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
-        String[] projection = {
-                SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
-                SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT,
-                SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
-                SqLiteBaseContruct.Items._ID,
-                SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME,
-                SqLiteBaseContruct.Items.COLUMN_NAME_LIST};
         try {
+            boolean type;
+            if (taskType == 1) {
+                typeTask = "t";
+            } else {
+                typeTask = "f";
+            }
+            Cursor cursor;
+            Cursor listCursor;
+            String[] listArgs = {typeTask};
+            String[] listProjection = {
+                    SqLiteBaseContruct.Lists._ID,
+                    SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
+                    SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME};
+            String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
+            String[] projection = {
+                    SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
+                    SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT,
+                    SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
+                    SqLiteBaseContruct.Items._ID,
+                    SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME,
+                    SqLiteBaseContruct.Items.COLUMN_NAME_LIST};
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             listCursor = db.query(SqLiteBaseContruct.Lists.TABLE_NAME, listProjection, SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE + "=?", listArgs, null, null, null);
             if (listCursor != null) {

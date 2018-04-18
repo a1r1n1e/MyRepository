@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -331,48 +332,77 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void refreshActiveLists() {
-        update();
+        try {
+            update();
+
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void refreshOfflineLists() {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.setRefresher();
-            offlineUpdate(true);
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.setRefresher();
+                offlineUpdate(true);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void refreshOfflineHistory() {
-        if (historyFragment != null) {
-            historyFragment.checkRootView(viewPager, getLayoutInflater());
-            historyFragment.setRefresher();
-            offlineUpdate(false);
+        try {
+            if (historyFragment != null) {
+                historyFragment.checkRootView(viewPager, getLayoutInflater());
+                historyFragment.setRefresher();
+                offlineUpdate(false);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void onOfflineFragmentStart(ActiveFragmentOffline fragment) {
-        if(fragment != null){
-            offlineFragment = fragment;
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            refreshOfflineLists();
+        try {
+            if (fragment != null) {
+                offlineFragment = fragment;
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                refreshOfflineLists();
+            }
+        } catch(Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void onHistoryFragmentStart(ActiveFragmentHistory fragment) {
-        if (fragment != null) {
-            historyFragment = fragment;
-            historyFragment.checkRootView(viewPager, getLayoutInflater());
-            refreshOfflineHistory();
+        try {
+            if (fragment != null) {
+                historyFragment = fragment;
+                historyFragment.checkRootView(viewPager, getLayoutInflater());
+                refreshOfflineHistory();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
 
     public void tryToLoginFromPrefs() {
-        provider.tryToLoginFromPrefs();
+        try {
+            provider.tryToLoginFromPrefs();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void tryToLoginFromForms(String login, String password) {
-        provider.tryToLoginFromForms(login, password);
+        try {
+            provider.tryToLoginFromForms(login, password);
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public String getToken() {
@@ -380,160 +410,222 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void loginFragmentStart() {
-        if(loginFailed == null) {
-            tryToLoginFromPrefs();
+        try {
+            if (loginFailed == null) {
+                tryToLoginFromPrefs();
+            }
+            checkLoginBadInformNeeded();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
-        checkLoginBadInformNeeded();
     }
 
     public void onLoginFailed(String result) {                                                        //TODO cases
-        activeToLoginFragmentChange();
-        loginFailed = result;
-        checkLoginBadInformNeeded();
+        try {
+            {
+            }
+            activeToLoginFragmentChange();
+            loginFailed = result;
+            checkLoginBadInformNeeded();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void checkLoginBadInformNeeded() {
-        if (loginFailed != null) {
-            loginFragment.checkRootView(viewPager, getLayoutInflater());
-            loginFragment.badInform(loginFailed);
+        try {
+            if (loginFailed != null) {
+                loginFragment.checkRootView(viewPager, getLayoutInflater());
+                loginFragment.badInform(loginFailed);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void loginToActiveFragmentChange() {
-        if(activeFragment != null) {
-            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-            if (fragment != null) {
-                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-                transaction.remove(fragment);
-                transaction.commitNow();
-            }
+        try {
+            if (activeFragment != null) {
+                Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+                if (fragment != null) {
+                    FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                    transaction.remove(fragment);
+                    transaction.commitNow();
+                }
 
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
-            transaction.commit();
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
+                transaction.commit();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void activeListsOnlineFragmentStart() {
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        if (viewPager.getCurrentItem() == 0) {
-            fabActionZero(fab);
+        try {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            if (viewPager.getCurrentItem() == 0) {
+                fabActionZero(fab);
+            }
+            if (activeListsOnlineFragment != null) {
+                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+                activeListsOnlineFragment.setRefresher();
+            }
+            update();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
-        if (activeListsOnlineFragment != null) {
-            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-            activeListsOnlineFragment.setRefresher();
-        }
-        update();
     }
 
     public void loginToRegistrationFragmentChange() {
-        if(activeFragment != null) {
-            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-            if (fragment != null) {
-                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-                transaction.remove(fragment);
-                transaction.commitNow();
-            }
+        try {
+            if (activeFragment != null) {
+                Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+                if (fragment != null) {
+                    FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                    transaction.remove(fragment);
+                    transaction.commitNow();
+                }
 
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.active_lists_page_one, registrationFragment, "One");
-            transaction.commit();
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.active_lists_page_one, registrationFragment, "One");
+                transaction.commit();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void tryToRegister(String login, String password) {
-        provider.registrationTry(login, password);
+        try {
+            provider.registrationTry(login, password);
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void registrationToActiveListsOnlineFragmentChange() {
-        if(activeFragment != null) {
-            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-            if (fragment != null) {
-                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-                transaction.remove(fragment);
-                transaction.commitNow();
-            }
+        try {
+            if (activeFragment != null) {
+                Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+                if (fragment != null) {
+                    FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                    transaction.remove(fragment);
+                    transaction.commitNow();
+                }
 
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
-            transaction.commit();
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
+                transaction.commit();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void badRegistrationTry(String result) {
-        if (registrationFragment != null) {
-            registrationFragment.checkRootView(viewPager, getLayoutInflater());
-            registrationFragment.badInform(result);
+        try {
+            if (registrationFragment != null) {
+                registrationFragment.checkRootView(viewPager, getLayoutInflater());
+                registrationFragment.badInform(result);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void activeToLoginFragmentChange() {
-        if(activeFragment != null) {
-            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-            if (fragment != null) {
+        try {
+            if (activeFragment != null) {
+                Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+                if (fragment != null) {
+                    FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                    transaction.remove(fragment);
+                    transaction.commitNow();
+                }
+
                 FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-                transaction.remove(fragment);
-                transaction.commitNow();
-            }
+                transaction.add(R.id.active_lists_page_one, loginFragment, "One");
+                transaction.commit();
 
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.active_lists_page_one, loginFragment, "One");
-            transaction.commit();
-
-            if (viewPager.getCurrentItem() == 0) {
-                fabActionZero(fab);
+                if (viewPager.getCurrentItem() == 0) {
+                    fabActionZero(fab);
+                }
+                if (drawer != null) {
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                }
             }
-            if(drawer != null) {
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void registrationToLoginFragmentChange() {
-        if(activeFragment != null) {
-            Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
-            if (fragment != null) {
-                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-                transaction.remove(fragment);
-                transaction.commitNow();
-            }
+        try {
+            if (activeFragment != null) {
+                Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
+                if (fragment != null) {
+                    FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                    transaction.remove(fragment);
+                    transaction.commitNow();
+                }
 
-            FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.active_lists_page_one, loginFragment, "One");
-            transaction.commit();
+                FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.active_lists_page_one, loginFragment, "One");
+                transaction.commit();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void noInternet() {
-        if (activeFragment != null) {
-            activeFragment.checkRootView(viewPager, getLayoutInflater());
-            activeFragment.noInternet();
+        try {
+            if (activeFragment != null) {
+                activeFragment.checkRootView(viewPager, getLayoutInflater());
+                activeFragment.noInternet();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void update() {
-        provider.getActiveActivityActiveLists();
-        if (activeListsOnlineFragment != null) {
-            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-            if (activeListsOnlineFragment.getRefresher() != null) {
-                activeListsOnlineFragment.setRefresherRefreshing();
+        try {
+            provider.getActiveActivityActiveLists();
+            if (activeListsOnlineFragment != null) {
+                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+                if (activeListsOnlineFragment.getRefresher() != null) {
+                    activeListsOnlineFragment.setRefresherRefreshing();
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void offlineUpdate(boolean type) {
-        provider.startOfflineGetterDatabaseTask(type);
+        try {
+            provider.startOfflineGetterDatabaseTask(type);
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void disactivateList(ListImageButton button) {
-        SList list = button.getList();
-        if(list != null) {
-            DisactivateDialogFragment dialogFragment = new DisactivateDialogFragment();
-            dialogFragment.setList(list);
-            dialogFragment.setActiveActivityProvider(provider);
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+        try {
+            SList list = button.getList();
+            if (list != null) {
+                DisactivateDialogFragment dialogFragment = new DisactivateDialogFragment();
+                dialogFragment.setList(list);
+                dialogFragment.setActiveActivityProvider(provider);
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                dialogFragment.show(transaction, "dialog");
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
@@ -577,14 +669,18 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void redactList(SList list){
-        if(list != null){
-            RedactDialogFragment dialogFragment = new RedactDialogFragment();
-            dialogFragment.setList(list);
-            dialogFragment.setActiveActivityProvider(provider);
-            dialogFragment.setActivity(ActiveListsActivity.this);
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, "dialog");
+        try {
+            if (list != null) {
+                RedactDialogFragment dialogFragment = new RedactDialogFragment();
+                dialogFragment.setList(list);
+                dialogFragment.setActiveActivityProvider(provider);
+                dialogFragment.setActivity(ActiveListsActivity.this);
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                dialogFragment.show(transaction, "dialog");
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
@@ -636,14 +732,18 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void resendList(SList list){
-        if(list != null){
-            ResendDialogFragment dialogFragment = new ResendDialogFragment();
-            dialogFragment.setList(list);
-            dialogFragment.setActiveActivityProvider(provider);
-            dialogFragment.setActivity(ActiveListsActivity.this);
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
+        try {
+            if (list != null) {
+                ResendDialogFragment dialogFragment = new ResendDialogFragment();
+                dialogFragment.setList(list);
+                dialogFragment.setActiveActivityProvider(provider);
+                dialogFragment.setActivity(ActiveListsActivity.this);
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
@@ -704,114 +804,167 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     public void itemmark(Item item) {
-        provider.activeListsItemmark(item);
+        try {
+            provider.activeListsItemmark(item);
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void showGood(ListInformer[] result) {
-        if (activeListsOnlineFragment != null) {
-            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-            activeListsOnlineFragment.fragmentShowGood(result);
-            if (activeListsOnlineFragment.getRefresher() != null) {
-                activeListsOnlineFragment.setRefresherNotRefreshing();
+        try {
+            if (activeListsOnlineFragment != null) {
+                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+                activeListsOnlineFragment.fragmentShowGood(result);
+                if (activeListsOnlineFragment.getRefresher() != null) {
+                    activeListsOnlineFragment.setRefresherNotRefreshing();
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showBad(ListInformer[] result) {
-        if (activeFragment != null) {
-            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-            activeListsOnlineFragment.fragmentShowBad(result);
-            if (activeListsOnlineFragment.getRefresher() != null) {
-                activeListsOnlineFragment.setRefresherNotRefreshing();
+        try {
+            if (activeFragment != null) {
+                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+                activeListsOnlineFragment.fragmentShowBad(result);
+                if (activeListsOnlineFragment.getRefresher() != null) {
+                    activeListsOnlineFragment.setRefresherNotRefreshing();
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void goToGroup(UserGroup group) {
-        if (group != null) {
-            if (group.getId() != null && group.getName() != null) {
-                provider.setActiveGroup(group);
-                if(group.getOwner().equals(provider.userSessionData.getId())) {
-                    provider.makeAllMembersPossible(group);
+        try {
+            if (group != null) {
+                if (group.getId() != null && group.getName() != null) {
+                    provider.setActiveGroup(group);
+                    if (group.getOwner().equals(provider.userSessionData.getId())) {
+                        provider.makeAllMembersPossible(group);
+                    }
+                    Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
+                    startActivity(intent);
+                    finisher();
                 }
-                Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
-                startActivity(intent);
-                finisher();
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showActiveOfflineGood(SList[] lists) {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.fragmentShowGood(lists);
-            if (offlineFragment.getRefresher() != null) {
-                offlineFragment.unsetRefresher();
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentShowGood(lists);
+                if (offlineFragment.getRefresher() != null) {
+                    offlineFragment.unsetRefresher();
+                }
             }
+        }catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showActiveOfflineBad(SList[] lists) {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.fragmentShowBad(lists);
-            if (offlineFragment.getRefresher() != null) {
-                offlineFragment.unsetRefresher();
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentShowBad(lists);
+                if (offlineFragment.getRefresher() != null) {
+                    offlineFragment.unsetRefresher();
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showHistoryOfflineGood(SList[] lists) {
-        if (historyFragment != null) {
-            historyFragment.checkRootView(viewPager, getLayoutInflater());
-            historyFragment.fragmentShowGood(lists);
-            if (historyFragment.getRefresher() != null) {
-                historyFragment.unsetRefresher();
+        try {
+            if (historyFragment != null) {
+                historyFragment.checkRootView(viewPager, getLayoutInflater());
+                historyFragment.fragmentShowGood(lists);
+                if (historyFragment.getRefresher() != null) {
+                    historyFragment.unsetRefresher();
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showHistoryOfflineBad(SList[] lists) {
-        if (historyFragment != null) {
-            historyFragment.checkRootView(viewPager, getLayoutInflater());
-            historyFragment.fragmentShowBad(lists);
-            if (historyFragment.getRefresher() != null) {
-                historyFragment.unsetRefresher();
+        try {
+            if (historyFragment != null) {
+                historyFragment.checkRootView(viewPager, getLayoutInflater());
+                historyFragment.fragmentShowBad(lists);
+                if (historyFragment.getRefresher() != null) {
+                    historyFragment.unsetRefresher();
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showDisactivateOfflineGood(SList result) {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.fragmentDisactivateGood(result);
-            refreshOfflineHistory();
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentDisactivateGood(result);
+                refreshOfflineHistory();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showDisactivateOfflineBad(SList result) {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.fragmentDisactivateBad(result);
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentDisactivateBad(result);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showItemmarkOfflineGood(Item result) {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.fragmentShowSecondGood(result);
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentShowSecondGood(result);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showItemmarkOfflineBad(Item result) {
-        if (offlineFragment != null) {
-            offlineFragment.checkRootView(viewPager, getLayoutInflater());
-            offlineFragment.fragmentShowSecondBad(result);
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentShowSecondBad(result);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     public void showDropHistoryGood(){
-        refreshOfflineHistory();
+        try {
+            ;
+            refreshOfflineHistory();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
     }
 
     public void showDropHistoryBad(){
@@ -819,54 +972,71 @@ public class ActiveListsActivity extends WithLoginActivity
     }
 
     private void fabActionZero(FloatingActionButton fab) {
-        if(fab != null) {
-            if (provider.userSessionData.isLoginned() && provider.userSessionData.isSession()) {
+        try {
+            ;
+            if (fab != null) {
+                if (provider.userSessionData.isLoginned() && provider.userSessionData.isSession()) {
+                    fab.show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
+                    } else {
+                        fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
+                    }
+                    fab.setOnClickListener(fabOnClickListener);
+                } else {
+                    fab.hide();
+                }
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
+    }
+
+    private void fabActionOne(FloatingActionButton fab) {
+        try {
+            if (fab != null) {
                 fab.show();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
                 } else {
                     fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
                 }
-                fab.setOnClickListener(fabOnClickListener);
-            } else {
-                fab.hide();
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
+                        intent.putExtra(INTENT_LOAD_TYPE, false);
+                        startActivity(intent);
+                    }
+                });
             }
-        }
-    }
-
-    private void fabActionOne(FloatingActionButton fab) {
-        if(fab != null) {
-            fab.show();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white, getTheme()));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(R.mipmap.add_plus_custom_green_white));
-            }
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
-                    intent.putExtra(INTENT_LOAD_TYPE, false);
-                    startActivity(intent);
-                }
-            });
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     private void fabActionTwo(FloatingActionButton fab) {
-        if(fab != null) {
-            fab.hide();
+        try {
+            if (fab != null) {
+                fab.hide();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        if(viewPager != null) {
-            adapter = new Adapter(getSupportFragmentManager());
-            adapter.clean();
-            adapter.addFragment(new ActiveListsFragment(), getString(R.string.online));
-            adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.offline));
-            adapter.addFragment(new ActiveFragmentHistory(), getString(R.string.history));
-            viewPager.setAdapter(adapter);
+        try {
+            if (viewPager != null) {
+                adapter = new Adapter(getSupportFragmentManager());
+                adapter.clean();
+                adapter.addFragment(new ActiveListsFragment(), getString(R.string.online));
+                adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.offline));
+                adapter.addFragment(new ActiveFragmentHistory(), getString(R.string.history));
+                viewPager.setAdapter(adapter);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
         }
     }
 

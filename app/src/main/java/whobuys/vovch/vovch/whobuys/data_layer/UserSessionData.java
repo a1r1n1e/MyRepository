@@ -2,6 +2,7 @@ package whobuys.vovch.vovch.whobuys.data_layer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
@@ -52,16 +53,20 @@ public class UserSessionData {
     private static final String DEFAULT_NOT_EXISTING_SESSION_VALUE = "-100";
 
     private UserSessionData(Context newContext) {
-        context = newContext;
-        if(context != null) {
-            preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-            if(preferences != null) {
-                login = preferences.getString(APP_PREFERENCES_LOGIN, null);
-                password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
-                token = preferences.getString(APP_PREFERENCES_TOKEN,  null);
-                id = preferences.getString(APP_PREFERENCES_USERID, null);
-                session = preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE);
+        try {
+            context = newContext;
+            if (context != null) {
+                preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+                if (preferences != null) {
+                    login = preferences.getString(APP_PREFERENCES_LOGIN, null);
+                    password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
+                    token = preferences.getString(APP_PREFERENCES_TOKEN, null);
+                    id = preferences.getString(APP_PREFERENCES_USERID, null);
+                    session = preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE);
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
     }
 
@@ -101,11 +106,15 @@ public class UserSessionData {
     }
 
     public void setToken(String newToken) {
-        token = newToken;
-        if(token != null) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(APP_PREFERENCES_TOKEN, token);
-            editor.apply();
+        try {
+            token = newToken;
+            if (token != null) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(APP_PREFERENCES_TOKEN, token);
+                editor.apply();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
     }
 
@@ -125,26 +134,34 @@ public class UserSessionData {
     }
 
     public void checkUserData(String newId, String newLogin, String newPassword, String newSession) {
-        id = newId;
-        login = newLogin;
-        password = newPassword;
-        if(newSession != null) {
-            session = newSession;
-        } else {
-            session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
+        try {
+            id = newId;
+            login = newLogin;
+            password = newPassword;
+            if (newSession != null) {
+                session = newSession;
+            } else {
+                session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
+            }
+            savePrefs(newId, newLogin, newPassword, newSession);
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
-        savePrefs(newId, newLogin, newPassword, newSession);
     }
 
     public boolean isAnyPrefsData() {
         boolean result = false;
-        if (preferences != null &&
-                preferences.getString(APP_PREFERENCES_TOKEN, null) != null &&
-                preferences.getString(APP_PREFERENCES_LOGIN, null) != null &&
-                preferences.getString(APP_PREFERENCES_PASSWORD, null) != null &&
-                !preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE).equals(DEFAULT_NOT_EXISTING_SESSION_VALUE)
-                ) {
-            result = true;
+        try {
+            if (preferences != null &&
+                    preferences.getString(APP_PREFERENCES_TOKEN, null) != null &&
+                    preferences.getString(APP_PREFERENCES_LOGIN, null) != null &&
+                    preferences.getString(APP_PREFERENCES_PASSWORD, null) != null &&
+                    !preferences.getString(APP_PREFERENCES_SESSION, DEFAULT_NOT_EXISTING_SESSION_VALUE).equals(DEFAULT_NOT_EXISTING_SESSION_VALUE)
+                    ) {
+                result = true;
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
         return result;
     }
@@ -158,38 +175,54 @@ public class UserSessionData {
     }
 
     public void savePrefs(final String userId, final String userName, final String userPassword, final String userSession) {    // Should be used not from UI thread
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(APP_PREFERENCES_LOGIN, userName);
-        editor.putString(APP_PREFERENCES_USERID, userId);
-        editor.putString(APP_PREFERENCES_PASSWORD, userPassword);
-        editor.putString(APP_PREFERENCES_SESSION, userSession);
-        editor.apply();
+        try {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(APP_PREFERENCES_LOGIN, userName);
+            editor.putString(APP_PREFERENCES_USERID, userId);
+            editor.putString(APP_PREFERENCES_PASSWORD, userPassword);
+            editor.putString(APP_PREFERENCES_SESSION, userSession);
+            editor.apply();
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
+        }
     }
 
     public void exit() {
-        if(context != null) {
-            LogouterTask logouterTask = new LogouterTask();
-            logouterTask.execute(context);
+        try {
+            if (context != null) {
+                LogouterTask logouterTask = new LogouterTask();
+                logouterTask.execute(context);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
     }
 
     public void showExitGood(){
-        id = null;
-        name = null;
-        password = null;
-        session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
-        savePrefs(null, null, null, null);
-        if(context != null){
-            ActiveActivityProvider provider = (ActiveActivityProvider) context;
-            provider.dataExchanger.clearStorage();
-            provider.showExitGood();
+        try {
+            id = null;
+            name = null;
+            password = null;
+            session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
+            savePrefs(null, null, null, null);
+            if (context != null) {
+                ActiveActivityProvider provider = (ActiveActivityProvider) context;
+                provider.dataExchanger.clearStorage();
+                provider.showExitGood();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
     }
 
     public void showExitBad(){
-        if(context != null) {
-            ActiveActivityProvider provider = (ActiveActivityProvider) context;
-            provider.showExitBad();
+        try {
+            if (context != null) {
+                ActiveActivityProvider provider = (ActiveActivityProvider) context;
+                provider.showExitBad();
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
     }
 
@@ -237,19 +270,27 @@ public class UserSessionData {
 
     public String endSession(){                                                                         //should be used not from UI Thread
         String result = null;
-        result = doSMTHWithSession(session, ACTION_LOGOUT, login, password);
+        try {
+            result = doSMTHWithSession(session, ACTION_LOGOUT, login, password);
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
+        }
         return  result;
     }
 
     public int checkSession(){                                                                      //should be used not from UI Thread
         int result = 0;
-        String tempResult = doSMTHWithSession(session, ACTION_CHECK, login, password);
-        if(tempResult != null && tempResult.length() > 2){
-            if(tempResult.substring(0, 3).equals("200")) {
-                result = 1;
-            } else if(tempResult.substring(0, 3).equals("500")){
-                result = 5;
+        try {
+            String tempResult = doSMTHWithSession(session, ACTION_CHECK, login, password);
+            if (tempResult != null && tempResult.length() > 2) {
+                if (tempResult.substring(0, 3).equals("200")) {
+                    result = 1;
+                } else if (tempResult.substring(0, 3).equals("500")) {
+                    result = 5;
+                }
             }
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
         }
         return result;
     }
@@ -351,18 +392,22 @@ public class UserSessionData {
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (first)
-                first = false;
-            else
-                result.append("&");
+        try {
+            boolean first = true;
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                if (first)
+                    first = false;
+                else
+                    result.append("&");
 
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                result.append("=");
+                result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            }
+            return result.toString();
+        } catch (Exception e){
+            Log.d("WhoBuys", "USD");
+            return "";
         }
-
-        return result.toString();
     }
 }
