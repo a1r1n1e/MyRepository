@@ -10,6 +10,7 @@
     <string name="login">Login</string>
     <string name="login_hint">Login</string>
     <string name="password_hint">Password</string>
+    <string name="id">id</string>
     <string name="enter_login">Enter Login</string>
     <string name="enter_password">Enter Password</string>
     <string name="registration">Registration</string>
@@ -54,7 +55,8 @@
     <string name="dialog_redact_question">Want To Redact List?</string>
     <string name="dialog_redact_action_procesing">Processing...</string>
     <string name="dialog_resend_question">What To Do?</string>
-    <string name="Copy">Download</string>
+    <string name="Copy">Copy</string>
+    <string name="Download">Download</string>
     <string name="Cancel">Cancel</string>
     <string name="Resend_List">Send To Group</string>
     <string name="resend_where_informer">Choose Where To :)</string>
@@ -77,4 +79,6 @@
     <string name="from">From:</string>
     <string name="your_list">Your List</string>
     <string name="no_lists">No Lists</string>
+    <string name="no_groups">No Groups</string>
+    <string name="profile">Profile</string>
 </resources>

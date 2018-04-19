@@ -112,6 +112,7 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
             } else {
                 LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
                 TextView messageTextView = (TextView) LayoutInflater.from(layout.getContext()).inflate(R.layout.no_listograms_text_view, layout, false);
+                messageTextView.setText(getString(R.string.no_groups));
                 layout.addView(messageTextView);
             }
         }

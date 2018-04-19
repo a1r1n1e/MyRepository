@@ -39,7 +39,7 @@
                 <android.support.design.widget.TabLayout
                     android:id="@+id/active_lists_tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
+                    android:layout_height="80dp"
                     android:background="@color/elementLayoutColor1"/>
             </LinearLayout>
     </android.support.v7.widget.Toolbar>

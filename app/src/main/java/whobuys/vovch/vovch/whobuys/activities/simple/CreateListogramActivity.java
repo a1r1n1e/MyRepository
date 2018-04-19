@@ -163,7 +163,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         if(provider.getActiveActivityNumber() == 6) {
             provider.nullActiveActivity();
         }
-        Intent intent = null;
+        /*Intent intent = null;
         if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
             intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         } else if ((loadType == 0 || loadType == 2) && provider != null) {
@@ -174,8 +174,12 @@ public class CreateListogramActivity extends WithLoginActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             flag = true;
             startActivity(intent);
-            CreateListogramActivity.this.finish();
         }
+        */
+        if(loadType == 0 || loadType == 2) {
+            provider.setActiveListsActivityLoadType(1);
+        }
+        super.onBackPressed();
     }
     private void clearer(){
         LinearLayout layout = (LinearLayout) findViewById(R.id.listogrampunctslayout);
@@ -390,7 +394,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        CreateListogramActivity.this.finish();
     }
 
     public void showAddListOfflineBad(){
@@ -409,7 +412,6 @@ public class CreateListogramActivity extends WithLoginActivity {
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        CreateListogramActivity.this.finish();
     }
     public void showAddListOnlineBad(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);

@@ -117,10 +117,10 @@ public class GroupList2Activity extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         provider.setActiveListsActivityLoadType(0);
-        Intent intent = new Intent(GroupList2Activity.this, ActiveListsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        this.finish();
+        //Intent intent = new Intent(GroupList2Activity.this, ActiveListsActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //startActivity(intent);
+        super.onBackPressed();
     }
 
     public void showGood(UserGroup[] result){
@@ -200,7 +200,7 @@ public class GroupList2Activity extends WithLoginActivity {
             provider.makeAllMembersPossible(group);
         }
         Intent intent = new Intent(GroupList2Activity.this, Group2Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        this.finish();
     }
 }

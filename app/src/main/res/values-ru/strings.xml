@@ -52,7 +52,8 @@
     <string name="dialog_redact_question">Отредактировать?</string>
     <string name="dialog_redact_action_procesing">Обрабатываем...</string>
     <string name="dialog_resend_question">Что Сделать?</string>
-    <string name="Copy">Скачать</string>
+    <string name="Copy">Копировать</string>
+    <string name="Download">Скачать</string>
     <string name="Cancel">Отмена</string>
     <string name="Resend_List">Отправить В Группу</string>
     <string name="resend_where_informer">Выберите Куда :)</string>
@@ -75,4 +76,6 @@
     <string name="from">От:</string>
     <string name="your_list">Ваш Список:</string>
     <string name="no_lists">Нет Списков</string>
+    <string name="no_groups">Нет Групп</string>
+    <string name="profile">Профиль</string>
 </resources>

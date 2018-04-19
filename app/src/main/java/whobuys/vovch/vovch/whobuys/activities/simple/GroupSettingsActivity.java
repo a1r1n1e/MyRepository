@@ -93,11 +93,14 @@ public class GroupSettingsActivity extends NewGroup {
 
     @Override
     public void onBackPressed(){
-        if(provider != null){
+        if(provider != null) {
             provider.clearAddedUsers();
+            if (provider.getActiveActivityNumber() == THIS_ACTIVITY_NUMBER) {
+                provider.nullActiveActivity();
+            }
         }
         super.onBackPressed();
-        goOutOfActivity(Group2Activity.class);
+        //goOutOfActivity(Group2Activity.class);
     }
 
     public void drawNotDeletableMembers() {

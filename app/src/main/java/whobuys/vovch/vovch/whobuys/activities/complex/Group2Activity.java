@@ -65,7 +65,6 @@ public class Group2Activity extends WithLoginActivity {
             if (provider.getActiveActivityNumber() == 3) {
                 provider.nullActiveActivity();
             }
-            Group2Activity.this.finish();
         }
     };
 
@@ -181,10 +180,10 @@ public class Group2Activity extends WithLoginActivity {
         provider.setActiveGroup(null);
         provider.setActiveListsActivityLoadType(0);
         provider.clearNewGroupPossibleMembers();
-        Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
-        intentGroupList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intentGroupList);
-        this.finish();
+        //Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
+        //intentGroupList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //startActivity(intentGroupList);
+        super.onBackPressed();
     }
 
     @Override
@@ -355,7 +354,7 @@ public class Group2Activity extends WithLoginActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             String message = getString(R.string.dialog_resend_question);
             String button1String = getString(R.string.Resend_List);
-            String button2String = getString(R.string.Copy);
+            String button2String = getString(R.string.Download);
             String button3String = getString(R.string.Cancel);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -375,7 +374,6 @@ public class Group2Activity extends WithLoginActivity {
                     Intent intent = new Intent(activity, GroupList2Activity.class);
                     intent.putExtra(INTENT_LOAD_TYPE, 2);
                     startActivity(intent);
-                    activity.finish();
                 }
             });
             builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {
@@ -440,7 +438,6 @@ public class Group2Activity extends WithLoginActivity {
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
                     intent.putExtra(INTENT_LOAD_TYPE, 3);
                     startActivity(intent);
-                    activity.finish();
                 }
             });
             builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {

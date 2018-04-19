@@ -181,7 +181,6 @@ public class NewGroup extends WithLoginActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        this.finish();
     }
 
     public void addUser() {
@@ -374,7 +373,6 @@ public class NewGroup extends WithLoginActivity {
         provider.setActiveGroup(result);
         provider.makeAllMembersPossible(result);
         startActivity(intent);
-        NewGroup.this.finish();
     }
 
     public void showBad(UserGroup result) {

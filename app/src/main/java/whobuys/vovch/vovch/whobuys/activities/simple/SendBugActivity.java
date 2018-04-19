@@ -74,11 +74,11 @@ public class SendBugActivity extends WithLoginActivity {
             provider.nullActiveActivity();
         }
         provider.setActiveListsActivityLoadType(1);
-        Intent intent;
-        intent = new Intent(SendBugActivity.this, ActiveListsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        SendBugActivity.this.finish();
+        //Intent intent;
+        //intent = new Intent(SendBugActivity.this, ActiveListsActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //startActivity(intent);
+        super.onBackPressed();
     }
 
     protected void sendBug(){
@@ -152,7 +152,6 @@ public class SendBugActivity extends WithLoginActivity {
         startActivity(intent);
         Toast.makeText(SendBugActivity.this, getString(R.string.dialog_confirm_action_processing),
                 Toast.LENGTH_LONG).show();
-        SendBugActivity.this.finish();
     }
 
     public void showBad(){

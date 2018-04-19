@@ -36,6 +36,7 @@ import whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity;
 import whobuys.vovch.vovch.whobuys.activities.simple.GroupList2Activity;
 import whobuys.vovch.vovch.whobuys.activities.WithLoginActivity;
 import whobuys.vovch.vovch.whobuys.activities.simple.NewGroup;
+import whobuys.vovch.vovch.whobuys.activities.simple.ProfileActivity;
 import whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity;
 import whobuys.vovch.vovch.whobuys.data_types.ListImageButton;
 import whobuys.vovch.vovch.whobuys.fragment.active_list_view_pager.ActiveFragmentHistory;
@@ -257,9 +258,8 @@ public class ActiveListsActivity extends WithLoginActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_groups) {
-            Intent intent = new Intent(ActiveListsActivity.this, GroupList2Activity.class);
-            intent.putExtra(INTENT_LOAD_TYPE, 0);
+        if (id == R.id.nav_profile) {
+            Intent intent = new Intent(ActiveListsActivity.this, ProfileActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_exit) {
             loginFailed = getString(R.string.login_failed);
@@ -743,7 +743,6 @@ public class ActiveListsActivity extends WithLoginActivity
                     Intent intent = new Intent(activity, CreateListogramActivity.class);
                     intent.putExtra(INTENT_LOAD_TYPE, 2);
                     startActivity(intent);
-                    activity.finish();
                 }
             });
             builder.setPositiveButton(button2String, new DialogInterface.OnClickListener() {
@@ -814,7 +813,6 @@ public class ActiveListsActivity extends WithLoginActivity
                         Intent intent = new Intent(activity, GroupList2Activity.class);
                         intent.putExtra(INTENT_LOAD_TYPE, 1);
                         startActivity(intent);
-                        activity.finish();
                     }
                 });
             }
@@ -877,7 +875,6 @@ public class ActiveListsActivity extends WithLoginActivity
                     }
                     Intent intent = new Intent(ActiveListsActivity.this, Group2Activity.class);
                     startActivity(intent);
-                    finisher();
                 }
             }
         } catch (Exception e){
