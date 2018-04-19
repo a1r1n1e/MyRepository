@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,13 +19,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
@@ -118,15 +122,42 @@ public class ActiveListsActivity extends WithLoginActivity
         viewPager = (ViewPager) findViewById(R.id.active_lists_viewpager);
         viewPager.setOffscreenPageLimit(2);
         setupViewPager(viewPager);
-        TabLayout tabs = (TabLayout) findViewById(R.id.active_lists_tabs);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.active_lists_toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tabs.setElevation(24);
+            toolbar.setElevation(24);
         }
+        setSupportActionBar(toolbar);
+
+
+        TabLayout tabs = (TabLayout) findViewById(R.id.active_lists_tabs);
         tabs.removeAllTabs();
         tabs.addTab(tabs.newTab().setText(getString(R.string.online)));
         tabs.addTab(tabs.newTab().setText(getString(R.string.offline)));
         tabs.addTab(tabs.newTab().setText(getString(R.string.history)));
         tabs.setupWithViewPager(viewPager);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.active_lists_menu_button);
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/settings_more");
+        settingsButton.setImageURI(uri);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(drawer != null) {
+                    if (drawer.isDrawerOpen(GravityCompat.START)) {
+                        drawer.closeDrawer(GravityCompat.START);
+                    } else {
+                        drawer.openDrawer(GravityCompat.START);
+                    }
+                }
+            }
+        });
 
         fab = (FloatingActionButton) findViewById(R.id.active_lists_fab);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -150,11 +181,6 @@ public class ActiveListsActivity extends WithLoginActivity
         }
         fabActionOne(fab);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -204,8 +230,10 @@ public class ActiveListsActivity extends WithLoginActivity
                 if (provider.getActiveActivityNumber() == 2) {
                     provider.nullActiveActivity();
                 }
-                ActiveListsActivity.this.finish();
+                super.onBackPressed();
             }
+        } else {
+            super.onBackPressed();
         }
     }
 
