@@ -225,17 +225,13 @@ public class ActiveListsActivity extends WithLoginActivity
         if(drawer != null) {
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
-            } else if (activeFragment != null && activeFragment.getChildFragmentManager().findFragmentByTag("One").equals(registrationFragment)) {
-                registrationToLoginFragmentChange();
-            } else {
-                if (provider.getActiveActivityNumber() == 2) {
-                    provider.nullActiveActivity();
+            } else if (activeFragment != null && registrationFragment != null) {
+                if(activeFragment.getChildFragmentManager().findFragmentByTag("One").equals(registrationFragment)) {
+                    registrationToLoginFragmentChange();
                 }
-                super.onBackPressed();
             }
-        } else {
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
     @Override
