@@ -204,6 +204,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     @Override
     protected void onDestroy() {
+        //provider.synchronizeDB();
         super.onDestroy();
     }
 
@@ -215,23 +216,24 @@ public class ActiveListsActivity extends WithLoginActivity
         super.onStop();
     }
 
-    private void finisher() {
-        this.finish();
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer != null) {
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
-            } else if (activeFragment != null && registrationFragment != null) {
+            } else if (activeFragment != null && registrationFragment != null && activeFragment.getChildFragmentManager() != null) {
                 if(activeFragment.getChildFragmentManager().findFragmentByTag("One").equals(registrationFragment)) {
                     registrationToLoginFragmentChange();
+                } else{
+                    super.onBackPressed();
                 }
+            } else{
+                super.onBackPressed();
             }
+        } else{
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @Override
@@ -469,7 +471,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void loginToActiveFragmentChange() {
         try {
-            if (activeFragment != null) {
+            if (activeFragment != null && activeListsOnlineFragment != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
                     FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
@@ -504,7 +506,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void loginToRegistrationFragmentChange() {
         try {
-            if (activeFragment != null) {
+            if (activeFragment != null && registrationFragment!= null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
                     FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
@@ -531,7 +533,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void registrationToActiveListsOnlineFragmentChange() {
         try {
-            if (activeFragment != null) {
+            if (activeFragment != null && activeListsOnlineFragment != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
                     FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
@@ -561,7 +563,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void activeToLoginFragmentChange() {
         try {
-            if (activeFragment != null) {
+            if (activeFragment != null &&loginFragment != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
                     FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
@@ -587,7 +589,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void registrationToLoginFragmentChange() {
         try {
-            if (activeFragment != null) {
+            if (activeFragment != null && loginFragment != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
                     FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();

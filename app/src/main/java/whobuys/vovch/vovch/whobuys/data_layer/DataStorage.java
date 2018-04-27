@@ -282,6 +282,19 @@ public class DataStorage {
     }
 
 
+    protected SList redactOfflineList(SList list, Item[] items){
+        SList result = null;
+        if(list != null && items != null) {
+            if (ListsOfflineActive.contains(list)) {
+                ListsOfflineActive.get(ListsOfflineActive.indexOf(list)).setItems(items);
+                result = ListsOfflineActive.get(ListsOfflineActive.indexOf(list));
+            } else if (ListsOfflineHistory.contains(list)) {
+                ListsOfflineHistory.get(ListsOfflineHistory.indexOf(list)).setItems(items);
+                result = ListsOfflineHistory.get(ListsOfflineHistory.indexOf(list));
+            }
+        }
+        return result;
+    }
 
 
     private void clearOfflineActive(){
@@ -353,13 +366,17 @@ public class DataStorage {
         }
     }
     protected SList[] getOfflineListsActive(){
-        SList[] tempLists;
-        tempLists = ListsOfflineActive.toArray(new SList[0]);
+        SList[] tempLists = new SList[0];
+        if(ListsOfflineActive.size() > 0) {
+            tempLists = new SList[ListsOfflineActive.size()];
+            tempLists = ListsOfflineActive.toArray(tempLists);
+        }
         return tempLists;
     }
     protected Item[] getOfflineItemsOfActiveLists(){
         Item[] tempItems = new Item[0];
         if(ItemsOfflineOfActiveLists.size() > 0) {
+            tempItems = new Item[ItemsOfflineOfActiveLists.size()];
             tempItems = ItemsOfflineOfActiveLists.toArray(tempItems);
         }
         return tempItems;
@@ -402,13 +419,19 @@ public class DataStorage {
         }
     }
     protected SList[] getOfflineListsHistory(){
-        SList[] tempLists;
-        tempLists = ListsOfflineHistory.toArray(new SList[0]);
+        SList[] tempLists = new SList[0];
+        if(ListsOfflineHistory.size() > 0) {
+            tempLists = new SList[ListsOfflineHistory.size()];
+            tempLists = ListsOfflineHistory.toArray(tempLists);
+        }
         return tempLists;
     }
     protected Item[] getOfflineItemsOfHistoryLists(){
-        Item[] tempItems;
-        tempItems = ItemsOfflineOfHistoryLists.toArray(new Item[0]);
+        Item[] tempItems = new Item[0];
+        if(ItemsOfflineOfHistoryLists.size() > 0) {
+            tempItems = new Item[ItemsOfflineOfHistoryLists.size()];
+            tempItems = ItemsOfflineOfHistoryLists.toArray(tempItems);
+        }
         return tempItems;
     }
 

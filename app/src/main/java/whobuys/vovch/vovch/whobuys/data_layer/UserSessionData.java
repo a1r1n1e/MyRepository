@@ -45,7 +45,7 @@ public class UserSessionData {
     private String login;
     private String token;
     private String session;
-    private static final String CLIENT_VERSION = "110";
+    private static final String CLIENT_VERSION = "120";
     private static final String CLIENT_TYPE = "1";
     private static final String ACTION_LOGIN = "login";
     private static final String ACTION_LOGOUT = "logout";

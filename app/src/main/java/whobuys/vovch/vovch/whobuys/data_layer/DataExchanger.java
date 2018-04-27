@@ -15,6 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by vovch on 24.12.2017.
  */
@@ -46,6 +49,17 @@ public class DataExchanger {
         }
     }
 
+    public boolean synchronizeDB(){                                                                     //not working properly. works only expanding side
+        boolean result = false;
+        try{
+            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            result = dataBaseTask2.synchronizeOffline(storage.getOfflineListsActive(), storage.getOfflineListsHistory());
+        } catch (Exception e){
+            Log.d("WhoBuys", "DE");
+        }
+        return result;
+    }
+
     public ListInformer[] getListInformers(String userId) {
         ListInformer[] informers = null;
         try {
@@ -55,7 +69,8 @@ public class DataExchanger {
             if (userId != null) {
                 JSONArray jsonArray = new JSONArray();
                 String jsonString = jsonArray.toString();
-                resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkactives", jsonString, provider.userSessionData);
+                //resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkactives", jsonString, provider.userSessionData);
+                resultJsonString = webCall.callServer("2", BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "check_group_updates", jsonString, provider.userSessionData);
                 if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
                     informers = webCall.getListInformersFromJsonString(resultJsonString.substring(3));
                     informers = storage.setListInformers(informers);
@@ -331,6 +346,19 @@ public class DataExchanger {
     }
 
 
+    protected UserGroup getGroupData(String groupId){
+        UserGroup result = null;
+        try{
+            DataBaseTask2 dataBaseTask2= new DataBaseTask2(context);
+            result = dataBaseTask2.getGroupData(groupId);
+
+        } catch (Exception e){
+            Log.d("WhoBuys", "DE");
+        }
+        return result;
+    }
+
+
     private void setHistoryListsToGroup(UserGroup group, SList[] lists) {
         try {
             if (group != null) {
@@ -580,11 +608,8 @@ public class DataExchanger {
     public boolean dropHistory(){
         boolean result = false;
         try {
-            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
-            result = dataBaseTask2.dropHistory();
-            if (result) {
-                storage.clearOfflineHistory();
-            }
+            storage.clearOfflineHistory();
+            result = true;
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
         }
@@ -636,14 +661,14 @@ public class DataExchanger {
     public Item itemmarkOffline(Item item) {
         Item result = null;
         try {
-            Item[] items = storage.getOfflineItemsOfActiveLists();
+            //Item[] items = storage.getOfflineItemsOfActiveLists();
             if (item != null) {
                 result = item;
                 DataBaseTask2 memoryTask = new DataBaseTask2(context);
                 memoryTask.itemMarkOffline(String.valueOf(result.getId()));
             }
-
-            storage.itemmarkOffline(result);
+            storage.itemmarkOffline(item);
+            result = item;
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
         }
@@ -673,11 +698,12 @@ public class DataExchanger {
     public SList addOfflineList(Item[] items) {
         SList list = null;
         try {
-            DataBaseTask2 addTask = new DataBaseTask2(context);
-            list = addTask.addList(items);
-
-            if (list != null) {
-                storage.addNewList(list);
+            if(items != null){
+                DataBaseTask2 addTask = new DataBaseTask2(context);
+                list = addTask.addList(items, "t");
+                if(list != null) {
+                    storage.addNewList(list);
+                }
             }
         } catch (Exception e){
             Log.d("WhoBuys", "DE");
@@ -737,6 +763,9 @@ public class DataExchanger {
             if (list != null && items != null) {
                 DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                 resultList = dataBaseTask2.redactOfflineList(list, items);
+                if(resultList != null) {
+                    resultList = storage.redactOfflineList(list, items);
+                }
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
