@@ -1,6 +1,7 @@
 package whobuys.vovch.vovch.whobuys.data_types;
 
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.widget.ImageButton;
 
 import java.text.ParseException;
@@ -63,12 +64,12 @@ public class SList /*implements Parcelable*/ {
                     Date date = dateFormatParser.parse(creationTime);
                     SimpleDateFormat dateFormatFormater = new SimpleDateFormat("dd-MM-yy HH:mm");
                     humanCreationTime = dateFormatFormater.format(date);
-                } catch (ParseException e) {                                                                 //TODO
-
+                } catch (ParseException e) {
+                    Log.d("WhoBuys", "SLIST");
                 }
             }
             else{
-
+                Log.d("WhoBuys", "empty");
             }
         }
     }

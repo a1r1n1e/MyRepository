@@ -163,7 +163,7 @@ public class WebCall {
                 for (int j = 0; j < membersNumber; j++) {
                     tempMember = tempMembersArray.getJSONObject(j);
                     members[j] = new AddingUser();
-                    members[j].setData(tempMember.getString("name"), tempMember.getString("id"));
+                    members[j].setData(tempMember.getString("user_name"), tempMember.getString("user_id"));
                 }
                 owner = tempJsonObject.getString("group_owner");
                 tempGroup = new UserGroup(name, id, members);

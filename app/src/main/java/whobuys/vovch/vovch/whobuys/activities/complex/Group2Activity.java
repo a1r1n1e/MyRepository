@@ -180,9 +180,9 @@ public class Group2Activity extends WithLoginActivity {
         provider.setActiveGroup(null);
         provider.setActiveListsActivityLoadType(0);
         provider.clearNewGroupPossibleMembers();
-        //Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
-        //intentGroupList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //startActivity(intentGroupList);
+        Intent intentGroupList = new Intent(Group2Activity.this, ActiveListsActivity.class);
+        intentGroupList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intentGroupList);
         super.onBackPressed();
     }
 

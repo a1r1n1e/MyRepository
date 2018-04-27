@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class UserGroup /*implements Parcelable*/ {
     private String name;
     private String id;
+    private String state;
     private ArrayList<SList> activeLists;
     private ArrayList<SList> historyLists;
     private ArrayList<AddingUser> members;
@@ -30,6 +31,7 @@ public class UserGroup /*implements Parcelable*/ {
         members = new ArrayList<>(Arrays.asList(newMembers));
         button = null;
         updateNeeded = false;
+        state = null;
     }
 
     public UserGroup(String newName, String newId, AddingUser[] newMembers) {
@@ -44,6 +46,7 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = null;
         button = null;
         updateNeeded = false;
+        state = null;
     }
 
     public UserGroup(String newName, String newId) {
@@ -55,6 +58,15 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = null;
         button = null;
         updateNeeded = false;
+        state = null;
+    }
+
+    public void setState(String newState){
+        state = newState;
+    }
+
+    public String getState(){
+        return state;
     }
 
     public String getId() {

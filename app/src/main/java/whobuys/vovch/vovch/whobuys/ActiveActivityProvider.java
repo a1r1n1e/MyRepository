@@ -21,6 +21,7 @@ import whobuys.vovch.vovch.whobuys.data_layer.DataExchanger;
 import whobuys.vovch.vovch.whobuys.data_layer.UserSessionData;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.ActiveListsInformerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.AddUserTask;
+import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DBSynchronizerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DropHistoryTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupActiveGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupChangeConfirmTask;
@@ -136,6 +137,13 @@ public class ActiveActivityProvider extends Application {
             result = true;
         }
         return result;
+    }
+
+
+    public void synchronizeDB(){
+        DBSynchronizerTask dbSynchronizerTask = new DBSynchronizerTask();
+        dbSynchronizerTask.execute(ActiveActivityProvider.this);
+        //boolean result = dataExchanger.synchronizeDB();
     }
 
 

@@ -368,10 +368,10 @@ public class NewGroup extends WithLoginActivity {
     }
 
     public void showGood(UserGroup result) {
-        Intent intent = new Intent(getThisActivityContext(), Group2Activity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         provider.setActiveGroup(result);
         provider.makeAllMembersPossible(result);
+        Intent intent = new Intent(getThisActivityContext(), Group2Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
