@@ -1,5 +1,7 @@
 package whobuys.vovch.vovch.whobuys.data_layer;
 
+import android.transition.Slide;
+
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
@@ -147,6 +149,7 @@ public class WebCall {
             groups = new UserGroup[length];
             UserGroup tempGroup;
             JSONObject tempJsonObject;
+            JSONArray tempListsArray;
             JSONArray tempMembersArray;
             String name;
             String id;
@@ -168,6 +171,53 @@ public class WebCall {
                 owner = tempJsonObject.getString("group_owner");
                 tempGroup = new UserGroup(name, id, members);
                 tempGroup.setOwner(owner);
+
+                tempListsArray = tempJsonObject.getJSONArray("group_lists");
+                int listsLength = tempListsArray.length();
+                JSONObject tempListObject;
+                for (int k = 0; k < listsLength; k++) {
+                    tempListObject = tempListsArray.getJSONObject(k);
+                    JSONArray encodedItems = tempListObject.getJSONArray("items_array");
+                    int itemsLength = encodedItems.length();
+                    Item[] items = new Item[itemsLength];
+                    for (int j = 0; j < itemsLength; j++) {
+                        String itemName = encodedItems.getJSONObject(j).getString("item_name");
+                        String itemComment = encodedItems.getJSONObject(j).getString("item_comment");
+                        int itemId = encodedItems.getJSONObject(j).getInt("item_id");
+                        String itemStateString = encodedItems.getJSONObject(j).getString("item_state");
+                        String itemOwner = encodedItems.getJSONObject(j).getString("item_owner_id");
+                        String itemOwnerName = encodedItems.getJSONObject(j).getString("item_owner_name");
+                        boolean itemState = false;
+                        if (itemStateString.equals("t")) {
+                            itemState = true;
+                        }
+                        Item tempItem = new Item(itemId, itemName, itemComment, itemState);
+                        if (!itemOwner.equals("null") && !itemOwnerName.equals("null")) {
+                            tempItem.setOwner(itemOwner);
+                            tempItem.setOwnerName(itemOwnerName);
+                        }
+                        items[j] = tempItem;
+                    }
+                    int listId = tempListObject.getInt("list_id");
+                    String listStateString = tempListObject.getString("list_state");
+                    boolean listState = false;
+                    if (listStateString.equals("t")) {
+                        listState = true;
+                    }
+                    int listOwner = tempListObject.getInt("list_owner");
+                    String listOwnerName = tempListObject.getString("list_owner_name");
+
+                    String creation_time = tempListObject.getString("list_creation_time");
+                    SList tempList = new SList(items, listId, tempGroup, false, listState, listOwner, listOwnerName, creation_time);
+                    if(tempList.getState()){
+                        tempGroup.addActiveList(tempList);
+                    } else {
+                        tempGroup.addHistoryList(tempList);
+                    }
+                    for (int m = 0; m < items.length; m++) {
+                        items[k].setList(tempList);
+                    }
+                }
                 groups[i] = tempGroup;
             }
         } catch (Exception e) {
@@ -239,55 +289,51 @@ public class WebCall {
                 JSONObject tempListObject;
                 lists = new SList[length];
                 for (int i = 0; i < length; i++) {
-                    try {
-                        tempListObject = fromJsonLists.getJSONObject(i);
-                        JSONArray encodedItems = tempListObject.getJSONArray("items_array");
-                        int itemsLength = encodedItems.length();
-                        items = new Item[itemsLength];
-                        for (int j = 0; j < itemsLength; j++) {
-                            String itemName = encodedItems.getJSONObject(j).getString("item_name");
-                            String itemComment = encodedItems.getJSONObject(j).getString("item_comment");
-                            int itemId = encodedItems.getJSONObject(j).getInt("item_id");
-                            String itemStateString = encodedItems.getJSONObject(j).getString("item_state");
-                            String itemOwner = encodedItems.getJSONObject(j).getString("item_owner_id");
-                            String itemOwnerName = encodedItems.getJSONObject(j).getString("item_owner_name");
-                            boolean itemState = false;
-                            if (itemStateString.equals("t")) {
-                                itemState = true;
-                            }
-                            tempItem = new Item(itemId, itemName, itemComment, itemState);
-                            if (!itemOwner.equals("null") && !itemOwnerName.equals("null")) {
-                                tempItem.setOwner(itemOwner);
-                                tempItem.setOwnerName(itemOwnerName);
-                            }
-                            items[j] = tempItem;
+                    tempListObject = fromJsonLists.getJSONObject(i);
+                    JSONArray encodedItems = tempListObject.getJSONArray("items_array");
+                    int itemsLength = encodedItems.length();
+                    items = new Item[itemsLength];
+                    for (int j = 0; j < itemsLength; j++) {
+                        String itemName = encodedItems.getJSONObject(j).getString("item_name");
+                        String itemComment = encodedItems.getJSONObject(j).getString("item_comment");
+                        int itemId = encodedItems.getJSONObject(j).getInt("item_id");
+                        String itemStateString = encodedItems.getJSONObject(j).getString("item_state");
+                        String itemOwner = encodedItems.getJSONObject(j).getString("item_owner_id");
+                        String itemOwnerName = encodedItems.getJSONObject(j).getString("item_owner_name");
+                        boolean itemState = false;
+                        if (itemStateString.equals("t")) {
+                            itemState = true;
                         }
-                        int listId = tempListObject.getInt("list_id");
-                        String listStateString = tempListObject.getString("list_state");
-                        boolean listState = false;
-                        if (listStateString.equals("t")) {
-                            listState = true;
+                        tempItem = new Item(itemId, itemName, itemComment, itemState);
+                        if (!itemOwner.equals("null") && !itemOwnerName.equals("null")) {
+                            tempItem.setOwner(itemOwner);
+                            tempItem.setOwnerName(itemOwnerName);
                         }
-                        int listOwner = tempListObject.getInt("list_owner");
-                        String listOwnerName = tempListObject.getString("list_owner_name");
-                        int listGroupId = tempListObject.getInt("list_group");
-
-                        if(group != null) {
-                            if (Integer.parseInt(group.getId()) != listGroupId) {
-                                group = null;
-                            }
-                        }
-
-
-                        String creation_time = tempListObject.getString("list_creation_time");
-                        tempList = new SList(items, listId, group, false, listState, listOwner, listOwnerName, creation_time);
-                        for (int k = 0; k < items.length; k++) {
-                            items[k].setList(tempList);
-                        }
-                        lists[i] = tempList;
-                    } catch (Exception e) {                                                                 //TODO
-                        String res = "123";
+                        items[j] = tempItem;
                     }
+                    int listId = tempListObject.getInt("list_id");
+                    String listStateString = tempListObject.getString("list_state");
+                    boolean listState = false;
+                    if (listStateString.equals("t")) {
+                        listState = true;
+                    }
+                    int listOwner = tempListObject.getInt("list_owner");
+                    String listOwnerName = tempListObject.getString("list_owner_name");
+                    int listGroupId = tempListObject.getInt("list_group");
+
+                    if(group != null) {
+                        if (Integer.parseInt(group.getId()) != listGroupId) {
+                            group = null;
+                        }
+                    }
+
+
+                    String creation_time = tempListObject.getString("list_creation_time");
+                    tempList = new SList(items, listId, group, false, listState, listOwner, listOwnerName, creation_time);
+                    for (int k = 0; k < items.length; k++) {
+                        items[k].setList(tempList);
+                    }
+                    lists[i] = tempList;
                 }
             } catch (Exception e) {
                 return null;

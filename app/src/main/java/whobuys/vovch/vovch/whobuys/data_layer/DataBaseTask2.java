@@ -480,8 +480,114 @@ public class DataBaseTask2 {
         return null;
     }
 
+    protected UserGroup[] setGroups(UserGroup[] groups){
+        try{
+            for(UserGroup group : groups){
+                addGroup(group);
+            }
+            return groups;
+        } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
+            return null;
+        }
+    }
+
+    protected void dropGroups(){
+        try{
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " WHERE EXIST ( SELECT" + SqLiteBaseContruct.Groups._ID + "FROM" + SqLiteBaseContruct.Groups.TABLE_NAME + ")");
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " WHERE EXIST ( SELECT" + SqLiteBaseContruct.UsersAndGroups._ID + "FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + ")");
+            db.close();
+        } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
+        }
+    }
+
+    protected UserGroup[] resetGroups(UserGroup[] groups){
+        try{
+            dropGroups();
+            for(UserGroup group : groups){
+                addGroup(group);
+            }
+            return groups;
+        } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
+            return null;
+        }
+    }
+
     protected UserGroup addGroup(UserGroup group){
-        return null;
+        try {
+            UserGroup result;
+            if (group != null && group.getId() != null) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " WHERE EXIST (SELECT" + SqLiteBaseContruct.Groups._ID + "WHERE" +
+                            SqLiteBaseContruct.Groups.COLUMN_NAME_ID + "= '" + group.getId() + "')");
+                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE  (SELECT" + SqLiteBaseContruct.Items._ID + "FROM" + SqLiteBaseContruct.Items.TABLE_NAME +
+                            "WHERE" + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + "= (SELECT " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + "FROM" +
+                            SqLiteBaseContruct.Lists.TABLE_NAME + "WHERE" + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = '" + group.getId() + "'");
+                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE  (SELECT" + SqLiteBaseContruct.Lists._ID + "WHERE" +
+                            SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + "= '" + group.getId() + "')");
+                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " WHERE EXIST (SELECT" + SqLiteBaseContruct.UsersAndGroups._ID +
+                        "FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + "WHERE" +
+                        SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + "= '" + group.getId() + "')");
+
+                ContentValues values = new ContentValues();
+                String state;
+                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_ID, group.getId());
+                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_NAME, group.getName());
+                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID, group.getOwner());
+                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME, group.getOwnerName());
+                values.clear();
+                db.insert(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups._ID, values);
+
+                for(AddingUser member : group.getMembers()){
+                    makeUserCreatedAndLinked(db, member, group);
+                }
+
+                result = group;
+
+                for(SList list : group.getActiveLists()){
+                    addOnlineList(list, group);
+                }
+
+                for(SList list : group.getHistoryLists()){
+                    addOnlineList(list, group);
+                }
+
+                db.close();
+                return result;
+            } else {
+                return null;
+            }
+        } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
+            return null;
+        }
+    }
+
+    protected void makeUserCreatedAndLinked(SQLiteDatabase db, AddingUser member, UserGroup group){
+        String query =  "SELECT " + SqLiteBaseContruct.Users.COLUMN_NAME_ID + " FROM" + SqLiteBaseContruct.Users.TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        ContentValues values = new ContentValues();
+        if(cursor.getCount() == 0){
+            values.put(SqLiteBaseContruct.Users.COLUMN_NAME_ID, member.getUserId());
+            values.put(SqLiteBaseContruct.Users.COLUMN_NAME_NAME, member.getUserName());
+            db.insert(SqLiteBaseContruct.Users.TABLE_NAME, SqLiteBaseContruct.Users._ID, values);
+            values.clear();
+        }
+        cursor.close();
+        String linkQuery =  "SELECT " + SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS + " FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME +
+                            "WHERE" + SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS + " = '" + member.getUserId() + "'";
+        Cursor linkCursor = db.rawQuery(linkQuery, null);
+        if(linkCursor.getCount() == 0){
+            values.put(SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS, member.getUserId());
+            values.put(SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS, group.getId());
+            db.insert(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups._ID, values);
+            values.clear();
+        }
+        linkCursor.close();
     }
 
     protected SList addOnlineList(SList list, UserGroup group){

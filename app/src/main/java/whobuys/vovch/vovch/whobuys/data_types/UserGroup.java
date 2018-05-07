@@ -20,6 +20,7 @@ public class UserGroup /*implements Parcelable*/ {
     private CardView cardView;
     private Button button;
     private String owner;
+    private String ownerName;
     private boolean updateNeeded;
 
     public UserGroup(String newName, String newId, SList[] newActiveLists, SList[] newHistoryLists, AddingUser[] newMembers) {
@@ -101,8 +102,16 @@ public class UserGroup /*implements Parcelable*/ {
         owner = newOwner;
     }
 
+    public void setOwnerName(String newOwnerName){
+        ownerName = newOwnerName;
+    }
+
     public String getOwner() {
         return owner;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public void disactivateList(SList list) {
@@ -124,6 +133,18 @@ public class UserGroup /*implements Parcelable*/ {
             activeLists = new ArrayList<>(Arrays.asList(lists));
         } else {
             activeLists = new ArrayList<>();
+        }
+    }
+
+    public void addActiveList(SList list){
+        if(list != null){
+            activeLists.add(list);
+        }
+    }
+
+    public void addHistoryList(SList list){
+        if(list != null){
+            historyLists.add(list);
         }
     }
 

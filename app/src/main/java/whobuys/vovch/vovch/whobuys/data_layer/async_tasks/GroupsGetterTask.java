@@ -16,7 +16,7 @@ public class GroupsGetterTask extends AsyncTask <Object, Void, UserGroup[]> {
     public UserGroup[] doInBackground(Object... loginPair) {
         UserGroup[] result = null;
         activeActivityProvider = (ActiveActivityProvider) loginPair[0];
-        result = activeActivityProvider.dataExchanger.getGroupsFromWeb();
+        result = activeActivityProvider.dataExchanger.getGroupsFromRAM();
         return result;
     }
 

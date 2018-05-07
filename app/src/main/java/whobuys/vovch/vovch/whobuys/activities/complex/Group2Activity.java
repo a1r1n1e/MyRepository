@@ -81,8 +81,10 @@ public class Group2Activity extends WithLoginActivity {
         provider.setActiveActivity(3, Group2Activity.this);
 
         UserGroup activeGroup = provider.getActiveGroup();
-        groupId = activeGroup.getId();
-        groupName = activeGroup.getName();
+        if(activeGroup != null) {
+            groupId = activeGroup.getId();
+            groupName = activeGroup.getName();
+        }
 
         fragmentManager = getSupportFragmentManager();
         viewPager = (ViewPager) findViewById(R.id.group_viewpager);
@@ -93,8 +95,10 @@ public class Group2Activity extends WithLoginActivity {
         }
         setSupportActionBar(toolbar);
 
-        TextView groupNameTextView = (TextView) findViewById(R.id.group_name_textview);
-        groupNameTextView.setText(groupName);
+        if(groupName != null) {
+            TextView groupNameTextView = (TextView) findViewById(R.id.group_name_textview);
+            groupNameTextView.setText(groupName);
+        }
         ImageButton settingsButton = (ImageButton) findViewById(R.id.group_settings_imagebutton);
         Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/settings_more");
         settingsButton.setImageURI(uri);

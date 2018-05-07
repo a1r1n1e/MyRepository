@@ -448,8 +448,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void onLoginFailed(String result) {                                                        //TODO cases
         try {
-            {
-            }
             activeToLoginFragmentChange();
             loginFailed = result;
             checkLoginBadInformNeeded();

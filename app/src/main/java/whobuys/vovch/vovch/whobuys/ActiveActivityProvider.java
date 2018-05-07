@@ -29,6 +29,7 @@ import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupDataSetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupHistoryGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupLeaverTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsGetterTask;
+import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsUpdateTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.LoginnerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.NewDataBaseTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.NewGroupAdderTask;
@@ -315,8 +316,8 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void getActiveActivityActiveLists() {
-        ActiveListsInformerTask activeListsInformerTask = new ActiveListsInformerTask();
-        activeListsInformerTask.execute(String.valueOf(userSessionData.getId()), ActiveActivityProvider.this);
+        GroupsUpdateTask groupsUpdateTask = new GroupsUpdateTask();
+        groupsUpdateTask.execute(ActiveActivityProvider.this);
     }
 
     public void showListInformersGottenGood(ListInformer[] result) {
