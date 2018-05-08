@@ -15,7 +15,7 @@ public class GroupsUpdateTask extends AsyncTask<Object, Void, ListInformer[]> {
     public ListInformer[] doInBackground(Object... loginPair){
         UserGroup[] result;
         ListInformer[] informers;
-        activeActivityProvider = (ActiveActivityProvider) loginPair[1];
+        activeActivityProvider = (ActiveActivityProvider) loginPair[0];
         result = activeActivityProvider.dataExchanger.updateGroups();
         informers = activeActivityProvider.dataExchanger.createListinformers();
         return informers;

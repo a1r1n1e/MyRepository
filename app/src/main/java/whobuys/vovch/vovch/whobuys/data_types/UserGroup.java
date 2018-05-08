@@ -43,8 +43,8 @@ public class UserGroup /*implements Parcelable*/ {
         if (newMembers != null) {
             setMembers(newMembers);
         }
-        activeLists = null;
-        historyLists = null;
+        activeLists = new ArrayList<>();
+        historyLists = new ArrayList<>();
         button = null;
         updateNeeded = false;
         state = null;
@@ -55,8 +55,8 @@ public class UserGroup /*implements Parcelable*/ {
         id = newId;
         owner = null;
         members = null;
-        activeLists = null;
-        historyLists = null;
+        activeLists = new ArrayList<>();
+        historyLists = new ArrayList<>();
         button = null;
         updateNeeded = false;
         state = null;

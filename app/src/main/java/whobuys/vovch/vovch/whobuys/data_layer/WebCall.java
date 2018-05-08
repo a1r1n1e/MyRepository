@@ -155,6 +155,7 @@ public class WebCall {
             String id;
             AddingUser[] members;
             String owner;
+            String ownerName;
             for (int i = 0; i < length; i++) {
                 tempJsonObject = groupsArray.getJSONObject(i);
                 name = tempJsonObject.getString("group_name");
@@ -168,9 +169,11 @@ public class WebCall {
                     members[j] = new AddingUser();
                     members[j].setData(tempMember.getString("user_name"), tempMember.getString("user_id"));
                 }
-                owner = tempJsonObject.getString("group_owner");
+                owner = tempJsonObject.getString("group_owner_id");
+                ownerName = tempJsonObject.getString("group_owner_name");
                 tempGroup = new UserGroup(name, id, members);
                 tempGroup.setOwner(owner);
+                tempGroup.setOwnerName(ownerName);
 
                 tempListsArray = tempJsonObject.getJSONArray("group_lists");
                 int listsLength = tempListsArray.length();
@@ -182,7 +185,6 @@ public class WebCall {
                     Item[] items = new Item[itemsLength];
                     for (int j = 0; j < itemsLength; j++) {
                         String itemName = encodedItems.getJSONObject(j).getString("item_name");
-                        String itemComment = encodedItems.getJSONObject(j).getString("item_comment");
                         int itemId = encodedItems.getJSONObject(j).getInt("item_id");
                         String itemStateString = encodedItems.getJSONObject(j).getString("item_state");
                         String itemOwner = encodedItems.getJSONObject(j).getString("item_owner_id");
@@ -191,7 +193,7 @@ public class WebCall {
                         if (itemStateString.equals("t")) {
                             itemState = true;
                         }
-                        Item tempItem = new Item(itemId, itemName, itemComment, itemState);
+                        Item tempItem = new Item(itemId, itemName, null, itemState);
                         if (!itemOwner.equals("null") && !itemOwnerName.equals("null")) {
                             tempItem.setOwner(itemOwner);
                             tempItem.setOwnerName(itemOwnerName);
@@ -204,7 +206,7 @@ public class WebCall {
                     if (listStateString.equals("t")) {
                         listState = true;
                     }
-                    int listOwner = tempListObject.getInt("list_owner");
+                    int listOwner = tempListObject.getInt("list_owner_id");
                     String listOwnerName = tempListObject.getString("list_owner_name");
 
                     String creation_time = tempListObject.getString("list_creation_time");
@@ -215,7 +217,7 @@ public class WebCall {
                         tempGroup.addHistoryList(tempList);
                     }
                     for (int m = 0; m < items.length; m++) {
-                        items[k].setList(tempList);
+                        items[m].setList(tempList);
                     }
                 }
                 groups[i] = tempGroup;

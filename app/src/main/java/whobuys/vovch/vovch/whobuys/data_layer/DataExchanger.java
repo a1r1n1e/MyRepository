@@ -88,7 +88,8 @@ public class DataExchanger {
             UserGroup[] groups = storage.getGroups();
             informers = new ListInformer[groups.length];
             for(int i = 0; i< groups.length; i++){
-                informers[i] = new ListInformer(groups[i].getName(), groups[i].getId(), groups[i].getState());
+                informers[i] = new ListInformer(groups[i].getId(), groups[i].getName(), groups[i].getState());
+                informers[i].setGroup(groups[i]);
             }
             storage.setListInformers(informers);
         } catch (Exception e){
@@ -266,7 +267,7 @@ public class DataExchanger {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String resultJsonString = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "update_groups", jsonString, provider.userSessionData);
             if(resultJsonString != null && resultJsonString.length() > 2){
-                if(!resultJsonString.substring(0, 3).equals("200")) {
+                if(resultJsonString.substring(0, 3).equals("200")) {                                    //TODO checking update needed
                     groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
                     groups = storage.setGroups(groups);
                     DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);

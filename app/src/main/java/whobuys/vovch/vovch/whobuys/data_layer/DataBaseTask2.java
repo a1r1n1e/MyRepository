@@ -495,8 +495,13 @@ public class DataBaseTask2 {
     protected void dropGroups(){
         try{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " WHERE EXIST ( SELECT" + SqLiteBaseContruct.Groups._ID + "FROM" + SqLiteBaseContruct.Groups.TABLE_NAME + ")");
-            db.execSQL("DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " WHERE EXIST ( SELECT" + SqLiteBaseContruct.UsersAndGroups._ID + "FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + ")");
+            //String sqlString1 = "DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " " + "WHERE EXIST (SELECT" + " " + SqLiteBaseContruct.Groups._ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + ")";
+            //String sqlString2 = "DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " WHERE EXIST ( SELECT" + SqLiteBaseContruct.UsersAndGroups._ID + "FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + ")"
+            //Cursor cursor = db.rawQuery(sqlString1, null);
+            db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,null, null);
+            db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, null, null);
+            //cursor = db.rawQuery(sqlString2, null);
+            //cursor.close();
             db.close();
         } catch (Exception e){
             Log.v("WhoBuys", "DBT2");
@@ -522,16 +527,24 @@ public class DataBaseTask2 {
             if (group != null && group.getId() != null) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " WHERE EXIST (SELECT" + SqLiteBaseContruct.Groups._ID + "WHERE" +
-                            SqLiteBaseContruct.Groups.COLUMN_NAME_ID + "= '" + group.getId() + "')");
-                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE  (SELECT" + SqLiteBaseContruct.Items._ID + "FROM" + SqLiteBaseContruct.Items.TABLE_NAME +
-                            "WHERE" + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + "= (SELECT " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + "FROM" +
-                            SqLiteBaseContruct.Lists.TABLE_NAME + "WHERE" + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = '" + group.getId() + "'");
-                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE  (SELECT" + SqLiteBaseContruct.Lists._ID + "WHERE" +
-                            SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + "= '" + group.getId() + "')");
-                db.execSQL( "DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " WHERE EXIST (SELECT" + SqLiteBaseContruct.UsersAndGroups._ID +
-                        "FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + "WHERE" +
-                        SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + "= '" + group.getId() + "')");
+                String[] groupArgs = {group.getId()};
+                db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " = ?", groupArgs );
+
+                String[] projection = {SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID};
+                Cursor cursor = db.query(SqLiteBaseContruct.Lists.TABLE_NAME, projection, SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?", groupArgs, null, null, null);
+                int length = cursor.getCount();
+                String[] lists = new String[length];
+                cursor.moveToFirst();
+                for(int i = 0; i < length; i++){
+                    lists[i] = cursor.getString(0);
+                    if(i + 1 < length) {
+                        cursor.moveToNext();
+                    }
+                }
+                cursor.close();
+                db.delete(  SqLiteBaseContruct.Items.TABLE_NAME, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " = ?", lists);
+
+                db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " = ?", groupArgs);
 
                 ContentValues values = new ContentValues();
                 String state;
@@ -568,8 +581,9 @@ public class DataBaseTask2 {
     }
 
     protected void makeUserCreatedAndLinked(SQLiteDatabase db, AddingUser member, UserGroup group){
-        String query =  "SELECT " + SqLiteBaseContruct.Users.COLUMN_NAME_ID + " FROM" + SqLiteBaseContruct.Users.TABLE_NAME;
-        Cursor cursor = db.rawQuery(query, null);
+        String[] projection1 = {SqLiteBaseContruct.Users.COLUMN_NAME_ID};
+        Cursor cursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, projection1, null, null, null, null, null);
+
         ContentValues values = new ContentValues();
         if(cursor.getCount() == 0){
             values.put(SqLiteBaseContruct.Users.COLUMN_NAME_ID, member.getUserId());
@@ -578,9 +592,11 @@ public class DataBaseTask2 {
             values.clear();
         }
         cursor.close();
-        String linkQuery =  "SELECT " + SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS + " FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME +
-                            "WHERE" + SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS + " = '" + member.getUserId() + "'";
-        Cursor linkCursor = db.rawQuery(linkQuery, null);
+
+        String[] args = {member.getUserId()};
+        String[] projection = {SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS};
+        Cursor linkCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, projection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " = ?", args, null, null, null);
+
         if(linkCursor.getCount() == 0){
             values.put(SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS, member.getUserId());
             values.put(SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS, group.getId());
@@ -674,7 +690,7 @@ public class DataBaseTask2 {
     protected boolean dropHistory(){
         try{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + "= '" + "f" + "'");
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = " + SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
             db.close();
             return true;
         } catch (Exception e){
