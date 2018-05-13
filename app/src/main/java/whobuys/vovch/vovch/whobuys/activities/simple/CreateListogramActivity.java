@@ -402,12 +402,13 @@ public class CreateListogramActivity extends WithLoginActivity {
         fab.setClickable(true);
     }
 
-    public void showAddListOnlineGood(){
+    public void showAddListOnlineGood(UserGroup group){
         if(TempItems != null) {
             TempItems.clear();
             TempItems.trimToSize();
         }
         provider.nullActiveActivity();
+        provider.setActiveGroup(group);
         Intent intent;
         intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

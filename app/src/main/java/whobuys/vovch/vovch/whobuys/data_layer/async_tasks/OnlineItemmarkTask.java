@@ -4,18 +4,19 @@ import android.os.AsyncTask;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
+import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 /**
  * Created by vovch on 06.01.2018.
  */
 
-public class OnlineItemmarkTask extends AsyncTask <Object, Item, Item>{
+public class OnlineItemmarkTask extends AsyncTask <Object, Item, UserGroup>{
     private ActiveActivityProvider activeActivityProvider;
     private Item markedItem;
 
     @Override
-    public Item doInBackground(Object... loginPair) {
-        Item result = null;
+    public UserGroup doInBackground(Object... loginPair) {
+        UserGroup result = null;
         activeActivityProvider = (ActiveActivityProvider) loginPair[1];
         markedItem = (Item) loginPair[0];
         if (markedItem != null){
@@ -29,12 +30,12 @@ public class OnlineItemmarkTask extends AsyncTask <Object, Item, Item>{
         activeActivityProvider.showItemmarkProcessingToUser(progress[0]);
     }
     @Override
-    public void onPostExecute(Item result){
+    public void onPostExecute(UserGroup result){
         if(result != null){
             activeActivityProvider.showOnlineItemmarkedGood(result);
         }
         else{
-            activeActivityProvider.showOnlineItemmarkedBad(markedItem);
+            activeActivityProvider.showOnlineItemmarkedBad(result);
         }
         markedItem = null;
         activeActivityProvider = null;

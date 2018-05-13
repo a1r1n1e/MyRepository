@@ -522,10 +522,10 @@ public class ActiveActivityProvider extends Application {
         redactOnlineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this);
     }
 
-    public void showOnlineListRedactedGood(SList resultList, int incomingActivity){
+    public void showOnlineListRedactedGood(int incomingActivity, UserGroup group){
         if (getActiveActivityNumber() == 6 && incomingActivity == 6) {
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
-            activity.showAddListOnlineGood();
+            activity.showAddListOnlineGood(group);
         }
     }
 
@@ -641,20 +641,24 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void showOnlineItemmarkedGood(Item item) {
-        if (getActiveActivityNumber() == 3) {
+    public void showOnlineItemmarkedGood(UserGroup group) {
+        if (getActiveActivityNumber() == 3 && group != null) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().equals(item.getList().getGroup())) {
-                activity.showThirdGood(item);
+            if (getActiveGroup().getId().equals(group.getId())) {
+                setActiveGroup(group);
+                activity.showGood(group.getActiveLists());
+                activity.historyLoadOnGood(group.getHistoryLists());
             }
         }
     }
 
-    public void showOnlineItemmarkedBad(Item item) {
+    public void showOnlineItemmarkedBad(UserGroup group) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().equals(item.getList().getGroup())) {
-                activity.showThirdBad(item);
+            if (getActiveGroup().getId().equals(group.getId())) {
+                //setActiveGroup(group);
+                activity.showBad(group.getActiveLists());
+                activity.historyLoadOnBad(group.getHistoryLists());
             }
         }
     }
@@ -669,14 +673,15 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void showOnlineDisactivateListGood(SList result) {
-        if (getActiveActivityNumber() == 3) {
+    public void showOnlineDisactivateListGood(UserGroup result) {
+        if (getActiveActivityNumber() == 3 && result != null) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().equals(result.getGroup())) {
-                activity.showSecondGood(result);
-                if (!dataExchanger.checkGroupActiveData(getActiveGroup())) {
-                    activity.showBad(new SList[0]);
-                }
+            if (getActiveGroup().getId().equals(result.getId())) {
+                activity.showGood(result.getActiveLists());
+                activity.historyLoadOnGood(result.getHistoryLists());
+                //if (!dataExchanger.checkGroupActiveData(getActiveGroup())) {
+                //    activity.showBad(new SList[0]);
+                //}
             }
         }
     }
@@ -691,10 +696,10 @@ public class ActiveActivityProvider extends Application {
     }
 
 
-    public void showOnlineListogramCreatedGood() {
+    public void showOnlineListogramCreatedGood(UserGroup group) {
         if (getActiveActivityNumber() == 6) {
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
-            activity.showAddListOnlineGood();
+            activity.showAddListOnlineGood(group);
         }
     }
 

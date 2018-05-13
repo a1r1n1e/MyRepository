@@ -21,6 +21,7 @@ public final class SqLiteBaseContruct {
         public static final String COLUMN_NAME_OWNER_ID = "list_owner_id";
 
         public static final String LIST_OFFLINE_DEFAULT_VALUE = "0000";
+        public static final int LIST_OFFLINE_DEFAULT_NUMBER = 0;
     }
     public static abstract class Items implements BaseColumns{
         public static final String TABLE_NAME = "items";
@@ -35,6 +36,7 @@ public final class SqLiteBaseContruct {
         public static final String COLUMN_NAME_OWNER_ID = "item_owner_id";
 
         public static final String ITEM_OFFLINE_DEFAULT_VALUE = "0000";
+        public static final int ITEM_OFFLINE_DEFAULT_NUMBER = 0;
 
     }
     public static abstract class Users implements BaseColumns{

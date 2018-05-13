@@ -185,7 +185,7 @@ public class WebCall {
                     Item[] items = new Item[itemsLength];
                     for (int j = 0; j < itemsLength; j++) {
                         String itemName = encodedItems.getJSONObject(j).getString("item_name");
-                        int itemId = encodedItems.getJSONObject(j).getInt("item_id");
+                        int itemId = Integer.parseInt(encodedItems.getJSONObject(j).getString("item_id"));
                         String itemStateString = encodedItems.getJSONObject(j).getString("item_state");
                         String itemOwner = encodedItems.getJSONObject(j).getString("item_owner_id");
                         String itemOwnerName = encodedItems.getJSONObject(j).getString("item_owner_name");
@@ -200,7 +200,7 @@ public class WebCall {
                         }
                         items[j] = tempItem;
                     }
-                    int listId = tempListObject.getInt("list_id");
+                    int listId = Integer.parseInt(tempListObject.getString("list_id"));
                     String listStateString = tempListObject.getString("list_state");
                     boolean listState = false;
                     if (listStateString.equals("t")) {
@@ -226,6 +226,15 @@ public class WebCall {
             return null;
         }
         return groups;
+    }
+
+    protected UserGroup getGroupFromJSONString(String result){
+        try {
+            UserGroup[] groups = getGroupsFromJsonString(result);
+            return groups[0];
+        } catch (Exception e){
+            return null;
+        }
     }
 
     protected String prepareItemsJSONString(Item[] items) {

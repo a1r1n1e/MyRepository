@@ -46,7 +46,7 @@ public class DataBaseTask2 {
             }
             Cursor cursor;
             Cursor listCursor;
-            String[] listArgs = {typeTask};
+            String[] listArgs = {typeTask, SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE};
             String[] listProjection = {
                     SqLiteBaseContruct.Lists._ID,
                     SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
@@ -68,8 +68,9 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID,
                     SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE,
                     SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID};
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            listCursor = db.query(SqLiteBaseContruct.Lists.TABLE_NAME, listProjection, SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + "=?", listArgs, null, null, null);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            listCursor = db.query(  SqLiteBaseContruct.Lists.TABLE_NAME, listProjection, SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + " =?" + " AND " +
+                                    SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " =? ", listArgs, null, null, null);
             if (listCursor != null) {
                 listCursor.moveToFirst();
                 listNumber = listCursor.getCount();
@@ -77,8 +78,9 @@ public class DataBaseTask2 {
 
                 for (int i = 0; i < listNumber; i++) {
                     int listId = listCursor.getInt(0);
-                    String[] arg = {String.valueOf(listId)};
-                    cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE + "=?", arg, null, null, orderBy);
+                    String[] arg = {String.valueOf(listId), SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE};
+                    cursor = db.query(  SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE + " = ?" + " AND " +
+                                        SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " = ?", arg, null, null, orderBy);
                     if (cursor != null) {
                         cursor.moveToFirst();
                         itemNumber = cursor.getCount();
@@ -162,8 +164,8 @@ public class DataBaseTask2 {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
                 listCursor = db.query(  SqLiteBaseContruct.Lists.TABLE_NAME, listProjection,
-                                            SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + "=?" + "AND" +
-                                                     SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + "=?",
+                                            SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + " =?" + " AND " +
+                                                     SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " =?",
                                         listArgs, null, null, null);
 
             if (listCursor != null) {
@@ -172,9 +174,9 @@ public class DataBaseTask2 {
                 sLists = new SList[listNumber];
 
                 for (int i = 0; i < listNumber; i++) {
-                    int listId = listCursor.getInt(0);
-                    String[] arg = {String.valueOf(listId)};
-                    cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + "=?", arg, null, null, orderBy);
+                    String listId = listCursor.getString(6);
+                    String[] arg = {listId};
+                    cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " =?", arg, null, null, orderBy);
                     if (cursor != null) {
                         cursor.moveToFirst();
                         itemNumber = cursor.getCount();
@@ -184,7 +186,7 @@ public class DataBaseTask2 {
                             if (cursor.getString(2).equals("t")) {
                                 type = true;
                             }
-                            tempItem = new Item(cursor.getInt(3), cursor.getString(0), cursor.getString(1), type);
+                            tempItem = new Item(Integer.parseInt(cursor.getString(9)), cursor.getString(0), cursor.getString(1), type);
                             tempItem.setOwnerName(cursor.getString(6));
                             tempItem.setOwner(cursor.getString(7));
                             items[j] = tempItem;
@@ -196,7 +198,7 @@ public class DataBaseTask2 {
                         if (listCursor.getString(1).equals("t")) {
                             type = true;
                         }
-                        tempSlist = new SList(items, listCursor.getInt(0), null, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
+                        tempSlist = new SList(items, Integer.parseInt(listId), null, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -274,13 +276,13 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS};
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            groupCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + "=?", usersAndGroupsArgs, null, null, null);
+            groupCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " =?", usersAndGroupsArgs, null, null, null);
             groupCursor.moveToFirst();
             String group_id = groupCursor.getString(0);
             String group_name = groupCursor.getString(1);
             String group_state = groupCursor.getString(2);
 
-            userAndGroupsCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, usersAndGroupProjection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + "=?", usersAndGroupsArgs, null, null, null);
+            userAndGroupsCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, usersAndGroupProjection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", usersAndGroupsArgs, null, null, null);
             userAndGroupsCursor.moveToFirst();
 
             StringBuilder member_id = new StringBuilder("");
@@ -291,7 +293,7 @@ public class DataBaseTask2 {
             for (int i = 0; i < userAndGroupsCursor.getCount(); i++) {
                 String[] usersArgs = {userAndGroupsCursor.getString(0)};
 
-                usersCursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, usersProjection, SqLiteBaseContruct.Users.COLUMN_NAME_ID + "=?", usersArgs, null, null, null);
+                usersCursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, usersProjection, SqLiteBaseContruct.Users.COLUMN_NAME_ID + " =?", usersArgs, null, null, null);
                 usersCursor.moveToFirst();
 
                 member_id.append(String.valueOf(usersCursor.getInt(0)));
@@ -370,22 +372,26 @@ public class DataBaseTask2 {
                     }
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_NAME, item.getName());
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, item.getComment());
-                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE, String.valueOf(list.getId()));
+                    values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE, list.getId());
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME, list.getCreationTime());
                     if(list.getType()) {
-                        values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
+                        values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_NUMBER);
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
                     } else {
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE, list.getId());
-                        values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID, item.getId());
-                        values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER, item.getOwnerName());
-                        values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID, item.getOwner());
+                        values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID, String.valueOf(item.getId()));
+                        if(!item.getState()) {
+                            values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER, item.getOwnerName());
+                            values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID, item.getOwner());
+                        } else {
+                            values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
+                            values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
+                        }
                     }
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE, currentState);
                     int itemId = (int) db.insert(SqLiteBaseContruct.Items.TABLE_NAME, SqLiteBaseContruct.Items._ID, values);                            // long to int careful
-                    item.setId(itemId);
                     values.clear();
                 }
                 values.clear();
@@ -480,6 +486,27 @@ public class DataBaseTask2 {
         return null;
     }
 
+    protected UserGroup[] getGroups(){
+        UserGroup[] groups = null;
+        try {
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String[] groupsProjection = {SqLiteBaseContruct.Groups.COLUMN_NAME_ID};
+
+            Cursor cursor = db.rawQuery("SELECT " + SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME, null);
+            cursor.moveToFirst();
+            int length = cursor.getCount();
+            groups = new UserGroup[length];
+            for(int i = 0; i < length; i++){
+                String groupId = cursor.getString(0);
+                groups[i] = getGroupData(groupId);
+            }
+            cursor.close();
+        } catch (Exception e){
+            Log.d("WhoBuys", "DBT2");
+        }
+        return groups;
+    }
+
     protected UserGroup[] setGroups(UserGroup[] groups){
         try{
             for(UserGroup group : groups){
@@ -530,21 +557,15 @@ public class DataBaseTask2 {
                 String[] groupArgs = {group.getId()};
                 db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " = ?", groupArgs );
 
-                String[] projection = {SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID};
-                Cursor cursor = db.query(SqLiteBaseContruct.Lists.TABLE_NAME, projection, SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?", groupArgs, null, null, null);
-                int length = cursor.getCount();
-                String[] lists = new String[length];
-                cursor.moveToFirst();
-                for(int i = 0; i < length; i++){
-                    lists[i] = cursor.getString(0);
-                    if(i + 1 < length) {
-                        cursor.moveToNext();
-                    }
-                }
-                cursor.close();
-                db.delete(  SqLiteBaseContruct.Items.TABLE_NAME, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " = ?", lists);
 
-                db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " = ?", groupArgs);
+                    db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE +
+                                " IN ( SELECT " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
+                                " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?" + ")", groupArgs);
+                    db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
+                            " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?", groupArgs);
+
+
+                db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", groupArgs);
 
                 ContentValues values = new ContentValues();
                 String state;
@@ -620,7 +641,7 @@ public class DataBaseTask2 {
                 }
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE, state);
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP, group.getId());
-                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID, list.getId());
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID, String.valueOf(list.getId()));
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER, list.getOwnerName());
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID, list.getOwner());
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME, list.getCreationTime());

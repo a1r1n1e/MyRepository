@@ -74,6 +74,10 @@ public class UserGroup /*implements Parcelable*/ {
         return id;
     }
 
+    public void setName(String newName){
+        name = newName;
+    }
+
     public String getName() {
         return name;
     }

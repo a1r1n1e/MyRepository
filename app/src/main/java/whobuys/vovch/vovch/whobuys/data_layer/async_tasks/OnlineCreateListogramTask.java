@@ -32,7 +32,7 @@ public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGrou
     public void onPostExecute(UserGroup result){
         if(activityType == 6) {
             if (result != null) {
-                activeActivityProvider.showOnlineListogramCreatedGood();
+                activeActivityProvider.showOnlineListogramCreatedGood(result);
                 activeActivityProvider.dataExchanger.clearTempItems();
             } else {
                 activeActivityProvider.showOnlineListogramCreatedBad();

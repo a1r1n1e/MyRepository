@@ -587,7 +587,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void registrationToLoginFragmentChange() {
         try {
-            if (activeFragment != null && loginFragment != null) {
+            if (activeFragment != null && loginFragment != null && activeFragment.getChildFragmentManager() != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
                     FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();

@@ -209,6 +209,18 @@ public class DataStorage {
         }
         return result;
     }
+
+    protected UserGroup resetGroup(UserGroup group, UserGroup newGroup){
+        UserGroup result = null;
+        if(group != null){
+            if(Groups.contains(group)){
+                Groups.add(Groups.indexOf(group), newGroup);
+                result = newGroup;
+            }
+        }
+        return result;
+    }
+
     protected void addGroup(UserGroup newGroup){
         if(!Groups.contains(newGroup)) {
             Groups.add(newGroup);

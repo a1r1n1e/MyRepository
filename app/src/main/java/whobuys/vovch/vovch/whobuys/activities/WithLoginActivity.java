@@ -1,10 +1,7 @@
 package whobuys.vovch.vovch.whobuys.activities;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
-import com.example.vovch.listogram_20.R;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 

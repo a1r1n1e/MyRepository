@@ -6,28 +6,30 @@ import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.activities.WithLoginActivity;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.SList;
+import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 /**
  * Created by vovch on 16.02.2018.
  */
 
-public class RedactOnlineListTask extends AsyncTask<Object, Void, SList> {
+public class RedactOnlineListTask extends AsyncTask<Object, Void, UserGroup> {
     private ActiveActivityProvider activeActivityProvider;
     private int activityType;
 
     @Override
-    public SList doInBackground(Object... loginPair){
+    public UserGroup doInBackground(Object... loginPair){
+        UserGroup result;
         SList list = (SList) loginPair[0];
         Item[] items = (Item[]) loginPair[1];
         activityType = (Integer) loginPair[2];
         activeActivityProvider = (ActiveActivityProvider) loginPair[3];
-        list = activeActivityProvider.dataExchanger.redactOnlineList(list, items);
-        return list;
+        result = activeActivityProvider.dataExchanger.redactOnlineList(list, items);
+        return result;
     }
     @Override
-    public void onPostExecute(SList result) {
+    public void onPostExecute(UserGroup result) {
         if (result != null) {
-            activeActivityProvider.showOnlineListRedactedGood(result, activityType);
+            activeActivityProvider.showOnlineListRedactedGood(activityType, result);
         } else {
             activeActivityProvider.showOnlineListRedactedBad(null, activityType);
         }
