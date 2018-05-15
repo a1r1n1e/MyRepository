@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.vovch.listogram_20.R;
 
 import whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity;
+import whobuys.vovch.vovch.whobuys.data_layer.SqLiteBaseContruct;
 import whobuys.vovch.vovch.whobuys.data_types.HistoryScrollView;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ItemButton;
@@ -196,7 +197,7 @@ public class GroupFragmentHistory extends Fragment {
         item.setButton(groupButton);
         addingVerticalLayout.addView(addingLayout);
         item.setVerticalLayout(addingVerticalLayout);
-        if(item.getOwnerName() != null && item.getOwner() != null){
+        if(item.getOwnerName() != null && item.getOwner() != null && !item.getOwner().equals(SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE)){
             TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
             itemOwnerTextView.setText(getString(R.string.by) + " " + item.getOwnerName());
             addingVerticalLayout.addView(itemOwnerTextView);

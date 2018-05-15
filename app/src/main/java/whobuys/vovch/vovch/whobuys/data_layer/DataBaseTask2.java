@@ -161,7 +161,7 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID,
                     SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE,
                     SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID};
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 listCursor = db.query(  SqLiteBaseContruct.Lists.TABLE_NAME, listProjection,
                                             SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + " =?" + " AND " +
@@ -207,13 +207,17 @@ public class DataBaseTask2 {
                     if(cursor != null) {
                         cursor.close();
                     }
-                    db.close();
                 }
             }
             if(listCursor != null){
                 listCursor.close();
             }
-            return sLists;
+            db.close();
+            if(sLists != null) {
+                return sLists;
+            } else {
+                return new SList[0];
+            }
         } catch (Exception e) {
             return sLists;
         }
@@ -257,7 +261,7 @@ public class DataBaseTask2 {
         return result;
     }
 
-    private UserGroup getGroupStateData(String groupId){                                                //potentially useful NOT DEBUGGED
+    private UserGroup getGroupStateData(String groupId){
         UserGroup result = null;
         try {
             Cursor usersCursor;
@@ -270,53 +274,63 @@ public class DataBaseTask2 {
             String[] groupsProjection = {
                     SqLiteBaseContruct.Groups.COLUMN_NAME_ID,
                     SqLiteBaseContruct.Groups.COLUMN_NAME_NAME,
-                    SqLiteBaseContruct.Groups.COLUMN_NAME_STATE};
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_STATE,
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID,
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME};
             String[] usersAndGroupProjection = {
                     SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS,
                     SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS};
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
             groupCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " =?", usersAndGroupsArgs, null, null, null);
-            groupCursor.moveToFirst();
-            String group_id = groupCursor.getString(0);
-            String group_name = groupCursor.getString(1);
-            String group_state = groupCursor.getString(2);
+            if(groupCursor != null && groupCursor.moveToFirst()){
+                String group_id = groupCursor.getString(0);
+                String group_name = groupCursor.getString(1);
+                String group_state = groupCursor.getString(2);
+                String group_owner_id = groupCursor.getString(3);
+                String group_owner_name = groupCursor.getString(4);
 
-            userAndGroupsCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, usersAndGroupProjection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", usersAndGroupsArgs, null, null, null);
-            userAndGroupsCursor.moveToFirst();
+                userAndGroupsCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, usersAndGroupProjection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", usersAndGroupsArgs, null, null, null);
+                if(userAndGroupsCursor != null && userAndGroupsCursor.moveToFirst()) {
 
-            StringBuilder member_id = new StringBuilder("");
-            StringBuilder member_name = new StringBuilder("");
-            AddingUser addingUser;
-            AddingUser[] members = new AddingUser[userAndGroupsCursor.getCount()];
+                    StringBuilder member_id = new StringBuilder("");
+                    StringBuilder member_name = new StringBuilder("");
+                    AddingUser addingUser;
+                    AddingUser[] members = new AddingUser[userAndGroupsCursor.getCount()];
 
-            for (int i = 0; i < userAndGroupsCursor.getCount(); i++) {
-                String[] usersArgs = {userAndGroupsCursor.getString(0)};
+                    for (int i = 0; i < userAndGroupsCursor.getCount(); i++) {
+                        String[] usersArgs = {userAndGroupsCursor.getString(0)};
 
-                usersCursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, usersProjection, SqLiteBaseContruct.Users.COLUMN_NAME_ID + " =?", usersArgs, null, null, null);
-                usersCursor.moveToFirst();
+                        usersCursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, usersProjection, SqLiteBaseContruct.Users.COLUMN_NAME_ID + " =?", usersArgs, null, null, null);
+                        if (usersCursor != null && usersCursor.moveToFirst()) {
 
-                member_id.append(String.valueOf(usersCursor.getInt(0)));
-                member_name.append(String.valueOf(usersCursor.getString(1)));
+                            member_id.append(String.valueOf(usersCursor.getInt(0)));
+                            member_name.append(String.valueOf(usersCursor.getString(1)));
 
-                addingUser = new AddingUser();
-                addingUser.setData(member_name.toString(), member_id.toString());
-                members[i] = addingUser;
+                            addingUser = new AddingUser();
+                            addingUser.setData(member_name.toString(), member_id.toString());
+                            members[i] = addingUser;
 
-                member_id.setLength(0);
-                member_id.trimToSize();
-                member_name.setLength(0);
-                member_name.trimToSize();
+                            member_id.setLength(0);
+                            member_id.trimToSize();
+                            member_name.setLength(0);
+                            member_name.trimToSize();
 
-                usersCursor.close();
-                userAndGroupsCursor.moveToNext();
+                            usersCursor.close();
+                        }
+
+                        userAndGroupsCursor.moveToNext();
+                    }
+
+                    result = new UserGroup(group_name, group_id, members);
+                    result.setState(group_state);
+                    result.setOwner(group_owner_id);
+                    result.setOwnerName(group_owner_name);
+
+                    userAndGroupsCursor.close();
+                    groupCursor.close();
+                }
             }
-
-            result = new UserGroup(group_name, group_id, members);
-            result.setState(group_state);
-
-            groupCursor.close();
-            userAndGroupsCursor.close();
             db.close();
         } catch (Exception e){
             Log.d("WhoBuys", "DBT2");
@@ -489,18 +503,29 @@ public class DataBaseTask2 {
     protected UserGroup[] getGroups(){
         UserGroup[] groups = null;
         try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            String[] groupsProjection = {SqLiteBaseContruct.Groups.COLUMN_NAME_ID};
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String[] groupsProjection = {
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_ID,
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_NAME,
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_STATE};
 
-            Cursor cursor = db.rawQuery("SELECT " + SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME, null);
-            cursor.moveToFirst();
-            int length = cursor.getCount();
-            groups = new UserGroup[length];
-            for(int i = 0; i < length; i++){
-                String groupId = cursor.getString(0);
-                groups[i] = getGroupData(groupId);
+            //Cursor cursor = db.rawQuery("SELECT " + SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME, null);
+
+            Cursor groupsCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, null);
+            if(groupsCursor.moveToFirst()) {
+                int length = groupsCursor.getCount();
+                groups = new UserGroup[length];
+                for (int i = 0; i < length; i++) {
+                    int djsfb = groupsCursor.getColumnIndex(SqLiteBaseContruct.Groups.COLUMN_NAME_ID);
+                    String groupId = groupsCursor.getString(djsfb);
+                    groups[i] = getGroupData(groupId);
+                    if (i < length - 1) {
+                        groupsCursor.moveToNext();
+                    }
+                }
             }
-            cursor.close();
+            groupsCursor.close();
+            db.close();
         } catch (Exception e){
             Log.d("WhoBuys", "DBT2");
         }
@@ -573,11 +598,14 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_NAME, group.getName());
                 values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID, group.getOwner());
                 values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME, group.getOwnerName());
-                values.clear();
+                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_STATE, group.getState());
                 db.insert(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups._ID, values);
 
+                values.clear();
+                db.close();
+
                 for(AddingUser member : group.getMembers()){
-                    makeUserCreatedAndLinked(db, member, group);
+                    makeUserCreatedAndLinked(member, group);
                 }
 
                 result = group;
@@ -590,7 +618,6 @@ public class DataBaseTask2 {
                     addOnlineList(list, group);
                 }
 
-                db.close();
                 return result;
             } else {
                 return null;
@@ -601,12 +628,14 @@ public class DataBaseTask2 {
         }
     }
 
-    protected void makeUserCreatedAndLinked(SQLiteDatabase db, AddingUser member, UserGroup group){
-        String[] projection1 = {SqLiteBaseContruct.Users.COLUMN_NAME_ID};
-        Cursor cursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, projection1, null, null, null, null, null);
+    protected void makeUserCreatedAndLinked(AddingUser member, UserGroup group){
+        String[] projection1 = {SqLiteBaseContruct.Users.COLUMN_NAME_NAME};
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query(SqLiteBaseContruct.Users.TABLE_NAME, projection1, SqLiteBaseContruct.Users.COLUMN_NAME_ID + " =?", new String[]{member.getUserId()}, null, null, null);
 
         ContentValues values = new ContentValues();
-        if(cursor.getCount() == 0){
+        if(cursor.getCount() <= 0){
             values.put(SqLiteBaseContruct.Users.COLUMN_NAME_ID, member.getUserId());
             values.put(SqLiteBaseContruct.Users.COLUMN_NAME_NAME, member.getUserName());
             db.insert(SqLiteBaseContruct.Users.TABLE_NAME, SqLiteBaseContruct.Users._ID, values);
@@ -614,17 +643,19 @@ public class DataBaseTask2 {
         }
         cursor.close();
 
-        String[] args = {member.getUserId()};
+        String[] args = {group.getId(), member.getUserId()};
         String[] projection = {SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS};
-        Cursor linkCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, projection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " = ?", args, null, null, null);
+        Cursor linkCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, projection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " = ?" + " AND " +
+                                     SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS + " =?", args, null, null, null);
 
-        if(linkCursor.getCount() == 0){
+        if(linkCursor.getCount() <= 0){
             values.put(SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS, member.getUserId());
             values.put(SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS, group.getId());
             db.insert(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups._ID, values);
             values.clear();
         }
         linkCursor.close();
+        db.close();
     }
 
     protected SList addOnlineList(SList list, UserGroup group){

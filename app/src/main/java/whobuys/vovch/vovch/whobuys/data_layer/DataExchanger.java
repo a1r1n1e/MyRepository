@@ -268,12 +268,14 @@ public class DataExchanger {
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             String resultJsonString = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "update_groups", jsonString, provider.userSessionData);
             if(resultJsonString != null && resultJsonString.length() > 2){
+                DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                 if(resultJsonString.substring(0, 3).equals("200")) {                                    //TODO checking update needed
                     groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
                     groups = storage.setGroups(groups);
-                    DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                     result = dataBaseTask2.resetGroups(groups);
                 } else {
+                    groups = dataBaseTask2.getGroups();
+                    groups = storage.setGroups(groups);
                     result = groups;
                 }
             }

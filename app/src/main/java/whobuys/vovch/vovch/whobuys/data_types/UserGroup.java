@@ -32,7 +32,7 @@ public class UserGroup /*implements Parcelable*/ {
         members = new ArrayList<>(Arrays.asList(newMembers));
         button = null;
         updateNeeded = false;
-        state = null;
+        state = "1";
     }
 
     public UserGroup(String newName, String newId, AddingUser[] newMembers) {
@@ -47,7 +47,7 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = new ArrayList<>();
         button = null;
         updateNeeded = false;
-        state = null;
+        state = "!";
     }
 
     public UserGroup(String newName, String newId) {
@@ -59,7 +59,7 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = new ArrayList<>();
         button = null;
         updateNeeded = false;
-        state = null;
+        state = "!";
     }
 
     public void setState(String newState){
