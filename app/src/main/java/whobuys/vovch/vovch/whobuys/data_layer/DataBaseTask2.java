@@ -123,7 +123,7 @@ public class DataBaseTask2 {
         }
     }
 
-    private SList[] getOnline(int taskType, int groupId) {
+    private SList[] getOnline(int taskType, UserGroup group) {
         String typeTask;
         SList[] sLists = null;
         Item[] items;
@@ -139,7 +139,7 @@ public class DataBaseTask2 {
             }
             Cursor cursor;
             Cursor listCursor;
-            String[] listArgs = {typeTask,String.valueOf(groupId)};
+            String[] listArgs = {typeTask, group.getId()};
             String[] listProjection = {
                     SqLiteBaseContruct.Lists._ID,
                     SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
@@ -175,6 +175,17 @@ public class DataBaseTask2 {
 
                 for (int i = 0; i < listNumber; i++) {
                     String listId = listCursor.getString(6);
+
+                    type = false;
+                    if (listCursor.getString(1).equals("t")) {
+                        type = true;
+                    }
+                    tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
+                    sLists[i] = tempSlist;
+                    if (i + 1 < listNumber) {
+                        listCursor.moveToNext();
+                    }
+
                     String[] arg = {listId};
                     cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " =?", arg, null, null, orderBy);
                     if (cursor != null) {
@@ -189,20 +200,13 @@ public class DataBaseTask2 {
                             tempItem = new Item(Integer.parseInt(cursor.getString(9)), cursor.getString(0), cursor.getString(1), type);
                             tempItem.setOwnerName(cursor.getString(6));
                             tempItem.setOwner(cursor.getString(7));
+                            tempItem.setList(tempSlist);
                             items[j] = tempItem;
                             if (j + 1 < itemNumber) {
                                 cursor.moveToNext();
                             }
                         }
-                        type = false;
-                        if (listCursor.getString(1).equals("t")) {
-                            type = true;
-                        }
-                        tempSlist = new SList(items, Integer.parseInt(listId), null, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
-                        sLists[i] = tempSlist;
-                        if (i + 1 < listNumber) {
-                            listCursor.moveToNext();
-                        }
+                        tempSlist.setItems(items);
                     }
                     if(cursor != null) {
                         cursor.close();
@@ -250,9 +254,11 @@ public class DataBaseTask2 {
     public UserGroup getGroupData(String groupId){                                                      //potentially useful. NOT DEBUGGED
         UserGroup result = null;
         try {
-            SList[] activeLists = getOnline(1, Integer.parseInt(groupId));
-            SList[] historyLists = getOnline(0, Integer.parseInt(groupId));
             result = getGroupStateData(groupId);
+
+            SList[] activeLists = getOnline(1, result);
+            SList[] historyLists = getOnline(0, result);
+
             result.setActiveLists(activeLists);
             result.setHistoryLists(historyLists);
         } catch (Exception e){

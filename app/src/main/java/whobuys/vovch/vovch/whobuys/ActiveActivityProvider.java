@@ -316,8 +316,15 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void getActiveActivityActiveLists() {
-        GroupsUpdateTask groupsUpdateTask = new GroupsUpdateTask();
-        groupsUpdateTask.execute(ActiveActivityProvider.this);
+        if(userSessionData.isLoginned()) {
+            GroupsUpdateTask groupsUpdateTask = new GroupsUpdateTask();
+            groupsUpdateTask.execute(ActiveActivityProvider.this);
+        } else {
+            if(getActiveActivityNumber() == 2){
+                ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+                activity.activeToLoginFragmentChange();
+            }
+        }
     }
 
     public void showListInformersGottenGood(ListInformer[] result) {
@@ -657,8 +664,8 @@ public class ActiveActivityProvider extends Application {
             Group2Activity activity = (Group2Activity) getActiveActivity();
             if (getActiveGroup().getId().equals(group.getId())) {
                 //setActiveGroup(group);
-                activity.showBad(group.getActiveLists());
-                activity.historyLoadOnBad(group.getHistoryLists());
+                activity.showGood(group.getActiveLists());
+                activity.historyLoadOnGood(group.getHistoryLists());
             }
         }
     }

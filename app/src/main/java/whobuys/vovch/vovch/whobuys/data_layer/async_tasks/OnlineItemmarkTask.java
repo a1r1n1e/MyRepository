@@ -12,13 +12,16 @@ import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 public class OnlineItemmarkTask extends AsyncTask <Object, Item, UserGroup>{
     private ActiveActivityProvider activeActivityProvider;
-    private Item markedItem;
+    private UserGroup group;
 
     @Override
     public UserGroup doInBackground(Object... loginPair) {
         UserGroup result = null;
         activeActivityProvider = (ActiveActivityProvider) loginPair[1];
-        markedItem = (Item) loginPair[0];
+        Item markedItem = (Item) loginPair[0];
+        if(markedItem != null && markedItem.getList() != null && markedItem.getList().getGroup() != null){
+            group = markedItem.getList().getGroup();
+        }
         if (markedItem != null){
             publishProgress(markedItem);
             result = activeActivityProvider.dataExchanger.itemmarkOnline(markedItem);
@@ -35,9 +38,9 @@ public class OnlineItemmarkTask extends AsyncTask <Object, Item, UserGroup>{
             activeActivityProvider.showOnlineItemmarkedGood(result);
         }
         else{
-            activeActivityProvider.showOnlineItemmarkedBad(result);
+            activeActivityProvider.showOnlineItemmarkedBad(group);
         }
-        markedItem = null;
+        group = null;
         activeActivityProvider = null;
     }
 }

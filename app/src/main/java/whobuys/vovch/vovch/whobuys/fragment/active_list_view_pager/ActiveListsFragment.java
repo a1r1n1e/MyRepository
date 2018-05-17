@@ -37,7 +37,7 @@ public class ActiveListsFragment extends Fragment {
         unsetRefresher();
         ActiveListsActivity activity = (ActiveListsActivity) getActivity();
         if(activity != null) {
-            activity.loginFragmentStart();
+            activity.loginToActiveFragmentChange();
         }
         return rootView;
     }

@@ -2,6 +2,8 @@ package whobuys.vovch.vovch.whobuys.data_layer.async_tasks;
 
 import android.os.AsyncTask;
 
+import com.example.vovch.listogram_20.R;
+
 import java.util.List;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
@@ -23,7 +25,11 @@ public class GroupsUpdateTask extends AsyncTask<Object, Void, ListInformer[]> {
     @Override
     public void onPostExecute(ListInformer[] result){
         if(result == null){
-            activeActivityProvider.showListInformersGottenBad();
+            if(activeActivityProvider.userSessionData.isLoginned()) {
+                activeActivityProvider.showListInformersGottenBad();
+            } else{
+                activeActivityProvider.badLoginTry(activeActivityProvider.getString(R.string.log_yourself_in));
+            }
         }  else {
             activeActivityProvider.showListInformersGottenGood(result);
         }

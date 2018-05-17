@@ -89,6 +89,10 @@ public class UserSessionData {
         return result;
     }
 
+    public void setNotLoggedIn(){
+        session = DEFAULT_NOT_EXISTING_SESSION_VALUE;
+    }
+
     public boolean isSession(){
         boolean result = false;
         if(session != null && !session.equals(DEFAULT_NOT_EXISTING_SESSION_VALUE)){

@@ -269,10 +269,12 @@ public class DataExchanger {
             String resultJsonString = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "update_groups", jsonString, provider.userSessionData);
             if(resultJsonString != null && resultJsonString.length() > 2){
                 DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
-                if(resultJsonString.substring(0, 3).equals("200")) {                                    //TODO checking update needed
+                if(resultJsonString.substring(0, 3).equals("200")) {
                     groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
                     groups = storage.setGroups(groups);
                     result = dataBaseTask2.resetGroups(groups);
+                } else if(resultJsonString.substring(0, 3).equals("502")) {
+                    provider.userSessionData.setNotLoggedIn();
                 } else {
                     groups = dataBaseTask2.getGroups();
                     groups = storage.setGroups(groups);
@@ -725,6 +727,8 @@ public class DataExchanger {
                         //String ownerName = webCall.getStringFromJsonString(resultString.substring(3), "owner_name");
                         //item.setOwner(ownerId);
                         //item.setOwnerName(ownerName);
+                    } else{
+                        result = null;
                     }
                 }
             }
