@@ -25,7 +25,6 @@ import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DBSynchronizerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DropHistoryTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupActiveGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupChangeConfirmTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupDataSetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupHistoryGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupLeaverTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsGetterTask;
@@ -620,30 +619,6 @@ public class ActiveActivityProvider extends Application {
         if (getActiveActivityNumber() == 4) {
             GroupList2Activity activity = (GroupList2Activity) getActiveActivity();
             activity.update();
-        }
-    }
-
-
-    public void setGroupData(String id, String name) {
-        GroupDataSetterTask groupDataSetterTask = new GroupDataSetterTask();
-        groupDataSetterTask.execute(id, name, ActiveActivityProvider.this);
-    }
-
-    public void showGroupDataSettledGood(String id) {
-        if (getActiveActivityNumber() == 3) {
-            if (getActiveGroup().getId().equals(id)) {
-                Group2Activity activity = (Group2Activity) getActiveActivity();
-                activity.showGroupDataSettledGood();
-            }
-        }
-    }
-
-    public void showGroupDataSettledBad(String id) {
-        if (getActiveActivityNumber() == 3) {
-            if (getActiveGroup().getId().equals(id)) {
-                Group2Activity activity = (Group2Activity) getActiveActivity();
-                activity.showGroupDataSettledBad();
-            }
         }
     }
 

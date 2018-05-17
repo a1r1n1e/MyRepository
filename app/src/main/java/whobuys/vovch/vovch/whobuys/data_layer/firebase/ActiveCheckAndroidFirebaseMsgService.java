@@ -106,10 +106,11 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                     Runnable myRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            if (provider.getActiveGroup() != null) {
-                                provider.getGroupActiveLists(provider.getActiveGroup());
-                                provider.getGroupHistoryLists(provider.getActiveGroup());
-                            }
+                           // if (provider.getActiveGroup() != null) {
+                           //     provider.getGroupActiveLists(provider.getActiveGroup());
+                           //     provider.getGroupHistoryLists(provider.getActiveGroup());
+                           // }
+
                         }
                     };
                     mainHandler.post(myRunnable);

@@ -215,8 +215,13 @@ public class DataStorage {
         if(group != null){
             if(Groups.contains(group)){
                 Groups.add(Groups.indexOf(group), newGroup);
-                result = newGroup;
+            } else {
+                addGroup(newGroup);
             }
+            result = newGroup;
+        } else {
+            addGroup(newGroup);
+            result = newGroup;
         }
         return result;
     }

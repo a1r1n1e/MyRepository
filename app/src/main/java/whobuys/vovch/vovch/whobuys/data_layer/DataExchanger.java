@@ -464,24 +464,43 @@ public class DataExchanger {
         }
     }
 
-    public boolean updateGroupData(String groupId, String groupName) {
+    public UserGroup updateGroupData(String groupId) {
         try {
-            UserGroup[] groups = storage.getGroups();
-            int i = 0;
-            int length = groups.length;
-            for (i = 0; i < length; i++) {
-                if (groups[i].getId().equals(groupId)) {
-                    break;
+
+            UserGroup result = null;
+
+            WebCall webCall = new WebCall();
+            JSONArray jsonArray = new JSONArray();
+            String jsonString = jsonArray.toString();
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            String resultJsonString = webCall.callServer(groupId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "check_group_updates", jsonString, provider.userSessionData);
+            if(resultJsonString != null && resultJsonString.length() > 2){
+                if(resultJsonString.substring(0, 3).equals("200")) {
+                    UserGroup newGroup = webCall.getGroupFromJSONString(resultJsonString.substring(3));
+
+                    UserGroup[] groups = storage.getGroups();
+                    UserGroup group = null;
+
+                    int i = 0;
+                    for(;i < groups.length;i++) {
+                        if(groups[i].getId().equals(groupId)){
+                            break;
+                        }
+                    }
+                    if(i < groups.length) {
+                        newGroup = storage.resetGroup(groups[i], newGroup);
+                    } else {
+                        storage.addGroup(newGroup);
+                    }
+
+                    DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+                    result = dataBaseTask2.addGroup(newGroup);
                 }
             }
-            if (i == length) {
-                UserGroup newGroup = new UserGroup(groupName, groupId);
-                storage.addGroup(newGroup);
-            }
-            return true;
+            return result;
         } catch (Exception e){
             Log.d("WhoBuys", "DE");
-            return false;
+            return null;
         }
 
     }
