@@ -220,6 +220,11 @@ public class WebCall {
                         items[m].setList(tempList);
                     }
                 }
+                if(tempGroup.getActiveLists() == null || tempGroup.getActiveLists().length == 0){
+                    tempGroup.setState("f");
+                } else{
+                    tempGroup.setState("t");
+                }
                 groups[i] = tempGroup;
             }
         } catch (Exception e) {

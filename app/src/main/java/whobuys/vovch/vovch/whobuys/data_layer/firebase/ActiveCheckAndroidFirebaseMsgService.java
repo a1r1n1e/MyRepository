@@ -40,8 +40,9 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
             if (provider.getActiveActivityNumber() != -1) {
-                activeUpdate();
-                groupUpdate(groupListAddedToId);
+                //activeUpdate();
+                //groupUpdate(groupListAddedToId);
+                provider.updateOneGroup(groupListAddedToId);
             } else if (type.equals("newlistogram")) {
                 addNotification(message);
             } else if (type.equals("listogramdeleted")) {

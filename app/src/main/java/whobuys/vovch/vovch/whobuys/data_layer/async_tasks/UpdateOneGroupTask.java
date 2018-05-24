@@ -12,12 +12,15 @@ public class UpdateOneGroupTask extends AsyncTask<Object, Void, UserGroup> {
     public UserGroup doInBackground(Object... loginPair) {
 
         activeActivityProvider = (ActiveActivityProvider) loginPair[0];
-
-       return  null;
+        String groupId = (String) loginPair[1];
+        UserGroup result = activeActivityProvider.dataExchanger.updateGroupData(groupId);
+       return result;
     }
 
     @Override
     public void onPostExecute(UserGroup result) {
-
+        if(result != null){
+            activeActivityProvider.showGroupChangeOutside(result);
+        }
     }
 }

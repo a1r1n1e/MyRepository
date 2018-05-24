@@ -45,6 +45,7 @@ import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.RemoveAddedUserTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.ResendListToGroupTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.SendBugTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.SessionCheckerTask;
+import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.UpdateOneGroupTask;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
@@ -689,6 +690,34 @@ public class ActiveActivityProvider extends Application {
         if (getActiveActivityNumber() == 6) {
             CreateListogramActivity activity = (CreateListogramActivity) getActiveActivity();
             activity.showAddListOnlineBad();
+        }
+    }
+
+    public void updateOneGroup(String groupId){
+        UpdateOneGroupTask updateOneGroupTask = new UpdateOneGroupTask();
+        updateOneGroupTask.execute(ActiveActivityProvider.this, groupId);
+    }
+
+    public void showGroupChangeInside(UserGroup group){
+        if(getActiveActivityNumber() == 3){
+            if(getActiveGroup().getId().equals(group.getId())){
+                setActiveGroup(group);
+                Group2Activity activity = (Group2Activity) getActiveActivity();
+                activity.refreshWholeGroup();
+            }
+        }
+    }
+
+    public void showGroupChangeOutside(UserGroup group){
+        if(getActiveActivityNumber() == 3){
+            if(getActiveGroup().getId().equals(group.getId())){
+                setActiveGroup(group);
+                Group2Activity activity = (Group2Activity) getActiveActivity();
+                activity.refreshWholeGroup();
+            }
+        } else if(getActiveActivityNumber() == 2){
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+            activity.update();
         }
     }
 

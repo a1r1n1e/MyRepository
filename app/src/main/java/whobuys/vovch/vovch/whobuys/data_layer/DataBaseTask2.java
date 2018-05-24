@@ -517,7 +517,7 @@ public class DataBaseTask2 {
 
             //Cursor cursor = db.rawQuery("SELECT " + SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME, null);
 
-            Cursor groupsCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, null);
+            Cursor groupsCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, SqLiteBaseContruct.Groups.COLUMN_NAME_STATE + " DESC", null);
             if(groupsCursor.moveToFirst()) {
                 int length = groupsCursor.getCount();
                 groups = new UserGroup[length];

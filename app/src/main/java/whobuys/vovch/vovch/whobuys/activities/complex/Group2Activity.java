@@ -208,6 +208,20 @@ public class Group2Activity extends WithLoginActivity {
         super.onStop();
     }
 
+    public void refreshWholeGroup(){
+        UserGroup activeGroup = provider.getActiveGroup();
+        if(activeGroup != null) {
+            groupId = activeGroup.getId();
+            groupName = activeGroup.getName();
+        }
+        if(groupName != null) {
+            TextView groupNameTextView = (TextView) findViewById(R.id.group_name_textview);
+            groupNameTextView.setText(groupName);
+        }
+        update();
+        historyLoad();
+    }
+
     public void update() {
         if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
