@@ -253,6 +253,7 @@ public class Group2Activity extends WithLoginActivity {
             if (historyReady) {
                 historyFragment.checkRootView(viewPager, getLayoutInflater());
                 historyFragment.setRefresherRefreshing();
+                provider.getActiveGroup().getMoreHistoryLists();
                 historyLoad();
             }
         }

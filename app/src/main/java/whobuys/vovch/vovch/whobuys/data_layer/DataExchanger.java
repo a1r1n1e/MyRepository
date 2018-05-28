@@ -276,14 +276,26 @@ public class DataExchanger {
                 } else if(resultJsonString.substring(0, 3).equals("502")) {
                     provider.userSessionData.setNotLoggedIn();
                 } else {
-                    groups = dataBaseTask2.getGroups();
-                    groups = storage.setGroups(groups);
-                    result = groups;
+                    result = getGroupsFromHardMemory();
                 }
             }
             return result;
         } catch (Exception e){
             Log.d("WhoBuys", "DE");
+            return null;
+        }
+    }
+
+    public UserGroup[] getGroupsFromHardMemory(){
+        UserGroup[] result;
+        try {
+            UserGroup[] groups;
+            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            groups = dataBaseTask2.getGroups();
+            groups = storage.setGroups(groups);
+            result = groups;
+            return result;
+        } catch (Exception e){
             return null;
         }
     }

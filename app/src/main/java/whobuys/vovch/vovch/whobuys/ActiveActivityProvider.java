@@ -19,7 +19,6 @@ import whobuys.vovch.vovch.whobuys.activities.simple.NewGroup;
 import whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity;
 import whobuys.vovch.vovch.whobuys.data_layer.DataExchanger;
 import whobuys.vovch.vovch.whobuys.data_layer.UserSessionData;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.ActiveListsInformerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.AddUserTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DBSynchronizerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DropHistoryTask;
@@ -327,10 +326,10 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void showListInformersGottenGood(ListInformer[] result) {
+    public void showListInformersGottenGood(ListInformer[] result, boolean isUpdateComplete) {
         if (getActiveActivityNumber() == 2) {
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
-            activity.showGood(result);
+            activity.showGood(result, isUpdateComplete);
         }
     }
 

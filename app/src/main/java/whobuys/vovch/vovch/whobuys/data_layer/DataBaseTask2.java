@@ -180,7 +180,7 @@ public class DataBaseTask2 {
                     if (listCursor.getString(1).equals("t")) {
                         type = true;
                     }
-                    tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
+                    tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, true, type, listCursor.getInt(5), listCursor.getString(4), listCursor.getString(2));
                     sLists[i] = tempSlist;
                     if (i + 1 < listNumber) {
                         listCursor.moveToNext();
@@ -394,7 +394,7 @@ public class DataBaseTask2 {
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT, item.getComment());
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE, list.getId());
                     values.put(SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME, list.getCreationTime());
-                    if(list.getType()) {
+                    if(!list.getType()) {
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_NUMBER);
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
                         values.put(SqLiteBaseContruct.Items.COLUMN_NAME_OWNER, SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
@@ -428,7 +428,7 @@ public class DataBaseTask2 {
             ContentValues values = new ContentValues();
             String[] args = {listId};
             values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE, "f");
-            db.update(SqLiteBaseContruct.Lists.TABLE_NAME, values, SqLiteBaseContruct.Lists._ID + "=?", args);
+            db.update(SqLiteBaseContruct.Lists.TABLE_NAME, values, SqLiteBaseContruct.Lists._ID + " =?", args);
             values.clear();
             db.close();
         } catch (Exception e) {
@@ -487,10 +487,9 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, "");
                 long listId;
                 listId = db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
-                result = new SList(items, -1, null, false, true, 0, null, creationTime);
-                result.setId((int) listId);                                                                //long to int careful
+                result = new SList(items, (int)listId, null, false, true, 0, null, creationTime);           //long to int careful
                 values.clear();
-                addItemsToList(result, result.getItems());
+                addItemsToList(result, items);
                 db.close();
                 return result;
             } else{
@@ -515,15 +514,12 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.Groups.COLUMN_NAME_NAME,
                     SqLiteBaseContruct.Groups.COLUMN_NAME_STATE};
 
-            //Cursor cursor = db.rawQuery("SELECT " + SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME, null);
-
             Cursor groupsCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, SqLiteBaseContruct.Groups.COLUMN_NAME_STATE + " DESC", null);
             if(groupsCursor.moveToFirst()) {
                 int length = groupsCursor.getCount();
                 groups = new UserGroup[length];
                 for (int i = 0; i < length; i++) {
-                    int djsfb = groupsCursor.getColumnIndex(SqLiteBaseContruct.Groups.COLUMN_NAME_ID);
-                    String groupId = groupsCursor.getString(djsfb);
+                    String groupId = groupsCursor.getString(groupsCursor.getColumnIndex(SqLiteBaseContruct.Groups.COLUMN_NAME_ID));
                     groups[i] = getGroupData(groupId);
                     if (i < length - 1) {
                         groupsCursor.moveToNext();
@@ -620,7 +616,7 @@ public class DataBaseTask2 {
                     addOnlineList(list, group);
                 }
 
-                for(SList list : group.getHistoryLists()){
+                for(SList list : group.getAllHistoryLists()){
                     addOnlineList(list, group);
                 }
 

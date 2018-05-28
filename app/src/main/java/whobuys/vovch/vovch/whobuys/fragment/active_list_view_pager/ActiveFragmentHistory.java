@@ -78,7 +78,7 @@ public class ActiveFragmentHistory extends Fragment {
         listCreationTimeTextView.setAlpha(0.5f);
         if(list.getCreationTime() != null){
             listCreationTimeTextView.setTextSize(10);
-            listCreationTimeTextView.setText(list.getCreationTime());
+            listCreationTimeTextView.setText(list.getHumanCreationTime());
         }
         leftHeaderLayout.addView(listNameTextView);
         leftHeaderLayout.addView(listCreationTimeTextView);

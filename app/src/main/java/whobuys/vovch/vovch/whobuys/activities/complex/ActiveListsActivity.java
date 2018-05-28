@@ -267,7 +267,6 @@ public class ActiveListsActivity extends WithLoginActivity
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             exitDialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
-            transaction.commit();
         } else if (id == R.id.nav_copy_id) {
             ClipboardManager clipboard = (ClipboardManager) ActiveListsActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
             if(clipboard != null) {
@@ -286,7 +285,6 @@ public class ActiveListsActivity extends WithLoginActivity
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
-            transaction.commit();
         }
 
 
@@ -846,13 +844,15 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-    public void showGood(ListInformer[] result) {
+    public void showGood(ListInformer[] result, boolean isUpdateComplete) {
         try {
             if (activeListsOnlineFragment != null) {
                 activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
                 activeListsOnlineFragment.fragmentShowGood(result);
-                if (activeListsOnlineFragment.getRefresher() != null) {
-                    activeListsOnlineFragment.setRefresherNotRefreshing();
+                if(isUpdateComplete) {
+                    if (activeListsOnlineFragment.getRefresher() != null) {
+                        activeListsOnlineFragment.setRefresherNotRefreshing();
+                    }
                 }
             }
         } catch (Exception e){

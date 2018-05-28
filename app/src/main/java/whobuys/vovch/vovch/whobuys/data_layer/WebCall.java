@@ -210,7 +210,7 @@ public class WebCall {
                     String listOwnerName = tempListObject.getString("list_owner_name");
 
                     String creation_time = tempListObject.getString("list_creation_time");
-                    SList tempList = new SList(items, listId, tempGroup, false, listState, listOwner, listOwnerName, creation_time);
+                    SList tempList = new SList(items, listId, tempGroup, true, listState, listOwner, listOwnerName, creation_time);
                     if(tempList.getState()){
                         tempGroup.addActiveList(tempList);
                     } else {

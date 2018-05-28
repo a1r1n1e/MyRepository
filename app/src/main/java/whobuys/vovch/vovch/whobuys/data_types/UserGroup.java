@@ -22,6 +22,10 @@ public class UserGroup /*implements Parcelable*/ {
     private String owner;
     private String ownerName;
     private boolean updateNeeded;
+    private int numberOfHistoryLists;
+
+    private final static int DEFAULT_HISTORY_LISTS_STEP = 5;
+    private final static int DEFAULT_HISTORY_MINIMUM_VALUE = 0;
 
     public UserGroup(String newName, String newId, SList[] newActiveLists, SList[] newHistoryLists, AddingUser[] newMembers) {
         name = newName;
@@ -33,6 +37,11 @@ public class UserGroup /*implements Parcelable*/ {
         button = null;
         updateNeeded = false;
         state = "1";
+        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
+            numberOfHistoryLists = historyLists.size();
+        } else {
+            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
+        }
     }
 
     public UserGroup(String newName, String newId, AddingUser[] newMembers) {
@@ -47,7 +56,12 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = new ArrayList<>();
         button = null;
         updateNeeded = false;
-        state = "!";
+        state = "1";
+        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
+            numberOfHistoryLists = historyLists.size();
+        } else {
+            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
+        }
     }
 
     public UserGroup(String newName, String newId) {
@@ -59,7 +73,12 @@ public class UserGroup /*implements Parcelable*/ {
         historyLists = new ArrayList<>();
         button = null;
         updateNeeded = false;
-        state = "!";
+        state = "1";
+        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
+            numberOfHistoryLists = historyLists.size();
+        } else {
+            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
+        }
     }
 
     public void setState(String newState){
@@ -168,20 +187,37 @@ public class UserGroup /*implements Parcelable*/ {
     public void setHistoryLists(SList[] lists) {
         if (lists != null) {
             historyLists = new ArrayList<>(Arrays.asList(lists));
+            if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP){
+                numberOfHistoryLists = historyLists.size();
+            } else {
+                numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
+            }
         } else {
             historyLists = new ArrayList<>();
+            numberOfHistoryLists = DEFAULT_HISTORY_MINIMUM_VALUE;
         }
     }
 
     public SList[] getHistoryLists() {
         SList[] result = null;
         if (historyLists != null) {
+            result = new SList[numberOfHistoryLists];
+            result = historyLists.subList(0, numberOfHistoryLists).toArray(result);
+        } else {
+            historyLists = new ArrayList<>();
+            result = new SList[0];
+        }
+        return result;
+    }
+
+    public SList[] getAllHistoryLists(){
+        SList[] result = null;
+        if (historyLists != null) {
             result = new SList[historyLists.size()];
             result = historyLists.toArray(result);
         } else {
             historyLists = new ArrayList<>();
-            result = new SList[historyLists.size()];
-            result = historyLists.toArray(result);
+            result = new SList[0];
         }
         return result;
     }
@@ -234,74 +270,12 @@ public class UserGroup /*implements Parcelable*/ {
         return updateNeeded;
     }
 
-    /*protected UserGroup(Parcel in) {
-        name = in.readString();
-        id = in.readString();
-        if (in.readByte() == 0x01) {
-            activeLists = new ArrayList<SList>();
-            in.readList(activeLists, SList.class.getClassLoader());
+    public void getMoreHistoryLists(){
+        int maxValue = historyLists.size();
+        if(numberOfHistoryLists + DEFAULT_HISTORY_LISTS_STEP > maxValue){
+            numberOfHistoryLists = maxValue;
         } else {
-            activeLists = null;
+            numberOfHistoryLists = numberOfHistoryLists + DEFAULT_HISTORY_LISTS_STEP;
         }
-        if (in.readByte() == 0x01) {
-            historyLists = new ArrayList<SList>();
-            in.readList(historyLists, SList.class.getClassLoader());
-        } else {
-            historyLists = null;
-        }
-        if (in.readByte() == 0x01) {
-            members = new ArrayList<AddingUser>();
-            in.readList(members, AddingUser.class.getClassLoader());
-        } else {
-            members = null;
-        }
-        //cardView = (CardView) in.readValue(CardView.class.getClassLoader());
-        //button = (Button) in.readValue(Button.class.getClassLoader());
-        owner = in.readString();
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(id);
-        if (activeLists == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(activeLists);
-        }
-        if (historyLists == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(historyLists);
-        }
-        if (members == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(members);
-        }
-        //dest.writeValue(cardView);
-        //dest.writeValue(button);
-        dest.writeString(owner);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<UserGroup> CREATOR = new Parcelable.Creator<UserGroup>() {
-        @Override
-        public UserGroup createFromParcel(Parcel in) {
-            return new UserGroup(in);
-        }
-
-        @Override
-        public UserGroup[] newArray(int size) {
-            return new UserGroup[size];
-        }
-    };*/
 }

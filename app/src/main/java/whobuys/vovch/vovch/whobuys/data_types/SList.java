@@ -35,7 +35,8 @@ public class SList /*implements Parcelable*/ {
         owner = -1;
         type = false;
         state = true;
-        creationTime = Calendar.getInstance().getTime().toString();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        creationTime = format.format(Calendar.getInstance().getTime());
         setHumanCreationTime();
     }
     public SList(Item[] newItems, int newId, UserGroup newGroup, boolean newType, boolean newState, int newOwner, String newOwnerName, String newCreationTime){
@@ -46,8 +47,9 @@ public class SList /*implements Parcelable*/ {
         setState(newState);
         setOwner(newOwner);
         setOwnerName(newOwnerName);
-        if(newType) {
-            creationTime = Calendar.getInstance().getTime().toString();
+        if(!newType) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            creationTime = format.format(Calendar.getInstance().getTime());
         } else{
             creationTime = newCreationTime;
         }
@@ -58,7 +60,7 @@ public class SList /*implements Parcelable*/ {
     }
     private void setHumanCreationTime(){
         if (creationTime != null) {
-            if(!type) {
+            if(type) {
                 try {
                     SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date date = dateFormatParser.parse(creationTime);
@@ -68,8 +70,15 @@ public class SList /*implements Parcelable*/ {
                     Log.d("WhoBuys", "SLIST");
                 }
             }
-            else{
-                Log.d("WhoBuys", "empty");
+            else {
+                try {
+                    SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = dateFormatParser.parse(creationTime);
+                    SimpleDateFormat dateFormatFormater = new SimpleDateFormat("dd-MM-yy HH:mm");
+                    humanCreationTime = dateFormatFormater.format(date);
+                } catch (ParseException e) {
+                    Log.d("WhoBuys", "SLIST");
+                }
             }
         }
     }

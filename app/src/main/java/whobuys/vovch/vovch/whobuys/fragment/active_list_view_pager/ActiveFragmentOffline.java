@@ -74,7 +74,7 @@ public class ActiveFragmentOffline extends Fragment {
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         if(list.getCreationTime() != null){
             listCreationTimeTextView.setTextSize(10);
-            listCreationTimeTextView.setText(list.getCreationTime());
+            listCreationTimeTextView.setText(list.getHumanCreationTime());
         }
         leftHeaderLayout.addView(listNameTextView);
         leftHeaderLayout.addView(listCreationTimeTextView);
