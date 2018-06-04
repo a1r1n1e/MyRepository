@@ -10,6 +10,7 @@ import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
 import whobuys.vovch.vovch.whobuys.data_types.SList;
 import whobuys.vovch.vovch.whobuys.data_types.TempItem;
+import whobuys.vovch.vovch.whobuys.data_types.UserButton;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 import org.json.JSONArray;
@@ -210,7 +211,7 @@ public class DataExchanger {
                 AddingUser newUser;
                 newUser = new AddingUser();
                 newUser.setData(provider.userSessionData.getLogin(), provider.userSessionData.getId());
-                storage.addOneAddedUser(newUser);
+                storage.addOneDeletableUser(newUser);
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -224,7 +225,7 @@ public class DataExchanger {
             if (result != null) {
                 newUser = new AddingUser();
                 newUser.setData(result, userId);
-                storage.addOneAddedUser(newUser);
+                storage.addOneDeletableUser(newUser);
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -761,17 +762,23 @@ public class DataExchanger {
                 String resultString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "itemmark", jsonString, provider.userSessionData);
                 if (resultString != null && resultString.length() > 2) {
                     if (resultString.substring(0, 3).equals("205")) {
-                        result = updateGroup(result);
-                        //group.itemmark(item);
-                        //item.setOwner(null);
-                        //item.setOwnerName(null);
+                        if(storage.isGroup(result)) {
+                            result = updateGroup(result);
+                        } else {
+                            result.itemmark(item);
+                            item.setOwner(null);
+                            item.setOwnerName(null);
+                        }
                     } else if (resultString.substring(0, 3).equals("200")) {
-                        result = updateGroup(result);
-                        //group.itemmark(item);
-                        //String ownerId = webCall.getStringFromJsonString(resultString.substring(3), "owner_id");
-                        //String ownerName = webCall.getStringFromJsonString(resultString.substring(3), "owner_name");
-                        //item.setOwner(ownerId);
-                        //item.setOwnerName(ownerName);
+                        if(storage.isGroup(result)) {
+                            result = updateGroup(result);
+                        } else {
+                            result.itemmark(item);
+                            String ownerId = webCall.getStringFromJsonString(resultString.substring(3), "owner_id");
+                            String ownerName = webCall.getStringFromJsonString(resultString.substring(3), "owner_name");
+                            item.setOwner(ownerId);
+                            item.setOwnerName(ownerName);
+                        }
                     } else{
                         result = null;
                     }

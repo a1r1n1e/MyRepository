@@ -638,6 +638,15 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
+    public void showOnlineItemmarkedGoodLight(Item item) {
+        if (getActiveActivityNumber() == 3 && item != null) {
+            Group2Activity activity = (Group2Activity) getActiveActivity();
+            if (getActiveGroup().equals(item.getList().getGroup())) {
+                activity.showThirdGood(item);
+            }
+        }
+    }
+
     public void showOnlineItemmarkedBad(UserGroup group) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();

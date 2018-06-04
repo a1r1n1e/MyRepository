@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
+import whobuys.vovch.vovch.whobuys.data_types.TempItem;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 /**
@@ -13,12 +14,13 @@ import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 public class OnlineItemmarkTask extends AsyncTask <Object, Item, UserGroup>{
     private ActiveActivityProvider activeActivityProvider;
     private UserGroup group;
+    Item markedItem;
 
     @Override
     public UserGroup doInBackground(Object... loginPair) {
         UserGroup result = null;
         activeActivityProvider = (ActiveActivityProvider) loginPair[1];
-        Item markedItem = (Item) loginPair[0];
+        markedItem = (Item) loginPair[0];
         if(markedItem != null && markedItem.getList() != null && markedItem.getList().getGroup() != null){
             group = markedItem.getList().getGroup();
         }
@@ -35,6 +37,9 @@ public class OnlineItemmarkTask extends AsyncTask <Object, Item, UserGroup>{
     @Override
     public void onPostExecute(UserGroup result){
         if(result != null){
+            if(result.equals(group)){
+                activeActivityProvider.showOnlineItemmarkedGoodLight(markedItem);
+            }
             activeActivityProvider.showOnlineItemmarkedGood(result);
         }
         else{

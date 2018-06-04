@@ -1,5 +1,6 @@
 package whobuys.vovch.vovch.whobuys.data_layer;
 
+import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
@@ -7,6 +8,7 @@ import whobuys.vovch.vovch.whobuys.data_types.SList;
 import whobuys.vovch.vovch.whobuys.data_types.TempItem;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -120,7 +122,16 @@ public class DataStorage {
 
     protected void addOneAddedUser(AddingUser user){
         if(!AddedUsers.contains(user)){
-            AddedUsers.add(user);
+            int length = AddedUsers.size();
+            int i = 0;
+            for(; i < length; i++) {
+                if(AddedUsers.get(i).getUserId().equals(user.getUserId())){
+                    break;
+                }
+            }
+            if(i == length){
+                AddedUsers.add(user);
+            }
         }
     }
     protected AddingUser removeOneAddedUser(AddingUser user){
@@ -170,7 +181,16 @@ public class DataStorage {
 
     protected void addOneDeletableUser(AddingUser user){
         if(!DeletableUsers.contains(user)){
-            DeletableUsers.add(user);
+            int length = DeletableUsers.size();
+            int i = 0;
+            for(; i < length; i++) {
+                if(DeletableUsers.get(i).getUserId().equals(user.getUserId())){
+                    break;
+                }
+            }
+            if(i == length){
+                DeletableUsers.add(user);
+            }
         }
     }
     protected AddingUser removeOneDeletableUser(AddingUser user){
@@ -224,6 +244,10 @@ public class DataStorage {
             result = newGroup;
         }
         return result;
+    }
+
+    protected boolean isGroup(UserGroup group){
+        return group != null && Groups.contains(group);
     }
 
     protected void addGroup(UserGroup newGroup){

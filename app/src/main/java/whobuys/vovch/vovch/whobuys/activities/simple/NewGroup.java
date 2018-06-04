@@ -128,9 +128,6 @@ public class NewGroup extends WithLoginActivity {
 
     protected void initLayout(){
         provider.addYourselfToGroup();
-        AddingUser you = new AddingUser();
-        you.setData(provider.userSessionData.getLogin(), provider.userSessionData.getId());
-        drawNewUserLayout(you, true);
         AddingUser[] users = provider.getPossibleMembers();
         drawDeletableMembers(users);
     }
