@@ -166,7 +166,7 @@ public class DataBaseTask2 {
                 listCursor = db.query(  SqLiteBaseContruct.Lists.TABLE_NAME, listProjection,
                                             SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + " =?" + " AND " +
                                                      SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " =?",
-                                        listArgs, null, null, null);
+                                        listArgs, null, null, SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME + " " + "DESC");
 
             if (listCursor != null) {
                 listCursor.moveToFirst();

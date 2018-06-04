@@ -203,6 +203,20 @@ public class DataExchanger {
         }
     }
 
+    public void addYourselfLocal() {
+        try {
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            if(provider.userSessionData.isLoginned()) {
+                AddingUser newUser;
+                newUser = new AddingUser();
+                newUser.setData(provider.userSessionData.getLogin(), provider.userSessionData.getId());
+                storage.addOneAddedUser(newUser);
+            }
+        } catch(Exception e){
+            Log.d("WhoBuys", "DE");
+        }
+    }
+
     public AddingUser addUser(String userId) {
         AddingUser newUser = null;
         try {
@@ -300,7 +314,7 @@ public class DataExchanger {
         }
     }
 
-    public UserGroup updateGroup(UserGroup group){
+    public UserGroup updateGroup(UserGroup group){                                                      //part WITHOUT ability to create new group
         try {
             UserGroup result = null;
 
@@ -476,7 +490,7 @@ public class DataExchanger {
         }
     }
 
-    public UserGroup updateGroupData(String groupId) {
+    public UserGroup updateGroupData(String groupId) {                                                  //part WITH ability to create new group
         try {
 
             UserGroup result = null;

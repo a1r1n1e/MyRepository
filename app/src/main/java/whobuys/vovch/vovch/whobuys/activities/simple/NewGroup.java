@@ -127,9 +127,10 @@ public class NewGroup extends WithLoginActivity {
     }
 
     protected void initLayout(){
-        if(!providerCheckUser(provider.userSessionData.getId())) {
-            provider.addUserToGroup(provider.userSessionData.getId(), getThisActivityType());
-        }
+        provider.addYourselfToGroup();
+        AddingUser you = new AddingUser();
+        you.setData(provider.userSessionData.getLogin(), provider.userSessionData.getId());
+        drawNewUserLayout(you, true);
         AddingUser[] users = provider.getPossibleMembers();
         drawDeletableMembers(users);
     }
@@ -228,51 +229,55 @@ public class NewGroup extends WithLoginActivity {
     public void drawNewUserLayout(AddingUser user, boolean loadType) {
         LinearLayout addingUsersLayout = (LinearLayout) findViewById(R.id.group_members_linear_layout);
         CardView cardView = (CardView) LayoutInflater.from(addingUsersLayout.getContext()).inflate(R.layout.list_card, addingUsersLayout, false);
-        LinearLayout.LayoutParams addedUserButtonParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        UserButton newUserButton = new UserButton(cardView.getContext());
-        newUserButton.setLayoutParams(addedUserButtonParameters);
-        newUserButton.setGravity(Gravity.CENTER_HORIZONTAL);
-        newUserButton.setText(user.getUserName());
-        newUserButton.setAllCaps(false);
-        newUserButton.setTextSize(20);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            newUserButton.setTextColor(getColor(R.color.whoBuysGray));
-        } else {
-            newUserButton.setTextColor(getResources().getColor(R.color.whoBuysGray));
+        LinearLayout addingUserLayout = (LinearLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.create_listogram_linearlayout, cardView, false);
+        addingUserLayout.setGravity(Gravity.CENTER);
+
+        EditText userNameEditText;
+        userNameEditText = (EditText) LayoutInflater.from(addingUserLayout.getContext()).inflate(R.layout.adding_user_edittext, addingUserLayout, false);
+        userNameEditText.setText(user.getUserName());
+        userNameEditText.setGravity(Gravity.CENTER);
+        userNameEditText.setFocusable(false);
+        userNameEditText.setClickable(false);
+        if(loadType){
+            addingUserLayout.addView((FrameLayout) LayoutInflater.from(addingUserLayout.getContext()).inflate(R.layout.small_image_button_frame, addingUserLayout, false));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                addingUserLayout.setBackground(getDrawable(R.drawable.no_corners_layout_color_2));
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                addingUserLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+            } else {
+                addingUserLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+            }
         }
+        addingUserLayout.addView(userNameEditText);
 
-        if (loadType) {
-            user.setCardView(cardView);
-            newUserButton.setFocusable(true);
-            newUserButton.setLongClickable(true);
-            newUserButton.setUser(user);
-            View.OnLongClickListener addedUserListener = new View.OnLongClickListener() {
+        if(loadType) {
+            userNameEditText.setGravity(Gravity.CENTER);
+            FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingUserLayout.getContext()).inflate(R.layout.small_image_button_frame, addingUserLayout, false);
+            ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
+            Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.whobuys/mipmap/delete_custom_white_green");
+            imageButton.setImageURI(uri);
+            imageButton.setFocusable(false);
+            imageButton.setClickable(false);
+            UserButton userButton = (UserButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.adding_user_button, buttonFrame, false);
+            View.OnClickListener deleteListenner = new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
+                public void onClick(View v) {
                     UserButton button = (UserButton) v;
                     provider.removeAddedUser(button.getUser());
-                    return false;
                 }
             };
-            newUserButton.setOnLongClickListener(addedUserListener);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                newUserButton.setBackground(getDrawable(R.color.elementLayoutColor2));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                newUserButton.setBackground(getResources().getDrawable(R.color.elementLayoutColor2));
-            } else {
-                newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor2));
-            }
-        } else{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                newUserButton.setBackground(getDrawable(R.color.elementLayoutColor1));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                newUserButton.setBackground(getResources().getDrawable(R.color.elementLayoutColor1));
-            } else {
-                newUserButton.setBackgroundDrawable(getResources().getDrawable(R.color.elementLayoutColor1));
-            }
+            userButton.setFocusable(true);
+            userButton.setClickable(true);
+            userButton.setOnClickListener(deleteListenner);
+            buttonFrame.addView(imageButton);
+            buttonFrame.addView(userButton);
+            user.setCardView(cardView);
+            userButton.setUser(user);
+            addingUserLayout.addView(buttonFrame);
         }
-        cardView.addView(newUserButton);
+
+        cardView.addView(addingUserLayout);
         addingUsersLayout.addView(cardView);
     }
 

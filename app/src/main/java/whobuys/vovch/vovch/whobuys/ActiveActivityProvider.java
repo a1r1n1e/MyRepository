@@ -430,6 +430,10 @@ public class ActiveActivityProvider extends Application {
         return  result;
     }
 
+    public void addYourselfToGroup(){
+        dataExchanger.addYourselfLocal();
+    }
+
     public void addUserToGroup(String userId, String activityType) {
         AddUserTask addUserTask = new AddUserTask();
         addUserTask.execute(userId, activityType, ActiveActivityProvider.this);

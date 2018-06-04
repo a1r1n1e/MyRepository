@@ -207,10 +207,9 @@ public class CreateListogramActivity extends WithLoginActivity {
             tempItem.setState(true);
             showViewsForPunct(tempItem, cardView, false);
         } else {
-            if (tempItem.getCardView() != null && tempItem.getLayout() != null && tempItem.getNameEditText() != null && tempItem.getItemCommentEditText() != null) {
+            if (tempItem.getCardView() != null && tempItem.getLayout() != null && tempItem.getNameEditText() != null) {
                 cardView = tempItem.getCardView();
                 tempItem.getNameEditText().setOnEditorActionListener(editorListenerOne);
-                tempItem.getItemCommentEditText().setOnEditorActionListener(editorListenerTwo);
                 cardView.setVisibility(View.VISIBLE);
                 tempItem.setCardView(cardView);
                 if(TempItems != null) {

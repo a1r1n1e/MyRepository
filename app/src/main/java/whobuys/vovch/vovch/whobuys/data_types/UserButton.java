@@ -9,7 +9,7 @@ import android.util.AttributeSet;
  * Created by vovch on 18.01.2018.
  */
 
-public class UserButton extends AppCompatButton {
+public class UserButton extends AppCompatImageButton {
     private AddingUser user;
 
     public UserButton(Context context) {

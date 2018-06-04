@@ -181,6 +181,7 @@ public class Group2Activity extends WithLoginActivity {
         if (provider.getActiveActivityNumber() == 3) {
             provider.nullActiveActivity();
         }
+        provider.getActiveGroup().setMinimumHistoryListsNumber();
         provider.setActiveGroup(null);
         provider.setActiveListsActivityLoadType(0);
         provider.clearNewGroupPossibleMembers();
@@ -235,7 +236,7 @@ public class Group2Activity extends WithLoginActivity {
             if (activeReady) {
                 activeFragment.checkRootView(viewPager, getLayoutInflater());
                 activeFragment.setRefresherRefreshing();
-                update();
+                provider.updateOneGroup(provider.getActiveGroup().getId());
             }
         }
     }
@@ -244,7 +245,7 @@ public class Group2Activity extends WithLoginActivity {
         activeReady = true;
         if (fragment != null) {
             activeFragment = fragment;
-            refreshActiveLists();
+            update();
         }
     }
 

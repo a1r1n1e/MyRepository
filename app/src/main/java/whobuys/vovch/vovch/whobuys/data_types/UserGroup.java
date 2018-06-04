@@ -3,8 +3,10 @@ package whobuys.vovch.vovch.whobuys.data_types;
 import android.support.v7.widget.CardView;
 import android.widget.Button;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by vovch on 03.01.2018.
@@ -37,11 +39,7 @@ public class UserGroup /*implements Parcelable*/ {
         button = null;
         updateNeeded = false;
         state = "1";
-        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
-            numberOfHistoryLists = historyLists.size();
-        } else {
-            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
-        }
+        setMinimumHistoryListsNumber();
     }
 
     public UserGroup(String newName, String newId, AddingUser[] newMembers) {
@@ -57,11 +55,7 @@ public class UserGroup /*implements Parcelable*/ {
         button = null;
         updateNeeded = false;
         state = "1";
-        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
-            numberOfHistoryLists = historyLists.size();
-        } else {
-            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
-        }
+        setMinimumHistoryListsNumber();
     }
 
     public UserGroup(String newName, String newId) {
@@ -74,11 +68,7 @@ public class UserGroup /*implements Parcelable*/ {
         button = null;
         updateNeeded = false;
         state = "1";
-        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
-            numberOfHistoryLists = historyLists.size();
-        } else {
-            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
-        }
+        setMinimumHistoryListsNumber();
     }
 
     public void setState(String newState){
@@ -169,6 +159,7 @@ public class UserGroup /*implements Parcelable*/ {
         if(list != null){
             historyLists.add(list);
         }
+        setMinimumHistoryListsNumber();
     }
 
     public SList[] getActiveLists() {
@@ -207,6 +198,9 @@ public class UserGroup /*implements Parcelable*/ {
             historyLists = new ArrayList<>();
             result = new SList[0];
         }
+
+        Collections.reverse(Arrays.asList(result));
+
         return result;
     }
 
@@ -276,6 +270,14 @@ public class UserGroup /*implements Parcelable*/ {
             numberOfHistoryLists = maxValue;
         } else {
             numberOfHistoryLists = numberOfHistoryLists + DEFAULT_HISTORY_LISTS_STEP;
+        }
+    }
+
+    public void setMinimumHistoryListsNumber(){
+        if(historyLists.size() < DEFAULT_HISTORY_LISTS_STEP) {
+            numberOfHistoryLists = historyLists.size();
+        } else {
+            numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
         }
     }
 }

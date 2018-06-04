@@ -27,7 +27,7 @@
             android:textAllCaps="false"
             android:background="@android:color/transparent"
             android:textColor="@color/whoBuysGray"
-            android:textSize="30sp"
+            android:textSize="40sp"
             android:gravity="center"
             android:layout_gravity="center" />
     </android.support.v7.widget.Toolbar>

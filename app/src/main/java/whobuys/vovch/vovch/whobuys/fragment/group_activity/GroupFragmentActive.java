@@ -14,12 +14,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
 
 import whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity;
 import whobuys.vovch.vovch.whobuys.data_layer.SqLiteBaseContruct;
+import whobuys.vovch.vovch.whobuys.data_types.HistoryScrollView;
 import whobuys.vovch.vovch.whobuys.data_types.ListImageButton;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ItemButton;
@@ -139,6 +141,15 @@ public class GroupFragmentActive extends Fragment {
         for (SList i: result) {
             listsLayoutDrawer(i);
         }
+        if(rootView != null) {
+            getScrollView().post(new Runnable() {
+
+                @Override
+                public void run() {
+                    getScrollView().fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
+        }
     }
 
     public void listsLayoutDrawer(SList list) {
@@ -250,6 +261,10 @@ public class GroupFragmentActive extends Fragment {
         listogramLayout.addView(footerLayout);
         listCard.addView(listogramLayout);
         basicLayout.addView(listCard);
+    }
+
+    public ScrollView getScrollView(){
+        return  (ScrollView) rootView.findViewById(R.id.groupscroll);
     }
 
     public void activeFragmentCleaner() {

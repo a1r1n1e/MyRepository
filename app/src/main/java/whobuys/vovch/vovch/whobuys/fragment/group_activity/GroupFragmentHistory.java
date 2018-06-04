@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.vovch.listogram_20.R;
@@ -230,6 +231,15 @@ public class GroupFragmentHistory extends Fragment {
         int listsNumber = result.length;
         for (int i = 0; i < listsNumber; i++) {
             listsLayoutDrawer(result[i]);
+        }
+        if(rootView != null) {
+            getScrollView().post(new Runnable() {
+
+                @Override
+                public void run() {
+                    getScrollView().fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
         }
     }
 

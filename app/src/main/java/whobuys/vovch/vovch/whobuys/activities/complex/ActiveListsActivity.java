@@ -359,8 +359,13 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void refreshActiveLists() {
         try {
+            if (activeListsOnlineFragment != null) {
+                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+                if (activeListsOnlineFragment.getRefresher() != null) {
+                    activeListsOnlineFragment.setRefresherRefreshing();
+                }
+            }
             update();
-
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
         }
@@ -629,12 +634,6 @@ public class ActiveListsActivity extends WithLoginActivity
     public void update() {
         try {
             provider.getActiveActivityActiveLists();
-            if (activeListsOnlineFragment != null) {
-                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-                if (activeListsOnlineFragment.getRefresher() != null) {
-                    activeListsOnlineFragment.setRefresherRefreshing();
-                }
-            }
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
         }
