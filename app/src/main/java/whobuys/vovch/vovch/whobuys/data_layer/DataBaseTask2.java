@@ -538,7 +538,8 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.Groups.COLUMN_NAME_STATE,
                     SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME};
 
-            Cursor groupsCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, SqLiteBaseContruct.Groups.COLUMN_NAME_STATE + " DESC", null);
+            String orderBy = SqLiteBaseContruct.Groups.COLUMN_NAME_STATE + " ASC, " + SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME + " DESC";
+            Cursor groupsCursor = db.query( SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, orderBy);
             if(groupsCursor.moveToFirst()) {
                 int length = groupsCursor.getCount();
                 groups = new UserGroup[length];
@@ -635,7 +636,7 @@ public class DataBaseTask2 {
                         group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
                     }
                 } else {
-                    group.setState(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED);
+                    group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
                 }
                 groupCursor.close();
 
