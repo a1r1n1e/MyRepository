@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "SqLiteBase.db";
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -51,7 +51,8 @@ public class DbHelper extends SQLiteOpenHelper {
             SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME + TEXT_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID + TEXT_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Groups.COLUMN_NAME_STATE + TEXT_TYPE + COMMA_SEP +
-            SqLiteBaseContruct.Groups.COLUMN_NAME_NAME + TEXT_TYPE + " )";
+            SqLiteBaseContruct.Groups.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+            SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME + TEXT_TYPE + " )";
     private static final String SQL_DROP_GROUPS = "DROP TABLE IF EXISTS " + SqLiteBaseContruct.Groups.TABLE_NAME;
     private static final String
             SQL_CREATE_USERSANDGROUPS = "CREATE TABLE " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " (" +

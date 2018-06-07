@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_gravity="center"
-    android:layout_width="54dp"
-    android:layout_height="54dp"
-    android:paddingTop="2dp"
-    android:paddingEnd="2dp"
-    android:paddingRight="2dp"
-    android:paddingLeft="2dp"
-    android:paddingStart="2dp"
-    android:paddingBottom="4dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginRight="8dp">
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_gravity="center"
+android:layout_width="54dp"
+android:layout_height="54dp"
+android:paddingTop="2dp"
+android:paddingEnd="2dp"
+android:paddingRight="2dp"
+android:paddingLeft="2dp"
+android:paddingStart="2dp"
+android:paddingBottom="4dp"
+android:layout_marginTop="4dp"
+android:layout_marginBottom="8dp"
+android:layout_marginEnd="8dp"
+android:layout_marginRight="8dp">
 </FrameLayout>

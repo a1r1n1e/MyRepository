@@ -149,6 +149,14 @@ public class DataStorage {
         if(user != null){
             if(AddedUsers.contains(user)){
                 result = true;
+            } else {
+                int length = AddedUsers.size();
+                for(int i = 0; i < length; i++){
+                    if(AddedUsers.get(i).getUserId().equals(user.getUserId())){
+                        result = true;
+                        break;
+                    }
+                }
             }
         }
         return  result;
@@ -208,6 +216,14 @@ public class DataStorage {
         if(user != null){
             if(DeletableUsers.contains(user)){
                 result = true;
+            } else {
+                int length = DeletableUsers.size();
+                for(int i = 0; i < length; i++){
+                    if(DeletableUsers.get(i).getUserId().equals(user.getUserId())){
+                        result = true;
+                        break;
+                    }
+                }
             }
         }
         return  result;

@@ -156,6 +156,7 @@ public class WebCall {
             AddingUser[] members;
             String owner;
             String ownerName;
+            String lastUpdateTime;
             for (int i = 0; i < length; i++) {
                 tempJsonObject = groupsArray.getJSONObject(i);
                 name = tempJsonObject.getString("group_name");
@@ -171,9 +172,11 @@ public class WebCall {
                 }
                 owner = tempJsonObject.getString("group_owner_id");
                 ownerName = tempJsonObject.getString("group_owner_name");
+                lastUpdateTime = tempJsonObject.getString("group_last_update_time");
                 tempGroup = new UserGroup(name, id, members);
                 tempGroup.setOwner(owner);
                 tempGroup.setOwnerName(ownerName);
+                tempGroup.setLastUpdateTime(lastUpdateTime);
 
                 tempListsArray = tempJsonObject.getJSONArray("group_lists");
                 int listsLength = tempListsArray.length();

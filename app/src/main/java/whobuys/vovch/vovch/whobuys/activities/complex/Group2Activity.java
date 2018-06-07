@@ -512,6 +512,7 @@ public class Group2Activity extends WithLoginActivity {
                 activeFragment.setRefresherNotRefreshing();
             }
             updateNeededFlagTurnOff();
+            provider.setGroupStateToWatched(provider.getActiveGroup());
         }
     }
 
@@ -524,6 +525,7 @@ public class Group2Activity extends WithLoginActivity {
                 activeFragment.setRefresherNotRefreshing();
             }
             updateNeededFlagTurnOff();
+            provider.setGroupStateToWatched(provider.getActiveGroup());
         }
     }
 

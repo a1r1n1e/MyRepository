@@ -89,8 +89,14 @@ public class DataExchanger {
         try {
             UserGroup[] groups = storage.getGroups();
             informers = new ListInformer[groups.length];
+            String active;
             for(int i = 0; i< groups.length; i++){
-                informers[i] = new ListInformer(groups[i].getId(), groups[i].getName(), groups[i].getState());
+                if(groups[i].getActiveLists().length == 0){
+                    active = "f";
+                } else {
+                    active = "t";
+                }
+                informers[i] = new ListInformer(groups[i].getId(), groups[i].getName(), active);
                 informers[i].setGroup(groups[i]);
             }
             storage.setListInformers(informers);
@@ -211,7 +217,9 @@ public class DataExchanger {
                 AddingUser newUser;
                 newUser = new AddingUser();
                 newUser.setData(provider.userSessionData.getLogin(), provider.userSessionData.getId());
-                storage.addOneDeletableUser(newUser);
+                if(!storage.isAddedUser(newUser)) {
+                    storage.addOneDeletableUser(newUser);
+                }
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -286,8 +294,8 @@ public class DataExchanger {
                 DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                 if(resultJsonString.substring(0, 3).equals("200")) {
                     groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
-                    groups = storage.setGroups(groups);
                     result = dataBaseTask2.resetGroups(groups);
+                    result = storage.setGroups(result);
                 } else if(resultJsonString.substring(0, 3).equals("502")) {
                     provider.userSessionData.setNotLoggedIn();
                 } else {
@@ -327,9 +335,9 @@ public class DataExchanger {
             if(resultJsonString != null && resultJsonString.length() > 2){
                 if(resultJsonString.substring(0, 3).equals("200")) {
                     UserGroup newGroup = webCall.getGroupFromJSONString(resultJsonString.substring(3));
-                    newGroup = storage.resetGroup(group, newGroup);
                     DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
-                    result = dataBaseTask2.addGroup(newGroup);
+                    newGroup = dataBaseTask2.addGroup(newGroup);
+                    result = storage.resetGroup(group, newGroup);
                 } else {
                     result = group;
                 }
@@ -341,6 +349,25 @@ public class DataExchanger {
         }
     }
 
+    public void changeGroupState(UserGroup group){
+        try{
+            group.resetGroupState();
+            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            dataBaseTask2.saveGroupState(group);
+        } catch (Exception e){
+            Log.d("WhoBuys", "DE");
+        }
+    }
+
+    public void setGroupStateToWatched(UserGroup group){
+        try{
+            group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
+            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            dataBaseTask2.saveGroupState(group);
+        } catch (Exception e){
+            Log.d("WhoBuys", "DE");
+        }
+    }
 
     public boolean checkGroupActiveData(UserGroup group) {
         boolean result = false;

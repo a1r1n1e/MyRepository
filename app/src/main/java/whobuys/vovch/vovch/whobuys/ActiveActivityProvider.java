@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
 
-import whobuys.vovch.vovch.whobuys.activities.WithLoginActivity;
 import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
 import whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity;
 import whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity;
@@ -26,6 +25,7 @@ import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupActiveGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupChangeConfirmTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupHistoryGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupLeaverTask;
+import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupStateSetWatchedTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsUpdateTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.LoginnerTask;
@@ -544,6 +544,11 @@ public class ActiveActivityProvider extends Application {
             Toast.makeText(getActiveActivity(), getString(R.string.some_error), Toast.LENGTH_LONG)
                     .show();
         }
+    }
+
+    public void setGroupStateToWatched(UserGroup group){
+        GroupStateSetWatchedTask groupStateChangerTask = new GroupStateSetWatchedTask();
+        groupStateChangerTask.execute(group, ActiveActivityProvider.this);
     }
 
     public void redactOfflineListogram(Item[] items, SList redactingList){

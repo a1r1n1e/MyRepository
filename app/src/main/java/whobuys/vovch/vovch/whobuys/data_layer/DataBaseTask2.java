@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.transition.Slide;
 import android.util.Log;
 
@@ -16,7 +17,10 @@ import whobuys.vovch.vovch.whobuys.data_types.SList;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by vovch on 24.12.2017.
@@ -282,7 +286,8 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.Groups.COLUMN_NAME_NAME,
                     SqLiteBaseContruct.Groups.COLUMN_NAME_STATE,
                     SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID,
-                    SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME};
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME,
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME};
             String[] usersAndGroupProjection = {
                     SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_USERS,
                     SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS};
@@ -295,6 +300,7 @@ public class DataBaseTask2 {
                 String group_state = groupCursor.getString(2);
                 String group_owner_id = groupCursor.getString(3);
                 String group_owner_name = groupCursor.getString(4);
+                String group_last_update_time = groupCursor.getString(5);
 
                 userAndGroupsCursor = db.query(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, usersAndGroupProjection, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", usersAndGroupsArgs, null, null, null);
                 if(userAndGroupsCursor != null && userAndGroupsCursor.moveToFirst()) {
@@ -332,6 +338,7 @@ public class DataBaseTask2 {
                     result.setState(group_state);
                     result.setOwner(group_owner_id);
                     result.setOwnerName(group_owner_name);
+                    result.setLastUpdateTime(group_last_update_time);
 
                     userAndGroupsCursor.close();
                     groupCursor.close();
@@ -342,6 +349,22 @@ public class DataBaseTask2 {
             Log.d("WhoBuys", "DBT2");
         }
         return result;
+    }
+
+    protected void saveGroupState(UserGroup group){                                                    //already new version of group is here
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String[] args = {group.getId()};
+
+            ContentValues values = new ContentValues();
+            values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_STATE, group.getState());
+            values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME, group.getLastUpdateTime());
+            db.update(SqLiteBaseContruct.Groups.TABLE_NAME, values, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " =?", args);
+            values.clear();
+            db.close();
+        } catch (Exception e){
+            Log.d("WhoBuys", "DBT2");
+        }
     }
 
     private boolean checkList(SList list){
@@ -512,7 +535,8 @@ public class DataBaseTask2 {
             String[] groupsProjection = {
                     SqLiteBaseContruct.Groups.COLUMN_NAME_ID,
                     SqLiteBaseContruct.Groups.COLUMN_NAME_NAME,
-                    SqLiteBaseContruct.Groups.COLUMN_NAME_STATE};
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_STATE,
+                    SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME};
 
             Cursor groupsCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, null, null, null, null, SqLiteBaseContruct.Groups.COLUMN_NAME_STATE + " DESC", null);
             if(groupsCursor.moveToFirst()) {
@@ -546,16 +570,34 @@ public class DataBaseTask2 {
         }
     }
 
-    protected void dropGroups(){
+    protected void dropNotMentionedGroups(UserGroup[] groups){
         try{
+            String inClause;
+            String[] ids = new String[groups.length];
+            for(int i = 0; i < groups.length; i++){
+                ids[i] = groups[i].getId();
+            }
+            List<String> list = Arrays.asList(ids);
+            String joined = TextUtils.join(", ", list);
+
+            inClause = "(" + joined + ")";
+
+            //inClause = ids.toString();
+            //inClause = inClause.replace("[", "(");
+            //inClause = inClause.replace("]", ")");
+
+
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            //String sqlString1 = "DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " " + "WHERE EXIST (SELECT" + " " + SqLiteBaseContruct.Groups._ID + " FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + ")";
-            //String sqlString2 = "DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + " WHERE EXIST ( SELECT" + SqLiteBaseContruct.UsersAndGroups._ID + "FROM" + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME + ")"
-            //Cursor cursor = db.rawQuery(sqlString1, null);
-            db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,null, null);
-            db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, null, null);
-            //cursor = db.rawQuery(sqlString2, null);
-            //cursor.close();
+
+            String sqlString1 = "DELETE FROM " + SqLiteBaseContruct.Groups.TABLE_NAME + " " + "WHERE " +
+                                SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " NOT IN " + inClause;
+            String sqlString2 = "DELETE FROM " + SqLiteBaseContruct.UsersAndGroups.TABLE_NAME +
+                                " WHERE " + SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " NOT IN " + inClause;
+            Cursor cursor = db.rawQuery(sqlString1, null);
+            //db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,null, null);
+            //db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, null, null);
+            cursor = db.rawQuery(sqlString2, null);
+            cursor.close();
             db.close();
         } catch (Exception e){
             Log.v("WhoBuys", "DBT2");
@@ -564,7 +606,7 @@ public class DataBaseTask2 {
 
     protected UserGroup[] resetGroups(UserGroup[] groups){
         try{
-            dropGroups();
+            dropNotMentionedGroups(groups);                                                                             //TODO check the way it's done
             for(UserGroup group : groups){
                 addGroup(group);
             }
@@ -582,6 +624,21 @@ public class DataBaseTask2 {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 String[] groupArgs = {group.getId()};
+                String[] groupsProjection = {
+                        SqLiteBaseContruct.Groups.COLUMN_NAME_STATE,
+                        SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME};
+                Cursor groupCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " =?", groupArgs, null, null, null);
+                if(groupCursor.moveToFirst()) {
+                    if (!groupCursor.getString(1).equals(group.getLastUpdateTime()) || groupCursor.getString(0).equals(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED)) {
+                        group.setState(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED);
+                    } else {
+                        group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
+                    }
+                } else {
+                    group.setState(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED);
+                }
+                groupCursor.close();
+
                 db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " = ?", groupArgs );
 
 
@@ -601,6 +658,7 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID, group.getOwner());
                 values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME, group.getOwnerName());
                 values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_STATE, group.getState());
+                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME, group.getLastUpdateTime());
                 db.insert(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups._ID, values);
 
                 values.clear();

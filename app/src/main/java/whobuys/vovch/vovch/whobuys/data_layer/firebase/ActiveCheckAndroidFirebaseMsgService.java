@@ -32,7 +32,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
                 updateActivities(remoteMessage.getData().get("group"), remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
             }
         } catch (Exception e) {
-            Log.v("WhoBuys", "smthin msg service");
+            Log.v("WhoBuys", "smth in msg service");
         }
     }
 

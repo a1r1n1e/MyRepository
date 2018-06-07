@@ -51,6 +51,7 @@ public final class SqLiteBaseContruct {
         public static final String COLUMN_NAME_OWNER_NAME = "group_owner_name";
         public static final String COLUMN_NAME_OWNER_ID = "group_owner_id";
         public static final String COLUMN_NAME_STATE = "group_state";
+        public static final String COLUMN_NAME_LAST_UPDATE_TIME = "last_update_time";
     }
     public static abstract class UsersAndGroups implements BaseColumns{
         public static final String TABLE_NAME = "usersandGroups";

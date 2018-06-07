@@ -25,7 +25,10 @@ public class UserGroup /*implements Parcelable*/ {
     private String ownerName;
     private boolean updateNeeded;
     private int numberOfHistoryLists;
+    private String lastUpdateTime;
 
+    public final static String DEFAULT_GROUP_STATE_UNWATCHED = "n";
+    public final static String DEFAULT_GROUP_STATE_WATCHED = "o";
     private final static int DEFAULT_HISTORY_LISTS_STEP = 5;
     private final static int DEFAULT_HISTORY_MINIMUM_VALUE = 0;
 
@@ -40,6 +43,7 @@ public class UserGroup /*implements Parcelable*/ {
         updateNeeded = false;
         state = "1";
         setMinimumHistoryListsNumber();
+        lastUpdateTime = null;
     }
 
     public UserGroup(String newName, String newId, AddingUser[] newMembers) {
@@ -56,6 +60,7 @@ public class UserGroup /*implements Parcelable*/ {
         updateNeeded = false;
         state = "1";
         setMinimumHistoryListsNumber();
+        lastUpdateTime = null;
     }
 
     public UserGroup(String newName, String newId) {
@@ -69,10 +74,19 @@ public class UserGroup /*implements Parcelable*/ {
         updateNeeded = false;
         state = "1";
         setMinimumHistoryListsNumber();
+        lastUpdateTime = null;
     }
 
     public void setState(String newState){
         state = newState;
+    }
+
+    public void resetGroupState(){
+        if(state.equals(DEFAULT_GROUP_STATE_UNWATCHED)){
+            state = DEFAULT_GROUP_STATE_WATCHED;
+        } else {
+            state = DEFAULT_GROUP_STATE_UNWATCHED;
+        }
     }
 
     public String getState(){
@@ -89,6 +103,14 @@ public class UserGroup /*implements Parcelable*/ {
 
     public String getName() {
         return name;
+    }
+
+    public String getLastUpdateTime(){
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(String newTime){
+        lastUpdateTime = newTime;
     }
 
     public void setCardView(CardView newCardView) {
