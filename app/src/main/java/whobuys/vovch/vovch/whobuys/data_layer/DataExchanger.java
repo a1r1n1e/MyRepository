@@ -613,11 +613,23 @@ public class DataExchanger {
                 if (group.getOwner() != null) {
                     UserGroup newGroup = new UserGroup(newGroupName, group.getId(), group.getActiveLists(), group.getHistoryLists(), users);
                     newGroup.setOwner(group.getOwner());
+
+                    boolean flag = false;
+                    for(AddingUser member : newGroup.getMembers()){
+                        if(member.getUserId().equals(provider.userSessionData.getId())){
+                            flag = true;
+                        }
+                    }
+
                     result = storage.updateGroup(group, newGroup);
+
                     if (result != null) {
-
-                        result = updateGroup(result);
-
+                        if(flag) {
+                            result = updateGroup(result);
+                        } else {
+                            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+                            dataBaseTask2.deleteGroup(group);
+                        }
                         provider.setActiveGroup(result);
                         storage.clearDeletableUsers();
                         if (result.getOwner().equals(provider.userSessionData.getId())) {

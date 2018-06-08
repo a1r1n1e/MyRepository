@@ -135,97 +135,102 @@ public class DataBaseTask2 {
         SList tempSlist;
         Item tempItem;
         try {
-            boolean type;
-            if (taskType == 1) {
-                typeTask = "t";
-            } else {
-                typeTask = "f";
-            }
-            Cursor cursor;
-            Cursor listCursor;
-            String[] listArgs = {typeTask, group.getId()};
-            String[] listProjection = {
-                    SqLiteBaseContruct.Lists._ID,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_NAME};
-            String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
-            String[] projection = {
-                    SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
-                    SqLiteBaseContruct.Items._ID,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_OWNER,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE,
-                    SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID};
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            if(group != null){
+                boolean type;
+                if (taskType == 1) {
+                    typeTask = "t";
+                } else {
+                    typeTask = "f";
+                }
+                Cursor cursor;
+                Cursor listCursor;
+                String[] listArgs = {typeTask, group.getId()};
+                String[] listProjection = {
+                        SqLiteBaseContruct.Lists._ID,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_NAME};
+                String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
+                String[] projection = {
+                        SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_COMMENT,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_ACTIVE,
+                        SqLiteBaseContruct.Items._ID,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_LIST_OFFLINE,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_OWNER,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_OWNER_ID,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE,
+                        SqLiteBaseContruct.Items.COLUMN_NAME_ITEM_ID};
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                listCursor = db.query(  SqLiteBaseContruct.Lists.TABLE_NAME, listProjection,
-                                            SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + " =?" + " AND " +
-                                                     SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " =?",
-                                        listArgs, null, null, SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME + " " + "DESC");
+                listCursor = db.query(SqLiteBaseContruct.Lists.TABLE_NAME, listProjection,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + " =?" + " AND " +
+                                SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " =?",
+                        listArgs, null, null, SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME + " " + "DESC");
 
-            if (listCursor != null) {
-                listCursor.moveToFirst();
-                listNumber = listCursor.getCount();
-                sLists = new SList[listNumber];
+                if (listCursor != null) {
+                    listCursor.moveToFirst();
+                    listNumber = listCursor.getCount();
+                    sLists = new SList[listNumber];
 
-                for (int i = 0; i < listNumber; i++) {
-                    String listId = listCursor.getString(6);
+                    for (int i = 0; i < listNumber; i++) {
+                        String listId = listCursor.getString(6);
 
-                    type = false;
-                    if (listCursor.getString(1).equals("t")) {
-                        type = true;
-                    }
-                    tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, true, type, listCursor.getInt(5), listCursor.getString(4), listCursor.getString(2));
-                    sLists[i] = tempSlist;
-                    if (i + 1 < listNumber) {
-                        listCursor.moveToNext();
-                    }
-
-                    String[] arg = {listId};
-                    cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " =?", arg, null, null, orderBy);
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        itemNumber = cursor.getCount();
-                        items = new Item[itemNumber];
-                        for (int j = 0; j < itemNumber; j++) {
-                            type = false;
-                            if (cursor.getString(2).equals("t")) {
-                                type = true;
-                            }
-                            tempItem = new Item(Integer.parseInt(cursor.getString(9)), cursor.getString(0), cursor.getString(1), type);
-                            tempItem.setOwnerName(cursor.getString(6));
-                            tempItem.setOwner(cursor.getString(7));
-                            tempItem.setList(tempSlist);
-                            items[j] = tempItem;
-                            if (j + 1 < itemNumber) {
-                                cursor.moveToNext();
-                            }
+                        type = false;
+                        if (listCursor.getString(1).equals("t")) {
+                            type = true;
                         }
-                        tempSlist.setItems(items);
-                    }
-                    if(cursor != null) {
-                        cursor.close();
+                        tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, true, type, listCursor.getInt(5), listCursor.getString(4), listCursor.getString(2));
+                        sLists[i] = tempSlist;
+                        if (i + 1 < listNumber) {
+                            listCursor.moveToNext();
+                        }
+
+                        String[] arg = {listId};
+                        cursor = db.query(SqLiteBaseContruct.Items.TABLE_NAME, projection, SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " =?", arg, null, null, orderBy);
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            itemNumber = cursor.getCount();
+                            items = new Item[itemNumber];
+                            for (int j = 0; j < itemNumber; j++) {
+                                type = false;
+                                if (cursor.getString(2).equals("t")) {
+                                    type = true;
+                                }
+                                tempItem = new Item(Integer.parseInt(cursor.getString(9)), cursor.getString(0), cursor.getString(1), type);
+                                tempItem.setOwnerName(cursor.getString(6));
+                                tempItem.setOwner(cursor.getString(7));
+                                tempItem.setList(tempSlist);
+                                items[j] = tempItem;
+                                if (j + 1 < itemNumber) {
+                                    cursor.moveToNext();
+                                }
+                            }
+                            tempSlist.setItems(items);
+                        }
+                        if (cursor != null) {
+                            cursor.close();
+                        }
                     }
                 }
-            }
-            if(listCursor != null){
-                listCursor.close();
-            }
-            db.close();
-            if(sLists != null) {
-                return sLists;
+                if (listCursor != null) {
+                    listCursor.close();
+                }
+                db.close();
+                if (sLists != null) {
+                    return sLists;
+                } else {
+                    return new SList[0];
+                }
             } else {
                 return new SList[0];
             }
+
         } catch (Exception e) {
             return sLists;
         }
