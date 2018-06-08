@@ -38,6 +38,7 @@ import whobuys.vovch.vovch.whobuys.data_types.TempItem;
 import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CreateListogramActivity extends WithLoginActivity {
 
@@ -359,6 +360,17 @@ public class CreateListogramActivity extends WithLoginActivity {
             builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     clickable = false;
+
+                    if(items.length > 0) {
+                        if (items[items.length - 1].getName().equals("") || items[items.length - 1].getName() == null) {
+                            if (items.length > 1) {
+                                items = Arrays.copyOfRange(items, 0, items.length - 1);
+                            } else {
+                                items = new TempItem[0];
+                            }
+                        }
+                    }
+
                     if(loadType == 1) {
                         activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items);
                     }

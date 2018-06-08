@@ -803,11 +803,37 @@ public class DataBaseTask2 {
     protected boolean dropHistory(){
         try{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " = " + SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
             db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = " + SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
             db.close();
             return true;
         } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
             return false;
+        }
+    }
+
+    protected void deleteGroup(UserGroup group){
+        try{
+            if (group != null && group.getId() != null) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+                String[] groupArgs = {group.getId()};
+
+                db.delete(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " = ?", groupArgs);
+
+
+                db.execSQL("DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE +
+                        " IN ( SELECT " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
+                        " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?" + ")", groupArgs);
+                db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
+                        " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?", groupArgs);
+
+
+                db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", groupArgs);
+            }
+        } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
         }
     }
 }

@@ -638,6 +638,8 @@ public class DataExchanger {
             resultString = webCall.callServer(provider.userSessionData.getId(), group.getId(), BLANK_WEBCALL_FIELD, "leavegroup", jsonString, provider.userSessionData);
             if (resultString != null && resultString.length() > 2 && resultString.substring(0, 3).equals("200")) {
                 storage.removeGroup(group);
+                DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+                dataBaseTask2.deleteGroup(group);
                 clearAddedUsers();
                 clearDeletableUsers();
             } else {
@@ -768,7 +770,8 @@ public class DataExchanger {
         boolean result = false;
         try {
             storage.clearOfflineHistory();
-            result = true;
+            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            result = dataBaseTask2.dropHistory();
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
         }

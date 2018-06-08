@@ -139,7 +139,7 @@ public class ActiveListsActivity extends WithLoginActivity
         tabs.setupWithViewPager(viewPager);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -483,11 +483,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void loginToActiveFragmentChange() {
         try {
-
-            //ImageButton menuButton = (ImageButton) findViewById(R.id.active_lists_menu_button);
-            //menuButton.setFocusable(true);
-            //menuButton.setClickable(true);
-
             if (activeFragment != null && activeListsOnlineFragment != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
@@ -509,7 +504,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void activeListsOnlineFragmentStart() {
         try {
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             if (viewPager.getCurrentItem() == 0) {
                 fabActionZero(fab);
             }
@@ -554,11 +548,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void registrationToActiveListsOnlineFragmentChange() {
         try {
-
-            //ImageButton menuButton = (ImageButton) findViewById(R.id.active_lists_menu_button);
-            //menuButton.setFocusable(true);
-            //menuButton.setClickable(true);
-
             if (activeFragment != null && activeListsOnlineFragment != null) {
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
                 if (fragment != null) {
@@ -592,10 +581,6 @@ public class ActiveListsActivity extends WithLoginActivity
     public void activeToLoginFragmentChange() {
         try {
 
-            //ImageButton menuButton = (ImageButton) findViewById(R.id.active_lists_menu_button);
-            //menuButton.setFocusable(false);
-            //menuButton.setClickable(false);
-
             if (activeFragment != null && loginFragment != null) {
 
                 Fragment fragment = activeFragment.getChildFragmentManager().findFragmentByTag("One");
@@ -613,9 +598,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
                 if (viewPager.getCurrentItem() == 0) {
                     fabActionZero(fab);
-                }
-                if (drawer != null) {
-                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 }
             }
         } catch (Exception e){
@@ -1017,7 +999,6 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void showDropHistoryGood(){
         try {
-            ;
             refreshOfflineHistory();
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
