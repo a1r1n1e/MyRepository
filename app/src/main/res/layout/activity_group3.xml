@@ -34,7 +34,7 @@
                     android:maxLines="1"
                     android:textAllCaps="false"
                     android:textColor="@color/whoBuysGray"
-                    android:textSize="30sp"
+                    android:textSize="40sp"
                     android:gravity="start"
                     android:layout_gravity="center" />
                 <FrameLayout

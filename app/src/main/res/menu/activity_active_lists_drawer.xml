@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@mipmap/groups_custom_people"
-            android:title="@string/profile" />
-        <item
-            android:id="@+id/nav_copy_id"
-            android:icon="@mipmap/copy_id_custom"
-            android:title="@string/copy_your_id" />
-    </group>
+    <item android:title="@string/additional">
+        <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@mipmap/groups_custom_people"
+                android:title="@string/profile" />
+            <item
+                android:id="@+id/nav_copy_id"
+                android:icon="@mipmap/copy_id_custom"
+                android:title="@string/copy_your_id" />
+        </menu>
+    </item>
 
     <item android:title="@string/danger_zone">
         <menu>

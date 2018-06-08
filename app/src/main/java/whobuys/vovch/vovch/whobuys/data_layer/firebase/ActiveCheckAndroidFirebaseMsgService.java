@@ -39,15 +39,12 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     private void updateActivities(String groupListAddedToId, String message, String type) {
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-            if (provider.getActiveActivityNumber() != -1) {
-                //activeUpdate();
-                //groupUpdate(groupListAddedToId);
-                provider.updateOneGroup(groupListAddedToId);
-            } else if (type.equals("newlistogram")) {
+            if (type.equals("newlistogram") && provider.getActiveActivityNumber() == -1) {
                 addNotification(message);
             } else if (type.equals("listogramdeleted")) {
                 checkAndRemoveNotification();
             }
+            provider.updateOneGroup(groupListAddedToId);
         } catch (Exception e) {
             Log.v("WhoBuys", "smthin msg service");
         }

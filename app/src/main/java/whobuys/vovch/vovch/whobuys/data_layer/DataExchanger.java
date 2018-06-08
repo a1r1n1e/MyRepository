@@ -141,7 +141,7 @@ public class DataExchanger {
         try {
             UserGroup[] tempResult = null;
             String resultString = null;
-            AddingUser[] users = storage.getAddedUsers();
+            AddingUser[] users = storage.getDeletableUsers();
             int length = users.length;
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
             if (provider.userSessionData.getId() != null && name != null) {
@@ -197,12 +197,20 @@ public class DataExchanger {
                     return true;
                 }
             }
-            AddingUser[] allAddedUsers = storage.getAddedUsers();
+            /*AddingUser[] allAddedUsers = storage.getAddedUsers();
             for (AddingUser user : allAddedUsers) {
                 if (user.getUserId().equals(id)) {
                     return true;
                 }
+            }*/
+            ActiveActivityProvider provider = (ActiveActivityProvider) context;
+            AddingUser[] members = provider.getActiveGroup().getMembers();
+            for(AddingUser member : members){
+                if(member.getUserId().equals(id)){
+                    return true;
+                }
             }
+
             return false;
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -256,7 +264,7 @@ public class DataExchanger {
         return user;
     }
 
-    public AddingUser[] getAddingUsers() {
+    public AddingUser[] getDeletableUsers() {
         try {
             return storage.getDeletableUsers();
         } catch (Exception e){
@@ -271,7 +279,7 @@ public class DataExchanger {
             if (group != null && group.getMembers() != null) {
                 storage.clearDeletableUsers();
                 storage.setDeletableUsers(group.getMembers());
-                users = getAddingUsers();
+                users = getDeletableUsers();
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -581,16 +589,16 @@ public class DataExchanger {
             } else {
                 deletableUsers = new AddingUser[0];
             }
-            if (storage.getAddedUsers() != null) {
-                addedUsers = storage.getAddedUsers();
-            } else {
-                addedUsers = new AddingUser[0];
-            }
+            //if (storage.getAddedUsers() != null) {
+            //    addedUsers = storage.getAddedUsers();
+            //} else {
+            //    addedUsers = new AddingUser[0];
+            //}
 
-            AddingUser[] users = new AddingUser[oldUsers.length + addedUsers.length + deletableUsers.length];
+            AddingUser[] users = new AddingUser[oldUsers.length + /*addedUsers.length +*/ deletableUsers.length];
             System.arraycopy(oldUsers, 0, users, 0, oldUsers.length);
             System.arraycopy(deletableUsers, 0, users, oldUsers.length, deletableUsers.length);
-            System.arraycopy(addedUsers, 0, users, oldUsers.length + deletableUsers.length, addedUsers.length);
+            //System.arraycopy(addedUsers, 0, users, oldUsers.length + deletableUsers.length, addedUsers.length);
 
             int length = users.length;
             JSONArray members = new JSONArray();
@@ -609,7 +617,7 @@ public class DataExchanger {
                         provider.setActiveGroup(result);
                         storage.clearDeletableUsers();
                         if (result.getOwner().equals(provider.userSessionData.getId())) {
-                            provider.makeAllMembersPossible(result);
+                            makeAllUsersPossible(result);
                         }
                     }
                 }
@@ -671,7 +679,7 @@ public class DataExchanger {
                 String itemsJSONString = webCall.prepareItemsJSONString(list.getItems());
                 jsonString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), group.getId(), "resendlist", itemsJSONString, provider.userSessionData);
                 if (jsonString != null && jsonString.length() > 2 && jsonString.substring(0, 3).equals("200")) {
-                    UserGroup[] groups = updateGroups();
+                    group = updateGroup(group);
                     resultGroup = group;
                 }
             }

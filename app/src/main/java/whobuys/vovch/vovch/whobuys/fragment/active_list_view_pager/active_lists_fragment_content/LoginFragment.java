@@ -96,7 +96,7 @@ public class LoginFragment extends ActiveListsFragment {
                     errorTextView.setText(getString(R.string.missing_value));
                 }
             } else {
-                errorTextView.setText(getString(R.string.reinstall));
+                errorTextView.setText(getString(R.string.wait_a_minute));
             }
         }
     }
