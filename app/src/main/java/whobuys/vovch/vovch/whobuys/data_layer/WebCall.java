@@ -141,6 +141,49 @@ public class WebCall {
         return response;
     }
 
+    protected UserGroup getNewGroupFromJsonString(String result){
+        UserGroup group = null;
+        try {
+            JSONArray groupsArray = new JSONArray(result);
+            int length = groupsArray.length();
+            UserGroup tempGroup;
+            JSONObject tempJsonObject;
+            JSONArray tempListsArray;
+            JSONArray tempMembersArray;
+            String name;
+            String id;
+            AddingUser[] members;
+            String owner;
+            String ownerName;
+            String lastUpdateTime;
+            tempJsonObject = groupsArray.getJSONObject(0);
+            name = tempJsonObject.getString("group_name");
+            id = tempJsonObject.getString("group_id");
+            tempMembersArray = tempJsonObject.getJSONArray("group_members");
+            int membersNumber = tempMembersArray.length();
+            members = new AddingUser[membersNumber];
+            JSONObject tempMember;
+            for (int j = 0; j < membersNumber; j++) {
+                tempMember = tempMembersArray.getJSONObject(j);
+                members[j] = new AddingUser();
+                members[j].setData(tempMember.getString("name"), tempMember.getString("id"));
+            }
+            owner = tempJsonObject.getString("group_owner_id");
+            ownerName = tempJsonObject.getString("group_owner_name");
+            lastUpdateTime = tempJsonObject.getString("group_last_update_time");
+            tempGroup = new UserGroup(name, id, members);
+            tempGroup.setHistoryLists(new SList[0]);
+            tempGroup.setActiveLists(new SList[0]);
+            tempGroup.setOwner(owner);
+            tempGroup.setOwnerName(ownerName);
+            tempGroup.setLastUpdateTime(lastUpdateTime);
+            group = tempGroup;
+        } catch (Exception e) {
+            return null;
+        }
+        return group;
+    }
+
     protected UserGroup[] getGroupsFromJsonString(String result) {
         UserGroup[] groups = null;
         try {

@@ -173,7 +173,7 @@ public class NewGroup extends WithLoginActivity {
     protected void goOutOfActivity(Class<?> cls){
         if (provider.getActiveActivityNumber() == getThisActivityNumber()) {
             provider.nullActiveActivity();
-
+            provider.setActiveGroup(null);
         }
         Intent intent = new Intent(getThisActivityContext(), cls);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

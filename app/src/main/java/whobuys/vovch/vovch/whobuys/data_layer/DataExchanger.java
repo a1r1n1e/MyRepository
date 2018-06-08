@@ -139,7 +139,7 @@ public class DataExchanger {
     public UserGroup newGroupAdding(String name) {
         UserGroup result = null;
         try {
-            UserGroup[] tempResult = null;
+            UserGroup tempResult = null;
             String resultString = null;
             AddingUser[] users = storage.getDeletableUsers();
             int length = users.length;
@@ -157,9 +157,8 @@ public class DataExchanger {
                 WebCall webCall = new WebCall();
                 resultString = webCall.callServer(provider.userSessionData.getId(), name, BLANK_WEBCALL_FIELD, "newgroup", jsonString, provider.userSessionData);
                 if (resultString != null && resultString.length() > 2 && resultString.substring(0, 3).equals("200")) {
-                    tempResult = webCall.getGroupsFromJsonString(resultString.substring(3));
-                    result = tempResult[0];
-                    storage.addGroup(result);
+                    tempResult = webCall.getNewGroupFromJsonString(resultString.substring(3));
+                    result = updateGroup(tempResult);
                     clearAddedUsers(); }
             }
         } catch (JSONException e) {
@@ -204,10 +203,12 @@ public class DataExchanger {
                 }
             }*/
             ActiveActivityProvider provider = (ActiveActivityProvider) context;
-            AddingUser[] members = provider.getActiveGroup().getMembers();
-            for(AddingUser member : members){
-                if(member.getUserId().equals(id)){
-                    return true;
+            if(provider.getActiveGroup() != null) {
+                AddingUser[] members = provider.getActiveGroup().getMembers();
+                for (AddingUser member : members) {
+                    if (member.getUserId().equals(id)) {
+                        return true;
+                    }
                 }
             }
 
