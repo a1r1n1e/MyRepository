@@ -462,7 +462,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void onLoginFailed(String result) {                                                        //TODO cases
         try {
-            activeToLoginFragmentChange();
+            //activeToLoginFragmentChange();
             loginFailed = result;
             checkLoginBadInformNeeded();
         } catch (Exception e){
@@ -595,6 +595,7 @@ public class ActiveListsActivity extends WithLoginActivity
                 transaction.commit();
 
                 //activeFragment.getChildFragmentManager().executePendingTransactions();
+                checkLoginBadInformNeeded();
 
                 if (viewPager.getCurrentItem() == 0) {
                     fabActionZero(fab);
