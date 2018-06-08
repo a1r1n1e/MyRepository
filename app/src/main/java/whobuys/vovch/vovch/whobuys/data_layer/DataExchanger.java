@@ -614,6 +614,9 @@ public class DataExchanger {
                     newGroup.setOwner(group.getOwner());
                     result = storage.updateGroup(group, newGroup);
                     if (result != null) {
+
+                        result = updateGroup(result);
+
                         provider.setActiveGroup(result);
                         storage.clearDeletableUsers();
                         if (result.getOwner().equals(provider.userSessionData.getId())) {
