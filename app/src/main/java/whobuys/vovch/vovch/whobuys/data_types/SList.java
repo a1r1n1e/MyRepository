@@ -23,6 +23,8 @@ public class SList /*implements Parcelable*/ {
     private String humanCreationTime;
     private int owner;
     private String ownerName;
+    private String name;
+
     private CardView cardView;
     private ImageButton disButton;
     private ImageButton resendButton;
@@ -35,6 +37,7 @@ public class SList /*implements Parcelable*/ {
         owner = -1;
         type = false;
         state = true;
+        name = "";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         creationTime = format.format(Calendar.getInstance().getTime());
         setHumanCreationTime();
@@ -47,17 +50,36 @@ public class SList /*implements Parcelable*/ {
         setState(newState);
         setOwner(newOwner);
         setOwnerName(newOwnerName);
-        if(!newType) {
+        setName("");
+        /*if(!newType) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             creationTime = format.format(Calendar.getInstance().getTime());
         } else{
             creationTime = newCreationTime;
-        }
+        }*/
+        creationTime = newCreationTime;
         setHumanCreationTime();
     }
+
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public void setName(String name) {
+        if(name != null) {
+            this.name = name;
+        } else {
+            this.name = "";
+        }
+    }
+
+    public String getName() {
+        if(this.name == null){
+            this.name = "";
+        }
+        return name;
+    }
+
     private void setHumanCreationTime(){
         if (creationTime != null) {
             if(type) {

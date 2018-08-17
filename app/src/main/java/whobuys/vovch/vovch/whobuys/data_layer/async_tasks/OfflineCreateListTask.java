@@ -20,9 +20,9 @@ public class OfflineCreateListTask extends AsyncTask<Object, Void, SList> {
         Item[] items = (Item[]) loginPair[0];
         incomingActivityType = (Integer) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
-        SList list;
+        SList list = null;
 
-        list = activeActivityProvider.dataExchanger.addOfflineList(items);
+        //list = activeActivityProvider.dataExchanger.addOfflineList(items);
 
         return list;
     }

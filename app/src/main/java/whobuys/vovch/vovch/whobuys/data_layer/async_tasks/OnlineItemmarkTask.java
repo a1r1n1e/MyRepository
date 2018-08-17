@@ -14,7 +14,7 @@ import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 public class OnlineItemmarkTask extends AsyncTask <Object, Item, UserGroup>{
     private ActiveActivityProvider activeActivityProvider;
     private UserGroup group;
-    Item markedItem;
+    private Item markedItem;
 
     @Override
     public UserGroup doInBackground(Object... loginPair) {

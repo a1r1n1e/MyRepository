@@ -385,7 +385,7 @@ public class ActiveListsActivity extends WithLoginActivity
             if (offlineFragment != null) {
                 offlineFragment.checkRootView(viewPager, getLayoutInflater());
                 offlineFragment.setRefresher();
-                offlineUpdate(true);
+                offlineUpdateActive();
             }
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
@@ -397,7 +397,7 @@ public class ActiveListsActivity extends WithLoginActivity
             if (historyFragment != null) {
                 historyFragment.checkRootView(viewPager, getLayoutInflater());
                 historyFragment.setRefresher();
-                offlineUpdate(false);
+                offlineUpdateHistory();
             }
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
@@ -646,9 +646,17 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
-    public void offlineUpdate(boolean type) {
+    public void offlineUpdateActive() {
         try {
-            provider.startOfflineGetterDatabaseTask(type);
+            provider.getOfflineActiveData();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
+    }
+
+    public void offlineUpdateHistory() {
+        try {
+            provider.getOfflineHistoryData();
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
         }
@@ -814,7 +822,7 @@ public class ActiveListsActivity extends WithLoginActivity
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), getString(R.string.list_copied_informer), Toast.LENGTH_LONG)
                             .show();
-                    activeActivityProvider.createListogramOffline(list.getItems());
+                    activeActivityProvider.createListogramOffline(list.getItems(), list.getName());
                 }
             });
             if(activeActivityProvider.userSessionData.isLoginned()) {
@@ -976,6 +984,17 @@ public class ActiveListsActivity extends WithLoginActivity
         }
     }
 
+    public void showItemmarkProcessing(Item item){
+        try {
+            if (offlineFragment != null) {
+                offlineFragment.checkRootView(viewPager, getLayoutInflater());
+                offlineFragment.fragmentShowItemmarkProcessing(item);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
+    }
+
     public void showItemmarkOfflineGood(Item result) {
         try {
             if (offlineFragment != null) {
@@ -1044,7 +1063,7 @@ public class ActiveListsActivity extends WithLoginActivity
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ActiveListsActivity.this, CreateListogramActivity.class);
-                        intent.putExtra(INTENT_LOAD_TYPE, false);
+                        intent.putExtra(INTENT_LOAD_TYPE, 0);
                         startActivity(intent);
                     }
                 });

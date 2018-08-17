@@ -25,7 +25,8 @@ public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGrou
         UserGroup group = (UserGroup) loginPair[1];
         activeActivityProvider = (ActiveActivityProvider) loginPair[2];
         activityType = (Integer) loginPair[3];
-        result = activeActivityProvider.dataExchanger.addOnlineList(items, group);
+        String listName = (String) loginPair[4];
+        result = activeActivityProvider.dataExchanger.addOnlineList(items, group, listName);
         return result;
     }
     @Override

@@ -9,12 +9,16 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import com.example.vovch.listogram_20.R;
+
+import java.util.ArrayList;
+
 import whobuys.vovch.vovch.whobuys.activities.WithLoginActivity;
 import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
 import whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity;
@@ -26,6 +30,7 @@ public class GroupList2Activity extends WithLoginActivity {
 
     private static final String INTENT_LOAD_TYPE = "loadtype";
     private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
+    private ArrayList<Button> Buttons = new ArrayList<>();
 
     private ActiveActivityProvider provider;
     private int loadType;
@@ -55,6 +60,8 @@ public class GroupList2Activity extends WithLoginActivity {
             TextView headerTextView = (TextView) findViewById(R.id.group_list_textview);
             headerTextView.setText(getString(R.string.resend_where_informer));
         }
+
+        Buttons = new ArrayList<>();
 
         /*FloatingActionButton groupAddButton = (FloatingActionButton) findViewById(R.id.group_add_fab);
         View.OnClickListener addGroupListenner = new View.OnClickListener() {
@@ -130,6 +137,7 @@ public class GroupList2Activity extends WithLoginActivity {
         groupListMaker(result);
     }
     public void showBad(UserGroup[] result){
+        setButtonsClickable();
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
         refreshLayout.setRefreshing(false);
         groupListMaker(result);
@@ -150,6 +158,8 @@ public class GroupList2Activity extends WithLoginActivity {
         groupButton.setText(group.getName());
 
         groupButton.setGroup(group);
+
+        Buttons.add(Buttons.size(), groupButton);
 
         View.OnClickListener groupTochedListenner = new View.OnClickListener() {
             @Override
@@ -176,10 +186,25 @@ public class GroupList2Activity extends WithLoginActivity {
         parentLayout.addView(addingLayout);
 
     }
+    public void setButtonsClickable(){
+        for(Button button : Buttons){
+            button.setFocusable(true);
+            button.setClickable(true);
+        }
+    }
+    public void setButtonsNotClickable(){
+        for(Button button : Buttons){
+            button.setFocusable(false);
+            button.setClickable(false);
+        }
+    }
     protected void onGroupWhereTOSendChosenAction(UserGroup group){
+        setButtonsNotClickable();
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
+        refreshLayout.setRefreshing(true);
         if(loadType == 1) {
             if (group != null && group.getId() != null) {
-                provider.createOnlineListogram(group, resendingList.getItems());
+                provider.createOnlineListogram(group, resendingList.getItems(), resendingList.getName());
             }
         } else if(loadType == 2){
             if (group != null && group.getId() != null) {
@@ -188,6 +213,9 @@ public class GroupList2Activity extends WithLoginActivity {
         }
     }
     protected void onGroupNameTochedAction(UserGroup group){
+        setButtonsNotClickable();
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.group_list_refresher);
+        refreshLayout.setRefreshing(true);
         if(group != null){
             if(group.getId() != null && group.getName() != null){
                 goToGroup(group);

@@ -61,7 +61,7 @@ public class ActiveFragmentOffline extends Fragment {
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
         LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
         LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
-        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        TextView listOwnerNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         String listOwner;
         if(list.getOwner() > 0) {
             listOwner = getString(R.string.from)+ " " + list.getOwnerName();
@@ -69,13 +69,17 @@ public class ActiveFragmentOffline extends Fragment {
         else{
             listOwner = getString(R.string.your_list);
         }
-        listNameTextView.setText(listOwner);
+        listOwnerNameTextView.setText(listOwner);
+
+        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        listNameTextView.setText(list.getName());
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
         if(list.getCreationTime() != null){
             listCreationTimeTextView.setTextSize(10);
             listCreationTimeTextView.setText(list.getHumanCreationTime());
         }
+        leftHeaderLayout.addView(listOwnerNameTextView);
         leftHeaderLayout.addView(listNameTextView);
         leftHeaderLayout.addView(listCreationTimeTextView);
         headerLayout.addView(leftHeaderLayout);
@@ -275,6 +279,10 @@ public class ActiveFragmentOffline extends Fragment {
             parentLayout.addView(emptyInformer);
         }
     }
+    public void fragmentShowItemmarkProcessing(Item item){
+        LinearLayout layout = item.getLayout();
+        layout.setAlpha(0.5f);
+    }
     public void fragmentShowSecondGood(Item result){
         Button itemMarkTouchedButton = result.getButton();
         if(itemMarkTouchedButton != null) {
@@ -282,6 +290,9 @@ public class ActiveFragmentOffline extends Fragment {
             itemMarkTouchedButton.setClickable(true);
         }
         LinearLayout itemMarkLayout = result.getLayout();
+        if (itemMarkLayout != null) {
+            itemMarkLayout.setAlpha(1);
+        }
         if(itemMarkLayout != null && getActivity() != null) {
             if (result.getState()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -303,6 +314,10 @@ public class ActiveFragmentOffline extends Fragment {
         }
     }
     public void fragmentShowSecondBad(Item result){
+        LinearLayout itemMarkLayout = result.getLayout();
+        if (itemMarkLayout != null) {
+            itemMarkLayout.setAlpha(1);
+        }
         Button itemMarkButton = result.getButton();
         if(itemMarkButton != null) {
             itemMarkButton.setClickable(true);

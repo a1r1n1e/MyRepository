@@ -9,7 +9,7 @@ import whobuys.vovch.vovch.whobuys.data_types.SList;
  * Created by vovch on 24.12.2017.
  */
 
-public class OfflineDisactivateTask extends AsyncTask<Object, Void, SList>{
+public class DisactivateOfflineTask extends AsyncTask<Object, Void, SList>{
     private ActiveActivityProvider activeActivityProvider;
     private SList tempList;
     @Override
@@ -23,6 +23,10 @@ public class OfflineDisactivateTask extends AsyncTask<Object, Void, SList>{
     @Override
     public void onPostExecute(SList list){
         if (list != null) {
+            activeActivityProvider.showOfflineActiveListsDisactivatedGood(list);
+        } else {
+            activeActivityProvider.showOfflineActiveListsDisactivatedBad(tempList);
+        }if (list != null) {
             activeActivityProvider.showOfflineActiveListsDisactivatedGood(list);
         } else {
             activeActivityProvider.showOfflineActiveListsDisactivatedBad(tempList);

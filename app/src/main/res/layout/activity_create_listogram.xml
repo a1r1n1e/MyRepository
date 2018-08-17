@@ -15,14 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:background="@color/elementLayoutColor1">
-        <TextView
-            android:id="@+id/create_listogram_toolbar_textview"
+        <EditText
+            android:id="@+id/create_listogram_toolbar_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_weight="0.8"
-            android:text="@string/pick_items"
+            android:hint="@string/enter_list_name"
             android:maxLines="1"
             android:textAllCaps="false"
             android:textColor="@color/whoBuysGray"

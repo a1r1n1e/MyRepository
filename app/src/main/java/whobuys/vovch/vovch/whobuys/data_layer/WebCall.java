@@ -36,6 +36,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WebCall {
 
+    private ActiveActivityProvider provider;
+
     private static final String DATA_1 = "uname";
     private static final String DATA_2 = "upassword";
     private static final String DATA_3 = "third";
@@ -52,7 +54,12 @@ public class WebCall {
     public WebCall() {
     }
 
-    protected String callServer(Object... loginPair) {
+    public void setActiveActivityProvider(ActiveActivityProvider newProvider){
+        provider = newProvider;
+    }
+
+    public String callServer(Object... loginPair) {
+
         UserSessionData userSessionData;
         String response = "";
         if (loginPair[5] != null && loginPair[5] instanceof UserSessionData) {
@@ -141,7 +148,7 @@ public class WebCall {
         return response;
     }
 
-    protected UserGroup getNewGroupFromJsonString(String result){
+    public static UserGroup getNewGroupFromJsonString(String result){
         UserGroup group = null;
         try {
             JSONArray groupsArray = new JSONArray(result);
@@ -184,7 +191,7 @@ public class WebCall {
         return group;
     }
 
-    protected UserGroup[] getGroupsFromJsonString(String result) {
+    public static UserGroup[] getGroupsFromJsonString(String result) {
         UserGroup[] groups = null;
         try {
             JSONArray groupsArray = new JSONArray(result);
@@ -256,7 +263,9 @@ public class WebCall {
                     String listOwnerName = tempListObject.getString("list_owner_name");
 
                     String creation_time = tempListObject.getString("list_creation_time");
+                    String listName = tempListObject.getString("list_name");
                     SList tempList = new SList(items, listId, tempGroup, true, listState, listOwner, listOwnerName, creation_time);
+                    tempList.setName(listName);
                     if(tempList.getState()){
                         tempGroup.addActiveList(tempList);
                     } else {
@@ -279,16 +288,20 @@ public class WebCall {
         return groups;
     }
 
-    protected UserGroup getGroupFromJSONString(String result){
+    public static UserGroup getGroupFromJSONString(String result){
         try {
             UserGroup[] groups = getGroupsFromJsonString(result);
-            return groups[0];
+            if(groups != null && groups.length > 0) {
+                return groups[0];
+            } else {
+                return null;
+            }
         } catch (Exception e){
             return null;
         }
     }
 
-    protected String prepareItemsJSONString(Item[] items) {
+    public static String prepareItemsJSONString(Item[] items) {
         String result = null;
         if (items != null) {
             int length = items.length;
@@ -324,7 +337,7 @@ public class WebCall {
         }
     }
 
-    protected String getStringFromJsonString(String jsonString, String value) {
+    public static String getStringFromJsonString(String jsonString, String value) {
         String result = null;
         if (jsonString != null && value != null) {
             try {
@@ -339,7 +352,7 @@ public class WebCall {
         }
     }
 
-    protected SList[] getGroupListsFromJsonString(String result, UserGroup group) {
+    public static  SList[] getGroupListsFromJsonString(String result, UserGroup group) {
         SList[] lists = null;
         if (result != null && group != null) {
             try {
@@ -391,7 +404,9 @@ public class WebCall {
 
 
                     String creation_time = tempListObject.getString("list_creation_time");
+                    String listName = tempListObject.getString("list_name");
                     tempList = new SList(items, listId, group, false, listState, listOwner, listOwnerName, creation_time);
+                    tempList.setName(listName);
                     for (int k = 0; k < items.length; k++) {
                         items[k].setList(tempList);
                     }
@@ -406,7 +421,7 @@ public class WebCall {
         }
     }
 
-    protected ListInformer[] getListInformersFromJsonString(String result) {
+    /*public  static ListInformer[] getListInformersFromJsonString(String result) {
         if (result != null) {
             ListInformer[] informers = null;
             try {
@@ -451,7 +466,7 @@ public class WebCall {
         } else {
             return null;
         }
-    }
+    }*/
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();

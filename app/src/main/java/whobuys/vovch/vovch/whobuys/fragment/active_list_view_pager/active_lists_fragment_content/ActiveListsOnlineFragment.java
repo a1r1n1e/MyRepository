@@ -64,8 +64,11 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
         LinearLayout basicLayout = (LinearLayout) rootView.findViewById(R.id.activelistslayout);
         CardView cardView = (CardView) LayoutInflater.from(basicLayout.getContext()).inflate(R.layout.list_card, basicLayout, false);
         FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(cardView.getContext()).inflate(R.layout.active_activity_frame_layout, cardView, false);
+
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(frameLayout.getContext()).inflate(R.layout.active_lists_linear_layout, frameLayout, false);
-        TextView groupNameTextView = (TextView) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.active_actvity_text_view_1, listogramLayout,false);
+
+        LinearLayout textPartLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.active_lists_listinformer_linearlayout, listogramLayout, false);
+        TextView groupNameTextView = (TextView) LayoutInflater.from(textPartLayout.getContext()).inflate(R.layout.active_actvity_text_view_1, textPartLayout,false);
         groupNameTextView.setText(informer.getName());
 
 
@@ -97,10 +100,20 @@ public class ActiveListsOnlineFragment extends ActiveListsFragment {
                 attentionButtonFrame.addView(attentionButton);
             }
         }
+        LinearLayout listPartLayout = (LinearLayout) LayoutInflater.from(textPartLayout.getContext()).inflate(R.layout.active_lists_linear_layout, textPartLayout, false);
 
+        TextView lastListNameTextView = (TextView) LayoutInflater.from(listPartLayout.getContext()).inflate(R.layout.listinformer_list_name_textview, listPartLayout,false);
+        lastListNameTextView.setText(informer.getLastListName());
+        TextView lastListTimeTextView = (TextView) LayoutInflater.from(listPartLayout.getContext()).inflate(R.layout.listinformer_list_time_textview, listPartLayout,false);
+        lastListTimeTextView.setText(informer.getLastListTime());
 
-        listogramLayout.addView(groupNameTextView);
+        listPartLayout.addView(lastListNameTextView);
+        listPartLayout.addView(lastListTimeTextView);
 
+        textPartLayout.addView(groupNameTextView);
+        textPartLayout.addView(listPartLayout);
+
+        listogramLayout.addView(textPartLayout);
         listogramLayout.addView(attentionButtonFrame);
         GroupButton frameButton = (GroupButton) LayoutInflater.from(frameLayout.getContext()).inflate(R.layout.group_button, frameLayout, false);
 

@@ -1,10 +1,17 @@
 package whobuys.vovch.vovch.whobuys.data_layer;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.transition.Slide;
 import android.util.Log;
 
 import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.DBUpdateOneGroupTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.NetWorkUpdateOneGroupTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.OfflineGetterTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.uilayer.ItemmarkerOnlineTaskDE;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.uilayer.SuccessesItemmarkOnlinePublisherRunnable;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
@@ -17,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.UnknownServiceException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -27,7 +35,7 @@ import java.util.Calendar;
 public class DataExchanger {
     private DataStorage storage;
     private static DataExchanger instance;
-    private static final String BLANK_WEBCALL_FIELD = "100000";
+    public static final String BLANK_WEBCALL_FIELD = "100000";
     private static final String NULL_LAST_LIST_CREATION_TIME = "0000";
     private Context context;
 
@@ -51,7 +59,7 @@ public class DataExchanger {
         }
     }
 
-    public boolean synchronizeDB(){                                                                     //not working properly. works only expanding side
+    /*public boolean synchronizeDB(){                                                                     //not working properly. works only expanding side
         boolean result = false;
         try{
             DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
@@ -60,9 +68,9 @@ public class DataExchanger {
             Log.d("WhoBuys", "DE");
         }
         return result;
-    }
+    }*/
 
-    public ListInformer[] getListInformers(String userId) {                                         //shouldn't be used
+    /*public ListInformer[] getListInformers(String userId) {                                         //shouldn't be used
         ListInformer[] informers = null;
         try {
             WebCall webCall = new WebCall();
@@ -74,7 +82,7 @@ public class DataExchanger {
                 //resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkactives", jsonString, provider.userSessionData);
                 resultJsonString = webCall.callServer("2", BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "check_group_updates", jsonString, provider.userSessionData);
                 if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
-                    informers = webCall.getListInformersFromJsonString(resultJsonString.substring(3));
+                    informers = WebCall.getListInformersFromJsonString(resultJsonString.substring(3));
                     informers = storage.setListInformers(informers);
                 }
             }
@@ -82,7 +90,7 @@ public class DataExchanger {
             Log.d("WhoBuys", "DE");
         }
         return informers;
-    }
+    }*/
 
     public ListInformer[] createListinformers(){
         ListInformer[] informers = null;
@@ -96,7 +104,16 @@ public class DataExchanger {
                 } else {
                     active = "t";
                 }
-                informers[i] = new ListInformer(groups[i].getId(), groups[i].getName(), active);
+
+                SList[] lists = groups[i].getActiveLists();
+                String lastListName = "";
+                String lastListTime = "";
+                if(lists.length > 0){
+                    lastListName = lists[lists.length - 1].getName();
+                    lastListTime = lists[lists.length - 1].getHumanCreationTime();
+                }
+
+                informers[i] = new ListInformer(groups[i].getId(), groups[i].getName(), active, lastListName, lastListTime);
                 informers[i].setGroup(groups[i]);
             }
             storage.setListInformers(informers);
@@ -157,7 +174,7 @@ public class DataExchanger {
                 WebCall webCall = new WebCall();
                 resultString = webCall.callServer(provider.userSessionData.getId(), name, BLANK_WEBCALL_FIELD, "newgroup", jsonString, provider.userSessionData);
                 if (resultString != null && resultString.length() > 2 && resultString.substring(0, 3).equals("200")) {
-                    tempResult = webCall.getNewGroupFromJsonString(resultString.substring(3));
+                    tempResult = WebCall.getNewGroupFromJsonString(resultString.substring(3));
                     result = updateGroup(tempResult);
                     clearAddedUsers(); }
             }
@@ -179,7 +196,7 @@ public class DataExchanger {
                 ActiveActivityProvider provider = (ActiveActivityProvider) context;
                 tempResultString = webCall.callServer(id, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkuser", jsonString, provider.userSessionData);
                 if (tempResultString != null && tempResultString.length() > 2 && tempResultString.substring(0, 3).equals("200")) {
-                    result = webCall.getStringFromJsonString(tempResultString.substring(3), "name");
+                    result = WebCall.getStringFromJsonString(tempResultString.substring(3), "name");
                 }
             }
         } catch (Exception e){
@@ -302,7 +319,7 @@ public class DataExchanger {
             if(resultJsonString != null && resultJsonString.length() > 2){
                 DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                 if(resultJsonString.substring(0, 3).equals("200")) {
-                    groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
+                    groups = WebCall.getGroupsFromJsonString(resultJsonString.substring(3));
                     result = dataBaseTask2.resetGroups(groups);
                     result = storage.setGroups(result);
                 } else if(resultJsonString.substring(0, 3).equals("502")) {
@@ -315,6 +332,12 @@ public class DataExchanger {
         } catch (Exception e){
             Log.d("WhoBuys", "DE");
             return null;
+        }
+    }
+
+    public void setGroups(UserGroup[] groups){
+        if(groups != null){
+            UserGroup[] result = storage.setGroups(groups);
         }
     }
 
@@ -343,7 +366,7 @@ public class DataExchanger {
             String resultJsonString = webCall.callServer(group.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "check_group_updates", jsonString, provider.userSessionData);
             if(resultJsonString != null && resultJsonString.length() > 2){
                 if(resultJsonString.substring(0, 3).equals("200")) {
-                    UserGroup newGroup = webCall.getGroupFromJSONString(resultJsonString.substring(3));
+                    UserGroup newGroup = WebCall.getGroupFromJSONString(resultJsonString.substring(3));
                     DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                     newGroup = dataBaseTask2.addGroup(newGroup);
                     result = storage.resetGroup(group, newGroup);
@@ -425,7 +448,7 @@ public class DataExchanger {
                 ActiveActivityProvider provider = (ActiveActivityProvider) context;
                 String resultJsonString = webCall.callServer(group.getId(), BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "gettinglistograms", jsonString, provider.userSessionData);
                 if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
-                    lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
+                    lists = WebCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
                     setActiveListsToGroup(group, lists);
                 }
             }
@@ -475,7 +498,7 @@ public class DataExchanger {
                 ActiveActivityProvider provider = (ActiveActivityProvider) context;
                 String resultJsonString = webCall.callServer(group.getId(), lastListCreationTime, BLANK_WEBCALL_FIELD, "gettinghistory", jsonString, provider.userSessionData);
                 if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
-                    lists = webCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
+                    lists = WebCall.getGroupListsFromJsonString(resultJsonString.substring(3), group);
                     setHistoryListsToGroup(group, lists);
                 }
             }
@@ -539,7 +562,7 @@ public class DataExchanger {
             String resultJsonString = webCall.callServer(groupId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "check_group_updates", jsonString, provider.userSessionData);
             if(resultJsonString != null && resultJsonString.length() > 2){
                 if(resultJsonString.substring(0, 3).equals("200")) {
-                    UserGroup newGroup = webCall.getGroupFromJSONString(resultJsonString.substring(3));
+                    UserGroup newGroup = WebCall.getGroupFromJSONString(resultJsonString.substring(3));
 
                     UserGroup[] groups = storage.getGroups();
                     UserGroup group = null;
@@ -551,13 +574,16 @@ public class DataExchanger {
                         }
                     }
                     if(i < groups.length) {
-                        newGroup = storage.resetGroup(groups[i], newGroup);
-                    } else {
+                        if(UserGroup.newLastUpdateTimeBigger(groups[i].getLastUpdateTime(), newGroup.getLastUpdateTime())) {          //TODO now it's just temp solution
+                            newGroup = storage.resetGroup(groups[i], newGroup);
+                            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+                            result = dataBaseTask2.addGroup(newGroup);
+                        }
+                    } else if(i >= groups.length){
                         storage.addGroup(newGroup);
+                        DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+                        result = dataBaseTask2.addGroup(newGroup);
                     }
-
-                    DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
-                    result = dataBaseTask2.addGroup(newGroup);
                 }
             }
             return result;
@@ -565,7 +591,38 @@ public class DataExchanger {
             Log.d("WhoBuys", "DE");
             return null;
         }
+    }
 
+    public void updateOneGroupDataNew(String groupId, UserGroup newGroup){
+        UserGroup[] groups = storage.getGroups();
+        UserGroup result = null;
+        ActiveActivityProvider provider = (ActiveActivityProvider) context;
+
+        int i = 0;
+        for(;i < groups.length;i++) {
+            if(groups[i].getId().equals(groupId)){
+                break;
+            }
+        }
+        if(i < groups.length) {
+            if(UserGroup.newLastUpdateTimeBigger(groups[i].getLastUpdateTime(), newGroup.getLastUpdateTime())) {          //TODO now it's just a temp solution
+                newGroup = storage.resetGroup(groups[i], newGroup);
+
+                DBUpdateOneGroupTask runnable = new DBUpdateOneGroupTask(newGroup, provider);
+                provider.executor.execute(runnable);
+
+                //DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+                //result = dataBaseTask2.addGroup(newGroup);
+            }
+        } else if(i >= groups.length){
+            storage.addGroup(newGroup);
+
+            DBUpdateOneGroupTask runnable = new DBUpdateOneGroupTask(newGroup, provider);
+            provider.executor.execute(runnable);
+
+            //DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
+            //result = dataBaseTask2.addGroup(newGroup);
+        }
     }
 
     public UserGroup confirmGroupChanges(UserGroup group, String newGroupName) {
@@ -668,15 +725,15 @@ public class DataExchanger {
     }
 
 
-    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group) {
+    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group, String listName) {
         UserGroup resultGroup = null;
         try {
             String result = null;
             if (itemsArray != null && group != null) {
                 ActiveActivityProvider provider = (ActiveActivityProvider) context;
                 WebCall webCall = new WebCall();
-                String jsonString = webCall.prepareItemsJSONString(itemsArray);
-                result = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, group.getId(), "sendlistogram", jsonString, provider.userSessionData);
+                String jsonString = WebCall.prepareItemsJSONString(itemsArray);
+                result = webCall.callServer(provider.userSessionData.getId(), listName, group.getId(), "sendlistogram", jsonString, provider.userSessionData);
                 if (result != null && result.length() > 2 && result.substring(0, 3).equals("200")) {
                     resultGroup = updateGroup(group);
                 }
@@ -694,7 +751,7 @@ public class DataExchanger {
             if (list != null && group != null && list.getItems() != null) {
                 ActiveActivityProvider provider = (ActiveActivityProvider) context;
                 WebCall webCall = new WebCall();
-                String itemsJSONString = webCall.prepareItemsJSONString(list.getItems());
+                String itemsJSONString = WebCall.prepareItemsJSONString(list.getItems());
                 jsonString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), group.getId(), "resendlist", itemsJSONString, provider.userSessionData);
                 if (jsonString != null && jsonString.length() > 2 && jsonString.substring(0, 3).equals("200")) {
                     group = updateGroup(group);
@@ -730,7 +787,7 @@ public class DataExchanger {
             String userId = String.valueOf(provider.userSessionData.getId());
             String resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "groupsearch", jsonString, provider.userSessionData);
             if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
-                groups = webCall.getGroupsFromJsonString(resultJsonString.substring(3));
+                groups = WebCall.getGroupsFromJsonString(resultJsonString.substring(3));
                 groups = storage.setGroups(groups);
             }
         } catch(Exception e){
@@ -816,7 +873,7 @@ public class DataExchanger {
                 String resultString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "itemmark", jsonString, provider.userSessionData);
                 if (resultString != null && resultString.length() > 2) {
                     if (resultString.substring(0, 3).equals("205")) {
-                        if(storage.isGroup(result)) {
+                        if(!storage.isGroup(result)) {
                             result = updateGroup(result);
                         } else {
                             result.itemmark(item);
@@ -824,12 +881,12 @@ public class DataExchanger {
                             item.setOwnerName(null);
                         }
                     } else if (resultString.substring(0, 3).equals("200")) {
-                        if(storage.isGroup(result)) {
+                        if(!storage.isGroup(result)) {
                             result = updateGroup(result);
                         } else {
                             result.itemmark(item);
-                            String ownerId = webCall.getStringFromJsonString(resultString.substring(3), "owner_id");
-                            String ownerName = webCall.getStringFromJsonString(resultString.substring(3), "owner_name");
+                            String ownerId = WebCall.getStringFromJsonString(resultString.substring(3), "owner_id");
+                            String ownerName = WebCall.getStringFromJsonString(resultString.substring(3), "owner_name");
                             item.setOwner(ownerId);
                             item.setOwnerName(ownerName);
                         }
@@ -842,6 +899,45 @@ public class DataExchanger {
             Log.d("WhoBuys", "DE");
         }
         return result;
+    }
+
+    public void itemmarkOnlineOn(Item item, String resultString, UserGroup result){
+        ActiveActivityProvider provider = (ActiveActivityProvider) context;
+        if(!storage.isGroup(result)) {
+
+            NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(result.getId(), provider);
+            provider.executor.execute(worker);
+
+        } else {
+            result.itemmark(item);
+            String ownerId = WebCall.getStringFromJsonString(resultString.substring(3), "owner_id");
+            String ownerName = WebCall.getStringFromJsonString(resultString.substring(3), "owner_name");
+            item.setOwner(ownerId);
+            item.setOwnerName(ownerName);
+
+            Handler handler = new Handler(Looper.getMainLooper());
+            SuccessesItemmarkOnlinePublisherRunnable runnable = new SuccessesItemmarkOnlinePublisherRunnable(item.getList().getGroup(), result, provider, item);
+            handler.post(runnable);
+
+        }
+    }
+
+    public void itemmarkOnlineOff(Item item, UserGroup result){
+        ActiveActivityProvider provider = (ActiveActivityProvider) context;
+        if(!storage.isGroup(result)) {
+
+            NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(result.getId(), provider);
+            provider.executor.execute(worker);
+
+        } else {
+            result.itemmark(item);
+            item.setOwner(null);
+            item.setOwnerName(null);
+
+            Handler handler = new Handler(Looper.getMainLooper());
+            SuccessesItemmarkOnlinePublisherRunnable runnable = new SuccessesItemmarkOnlinePublisherRunnable(item.getList().getGroup(), result, provider, item);
+            handler.post(runnable);
+        }
     }
 
 
@@ -862,35 +958,33 @@ public class DataExchanger {
         return result;
     }
 
+    public void itemmarkOfflineNew(Item item){
+        try {
+            if (item != null) {
+                storage.itemmarkOffline(item);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "DE");
+        }
+    }
+
     public SList disactivateOfflineList(SList list) {
-        SList result = null;
         try {
             if (list != null) {
                 list.setState(false);
-                result = list;
-                DataBaseTask2 memoryTask = new DataBaseTask2(context);
-                memoryTask.disactivateOfflineList(String.valueOf(result.getId()));
                 storage.addOfflineListToHistory(list);
-            }
-
-            if (result != null) {
-                storage.removeOfflineListFromActive(result);
+                storage.removeOfflineListFromActive(list);
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
         }
-        return result;
+        return list;
     }
 
-    public SList addOfflineList(Item[] items) {
-        SList list = null;
+    public SList addOfflineList(SList list) {
         try {
-            if(items != null){
-                DataBaseTask2 addTask = new DataBaseTask2(context);
-                list = addTask.addList(items, "t");
-                if(list != null) {
-                    storage.addNewList(list);
-                }
+            if(list != null) {
+                storage.addNewList(list);
             }
         } catch (Exception e){
             Log.d("WhoBuys", "DE");
@@ -944,30 +1038,22 @@ public class DataExchanger {
     }
 
 
-    public SList redactOfflineList(SList list, Item[] items) {
-        SList resultList = null;
+    public void redactOfflineList(SList list) {
         try {
-            if (list != null && items != null) {
-                DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
-                resultList = dataBaseTask2.redactOfflineList(list, items);
-                if(resultList != null) {
-                    resultList = storage.redactOfflineList(list, items);
-                }
-            }
+            storage.redactOfflineList(list);
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
         }
-        return resultList;
     }
 
-    public UserGroup redactOnlineList(SList list, Item[] items) {
+    public UserGroup redactOnlineList(SList list, Item[] items, String listName) {
         UserGroup result = null;
          try {
              if (list != null && items != null && list.getGroup().getId() != null) {
                  ActiveActivityProvider provider = (ActiveActivityProvider) context;
                  WebCall webCall = new WebCall();
-                 String itemsJSONString = webCall.prepareItemsJSONString(items);
-                 String resultString = webCall.callServer(provider.userSessionData.getId(), String.valueOf(list.getId()), list.getGroup().getId(), "redactlist", itemsJSONString, provider.userSessionData);
+                 String itemsJSONString = WebCall.prepareItemsJSONString(items);
+                 String resultString = webCall.callServer(listName, String.valueOf(list.getId()), list.getGroup().getId(), "redactlist", itemsJSONString, provider.userSessionData);
                  if (resultString != null && resultString.length() > 2 && resultString.substring(0, 3).equals("200")) {
                      //list.setItems(items);
                      result = updateGroup(list.getGroup());
@@ -986,10 +1072,10 @@ public class DataExchanger {
             if (storage.isAnyOfflineActive()) {
                 lists = storage.getOfflineListsActive();
             } else {
-                lists = getOfflineActiveDataFromMemory();
-                if (lists != null) {
-                    storage.setOfflineActiveData(lists);
-                }
+                ActiveActivityProvider provider = (ActiveActivityProvider) context;
+                OfflineGetterTask runnable = new OfflineGetterTask(provider);
+                provider.executor.execute(runnable);
+                lists = null;
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -1013,10 +1099,10 @@ public class DataExchanger {
             if (storage.isAnyOfflineHistory()) {
                 lists = storage.getOfflineListsHistory();
             } else {
-                lists = getOfflineHistoryDataFromMemory();
-                if (lists != null) {
-                    storage.setOfflineHistoryData(lists);
-                }
+                ActiveActivityProvider provider = (ActiveActivityProvider) context;
+                OfflineGetterTask runnable = new OfflineGetterTask(provider);
+                provider.executor.execute(runnable);
+                lists = null;
             }
         } catch(Exception e){
             Log.d("WhoBuys", "DE");
@@ -1044,6 +1130,19 @@ public class DataExchanger {
             Log.d("WhoBuys", "DE");
         }
         return lists;
+    }
+
+    public void setOfflineData(SList[] activeLists, SList[] historyLists){
+        try {
+            if (activeLists != null) {
+                storage.setOfflineActiveData(activeLists);
+            }
+            if (historyLists != null) {
+                storage.setOfflineHistoryData(historyLists);
+            }
+        } catch (Exception e){
+            Log.d("WhoBuys", "DE");
+        }
     }
 
     public void setOfflineActiveDataToDataStorage(SList[] lists) {

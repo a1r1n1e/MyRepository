@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -112,6 +113,11 @@ public class CreateListogramActivity extends WithLoginActivity {
             if(currentGroup != null){
                 groupId = currentGroup.getId();
             }
+        }
+
+        if(loadType == 2 || loadType == 3){
+            EditText listNameEditText = (EditText) findViewById(R.id.create_listogram_toolbar_edittext);
+            listNameEditText.setText(provider.getResendingList().getName());
         }
 
         View.OnClickListener sendListagramListener = new View.OnClickListener() {
@@ -317,6 +323,10 @@ public class CreateListogramActivity extends WithLoginActivity {
             dialogFragment.setItems(items);
             dialogFragment.setLoadType(loadType);
             dialogFragment.setFab(fab);
+
+            EditText listNameEdittext = (EditText) findViewById(R.id.create_listogram_toolbar_edittext);
+            dialogFragment.setListName(listNameEdittext.getText().toString());
+
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
@@ -329,6 +339,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         private Item[] items;
         private FloatingActionButton fab;
         private ActiveActivityProvider activeActivityProvider;
+        private String listName;
         protected void setFab(FloatingActionButton newFab){
             fab = newFab;
         }
@@ -337,6 +348,9 @@ public class CreateListogramActivity extends WithLoginActivity {
         }
         protected void setItems(Item[] newItems){
             items = newItems;
+        }
+        protected void setListName(String name){
+            listName = name;
         }
         protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
             activeActivityProvider = newActiveActivityProvider;
@@ -372,14 +386,14 @@ public class CreateListogramActivity extends WithLoginActivity {
                     }
 
                     if(loadType == 1) {
-                        activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items);
+                        activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items, listName);
                     }
                     else if(loadType == 0){
-                        activeActivityProvider.createListogramOffline(items);
+                        activeActivityProvider.createListogramOffline(items, listName);
                     } else if(loadType == 2){
-                        activeActivityProvider.redactOfflineListogram(items, activeActivityProvider.getResendingList());
+                        activeActivityProvider.redactOfflineListogram(items, activeActivityProvider.getResendingList(), listName);
                     } else if(loadType == 3){
-                        activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList());
+                        activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList(), listName);
                     }
                     Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();

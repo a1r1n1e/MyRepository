@@ -107,6 +107,7 @@ public class DataBaseTask2 {
                             type = true;
                         }
                         tempSlist = new SList(items, listCursor.getInt(0), null, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
+                        tempSlist.setName(listCursor.getString(7));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -115,7 +116,7 @@ public class DataBaseTask2 {
                     if(cursor != null) {
                         cursor.close();
                     }
-                    db.close();
+                    //db.close();
                 }
             }
             if(listCursor != null){
@@ -186,6 +187,7 @@ public class DataBaseTask2 {
                             type = true;
                         }
                         tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, true, type, listCursor.getInt(5), listCursor.getString(4), listCursor.getString(2));
+                        tempSlist.setName(listCursor.getString(7));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -236,7 +238,7 @@ public class DataBaseTask2 {
         }
     }
                                                                                                         //not working properly. works only expanding side
-    public boolean synchronizeOffline(SList[] activeLists, SList[] historyLists){                       //lists can be added or modified. not deleted completely. Full deletion of
+    /*public boolean synchronizeOffline(SList[] activeLists, SList[] historyLists){                       //lists can be added or modified. not deleted completely. Full deletion of
         try{                                                                                            //history lists is made outside of synchronization protocol
             for(SList list : activeLists){                                                              //NOT FULLY DEBUGGED
                 if(checkList(list)){                                                                    //list is already in storage
@@ -258,7 +260,7 @@ public class DataBaseTask2 {
         } catch (Exception e){
             return false;
         }
-    }
+    }*/
 
     public UserGroup getGroupData(String groupId){                                                      //potentially useful. NOT DEBUGGED
         UserGroup result = null;
@@ -498,11 +500,11 @@ public class DataBaseTask2 {
         }
     }
 
-    public SList addList(Item[] items, String isActive) {
+    public SList addList(Item[] items, String isActive, String listName) {
         SList result;
         try {
             if(items != null && isActive != null) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String creationTime = dateFormat.format(Calendar.getInstance().getTime());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
@@ -512,10 +514,17 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER, SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID, SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME, creationTime);
-                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, "");
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, listName);
                 long listId;
                 listId = db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
+
+                db.execSQL( "UPDATE " + SqLiteBaseContruct.Lists.TABLE_NAME + " SET " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID +
+                            " = " + listId + " WHERE " + SqLiteBaseContruct.Lists._ID + " = " + listId);
+
+                values.clear();
+
                 result = new SList(items, (int)listId, null, false, true, 0, null, creationTime);           //long to int careful
+                result.setName(listName);
                 values.clear();
                 addItemsToList(result, items);
                 db.close();
@@ -533,7 +542,7 @@ public class DataBaseTask2 {
         return null;
     }
 
-    protected UserGroup[] getGroups(){
+    public UserGroup[] getGroups(){
         UserGroup[] groups = null;
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -610,9 +619,9 @@ public class DataBaseTask2 {
         }
     }
 
-    protected UserGroup[] resetGroups(UserGroup[] groups){
+    public UserGroup[] resetGroups(UserGroup[] groups){
         try{
-            dropNotMentionedGroups(groups);                                                                             //TODO check the way it's done
+            dropNotMentionedGroups(groups);
             for(UserGroup group : groups){
                 addGroup(group);
             }
@@ -623,9 +632,12 @@ public class DataBaseTask2 {
         }
     }
 
-    protected UserGroup addGroup(UserGroup group){
+    public UserGroup addGroup(UserGroup group){
         try {
             UserGroup result;
+
+            boolean isGroupFlag = false;
+
             if (group != null && group.getId() != null) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -640,49 +652,54 @@ public class DataBaseTask2 {
                     } else {
                         group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
                     }
+                    isGroupFlag = true;
                 } else {
                     group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
                 }
-                groupCursor.close();
 
-                db.delete(SqLiteBaseContruct.Groups.TABLE_NAME,SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " = ?", groupArgs );
+                if(!isGroupFlag || UserGroup.newLastUpdateTimeBigger(groupCursor.getString(1), group.getLastUpdateTime())) {
+
+                    db.delete(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " = ?", groupArgs);
 
 
-                    db.execSQL( "DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE +
-                                " IN ( SELECT " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
-                                " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?" + ")", groupArgs);
+                    db.execSQL("DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE +
+                            " IN ( SELECT " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
+                            " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?" + ")", groupArgs);
                     db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME +
                             " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = ?", groupArgs);
 
 
-                db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", groupArgs);
+                    db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, SqLiteBaseContruct.UsersAndGroups.COLUMN_NAME_GROUPS + " =?", groupArgs);
 
-                ContentValues values = new ContentValues();
-                String state;
-                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_ID, group.getId());
-                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_NAME, group.getName());
-                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID, group.getOwner());
-                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME, group.getOwnerName());
-                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_STATE, group.getState());
-                values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME, group.getLastUpdateTime());
-                db.insert(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups._ID, values);
+                    ContentValues values = new ContentValues();
+                    String state;
+                    values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_ID, group.getId());
+                    values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_NAME, group.getName());
+                    values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_ID, group.getOwner());
+                    values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_OWNER_NAME, group.getOwnerName());
+                    values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_STATE, group.getState());
+                    values.put(SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME, group.getLastUpdateTime());
+                    db.insert(SqLiteBaseContruct.Groups.TABLE_NAME, SqLiteBaseContruct.Groups._ID, values);
 
-                values.clear();
+                    values.clear();
+
+                    for (AddingUser member : group.getMembers()) {
+                        makeUserCreatedAndLinked(member, group);
+                    }
+
+                    for (SList list : group.getActiveLists()) {
+                        addOnlineList(list, group);
+                    }
+
+                    for (SList list : group.getAllHistoryLists()) {
+                        addOnlineList(list, group);
+                    }
+                }
+
+                groupCursor.close();
                 db.close();
 
-                for(AddingUser member : group.getMembers()){
-                    makeUserCreatedAndLinked(member, group);
-                }
-
                 result = group;
-
-                for(SList list : group.getActiveLists()){
-                    addOnlineList(list, group);
-                }
-
-                for(SList list : group.getAllHistoryLists()){
-                    addOnlineList(list, group);
-                }
 
                 return result;
             } else {
@@ -742,7 +759,7 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER, list.getOwnerName());
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID, list.getOwner());
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME, list.getCreationTime());
-                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, "");
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, list.getName());
                 db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
                 values.clear();
 
@@ -761,12 +778,19 @@ public class DataBaseTask2 {
         }
     }
 
-    protected SList redactOfflineList(SList list, Item[] items) {
+    public SList redactOfflineList(SList list, Item[] items, String listName) {
         SList resultList = null;
         if (list != null && items != null) {
             try {
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
+
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, listName);
+                db.execSQL("UPDATE " + SqLiteBaseContruct.Lists.TABLE_NAME + " SET " + SqLiteBaseContruct.Lists.COLUMN_NAME_NAME +
+                           " = '" + listName + "' WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " = " + String.valueOf(list.getId())
+                           + " AND " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = " + SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
+                values.clear();
+
                 SimpleDateFormat dateFormat;
                 String creationTime;
                 StringBuilder active = new StringBuilder("");
@@ -796,6 +820,7 @@ public class DataBaseTask2 {
                     values.clear();
                 }
                 list.setItems(items);
+                list.setName(listName);
                 resultList = list;
                 db.close();
             } catch (Exception e) {
@@ -815,6 +840,23 @@ public class DataBaseTask2 {
         } catch (Exception e){
             Log.v("WhoBuys", "DBT2");
             return false;
+        }
+    }
+
+    public void dropAllGroups(){
+        try{
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Items.TABLE_NAME + " WHERE NOT " + SqLiteBaseContruct.Items.COLUMN_NAME_LIST_ONLINE + " = " + SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE);
+            db.execSQL("DELETE FROM " + SqLiteBaseContruct.Lists.TABLE_NAME + " WHERE NOT " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = " + SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
+
+            db.delete(SqLiteBaseContruct.Groups.TABLE_NAME, null, null);
+
+            db.delete(SqLiteBaseContruct.UsersAndGroups.TABLE_NAME, null, null);
+
+            db.close();
+        } catch (Exception e){
+            Log.v("WhoBuys", "DBT2");
         }
     }
 

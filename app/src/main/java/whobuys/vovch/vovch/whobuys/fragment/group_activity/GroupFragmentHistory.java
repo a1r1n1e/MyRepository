@@ -64,23 +64,28 @@ public class GroupFragmentHistory extends Fragment {
         LinearLayout listogramLayout = (LinearLayout) LayoutInflater.from(listCard.getContext()).inflate(R.layout.list_layout, listCard, false);
         LinearLayout headerLayout = (LinearLayout) LayoutInflater.from(listogramLayout.getContext()).inflate(R.layout.list_header_layout, listogramLayout, false);
         LinearLayout leftHeaderLayout = (LinearLayout) LayoutInflater.from(headerLayout.getContext()).inflate(R.layout.list_header_left_layout, headerLayout, false);
-        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        listNameTextView.setAlpha(0.5f);
+        TextView listOwnerNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        listOwnerNameTextView.setAlpha(0.5f);
         String listOwner;
         if(list.getOwner() > 0) {
-            listOwner = getString(R.string.from) + " " + list.getOwnerName();
+            listOwner = getString(R.string.from)+ " " + list.getOwnerName();
         }
         else{
             listOwner = getString(R.string.your_list);
         }
-        listNameTextView.setText(listOwner);
+        listOwnerNameTextView.setText(listOwner);
+
+        TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
+        listNameTextView.setText(list.getName());
+        listNameTextView.setAlpha(0.5f);
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        listCreationTimeTextView.setAlpha(0.5f);
         if(list.getCreationTime() != null){
             listCreationTimeTextView.setTextSize(10);
             listCreationTimeTextView.setText(list.getHumanCreationTime());
         }
+        listCreationTimeTextView.setAlpha(0.5f);
+        leftHeaderLayout.addView(listOwnerNameTextView);
         leftHeaderLayout.addView(listNameTextView);
         leftHeaderLayout.addView(listCreationTimeTextView);
         headerLayout.addView(leftHeaderLayout);

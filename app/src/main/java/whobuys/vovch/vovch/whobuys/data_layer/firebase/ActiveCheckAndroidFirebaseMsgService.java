@@ -81,7 +81,7 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
             ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
             if (provider.dataExchanger != null && provider.userSessionData != null) {
                 if (provider.userSessionData.getId() != null) {
-                    ListInformer[] informers = provider.dataExchanger.getListInformers(provider.userSessionData.getId());
+                    ListInformer[] informers = provider.dataExchanger.getListInformersRAM();
                     if (informers == null || informers.length == 0) {
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                         if(notificationManager != null) {

@@ -4,10 +4,19 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Looper;
+import android.transition.Slide;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vovch.listogram_20.R;
+
+import org.json.JSONArray;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
 import whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity;
@@ -19,7 +28,6 @@ import whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity;
 import whobuys.vovch.vovch.whobuys.data_layer.DataExchanger;
 import whobuys.vovch.vovch.whobuys.data_layer.UserSessionData;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.AddUserTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DBSynchronizerTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.DropHistoryTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupActiveGetterTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupChangeConfirmTask;
@@ -27,24 +35,24 @@ import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupHistoryGetterTask
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupLeaverTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupStateSetWatchedTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsGetterTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.GroupsUpdateTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.LoginnerTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.NewDataBaseTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.NewGroupAdderTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.OfflineCreateListTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.OfflineDisactivateTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.OfflineItemmarkTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.OnlineCreateListogramTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.OnlineDisactivateTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.OnlineItemmarkTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.RedactOfflineListTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.RedactOnlineListTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.RegistrationTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.RemoveAddedUserTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.ResendListToGroupTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.SendBugTask;
 import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.SessionCheckerTask;
-import whobuys.vovch.vovch.whobuys.data_layer.async_tasks.UpdateOneGroupTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.GroupsUpdaterTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.ItemmarkerOfflineTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.ItemmarkerOnlineTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.NetWorkUpdateOneGroupTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.OfflineDisactivateTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.OfflineGetterTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.OfflineListogramCreatorTask;
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.background.RedactOfflineListogramTask;
 import whobuys.vovch.vovch.whobuys.data_types.AddingUser;
 import whobuys.vovch.vovch.whobuys.data_types.Item;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
@@ -68,6 +76,7 @@ public class ActiveActivityProvider extends Application {
     public DataExchanger dataExchanger;
     public UserSessionData userSessionData;
     public int debugger;
+    public Executor executor;
 
     @Override
     public void onCreate() {
@@ -78,6 +87,14 @@ public class ActiveActivityProvider extends Application {
         dataExchanger = DataExchanger.getInstance(ActiveActivityProvider.this);
         userSessionData = UserSessionData.getInstance(ActiveActivityProvider.this);
         nullActiveActivity();
+
+        executor = Executors.newFixedThreadPool(4);
+
+        GroupsUpdaterTask worker = new GroupsUpdaterTask(ActiveActivityProvider.this);
+        executor.execute(worker);
+
+        startOfflineGetterDatabaseTask();
+
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("HelveticaNeueCyr-Roman.otf")
                 .setFontAttrId(R.attr.fontPath)
@@ -137,13 +154,6 @@ public class ActiveActivityProvider extends Application {
             result = true;
         }
         return result;
-    }
-
-
-    public void synchronizeDB(){
-        DBSynchronizerTask dbSynchronizerTask = new DBSynchronizerTask();
-        dbSynchronizerTask.execute(ActiveActivityProvider.this);
-        //boolean result = dataExchanger.synchronizeDB();
     }
 
 
@@ -232,6 +242,10 @@ public class ActiveActivityProvider extends Application {
 
     public void goodLoginTry(String result) {
         if (getActiveActivityNumber() == 2) {
+
+            GroupsUpdaterTask worker = new GroupsUpdaterTask(ActiveActivityProvider.this);
+            executor.execute(worker);
+
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.loginToActiveFragmentChange();
         }
@@ -294,30 +308,81 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void startOfflineGetterDatabaseTask(boolean type) {
-        NewDataBaseTask newDataBaseTask = new NewDataBaseTask();
-        newDataBaseTask.execute(type, ActiveActivityProvider.this);
+    public void startOfflineGetterDatabaseTask() {
+
+        OfflineGetterTask runnable = new OfflineGetterTask(ActiveActivityProvider.this);
+        executor.execute(runnable);
+
+        //NewDataBaseTask newDataBaseTask = new NewDataBaseTask();
+        //newDataBaseTask.execute(type, ActiveActivityProvider.this);
+    }
+
+    public void getOfflineActiveData(){
+        SList[] activeLists = dataExchanger.getOfflineActiveData();
+        if (activeLists == null || activeLists.length == 0) {
+            showOfflineActiveListsBad(activeLists);
+        } else {
+            showOfflineActiveListsGood(activeLists);
+        }
+    }
+
+    public void getOfflineHistoryData(){
+        SList[] historyLists = dataExchanger.getOfflineHistoryData();
+        if (historyLists == null || historyLists.length == 0) {
+            showOfflineHistoryListsBad(historyLists);
+        } else {
+            showOfflineHistoryListsGood(historyLists);
+        }
     }
 
     public void activeActivityDisactivateList(SList list) {
-        OfflineDisactivateTask offlineDisactivateTask = new OfflineDisactivateTask();
-        offlineDisactivateTask.execute(list, ActiveActivityProvider.this);
+
+        OfflineDisactivateTask runnable = new OfflineDisactivateTask(list, ActiveActivityProvider.this);
+        executor.execute(runnable);
+
+        //DisactivateOfflineTask disactivateOfflineTask = new DisactivateOfflineTask();
+        //disactivateOfflineTask.execute(list, ActiveActivityProvider.this);
     }
 
     public void activeListsItemmark(Item item) {
-        OfflineItemmarkTask offlineItemmarkTask = new OfflineItemmarkTask();
-        offlineItemmarkTask.execute(item, ActiveActivityProvider.this);
+
+        ItemmarkerOfflineTask runnable = new ItemmarkerOfflineTask(item, ActiveActivityProvider.this);
+        executor.execute(runnable);
+
+        //OfflineItemmarkTask offlineItemmarkTask = new OfflineItemmarkTask();
+        //offlineItemmarkTask.execute(item, ActiveActivityProvider.this);
     }
 
-    public void createListogramOffline(Item[] items) {
-        OfflineCreateListTask offlineCreateListTask = new OfflineCreateListTask();
-        offlineCreateListTask.execute(items, getActiveActivityNumber(), ActiveActivityProvider.this);
+    public void createListogramOffline(Item[] items, String name) {
+
+        OfflineListogramCreatorTask runnable = new OfflineListogramCreatorTask(items, getActiveActivityNumber(), ActiveActivityProvider.this, name);
+        executor.execute(runnable);
+
+        //OfflineCreateListTask offlineCreateListTask = new OfflineCreateListTask();
+        //offlineCreateListTask.execute(items, getActiveActivityNumber(), ActiveActivityProvider.this);
     }
 
     public void getActiveActivityActiveLists() {
         if(userSessionData.isLoginned()) {
-            GroupsUpdateTask groupsUpdateTask = new GroupsUpdateTask();
-            groupsUpdateTask.execute(ActiveActivityProvider.this);
+            //GroupsUpdateTask groupsUpdateTask = new GroupsUpdateTask();
+            //groupsUpdateTask.execute(ActiveActivityProvider.this);
+
+            //GroupsUpdaterTask worker = new GroupsUpdaterTask(ActiveActivityProvider.this);
+            //executor.execute(worker);
+
+            UserGroup[] groupsInDataStorage = dataExchanger.getGroupsFromRAM();
+            if(groupsInDataStorage != null && groupsInDataStorage.length > 0){                          //TODO ZERO listinformers
+                ListInformer[] informers = dataExchanger.createListinformers();
+                if (informers == null) {
+                    if (userSessionData.isLoginned()) {
+                        showListInformersGottenBad();
+                    } else {
+                        badLoginTry(getString(R.string.log_yourself_in));
+                    }
+                } else {
+                    showListInformersGottenGood(informers, false);
+                }
+            }
         } else {
             if(getActiveActivityNumber() == 2){
                 ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
@@ -505,6 +570,15 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void getGroupActiveLists(UserGroup group) {
+        SList[] lists = dataExchanger.getGroupActiveData(group);
+        if (lists == null || lists.length == 0) {
+            showGroupActiveListsBad(group.getId());
+        } else {
+            showGroupActiveListsGood(lists, group.getId());
+        }
+    }
+
+    public void refreshGroupActiveLists(UserGroup group){
         GroupActiveGetterTask groupActiveGetterTask = new GroupActiveGetterTask();
         groupActiveGetterTask.execute(group, ActiveActivityProvider.this);
     }
@@ -515,19 +589,22 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void itemmark(Item item) {
-        OnlineItemmarkTask onlineItemmarkTask = new OnlineItemmarkTask();
-        onlineItemmarkTask.execute(item, ActiveActivityProvider.this);
+        //OnlineItemmarkTask onlineItemmarkTask = new OnlineItemmarkTask();
+        //onlineItemmarkTask.execute(item, ActiveActivityProvider.this);
+
+        ItemmarkerOnlineTask runnable = new ItemmarkerOnlineTask(ActiveActivityProvider.this, item);
+        executor.execute(runnable);
     }
 
 
-    public void createOnlineListogram(UserGroup group, Item[] items) {
+    public void createOnlineListogram(UserGroup group, Item[] items, String listName) {
         OnlineCreateListogramTask onlineCreateListogramTask = new OnlineCreateListogramTask();
-        onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, getActiveActivityNumber());
+        onlineCreateListogramTask.execute(items, group, ActiveActivityProvider.this, getActiveActivityNumber(), listName);
     }
 
-    public void redactOnlineListogram(Item[] items, SList redactingList){
+    public void redactOnlineListogram(Item[] items, SList redactingList, String listName){
         RedactOnlineListTask redactOnlineListTask = new RedactOnlineListTask();
-        redactOnlineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this);
+        redactOnlineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this, listName);
     }
 
     public void showOnlineListRedactedGood(int incomingActivity, UserGroup group){
@@ -549,9 +626,13 @@ public class ActiveActivityProvider extends Application {
         groupStateChangerTask.execute(group, ActiveActivityProvider.this);
     }
 
-    public void redactOfflineListogram(Item[] items, SList redactingList){
-        RedactOfflineListTask redactOfflineListTask = new RedactOfflineListTask();
-        redactOfflineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this);
+    public void redactOfflineListogram(Item[] items, SList redactingList, String listName){
+
+        RedactOfflineListogramTask runnable = new RedactOfflineListogramTask(list, getActiveActivityNumber(), items, ActiveActivityProvider.this, listName);
+        executor.execute(runnable);
+
+        //RedactOfflineListTask redactOfflineListTask = new RedactOfflineListTask();
+        //redactOfflineListTask.execute(redactingList, items, getActiveActivityNumber(), ActiveActivityProvider.this);
     }
 
     public void showOfflineListRedactedGood(SList resultList, int incomingActivity){
@@ -599,6 +680,8 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void resendListToGroup(SList resendingList, UserGroup group){
+
+
         ResendListToGroupTask resendListToGroupTask = new ResendListToGroupTask();
         resendListToGroupTask.execute(resendingList, group, ActiveActivityProvider.this);
     }
@@ -636,7 +719,7 @@ public class ActiveActivityProvider extends Application {
             if (getActiveGroup().getId().equals(group.getId())) {
                 setActiveGroup(group);
                 activity.showGood(group.getActiveLists());
-                activity.historyLoadOnGood(group.getHistoryLists());
+                //activity.historyLoadOnGood(group.getHistoryLists());
             }
         }
     }
@@ -656,7 +739,7 @@ public class ActiveActivityProvider extends Application {
             if (getActiveGroup().getId().equals(group.getId())) {
                 //setActiveGroup(group);
                 activity.showGood(group.getActiveLists());
-                activity.historyLoadOnGood(group.getHistoryLists());
+                //activity.historyLoadOnGood(group.getHistoryLists());
             }
         }
     }
@@ -667,6 +750,9 @@ public class ActiveActivityProvider extends Application {
             if (getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))) {
                 activity.showItemmarkProcessing(item);
             }
+        } else if(getActiveActivityNumber() == 2){
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+            activity.showItemmarkProcessing(item);
         }
     }
 
@@ -709,8 +795,12 @@ public class ActiveActivityProvider extends Application {
     }
 
     public void updateOneGroup(String groupId){
-        UpdateOneGroupTask updateOneGroupTask = new UpdateOneGroupTask();
-        updateOneGroupTask.execute(ActiveActivityProvider.this, groupId);
+
+        NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(groupId, ActiveActivityProvider.this);
+        executor.execute(worker);
+
+        //UpdateOneGroupTask updateOneGroupTask = new UpdateOneGroupTask();
+        //updateOneGroupTask.execute(ActiveActivityProvider.this, groupId);
     }
 
     public void showGroupChangeInside(UserGroup group){

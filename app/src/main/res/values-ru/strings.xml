@@ -79,4 +79,5 @@
     <string name="no_groups">Нет групп</string>
     <string name="profile">Профиль</string>
     <string name="additional">Дополнительно</string>
+    <string name="enter_list_name">Назовите список</string>
 </resources>

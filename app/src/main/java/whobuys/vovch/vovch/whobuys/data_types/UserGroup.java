@@ -302,4 +302,8 @@ public class UserGroup /*implements Parcelable*/ {
             numberOfHistoryLists = DEFAULT_HISTORY_LISTS_STEP;
         }
     }
+
+    public static boolean newLastUpdateTimeBigger(String lastTime, String newTime){
+        return true;                                                                                    //TODO
+    }
 }

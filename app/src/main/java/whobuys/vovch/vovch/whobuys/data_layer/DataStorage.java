@@ -248,9 +248,11 @@ public class DataStorage {
 
     protected UserGroup resetGroup(UserGroup group, UserGroup newGroup){
         UserGroup result = null;
-        if(group != null){
+        if(group != null && newGroup != null){
             if(Groups.contains(group)){
-                Groups.add(Groups.indexOf(group), newGroup);
+                int position = Groups.indexOf(group);
+                Groups.remove(position);
+                Groups.add(position, newGroup);
             } else {
                 addGroup(newGroup);
             }
@@ -338,19 +340,42 @@ public class DataStorage {
         }
     }
 
+    private int getListPosition(SList list, boolean type){
+        int i = 0;
+        if(type) {
+            for (SList tempList : ListsOfflineActive) {
+                if (tempList.getId() == list.getId()) {
+                    return i;
+                }
+                i++;
+            }
+            return i;
+        } else {
+            for (SList tempList : ListsOfflineHistory) {
+                if (tempList.getId() == list.getId()) {
+                    return i;
+                }
+                i++;
+            }
+            return i;
+        }
+    }
 
-    protected SList redactOfflineList(SList list, Item[] items){
-        SList result = null;
-        if(list != null && items != null) {
-            if (ListsOfflineActive.contains(list)) {
-                ListsOfflineActive.get(ListsOfflineActive.indexOf(list)).setItems(items);
-                result = ListsOfflineActive.get(ListsOfflineActive.indexOf(list));
-            } else if (ListsOfflineHistory.contains(list)) {
-                ListsOfflineHistory.get(ListsOfflineHistory.indexOf(list)).setItems(items);
-                result = ListsOfflineHistory.get(ListsOfflineHistory.indexOf(list));
+
+    protected void redactOfflineList(SList list){
+        if(list != null) {
+            int i = getListPosition(list, true);
+            if (i > -1) {
+                ListsOfflineActive.remove(i);
+                ListsOfflineActive.add(i, list);
+            } else {
+                i = getListPosition(list, false);
+                if(i > -1) {
+                    ListsOfflineHistory.remove(i);
+                    ListsOfflineHistory.add(i, list);
+                }
             }
         }
-        return result;
     }
 
 
