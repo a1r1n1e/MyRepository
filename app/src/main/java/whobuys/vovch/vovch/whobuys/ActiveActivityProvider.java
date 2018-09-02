@@ -90,8 +90,7 @@ public class ActiveActivityProvider extends Application {
 
         executor = Executors.newFixedThreadPool(4);
 
-        GroupsUpdaterTask worker = new GroupsUpdaterTask(ActiveActivityProvider.this);
-        executor.execute(worker);
+        updateAllGroups();
 
         startOfflineGetterDatabaseTask();
 
@@ -156,6 +155,16 @@ public class ActiveActivityProvider extends Application {
         return result;
     }
 
+    public void updateAllGroups(){
+
+        if(getActiveActivityNumber() == 2 && getActiveActivity() != null){
+            ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
+            activity.setActiveListsOnlineRefresher();
+        }
+
+        GroupsUpdaterTask worker = new GroupsUpdaterTask(ActiveActivityProvider.this);
+        executor.execute(worker);
+    }
 
     public void tryToLoginFromPrefs() {
         boolean prefCheck = false;
@@ -243,8 +252,7 @@ public class ActiveActivityProvider extends Application {
     public void goodLoginTry(String result) {
         if (getActiveActivityNumber() == 2) {
 
-            GroupsUpdaterTask worker = new GroupsUpdaterTask(ActiveActivityProvider.this);
-            executor.execute(worker);
+            updateAllGroups();
 
             ActiveListsActivity activity = (ActiveListsActivity) getActiveActivity();
             activity.loginToActiveFragmentChange();
@@ -578,9 +586,11 @@ public class ActiveActivityProvider extends Application {
         }
     }
 
-    public void refreshGroupActiveLists(UserGroup group){
-        GroupActiveGetterTask groupActiveGetterTask = new GroupActiveGetterTask();
-        groupActiveGetterTask.execute(group, ActiveActivityProvider.this);
+    public void unsetGroupRefresher(String groupId){                                                    //shitcode
+       if(getActiveActivityNumber() == 3 && getActiveGroup().getId().equals(groupId)){
+           Group2Activity activity = (Group2Activity) getActiveActivity();
+           activity.unsetActiveListsRefresher();
+       }
     }
 
     public void disactivateGroupList(SList list) {
@@ -727,7 +737,7 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineItemmarkedGoodLight(Item item) {
         if (getActiveActivityNumber() == 3 && item != null) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().equals(item.getList().getGroup())) {
+            if (getActiveGroup().getId().equals(item.getList().getGroup().getId())) {
                 activity.showThirdGood(item);
             }
         }
@@ -747,7 +757,7 @@ public class ActiveActivityProvider extends Application {
     public void showItemmarkProcessingToUser(Item item) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().getId().equals(String.valueOf(item.getList().getGroup()))) {
+            if (getActiveGroup().getId().equals(item.getList().getGroup().getId())) {
                 activity.showItemmarkProcessing(item);
             }
         } else if(getActiveActivityNumber() == 2){
@@ -773,7 +783,7 @@ public class ActiveActivityProvider extends Application {
     public void showOnlineDisactivateListBad(SList result) {
         if (getActiveActivityNumber() == 3) {
             Group2Activity activity = (Group2Activity) getActiveActivity();
-            if (getActiveGroup().equals(result.getGroup())) {
+            if (getActiveGroup().getId().equals(result.getGroup().getId())) {
                 activity.showSecondBad(result);
             }
         }

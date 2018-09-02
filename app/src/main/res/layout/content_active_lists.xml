@@ -38,6 +38,7 @@
                 </LinearLayout>
                 <android.support.design.widget.TabLayout
                     android:id="@+id/active_lists_tabs"
+                    app:tabTextAppearance="@style/TabsCustomTextAppearance"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:background="@color/elementLayoutColor1"/>

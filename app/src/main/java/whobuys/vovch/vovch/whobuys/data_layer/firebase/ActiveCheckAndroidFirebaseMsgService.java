@@ -14,6 +14,8 @@ import whobuys.vovch.vovch.whobuys.ActiveActivityProvider;
 import whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity;
 
 import com.example.vovch.listogram_20.R;
+
+import whobuys.vovch.vovch.whobuys.data_layer.runnables.uilayer.NotificationsTask;
 import whobuys.vovch.vovch.whobuys.data_types.ListInformer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -39,11 +41,19 @@ public class ActiveCheckAndroidFirebaseMsgService extends FirebaseMessagingServi
     private void updateActivities(String groupListAddedToId, String message, String type) {
         try {
             ActiveActivityProvider provider = (ActiveActivityProvider) getApplicationContext();
-            if (type.equals("newlistogram") && provider.getActiveActivityNumber() == -1) {
-                addNotification(message);
+            /*if (type.equals("newlistogram") && (provider.getActiveGroup() == null || !(provider.getActiveActivityNumber() == 3 && groupListAddedToId.equals(provider.getActiveGroup().getId())))) {
+                //addNotification(message);
+
+                NotificationsTask notificationsTask = new NotificationsTask(provider, message, false);
+                provider.executor.execute(notificationsTask);
+
             } else if (type.equals("listogramdeleted")) {
-                checkAndRemoveNotification();
-            }
+                //checkAndRemoveNotification();
+
+                NotificationsTask notificationsTask = new NotificationsTask(provider, message, false);
+                provider.executor.execute(notificationsTask);
+
+            }*/
             provider.updateOneGroup(groupListAddedToId);
         } catch (Exception e) {
             Log.v("WhoBuys", "smthin msg service");

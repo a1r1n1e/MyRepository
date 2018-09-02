@@ -255,9 +255,9 @@ public class UserSessionData {
                     result = new StringBuilder("");
                     WebCall webCall = new WebCall();
                     result.append(prefixString);
-                    String newId = webCall.getStringFromJsonString(postfixString, "id");
+                    String newId = WebCall.getStringFromJsonString(postfixString, "id");
                     result.append(newId);
-                    String sessionValue = webCall.getStringFromJsonString(postfixString, "session_id");
+                    String sessionValue = WebCall.getStringFromJsonString(postfixString, "session_id");
                     setSession(sessionValue);
                     checkUserData(newId, newLogin, newPassword, sessionValue);
                     return result.toString();

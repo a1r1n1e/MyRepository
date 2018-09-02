@@ -3,10 +3,12 @@ package whobuys.vovch.vovch.whobuys.data_types;
 import android.support.v7.widget.CardView;
 import android.widget.Button;
 
-import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * Created by vovch on 03.01.2018.
@@ -75,6 +77,30 @@ public class UserGroup /*implements Parcelable*/ {
         state = "1";
         setMinimumHistoryListsNumber();
         lastUpdateTime = null;
+    }
+
+    public boolean equalsByLastUpdateTime(Object obj) {
+        if(obj != null && obj instanceof UserGroup){
+            UserGroup newOne = (UserGroup) obj;
+            return  newOne.getLastUpdateTime().equals(this.getLastUpdateTime());
+        } else{
+            return false;
+        }
+    }
+
+    public static boolean arraysEqualByLastUpdateTime(UserGroup[] newOne, UserGroup[] oldOne){          //arrays thought to be ordered the right way
+        if(newOne != null && oldOne != null && newOne.length == oldOne.length){
+            boolean result = true;
+            for(int i = 0; i < oldOne.length; i++){
+                if(!newOne[i].equalsByLastUpdateTime(oldOne[i])){
+                    result = false;
+                    break;
+                }
+            }
+            return result;
+        } else{
+            return false;
+        }
     }
 
     public void setState(String newState){
@@ -255,14 +281,6 @@ public class UserGroup /*implements Parcelable*/ {
         }
     }
 
-    public void deleteMember(String memberId) {
-        if (members != null) {
-            if (members.contains(memberId)) {
-                members.remove(memberId);
-            }
-        }
-    }
-
     public void setMembers(AddingUser[] newMembers) {
         if (newMembers != null) {
             members = new ArrayList<>(Arrays.asList(newMembers));
@@ -304,6 +322,18 @@ public class UserGroup /*implements Parcelable*/ {
     }
 
     public static boolean newLastUpdateTimeBigger(String lastTime, String newTime){
-        return true;                                                                                    //TODO
+        if(newTime != null && lastTime != null) {
+            try {
+                //Date lastDate = stringToDate(lastTime, "yyyy-MM-dd' 'HH:mm:ss.SSSSzz");
+                SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS");
+                Date lastDate =  simpledateformat.parse(lastTime);
+                Date newDate = simpledateformat.parse(newTime);
+                return newDate.after(lastDate);
+            } catch (ParseException e){
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

@@ -132,6 +132,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
 
         TabLayout tabs = (TabLayout) findViewById(R.id.active_lists_tabs);
+
         tabs.removeAllTabs();
         tabs.addTab(tabs.newTab().setText(getString(R.string.online)));
         tabs.addTab(tabs.newTab().setText(getString(R.string.offline)));
@@ -368,15 +369,28 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void refreshActiveLists() {
         try {
-            if (activeListsOnlineFragment != null) {
-                activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
-                if (activeListsOnlineFragment.getRefresher() != null) {
-                    activeListsOnlineFragment.setRefresherRefreshing();
-                }
-            }
-            update();
+            setActiveListsOnlineRefresher();
+            forceUpdate();
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
+        }
+    }
+
+    public void setActiveListsOnlineRefresher(){
+        if (activeListsOnlineFragment != null) {
+            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+            if (activeListsOnlineFragment.getRefresher() != null) {
+                activeListsOnlineFragment.setRefresherRefreshing();
+            }
+        }
+    }
+
+    public void unsetActiveListsOnlineRefresher(){
+        if (activeListsOnlineFragment != null) {
+            activeListsOnlineFragment.checkRootView(viewPager, getLayoutInflater());
+            if (activeListsOnlineFragment.getRefresher() != null) {
+                activeListsOnlineFragment.setRefresherNotRefreshing();
+            }
         }
     }
 
@@ -494,7 +508,6 @@ public class ActiveListsActivity extends WithLoginActivity
                 FragmentTransaction transaction = activeFragment.getChildFragmentManager().beginTransaction();
                 transaction.add(R.id.active_lists_page_one, activeListsOnlineFragment, "One");
                 transaction.commit();
-
                 //activeFragment.getChildFragmentManager().executePendingTransactions();
             }
         } catch (Exception e){
@@ -641,6 +654,14 @@ public class ActiveListsActivity extends WithLoginActivity
     public void update() {
         try {
             provider.getActiveActivityActiveLists();
+        } catch (Exception e){
+            Log.d("WhoBuys", "ALA");
+        }
+    }
+
+    public void forceUpdate(){
+        try {
+            provider.updateAllGroups();
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
         }

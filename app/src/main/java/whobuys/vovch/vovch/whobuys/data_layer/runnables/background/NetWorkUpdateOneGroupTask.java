@@ -48,12 +48,36 @@ public class NetWorkUpdateOneGroupTask implements Runnable {
                         NetWorkUpdateOneGroupDETask runnable = new NetWorkUpdateOneGroupDETask(result, groupId, provider);
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(runnable);
+                    } else{
+                        ErrorUpdateGroupPublisherRunnable runnable = new ErrorUpdateGroupPublisherRunnable(groupId);
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(runnable);
                     }
+                } else{
+                    ErrorUpdateGroupPublisherRunnable runnable = new ErrorUpdateGroupPublisherRunnable(groupId);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(runnable);
                 }
+            } else{
+                ErrorUpdateGroupPublisherRunnable runnable = new ErrorUpdateGroupPublisherRunnable(groupId);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(runnable);
             }
 
         } catch (Exception e){
             Log.d("WhoBuys", "NetWorkUpdateOneGroupTask");
+        }
+    }
+    public class ErrorUpdateGroupPublisherRunnable implements Runnable{
+        private String groupId;
+
+        ErrorUpdateGroupPublisherRunnable(String groupd){
+            this.groupId = groupId;
+        }
+
+        @Override
+        public void run() {
+            provider.unsetGroupRefresher(groupId);
         }
     }
 }

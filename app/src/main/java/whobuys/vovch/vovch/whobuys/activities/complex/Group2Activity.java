@@ -209,6 +209,13 @@ public class Group2Activity extends WithLoginActivity {
         super.onStop();
     }
 
+    public void unsetActiveListsRefresher(){
+        if (activeFragment != null) {
+            activeFragment.checkRootView(viewPager, getLayoutInflater());
+            activeFragment.setRefresherNotRefreshing();
+        }
+    }
+
     public void refreshWholeGroup(){
         UserGroup activeGroup = provider.getActiveGroup();
         if(activeGroup != null) {
@@ -224,10 +231,10 @@ public class Group2Activity extends WithLoginActivity {
     }
 
     public void update() {
-        if (activeFragment != null) {
+        /*if (activeFragment != null) {
             activeFragment.checkRootView(viewPager, getLayoutInflater());
             activeFragment.setRefresherRefreshing();
-        }
+        }*/
         provider.getGroupActiveLists(provider.getActiveGroup());
     }
 

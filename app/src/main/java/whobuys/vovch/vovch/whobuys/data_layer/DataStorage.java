@@ -248,7 +248,7 @@ public class DataStorage {
 
     protected UserGroup resetGroup(UserGroup group, UserGroup newGroup){
         UserGroup result = null;
-        if(group != null && newGroup != null){
+        if(group != null){
             if(Groups.contains(group)){
                 int position = Groups.indexOf(group);
                 Groups.remove(position);
@@ -260,6 +260,9 @@ public class DataStorage {
         } else {
             addGroup(newGroup);
             result = newGroup;
+        }
+        if(result != null) {
+            result.setState(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED);
         }
         return result;
     }

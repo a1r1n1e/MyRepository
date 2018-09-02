@@ -605,7 +605,7 @@ public class DataExchanger {
             }
         }
         if(i < groups.length) {
-            if(UserGroup.newLastUpdateTimeBigger(groups[i].getLastUpdateTime(), newGroup.getLastUpdateTime())) {          //TODO now it's just a temp solution
+            if(UserGroup.newLastUpdateTimeBigger(groups[i].getLastUpdateTime(), newGroup.getLastUpdateTime())) {
                 newGroup = storage.resetGroup(groups[i], newGroup);
 
                 DBUpdateOneGroupTask runnable = new DBUpdateOneGroupTask(newGroup, provider);
@@ -613,6 +613,8 @@ public class DataExchanger {
 
                 //DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
                 //result = dataBaseTask2.addGroup(newGroup);
+            } else {
+                provider.unsetGroupRefresher(groupId);
             }
         } else if(i >= groups.length){
             storage.addGroup(newGroup);
@@ -851,7 +853,7 @@ public class DataExchanger {
         return result;
     }
 
-    public UserGroup itemmarkOnline(Item item) {
+    /*public UserGroup itemmarkOnline(Item item) {
         UserGroup result = null;
         try {
             if (item != null && item.getList() != null && item.getList().getGroup() != null) {
@@ -899,7 +901,7 @@ public class DataExchanger {
             Log.d("WhoBuys", "DE");
         }
         return result;
-    }
+    }*/
 
     public void itemmarkOnlineOn(Item item, String resultString, UserGroup result){
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
