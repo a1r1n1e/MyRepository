@@ -181,21 +181,23 @@ public class GroupFragmentHistory extends Fragment {
         itemName.setText(item.getName());
         ItemButton groupButton = (ItemButton) LayoutInflater.from(addingLayout.getContext()).inflate(R.layout.list_element_button, addingFrameLayout, false);
         groupButton.setItem(item);
-        if (item.getState()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+        if (getActivity() != null) {
+            if (item.getState()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else {
+                    addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                }
             } else {
-                addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else {
-                addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else {
+                    addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                }
             }
         }
         addingLayout.addView(itemName);
@@ -208,6 +210,11 @@ public class GroupFragmentHistory extends Fragment {
             itemOwnerTextView.setText(getString(R.string.by) + " " + item.getOwnerName());
             addingVerticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
+        } else {
+            TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
+            itemOwnerTextView.setText("");
+            addingVerticalLayout.addView(itemOwnerTextView);
+            item.setOwnerTextView(itemOwnerTextView);
         }
         addingFrameLayout.addView(addingVerticalLayout);
         addingFrameLayout.addView(groupButton);
@@ -215,7 +222,7 @@ public class GroupFragmentHistory extends Fragment {
     }
 
     private void resend(ListImageButton button){
-        if(button.getList() != null){
+        if(getActivity() != null && button.getList() != null){
             Group2Activity activity = (Group2Activity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);
@@ -224,7 +231,7 @@ public class GroupFragmentHistory extends Fragment {
     }
 
     private void redactList(ListImageButton button) {
-        if (button.getList() != null) {
+        if (getActivity() != null && button.getList() != null) {
             Group2Activity activity = (Group2Activity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);
@@ -311,8 +318,10 @@ public class GroupFragmentHistory extends Fragment {
     }
 
     public void refresh() {
-        Group2Activity activity = (Group2Activity) getActivity();
-        activity.refreshHistoryLists();
+        if(getActivity() != null) {
+            Group2Activity activity = (Group2Activity) getActivity();
+            activity.refreshHistoryLists();
+        }
     }
 
     public SwipeRefreshLayout getRefresher() {

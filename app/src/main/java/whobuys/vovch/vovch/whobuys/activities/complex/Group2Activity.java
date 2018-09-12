@@ -239,7 +239,7 @@ public class Group2Activity extends WithLoginActivity {
     }
 
     public void refreshActiveLists() {
-        if (activeFragment != null) {
+        if (activeFragment != null && provider.getActiveGroup() != null) {
             if (activeReady) {
                 activeFragment.checkRootView(viewPager, getLayoutInflater());
                 activeFragment.setRefresherRefreshing();

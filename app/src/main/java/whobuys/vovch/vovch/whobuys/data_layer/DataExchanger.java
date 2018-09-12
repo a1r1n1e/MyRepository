@@ -593,7 +593,7 @@ public class DataExchanger {
         }
     }
 
-    public void updateOneGroupDataNew(String groupId, UserGroup newGroup){
+    public void updateOneGroupDataNew(String groupId, UserGroup newGroup, boolean forceWatched){
         UserGroup[] groups = storage.getGroups();
         UserGroup result = null;
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
@@ -608,6 +608,10 @@ public class DataExchanger {
             if(UserGroup.newLastUpdateTimeBigger(groups[i].getLastUpdateTime(), newGroup.getLastUpdateTime())) {
                 newGroup = storage.resetGroup(groups[i], newGroup);
 
+                if(forceWatched){
+                    newGroup.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
+                }
+
                 DBUpdateOneGroupTask runnable = new DBUpdateOneGroupTask(newGroup, provider);
                 provider.executor.execute(runnable);
 
@@ -617,6 +621,11 @@ public class DataExchanger {
                 provider.unsetGroupRefresher(groupId);
             }
         } else if(i >= groups.length){
+
+            if(forceWatched){
+                newGroup.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
+            }
+
             storage.addGroup(newGroup);
 
             DBUpdateOneGroupTask runnable = new DBUpdateOneGroupTask(newGroup, provider);
@@ -907,31 +916,36 @@ public class DataExchanger {
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         if(!storage.isGroup(result)) {
 
-            NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(result.getId(), provider);
+            NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(result.getId(), provider, true);
             provider.executor.execute(worker);
 
         } else {
             result.itemmark(item);
             String ownerId = WebCall.getStringFromJsonString(resultString.substring(3), "owner_id");
             String ownerName = WebCall.getStringFromJsonString(resultString.substring(3), "owner_name");
+            String lastUpdateTime = WebCall.getStringFromJsonString(resultString.substring(3), "last_update_time");
+            result.setLastUpdateTime(lastUpdateTime);
             item.setOwner(ownerId);
             item.setOwnerName(ownerName);
 
             Handler handler = new Handler(Looper.getMainLooper());
             SuccessesItemmarkOnlinePublisherRunnable runnable = new SuccessesItemmarkOnlinePublisherRunnable(item.getList().getGroup(), result, provider, item);
             handler.post(runnable);
-
         }
+        result.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
+        DBUpdateOneGroupTask dbUpdateOneGroupTask = new DBUpdateOneGroupTask(result, provider);
+        provider.executor.execute(dbUpdateOneGroupTask);
     }
 
-    public void itemmarkOnlineOff(Item item, UserGroup result){
+    public void itemmarkOnlineOff(Item item, String resultString, UserGroup result){
         ActiveActivityProvider provider = (ActiveActivityProvider) context;
         if(!storage.isGroup(result)) {
-
-            NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(result.getId(), provider);
+            NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(result.getId(), provider, true);
             provider.executor.execute(worker);
 
         } else {
+            String lastUpdateTime = WebCall.getStringFromJsonString(resultString.substring(3), "last_update_time");
+            result.setLastUpdateTime(lastUpdateTime);
             result.itemmark(item);
             item.setOwner(null);
             item.setOwnerName(null);
@@ -940,6 +954,9 @@ public class DataExchanger {
             SuccessesItemmarkOnlinePublisherRunnable runnable = new SuccessesItemmarkOnlinePublisherRunnable(item.getList().getGroup(), result, provider, item);
             handler.post(runnable);
         }
+        result.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);
+        DBUpdateOneGroupTask dbUpdateOneGroupTask = new DBUpdateOneGroupTask(result, provider);
+        provider.executor.execute(dbUpdateOneGroupTask);
     }
 
 

@@ -15,10 +15,12 @@ import whobuys.vovch.vovch.whobuys.data_types.UserGroup;
 public class NetWorkUpdateOneGroupTask implements Runnable {
     private String groupId;
     public ActiveActivityProvider provider;
+    public boolean forceWatched;
 
-    public NetWorkUpdateOneGroupTask(String groupId, ActiveActivityProvider provider){
+    public NetWorkUpdateOneGroupTask(String groupId, ActiveActivityProvider provider, boolean forceWatched){
         this.groupId = groupId;
         this.provider = provider;
+        this.forceWatched = forceWatched;
     }
 
     public void setProvider(ActiveActivityProvider provider) {
@@ -45,7 +47,7 @@ public class NetWorkUpdateOneGroupTask implements Runnable {
                     result = WebCall.getGroupFromJSONString(resultJsonString.substring(3));
 
                     if(result != null) {
-                        NetWorkUpdateOneGroupDETask runnable = new NetWorkUpdateOneGroupDETask(result, groupId, provider);
+                        NetWorkUpdateOneGroupDETask runnable = new NetWorkUpdateOneGroupDETask(result, groupId, provider, forceWatched);
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(runnable);
                     } else{

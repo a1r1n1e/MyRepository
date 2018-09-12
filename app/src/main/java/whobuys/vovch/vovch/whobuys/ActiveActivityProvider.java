@@ -806,7 +806,7 @@ public class ActiveActivityProvider extends Application {
 
     public void updateOneGroup(String groupId){
 
-        NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(groupId, ActiveActivityProvider.this);
+        NetWorkUpdateOneGroupTask worker = new NetWorkUpdateOneGroupTask(groupId, ActiveActivityProvider.this, false);
         executor.execute(worker);
 
         //UpdateOneGroupTask updateOneGroupTask = new UpdateOneGroupTask();

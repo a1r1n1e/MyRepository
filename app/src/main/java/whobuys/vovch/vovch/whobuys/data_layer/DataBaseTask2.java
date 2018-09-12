@@ -647,7 +647,7 @@ public class DataBaseTask2 {
                         SqLiteBaseContruct.Groups.COLUMN_NAME_LAST_UPDATE_TIME};
                 Cursor groupCursor = db.query(SqLiteBaseContruct.Groups.TABLE_NAME, groupsProjection, SqLiteBaseContruct.Groups.COLUMN_NAME_ID + " =?", groupArgs, null, null, null);
                 if(groupCursor.moveToFirst()) {
-                    if (!groupCursor.getString(1).equals(group.getLastUpdateTime()) || groupCursor.getString(0).equals(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED)) {
+                    if (!group.getState().equals(UserGroup.DEFAULT_GROUP_STATE_WATCHED) && (!groupCursor.getString(1).equals(group.getLastUpdateTime()) || groupCursor.getString(0).equals(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED))) {
                         group.setState(UserGroup.DEFAULT_GROUP_STATE_UNWATCHED);
                     } else {
                         group.setState(UserGroup.DEFAULT_GROUP_STATE_WATCHED);

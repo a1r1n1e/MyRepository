@@ -24,7 +24,7 @@ public class ItemmarkerOnlineTaskDE implements Runnable {
     public void run() {
         try{
             if (resultString.substring(0, 3).equals("205")) {
-                provider.dataExchanger.itemmarkOnlineOff(item, group);
+                provider.dataExchanger.itemmarkOnlineOff(item, resultString, group);
             } else if (resultString.substring(0, 3).equals("200")) {
                 provider.dataExchanger.itemmarkOnlineOn(item, resultString, group);
             } else{

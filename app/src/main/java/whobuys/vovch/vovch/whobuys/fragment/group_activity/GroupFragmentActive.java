@@ -98,27 +98,29 @@ public class GroupFragmentActive extends Fragment {
                 onItemMarkButtonTouchedAction((ItemButton) v);
             }
         };
-        if (item.getState()) {
-            groupButton.setFocusable(true);
-            groupButton.setClickable(true);
-            groupButton.setOnClickListener(ItemMarkButtonListenner);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+        if (getActivity() != null) {
+            if (item.getState()) {
+                groupButton.setFocusable(true);
+                groupButton.setClickable(true);
+                groupButton.setOnClickListener(ItemMarkButtonListenner);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else {
+                    addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                }
             } else {
-                addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
-            }
-        } else {
-            groupButton.setFocusable(true);
-            groupButton.setClickable(true);
-            groupButton.setOnClickListener(ItemMarkButtonListenner);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else {
-                addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                groupButton.setFocusable(true);
+                groupButton.setClickable(true);
+                groupButton.setOnClickListener(ItemMarkButtonListenner);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    addingLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    addingLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else {
+                    addingLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                }
             }
         }
         addingLayout.addView(itemName);
@@ -129,6 +131,11 @@ public class GroupFragmentActive extends Fragment {
         if(item.getOwnerName() != null && item.getOwner() != null && !item.getOwner().equals(SqLiteBaseContruct.Items.ITEM_OFFLINE_DEFAULT_VALUE)){
             TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_item_owner_textview, addingVerticalLayout, false);
             itemOwnerTextView.setText( getString(R.string.by) + " " + item.getOwnerName());
+            addingVerticalLayout.addView(itemOwnerTextView);
+            item.setOwnerTextView(itemOwnerTextView);
+        } else {
+            TextView itemOwnerTextView = (TextView) LayoutInflater.from(addingVerticalLayout.getContext()).inflate(R.layout.list_element_owner_blank_textview, addingVerticalLayout, false);
+            itemOwnerTextView.setText("");
             addingVerticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
         }
@@ -322,6 +329,7 @@ public class GroupFragmentActive extends Fragment {
             if(item.getOwnerName() != null){
                 ownerNameString = item.getOwnerName();
             }
+            item.getOwnerTextView().setVisibility(View.GONE);
             itemOwnerTextView.setText(getString(R.string.by) + " " + ownerNameString);
             verticalLayout.addView(itemOwnerTextView);
             item.setOwnerTextView(itemOwnerTextView);
@@ -331,28 +339,34 @@ public class GroupFragmentActive extends Fragment {
             if(itemOwnerTextView != null) {
                 itemOwnerTextView.setVisibility(View.GONE);
             }
-            item.setOwnerTextView(null);
+            itemOwnerTextView = (TextView) LayoutInflater.from(verticalLayout.getContext()).inflate(R.layout.list_element_owner_blank_textview, verticalLayout, false);
+            itemOwnerTextView.setText("");
+            verticalLayout.addView(itemOwnerTextView);
+            item.setOwnerTextView(itemOwnerTextView);
+            //item.setOwnerTextView(null);
         }
 
         itemMarkLayout.setAlpha(1f);
         ItemButton itemMarkTouchedButton = item.getButton();
         itemMarkTouchedButton.setFocusable(true);
         itemMarkTouchedButton.setClickable(true);
-        if (item.getState()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+        if(getActivity() != null) {
+            if (item.getState()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                } else {
+                    itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
+                }
             } else {
-                itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_1));
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
-            } else {
-                itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    itemMarkLayout.setBackground(getActivity().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    itemMarkLayout.setBackground(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                } else {
+                    itemMarkLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.no_corners_layout_color_2));
+                }
             }
         }
     }
@@ -410,8 +424,10 @@ public class GroupFragmentActive extends Fragment {
     }
 
     public void refresh() {
-        Group2Activity activity = (Group2Activity) getActivity();
-        activity.refreshActiveLists();
+        if(getActivity() != null) {
+            Group2Activity activity = (Group2Activity) getActivity();
+            activity.refreshActiveLists();
+        }
     }
 
     public SwipeRefreshLayout getRefresher() {
@@ -419,7 +435,7 @@ public class GroupFragmentActive extends Fragment {
     }
 
     private void resend(ListImageButton button) {
-        if (button.getList() != null) {
+        if (getActivity() != null && button.getList() != null) {
             Group2Activity activity = (Group2Activity) getActivity();
             button.setFocusable(false);
             button.setClickable(false);

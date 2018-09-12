@@ -7,11 +7,13 @@ public class NetWorkUpdateOneGroupDETask implements Runnable {
     public String groupId;
     public UserGroup group;
     public ActiveActivityProvider provider;
+    public boolean forceWatched;
 
-    public NetWorkUpdateOneGroupDETask(UserGroup group, String groupId, ActiveActivityProvider provider){
+    public NetWorkUpdateOneGroupDETask(UserGroup group, String groupId, ActiveActivityProvider provider, boolean forceWatched){
         this.group = group;
         this.groupId = groupId;
         this.provider = provider;
+        this.forceWatched = forceWatched;
     }
 
     public void setGroupId(String groupId) {
@@ -28,6 +30,6 @@ public class NetWorkUpdateOneGroupDETask implements Runnable {
 
     @Override
     public void run() {
-        provider.dataExchanger.updateOneGroupDataNew(groupId, group);
+        provider.dataExchanger.updateOneGroupDataNew(groupId, group, forceWatched);
     }
 }
