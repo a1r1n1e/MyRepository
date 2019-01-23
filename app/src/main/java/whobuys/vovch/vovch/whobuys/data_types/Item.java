@@ -7,7 +7,7 @@ import android.widget.TextView;
  * Created by vovch on 23.12.2017.
  */
 
-public class Item /*implements Parcelable*/ {
+public class Item {
     private int id;
     private String name;
     private String comment;
@@ -116,43 +116,4 @@ public class Item /*implements Parcelable*/ {
     public LinearLayout getVerticalLayout(){
         return verticalLayout;
     }
-    /*protected Item(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        comment = in.readString();
-        list = (SList) in.readValue(SList.class.getClassLoader());
-        state = in.readByte() != 0x00;
-        //layout = (LinearLayout) in.readValue(LinearLayout.class.getClassLoader());
-        //button = (ItemButton) in.readValue(ItemButton.class.getClassLoader());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        clear();
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeString(comment);
-        dest.writeValue(list);
-        dest.writeByte((byte) (state ? 0x01 : 0x00));
-        //dest.writeValue(layout);
-        //dest.writeValue(button);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
-        @Override
-        public Item createFromParcel(Parcel in) {
-            return new Item(in);
-        }
-
-        @Override
-        public Item[] newArray(int size) {
-            return new Item[size];
-        }
-    };*/
 }

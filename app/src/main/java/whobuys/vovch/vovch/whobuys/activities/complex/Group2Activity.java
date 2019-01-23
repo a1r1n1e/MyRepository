@@ -240,7 +240,7 @@ public class Group2Activity extends WithLoginActivity {
 
     public void refreshActiveLists() {
         if (activeFragment != null && provider.getActiveGroup() != null) {
-            if (activeReady) {
+            if (activeReady && provider.getActiveGroup() != null) {
                 activeFragment.checkRootView(viewPager, getLayoutInflater());
                 activeFragment.setRefresherRefreshing();
                 provider.updateOneGroup(provider.getActiveGroup().getId());
