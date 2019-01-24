@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="whobuys.vovch.vovch.whobuys.activities.simple.GroupList2Activity"
+    tools:context="whobuys.vovch.vovch.light.activities.simple.GroupList2Activity"
     android:background="@color/elementLayoutColor1">
 
 

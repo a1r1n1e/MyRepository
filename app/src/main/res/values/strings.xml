@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WhoBuys</string>
+    <string name="app_name">WhoBuys Light</string>
     <string name="session_page">http://www.whobuys.ru/who_buys_sessioner.php</string>
     <string name="controller_page">http://www.whobuys.ru/who_buys_controller_130.php</string>
     <string name="title_activity_active_lists">Your active lists</string>

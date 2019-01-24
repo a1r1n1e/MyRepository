@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="whobuys.vovch.vovch.whobuys.activities.simple.ProfileActivity"
+    tools:context="whobuys.vovch.vovch.light.activities.simple.ProfileActivity"
     android:background="@color/elementLayoutColor1">
 
     <android.support.v7.widget.Toolbar

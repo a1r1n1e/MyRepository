@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/elementLayoutColor2"
-    tools:context="whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity">
+    tools:context="whobuys.vovch.vovch.light.activities.complex.ActiveListsActivity">
     <include layout="@layout/content_active_lists" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -9,7 +9,7 @@
     android:layout_gravity="top"
     android:fitsSystemWindows="true"
     android:background="@color/elementLayoutColor1"
-    tools:context="whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity">
+    tools:context="whobuys.vovch.vovch.light.activities.simple.SendBugActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/bug_report_toolbar"
         android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                 card_view:contentPaddingRight="8dp"
                 card_view:contentPaddingTop="8dp"
                 card_view:cardElevation="3dp">
-                <whobuys.vovch.vovch.whobuys.data_types.CreateListEditText
+                <whobuys.vovch.vovch.light.data_types.CreateListEditText
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -75,7 +75,7 @@
                     android:background="@android:color/transparent"
                     android:visibility="visible"
                     android:imeOptions="actionGo">
-                </whobuys.vovch.vovch.whobuys.data_types.CreateListEditText>
+                </whobuys.vovch.vovch.light.data_types.CreateListEditText>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </ScrollView>

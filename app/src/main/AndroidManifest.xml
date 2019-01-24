@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vovch.listogram_20">
+    package="whobuys.vovch.vovch.light">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
-        android:name="whobuys.vovch.vovch.whobuys.ActiveActivityProvider"
+        android:name="whobuys.vovch.vovch.light.ActiveActivityProvider"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_test"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="whobuys.vovch.vovch.whobuys.activities.WithLoginActivity" />
+        <activity android:name="whobuys.vovch.vovch.light.activities.WithLoginActivity" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.simple.GroupList2Activity"
+            android:name="whobuys.vovch.vovch.light.activities.simple.GroupList2Activity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.simple.ProfileActivity"
+            android:name="whobuys.vovch.vovch.light.activities.simple.ProfileActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.complex.Group2Activity"
+            android:name="whobuys.vovch.vovch.light.activities.complex.Group2Activity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.simple.NewGroup"
+            android:name="whobuys.vovch.vovch.light.activities.simple.NewGroup"
             android:theme="@style/AppTheme.NoActionBarExtended"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.simple.CreateListogramActivity"
+            android:name="whobuys.vovch.vovch.light.activities.simple.CreateListogramActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.simple.SendBugActivity"
+            android:name="whobuys.vovch.vovch.light.activities.simple.SendBugActivity"
             android:theme="@style/AppTheme.NoActionBarExtended" />
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.complex.ActiveListsActivity"
+            android:name="whobuys.vovch.vovch.light.activities.complex.ActiveListsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,19 +46,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="whobuys.vovch.vovch.whobuys.activities.simple.GroupSettingsActivity"
+            android:name="whobuys.vovch.vovch.light.activities.simple.GroupSettingsActivity"
             android:theme="@style/AppTheme.NoActionBarExtended"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
         <service
-            android:name="whobuys.vovch.vovch.whobuys.data_layer.firebase.ActiveCheckFirebaseInstanceIDService"
+            android:name="whobuys.vovch.vovch.light.data_layer.firebase.ActiveCheckFirebaseInstanceIDService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="whobuys.vovch.vovch.whobuys.data_layer.firebase.ActiveCheckAndroidFirebaseMsgService"
+            android:name="whobuys.vovch.vovch.light.data_layer.firebase.ActiveCheckAndroidFirebaseMsgService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -65,7 +66,7 @@
             </intent-filter>
         </service>
         <receiver
-            android:name="whobuys.vovch.vovch.whobuys.recievers.NetworkReciever"
+            android:name="whobuys.vovch.vovch.light.recievers.NetworkReciever"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
