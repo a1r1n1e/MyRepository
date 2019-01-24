@@ -35,6 +35,8 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import whobuys.vovch.vovch.light.ActiveActivityProvider;
 import whobuys.vovch.vovch.light.activities.simple.CreateListogramActivity;
 import whobuys.vovch.vovch.light.activities.simple.GroupList2Activity;
@@ -60,6 +62,9 @@ import java.util.List;
 
 public class ActiveListsActivity extends WithLoginActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int PHONE_STATE_PERMISSION_REQUEST = 1;
+    private static final int EXTERNAL_STORAGE_PERMISSION_REQUEST = 2;
 
     private static final String INTENT_LOAD_TYPE = "loadtype";
     private static final String FRAGMENT_TRANSACTION_DIALOG = "dialog";
@@ -182,20 +187,15 @@ public class ActiveListsActivity extends WithLoginActivity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            // Should we show an explanation?
-            // No explanation needed; request the permission
             ActivityCompat.requestPermissions(ActiveListsActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, 3);
-
-            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_PHONE_STATE},
+                    PHONE_STATE_PERMISSION_REQUEST);
         } else {
             // Permission has already been granted
         }
-        try {
+        /*try {
             if (!provider.userSessionData.isLoginned()) {
                 TelephonyManager tMgr = (TelephonyManager) provider.getSystemService(Context.TELEPHONY_SERVICE);
                 if (tMgr != null) {
@@ -212,10 +212,36 @@ public class ActiveListsActivity extends WithLoginActivity
             }
         } catch(SecurityException e){
             Log.d("auchan_test", "phone permission");
+        }*/
+
+        //provider.tryToLoginFromPrefs();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PHONE_STATE_PERMISSION_REQUEST:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+                    if(offlineFragment != null){
+                        offlineFragment.setRefresher();
+                    }
+                } else {
+                                                                        //TODO block app
+                }
+                break;
+            case EXTERNAL_STORAGE_PERMISSION_REQUEST:
+                if (! (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                                                                        //TODO block app
+                }
+
+                break;
+
         }
-
-        provider.tryToLoginFromPrefs();
-
     }
 
     @Override

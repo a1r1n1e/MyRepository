@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">WhoBuys</string>
+    <string name="session_page">www.whobuys.ru/whobuys_light_sessioner.php</string>
+    <string name="controller_page">www.whobuys.ru/whobuys_light_controller.php</string>
     <string name="title_activity_active_lists">Ваши активные списки</string>
     <string name="online">Онлайн</string>
     <string name="offline">Оффлайн</string>
     <string name="history">История</string>
     <string name="active">Активные</string>
     <string name="login">Войти</string>
+    <string name="id">id</string>
     <string name="registration">Регистрация</string>
     <string name="enter_login">Введите логин</string>
     <string name="enter_password">Введите пароль</string>

@@ -1,4 +1,4 @@
-package com.example.vovch.listogram_20;
+package whobuys.vovch.vovch.light;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
