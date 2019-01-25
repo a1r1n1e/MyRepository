@@ -60,10 +60,7 @@ public class UserSessionData {
             context = newContext;
             if (context != null) {
                 preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-                preferences.edit().clear().commit();
                 if (preferences != null) {
-                    //preferences.edit().clear().commit();
-
                     login = preferences.getString(APP_PREFERENCES_LOGIN, null);
                     password = preferences.getString(APP_PREFERENCES_PASSWORD, null);
                     token = preferences.getString(APP_PREFERENCES_TOKEN, null);

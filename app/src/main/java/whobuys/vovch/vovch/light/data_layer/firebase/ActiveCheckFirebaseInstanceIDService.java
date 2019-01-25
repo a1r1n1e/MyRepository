@@ -32,8 +32,6 @@ public class ActiveCheckFirebaseInstanceIDService extends FirebaseInstanceIdServ
                         provider.userSessionData.register(mPhoneNumber);
                     }
                     provider.updateAllGroups();
-                } else{
-                    provider.userSessionData.register(mPhoneNumber);
                 }
             }
         } catch (SecurityException e){

@@ -385,7 +385,7 @@ public class CreateListogramActivity extends WithLoginActivity {
                         }
                     }
 
-                    if(loadType == 1) {
+                    /*if(loadType == 1) {
                         activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items, listName);
                     }
                     else if(loadType == 0){                                                 //CHANGES
@@ -394,6 +394,11 @@ public class CreateListogramActivity extends WithLoginActivity {
                         activeActivityProvider.redactListogram(items, activeActivityProvider.getResendingList(), listName);
                     } else if(loadType == 3){
                         activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList(), listName);
+                    }*/
+                    if(loadType == 0){
+                        activeActivityProvider.createListogram(items, listName);
+                    } else if(loadType == 2){
+                        activeActivityProvider.redactListogram(items, activeActivityProvider.getResendingList(), listName);
                     }
                     Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();

@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -195,52 +196,26 @@ public class ActiveListsActivity extends WithLoginActivity
         } else {
             // Permission has already been granted
         }
-        /*try {
-            if (!provider.userSessionData.isLoginned()) {
-                TelephonyManager tMgr = (TelephonyManager) provider.getSystemService(Context.TELEPHONY_SERVICE);
-                if (tMgr != null) {
-                    String mPhoneNumber = tMgr.getDeviceId();
-
-                    String result = provider.userSessionData.startSession(mPhoneNumber, mPhoneNumber);
-                    if (result != null && result.length() >= 3) {
-                        if (!result.substring(0, 3).equals("200")) {
-                            provider.userSessionData.register(mPhoneNumber);
-                        }
-                        provider.updateAllGroups();
-                    }
-                }
-            }
-        } catch(SecurityException e){
-            Log.d("auchan_test", "phone permission");
-        }*/
-
-        //provider.tryToLoginFromPrefs();
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PHONE_STATE_PERMISSION_REQUEST:
+        switch(requestCode){
+            case PHONE_STATE_PERMISSION_REQUEST: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     FirebaseMessaging.getInstance().setAutoInitEnabled(true);
-                    if(offlineFragment != null){
+                    provider.firstRegistrationToServer();
+                    if (offlineFragment != null) {
                         offlineFragment.setRefresher();
+                        offlineFragment.getRefresher().setRefreshing(true);
                     }
                 } else {
-                                                                        //TODO block app
+                    //TODO block app
                 }
                 break;
-            case EXTERNAL_STORAGE_PERMISSION_REQUEST:
-                if (! (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                                                                        //TODO block app
-                }
-
-                break;
-
+            }
         }
     }
 

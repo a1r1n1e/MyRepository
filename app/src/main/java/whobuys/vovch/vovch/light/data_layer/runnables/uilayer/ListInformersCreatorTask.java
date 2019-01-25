@@ -23,6 +23,9 @@ public class ListInformersCreatorTask implements Runnable {
     public void run() {
         try {
             provider.dataExchanger.setGroups(groups);
+            if(groups.length > 0 && groups[0] != null) {
+                provider.setActiveGroup(groups[0]);
+            }
             ListInformer[] informers = provider.dataExchanger.createListinformers();
             presenter(informers, isUpdateComplete);
         } catch (Exception e){

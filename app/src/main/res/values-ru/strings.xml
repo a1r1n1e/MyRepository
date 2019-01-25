@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WhoBuys</string>
-    <string name="session_page">www.whobuys.ru/whobuys_light_sessioner.php</string>
-    <string name="controller_page">www.whobuys.ru/whobuys_light_controller.php</string>
+    <string name="session_page">http://www.whobuys.ru/whobuys_light_sessioner.php</string>
+    <string name="controller_page">http://www.whobuys.ru/whobuys_light_controller.php</string>
     <string name="title_activity_active_lists">Ваши активные списки</string>
     <string name="online">Онлайн</string>
     <string name="offline">Оффлайн</string>
