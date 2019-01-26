@@ -142,31 +142,15 @@ public class ActiveListsActivity extends WithLoginActivity
         TabLayout tabs = (TabLayout) findViewById(R.id.active_lists_tabs);
 
         tabs.removeAllTabs();
-        tabs.addTab(tabs.newTab().setText(getString(R.string.offline)));
+        tabs.addTab(tabs.newTab().setText(getString(R.string.active)));
         tabs.addTab(tabs.newTab().setText(getString(R.string.history)));
         tabs.setupWithViewPager(viewPager);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        ImageButton settingsButton = (ImageButton) findViewById(R.id.active_lists_menu_button);
-        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.light/mipmap/settings_more");
-        settingsButton.setImageURI(uri);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(drawer != null) {
-                    if (drawer.isDrawerOpen(GravityCompat.START)) {
-                        drawer.closeDrawer(GravityCompat.START);
-                    } else {
-                        drawer.openDrawer(GravityCompat.START);
-                    }
-                }
-            }
-        });
 
         fab = (FloatingActionButton) findViewById(R.id.active_lists_fab);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1127,7 +1111,7 @@ public class ActiveListsActivity extends WithLoginActivity
             if (viewPager != null) {
                 adapter = new Adapter(getSupportFragmentManager());
                 adapter.clean();
-                adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.offline));
+                adapter.addFragment(new ActiveFragmentOffline(), getString(R.string.active));
                 adapter.addFragment(new ActiveFragmentHistory(), getString(R.string.history));
                 viewPager.setAdapter(adapter);
             }

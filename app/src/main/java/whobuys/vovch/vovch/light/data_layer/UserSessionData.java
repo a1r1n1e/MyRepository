@@ -48,7 +48,7 @@ public class UserSessionData {
     private String session;
     private String groupId;
     private static final String CLIENT_VERSION = "140";
-    private static final String CLIENT_TYPE = "1";
+    private static final String CLIENT_TYPE = "2";
     private static final String ACTION_LOGIN = "login";
     private static final String ACTION_LOGOUT = "logout";
     private static final String ACTION_CHECK = "check_session";
