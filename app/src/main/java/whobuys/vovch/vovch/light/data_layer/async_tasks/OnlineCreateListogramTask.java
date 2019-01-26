@@ -42,6 +42,12 @@ public class OnlineCreateListogramTask extends AsyncTask <Object, Void, UserGrou
             else{
                 activeActivityProvider.resendListToGroupBad(null);
             }
+        } else if(activityType == 2){
+            if(result != null) {
+                activeActivityProvider.showGroupChangeOutside(result);
+            } else{
+                                                                                    //TODO
+            }
         }
         activeActivityProvider = null;
     }

@@ -29,9 +29,10 @@ public class RedactOnlineListTask extends AsyncTask<Object, Void, UserGroup> {
     @Override
     public void onPostExecute(UserGroup result) {
         if (result != null) {
-            activeActivityProvider.showOnlineListRedactedGood(activityType, result);
+            activeActivityProvider.showOnlineListogramCreatedGood(result);
+            activeActivityProvider.dataExchanger.clearTempItems();
         } else {
-            activeActivityProvider.showOnlineListRedactedBad(null, activityType);
+            //activeActivityProvider.showOnlineListRedactedBad(null, activityType);     TODO
         }
         activeActivityProvider = null;
     }

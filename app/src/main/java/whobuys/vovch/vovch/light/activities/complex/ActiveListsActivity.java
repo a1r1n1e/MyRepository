@@ -153,7 +153,7 @@ public class ActiveListsActivity extends WithLoginActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.active_lists_menu_button);
-        Uri uri = Uri.parse("android.resource://vovch.auchan_test.auchantest/mipmap/settings_more");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.light/mipmap/settings_more");
         settingsButton.setImageURI(uri);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -439,6 +439,7 @@ public class ActiveListsActivity extends WithLoginActivity
             if (historyFragment != null) {
                 historyFragment.checkRootView(viewPager, getLayoutInflater());
                 historyFragment.setRefresher();
+                provider.getActiveGroup().getMoreHistoryLists();
                 offlineUpdateHistory();
             }
         } catch (Exception e){
@@ -681,7 +682,7 @@ public class ActiveListsActivity extends WithLoginActivity
 
     public void update() {
         try {
-            provider.getActiveActivityActiveLists();
+            provider.getOfflineActiveData();
         } catch (Exception e){
             Log.d("WhoBuys", "ALA");
         }
@@ -862,7 +863,6 @@ public class ActiveListsActivity extends WithLoginActivity
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             String message = getString(R.string.dialog_resend_question);
-            String button1String = getString(R.string.Resend_List);
             String button2String = getString(R.string.Copy);
             String button3String = getString(R.string.Cancel);
 
@@ -872,21 +872,10 @@ public class ActiveListsActivity extends WithLoginActivity
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), getString(R.string.list_copied_informer), Toast.LENGTH_LONG)
                             .show();
-                    activeActivityProvider.createListogramOffline(list.getItems(), list.getName());
+                    activeActivityProvider.createListogram(list.getItems(), list.getName());
                 }
             });
-            if(activeActivityProvider.userSessionData.isLoginned()) {
-                builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(getActivity(), getString(R.string.resend_where_informer),
-                                Toast.LENGTH_LONG).show();
-                        activeActivityProvider.setResendingList(list);
-                        Intent intent = new Intent(activity, GroupList2Activity.class);
-                        intent.putExtra(INTENT_LOAD_TYPE, 1);
-                        startActivity(intent);
-                    }
-                });
-            }
+
             builder.setPositiveButton(button3String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), getString(R.string.dialog_nothing_happened),

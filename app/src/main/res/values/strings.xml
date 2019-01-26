@@ -55,7 +55,7 @@
     <string name="dialog_redact_question">Want to redact list?</string>
     <string name="dialog_redact_action_procesing">Processing...</string>
     <string name="dialog_resend_question">What to do?</string>
-    <string name="Copy">Copy</string>
+    <string name="Copy">Repeat</string>
     <string name="Download">Download</string>
     <string name="Cancel">Cancel</string>
     <string name="Resend_List">Send to group</string>

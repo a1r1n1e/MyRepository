@@ -91,7 +91,7 @@ public class ActiveFragmentOffline extends Fragment {
         } else {
             resendButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri3 = Uri.parse("android.resource://whobuys.vovch.light.vovch.vovch.whobuys.vovch.light/mipmap/resend_custom_white_green");
+        Uri uri3 = Uri.parse("android.resource://whobuys.vovch.vovch.light/mipmap/resend_custom_white_green");
         resendButton.setImageURI(uri3);
         resendButton.setList(list);
 
@@ -130,7 +130,7 @@ public class ActiveFragmentOffline extends Fragment {
         } else {
             disactivateListButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri = Uri.parse("android.resource://whobuys.vovch.light.vovch.vovch.whobuys.vovch.light/mipmap/delete_custom_white_green");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.light/mipmap/delete_custom_white_green");
         disactivateListButton.setImageURI(uri);
         disactivateListButton.setList(list);
         disactivateListButton.setOnClickListener(disactivateListButtonOnClickListenner);
@@ -154,7 +154,7 @@ public class ActiveFragmentOffline extends Fragment {
         } else {
             redactButton.setImageDrawable(getResources().getDrawable(R.drawable.done_button_drawble));
         }
-        Uri uri2 = Uri.parse("android.resource://whobuys.vovch.light.vovch.vovch.whobuys.vovch.light/mipmap/redact_custom_white_green");
+        Uri uri2 = Uri.parse("android.resource://whobuys.vovch.vovch.light/mipmap/redact_custom_white_green");
         redactButton.setImageURI(uri2);
         redactButton.setList(list);
         redactButton.setOnClickListener(redactListButtonOnClickListenner);

@@ -242,7 +242,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         addingListogramLayout.addView(itemNameEditText);
         FrameLayout buttonFrame = (FrameLayout) LayoutInflater.from(addingListogramLayout.getContext()).inflate(R.layout.small_image_button_frame, addingListogramLayout, false);
         ImageButton imageButton = (ImageButton) LayoutInflater.from(buttonFrame.getContext()).inflate(R.layout.list_header_resend_image_button, buttonFrame, false);
-        Uri uri = Uri.parse("android.resource://whobuys.vovch.light.vovch.vovch.whobuys.vovch.light/mipmap/delete_custom_white_green");
+        Uri uri = Uri.parse("android.resource://whobuys.vovch.vovch.light/mipmap/delete_custom_white_green");
         imageButton.setImageURI(uri);
         imageButton.setFocusable(false);
         imageButton.setClickable(false);

@@ -33,14 +33,6 @@ public class ListInformersCreatorTask implements Runnable {
         }
     }
     private void presenter(ListInformer[] result, boolean isUpdateComplete){
-        if (result == null) {
-            if (provider.userSessionData.isLoginned()) {
-                provider.showListInformersGottenBad();
-            } else {
-                provider.badLoginTry(provider.getString(R.string.log_yourself_in));
-            }
-        } else {
-            provider.showListInformersGottenGood(result, isUpdateComplete);
-        }
+        provider.showGroupChangeOutside(provider.getActiveGroup());
     }
 }
