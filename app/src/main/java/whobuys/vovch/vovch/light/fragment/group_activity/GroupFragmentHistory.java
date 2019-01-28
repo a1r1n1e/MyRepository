@@ -76,14 +76,12 @@ public class GroupFragmentHistory extends Fragment {
         listOwnerNameTextView.setText(listOwner);
 
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        listNameTextView.setText(list.getName());
+        listNameTextView.setText(list.getStoreName());
         listNameTextView.setAlpha(0.5f);
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        if(list.getCreationTime() != null){
-            listCreationTimeTextView.setTextSize(10);
-            listCreationTimeTextView.setText(list.getHumanCreationTime());
-        }
+        listCreationTimeTextView.setTextSize(10);
+        listCreationTimeTextView.setText(list.getStoreTime());
         listCreationTimeTextView.setAlpha(0.5f);
         leftHeaderLayout.addView(listOwnerNameTextView);
         leftHeaderLayout.addView(listNameTextView);

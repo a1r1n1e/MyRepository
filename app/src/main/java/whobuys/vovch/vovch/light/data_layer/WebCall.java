@@ -260,9 +260,11 @@ public class WebCall {
                     String listOwnerName = tempListObject.getString("list_owner_name");
 
                     String creation_time = tempListObject.getString("list_creation_time");
-                    String listName = tempListObject.getString("list_name");
+                    String storeName = tempListObject.getString("store_name");
+                    String storeTime = tempListObject.getString("store_time");
                     SList tempList = new SList(items, listId, tempGroup, true, listState, listOwner, listOwnerName, creation_time);
-                    tempList.setName(listName);
+                    tempList.setStoreName(storeName);
+                    tempList.setStoreTime(storeTime);
                     if(tempList.getState()){
                         tempGroup.addActiveList(tempList);
                     } else {
@@ -272,11 +274,6 @@ public class WebCall {
                         items[m].setList(tempList);
                     }
                 }
-                /*if(tempGroup.getActiveLists() == null || tempGroup.getActiveLists().length == 0){
-                    tempGroup.setState("f");
-                } else{
-                    tempGroup.setState("t");
-                }*/
                 groups[i] = tempGroup;
             }
         } catch (Exception e) {
@@ -294,6 +291,46 @@ public class WebCall {
                 return null;
             }
         } catch (Exception e){
+            return null;
+        }
+    }
+
+    public static String prepareNewListogram(Item[] items, String storeName, String storeTime){
+        String result = null;
+        if (items != null) {
+            try{
+                int length = items.length;
+                JSONObject data = new JSONObject();
+                data.put("store_name", storeName);
+                data.put("store_time", storeTime);
+                JSONArray itemsArray = new JSONArray();
+                for (int i = 0; i < length; i++) {
+                    JSONObject item = new JSONObject();
+                    item.put("item_name", items[i].getName());
+                    String ownerId;
+                    if (items[i].getOwner() != null) {
+                        ownerId = items[i].getOwner();
+                    } else {
+                        ownerId = "0";
+                    }
+                    item.put("item_owner", ownerId);
+                    if (items[i].getId() != 0) {
+                        item.put("item_id", items[i].getId());
+                    }
+                    if (items[i].getState()) {
+                        item.put("item_state", "TRUE");
+                    } else {
+                        item.put("item_state", "FALSE");
+                    }
+                    itemsArray.put(item);
+                }
+                data.put("items_array", itemsArray);
+                result = data.toString();
+            } catch (Exception e) {
+                return null;
+            }
+            return result;
+        } else {
             return null;
         }
     }
@@ -401,9 +438,11 @@ public class WebCall {
 
 
                     String creation_time = tempListObject.getString("list_creation_time");
-                    String listName = tempListObject.getString("list_name");
+                    String storeName = tempListObject.getString("store_name");
+                    String sstoreTime = tempListObject.getString("store_time");
                     tempList = new SList(items, listId, group, false, listState, listOwner, listOwnerName, creation_time);
-                    tempList.setName(listName);
+                    tempList.setStoreName(storeName);
+                    tempList.setStoreTime(sstoreTime);
                     for (int k = 0; k < items.length; k++) {
                         items[k].setList(tempList);
                     }
@@ -417,53 +456,6 @@ public class WebCall {
             return null;
         }
     }
-
-    /*public  static ListInformer[] getListInformersFromJsonString(String result) {
-        if (result != null) {
-            ListInformer[] informers = null;
-            try {
-                JSONArray informersArray = new JSONArray(result);
-                JSONObject tempObject = null;
-                ListInformer tempInformer = null;
-                UserGroup tempGroup;
-                int i = 0;
-                int length = informersArray.length();
-                informers = new ListInformer[length];
-                String groupName;
-                String groupId;
-                AddingUser[] tempMembers;
-                JSONArray tempMembersArray;
-                String owner;
-                String active;
-                int tempMembersLength;
-                for (i = 0; i < length; i++) {
-                    tempObject = informersArray.getJSONObject(i);
-                    groupId = tempObject.getString("group_id");
-                    groupName = tempObject.getString("group_name");
-                    owner = tempObject.getString("group_owner");
-                    active = tempObject.getString("group_active");
-                    tempMembersArray = tempObject.getJSONArray("group_members");
-                    tempMembersLength = tempMembersArray.length();
-                    tempMembers = new AddingUser[tempMembersLength];
-                    for (int j = 0; j < tempMembersLength; j++) {
-                        tempObject = tempMembersArray.getJSONObject(j);
-                        tempMembers[j] = new AddingUser();
-                        tempMembers[j].setData(tempObject.getString("name"), tempObject.getString("id"));
-                    }
-                    tempInformer = new ListInformer(groupId, groupName, active);
-                    tempGroup = new UserGroup(groupName, groupId, tempMembers);
-                    tempGroup.setOwner(owner);
-                    tempInformer.setGroup(tempGroup);
-                    informers[i] = tempInformer;
-                }
-            } catch (Exception e) {
-                return null;
-            }
-            return informers;
-        } else {
-            return null;
-        }
-    }*/
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();

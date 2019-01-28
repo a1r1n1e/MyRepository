@@ -177,13 +177,12 @@ public class GroupFragmentActive extends Fragment {
         listOwnerNameTextView.setText(listOwner);
 
         TextView listNameTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        listNameTextView.setText(list.getName());
+        listNameTextView.setText(list.getStoreName());
 
         TextView listCreationTimeTextView = (TextView) LayoutInflater.from(leftHeaderLayout.getContext()).inflate(R.layout.list_header_left_textview, leftHeaderLayout, false);
-        if(list.getCreationTime() != null){
-            listCreationTimeTextView.setTextSize(10);
-            listCreationTimeTextView.setText(list.getHumanCreationTime());
-        }
+        listCreationTimeTextView.setTextSize(10);
+        listCreationTimeTextView.setText(list.getStoreTime());
+
         leftHeaderLayout.addView(listOwnerNameTextView);
         leftHeaderLayout.addView(listNameTextView);
         leftHeaderLayout.addView(listCreationTimeTextView);

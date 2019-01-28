@@ -54,7 +54,8 @@ public class DataBaseTask2 {
                     SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER,
                     SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID,
                     SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID,
-                    SqLiteBaseContruct.Lists.COLUMN_NAME_NAME};
+                    SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME,
+                    SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_TIME};
             String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
             String[] projection = {
                     SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
@@ -102,7 +103,8 @@ public class DataBaseTask2 {
                             type = true;
                         }
                         tempSlist = new SList(items, listCursor.getInt(0), null, false, type, listCursor.getInt(4), listCursor.getString(5), listCursor.getString(2));
-                        tempSlist.setName(listCursor.getString(7));
+                        tempSlist.setStoreName(listCursor.getString(7));
+                        tempSlist.setStoreTime(listCursor.getString(8));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -149,7 +151,8 @@ public class DataBaseTask2 {
                         SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER,
                         SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID,
                         SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID,
-                        SqLiteBaseContruct.Lists.COLUMN_NAME_NAME};
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME,
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_TIME};
                 String orderBy = SqLiteBaseContruct.Items.COLUMN_NAME_CREATION_TIME + " DESC";
                 String[] projection = {
                         SqLiteBaseContruct.Items.COLUMN_NAME_NAME,
@@ -182,7 +185,8 @@ public class DataBaseTask2 {
                             type = true;
                         }
                         tempSlist = new SList(new Item[0], Integer.parseInt(listId), group, true, type, listCursor.getInt(5), listCursor.getString(4), listCursor.getString(2));
-                        tempSlist.setName(listCursor.getString(7));
+                        tempSlist.setStoreName(listCursor.getString(7));
+                        tempSlist.setStoreTime(listCursor.getString(8));
                         sLists[i] = tempSlist;
                         if (i + 1 < listNumber) {
                             listCursor.moveToNext();
@@ -233,30 +237,6 @@ public class DataBaseTask2 {
         }
     }
                                                                                                         //not working properly. works only expanding side
-    /*public boolean synchronizeOffline(SList[] activeLists, SList[] historyLists){                       //lists can be added or modified. not deleted completely. Full deletion of
-        try{                                                                                            //history lists is made outside of synchronization protocol
-            for(SList list : activeLists){                                                              //NOT FULLY DEBUGGED
-                if(checkList(list)){                                                                    //list is already in storage
-                    deleteItemsOfList(list);
-                    addItemsToList(list, list.getItems());
-                } else{                                                                                 //no such list in storage
-                    addList(list.getItems(), "t");
-                }
-            }
-            for(SList list : historyLists){
-                if(checkList(list)){                                                                    //list is already in storage
-                    deleteItemsOfList(list);
-                    addItemsToList(list, list.getItems());
-                } else{                                                                                 //no such list in storage
-                    addList(list.getItems(), "f");
-                }
-            }
-            return true;
-        } catch (Exception e){
-            return false;
-        }
-    }*/
-
     public UserGroup getGroupData(String groupId){                                                      //potentially useful. NOT DEBUGGED
         UserGroup result = null;
         try {
@@ -495,7 +475,7 @@ public class DataBaseTask2 {
         }
     }
 
-    public SList addList(Item[] items, String isActive, String listName) {
+    public SList addList(Item[] items, String isActive, String storeName, String storeTime) {
         SList result;
         try {
             if(items != null && isActive != null) {
@@ -509,7 +489,8 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER, SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID, SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME, creationTime);
-                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, listName);
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME, storeName);
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_TIME, storeTime);
                 long listId;
                 listId = db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
 
@@ -519,7 +500,8 @@ public class DataBaseTask2 {
                 values.clear();
 
                 result = new SList(items, (int)listId, null, false, true, 0, null, creationTime);           //long to int careful
-                result.setName(listName);
+                result.setStoreName(storeName);
+                result.setStoreTime(storeTime);
                 values.clear();
                 addItemsToList(result, items);
                 db.close();
@@ -754,7 +736,8 @@ public class DataBaseTask2 {
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER, list.getOwnerName());
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID, list.getOwner());
                 values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME, list.getCreationTime());
-                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, list.getName());
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME, list.getStoreName());
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_TIME, list.getStoreTime());
                 db.insert(SqLiteBaseContruct.Lists.TABLE_NAME, SqLiteBaseContruct.Lists._ID, values);
                 values.clear();
 
@@ -773,18 +756,25 @@ public class DataBaseTask2 {
         }
     }
 
-    public SList redactOfflineList(SList list, Item[] items, String listName) {
+    public SList redactOfflineList(SList list, Item[] items, String storeName, String storeTime) {
         SList resultList = null;
         if (list != null && items != null) {
             try {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
 
-                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_NAME, listName);
-                db.execSQL("UPDATE " + SqLiteBaseContruct.Lists.TABLE_NAME + " SET " + SqLiteBaseContruct.Lists.COLUMN_NAME_NAME +
-                           " = '" + listName + "' WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " = " + String.valueOf(list.getId())
-                           + " AND " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = " + SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
+                values.put(SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME, storeName);
+                db.execSQL("UPDATE " + SqLiteBaseContruct.Lists.TABLE_NAME + " SET " +
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME +
+                           " = '" + storeName + "', " +
+                        SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_TIME +
+                        " = '" + storeTime + "' " +
+                        " WHERE " + SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + " = " +
+                        String.valueOf(list.getId())
+                           + " AND " + SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + " = " +
+                        SqLiteBaseContruct.Lists.LIST_OFFLINE_DEFAULT_VALUE);
                 values.clear();
+
 
                 SimpleDateFormat dateFormat;
                 String creationTime;
@@ -815,7 +805,8 @@ public class DataBaseTask2 {
                     values.clear();
                 }
                 list.setItems(items);
-                list.setName(listName);
+                list.setStoreName(storeName);
+                list.setStoreTime(storeTime);
                 resultList = list;
                 db.close();
             } catch (Exception e) {

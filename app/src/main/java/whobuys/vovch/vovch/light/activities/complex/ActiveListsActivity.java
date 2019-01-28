@@ -854,9 +854,13 @@ public class ActiveListsActivity extends WithLoginActivity
             builder.setMessage(message);
             builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(getActivity(), getString(R.string.list_copied_informer), Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), getString(R.string.dialog_redact_action_procesing), Toast.LENGTH_LONG)
                             .show();
-                    activeActivityProvider.createListogram(list.getItems(), list.getName());
+                    activeActivityProvider.setResendingList(list);
+                    activeActivityProvider.saveTempItems(activeActivityProvider.dataExchanger.makeTempItemsFromItems(list.getItems()));
+                    Intent intent = new Intent(activity, CreateListogramActivity.class);
+                    intent.putExtra(INTENT_LOAD_TYPE, 4);
+                    startActivity(intent);
                 }
             });
 

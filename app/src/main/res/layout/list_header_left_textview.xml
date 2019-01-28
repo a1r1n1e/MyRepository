@@ -7,6 +7,6 @@
     android:gravity="start"
     android:focusable="false"
     android:clickable="false"
-    android:textSize="20sp"
+    android:textSize="30sp"
     android:textAllCaps="false"
     android:textColor="@color/whoBuysGray" />

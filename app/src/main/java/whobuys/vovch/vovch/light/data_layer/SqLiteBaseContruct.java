@@ -12,13 +12,14 @@ public final class SqLiteBaseContruct {
     }
     public static abstract class Lists implements BaseColumns{
         public static final String TABLE_NAME = "lists";
-        public static final String COLUMN_NAME_NAME = "list_name";
         public static final String COLUMN_NAME_LIST_ID = "list_id";
         public static final String COLUMN_NAME_CREATION_TIME = "list_creation_time";
         public static final String COLUMN_NAME_ACTIVE = "list_active";
         public static final String COLUMN_NAME_OWNER = "list_owner";
         public static final String COLUMN_NAME_GROUP = "list_group";
         public static final String COLUMN_NAME_OWNER_ID = "list_owner_id";
+        public static final String COLUMN_NAME_STORE_NAME = "store_name";
+        public static final String COLUMN_NAME_STORE_TIME = "store_time";
 
         public static final String LIST_OFFLINE_DEFAULT_VALUE = "0000";
         public static final int LIST_OFFLINE_DEFAULT_NUMBER = 0;

@@ -52,39 +52,6 @@ public class DataExchanger {
         }
     }
 
-    /*public boolean synchronizeDB(){                                                                     //not working properly. works only expanding side
-        boolean result = false;
-        try{
-            DataBaseTask2 dataBaseTask2 = new DataBaseTask2(context);
-            result = dataBaseTask2.synchronizeOffline(storage.getOfflineListsActive(), storage.getOfflineListsHistory());
-        } catch (Exception e){
-            Log.d("WhoBuys", "DE");
-        }
-        return result;
-    }*/
-
-    /*public ListInformer[] getListInformers(String userId) {                                         //shouldn't be used
-        ListInformer[] informers = null;
-        try {
-            WebCall webCall = new WebCall();
-            String resultJsonString = null;
-            ActiveActivityProvider provider = (ActiveActivityProvider) context;
-            if (userId != null) {
-                JSONArray jsonArray = new JSONArray();
-                String jsonString = jsonArray.toString();
-                //resultJsonString = webCall.callServer(userId, BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "checkactives", jsonString, provider.userSessionData);
-                resultJsonString = webCall.callServer("2", BLANK_WEBCALL_FIELD, BLANK_WEBCALL_FIELD, "check_group_updates", jsonString, provider.userSessionData);
-                if (resultJsonString != null && resultJsonString.length() > 2 && resultJsonString.substring(0, 3).equals("200")) {
-                    informers = WebCall.getListInformersFromJsonString(resultJsonString.substring(3));
-                    informers = storage.setListInformers(informers);
-                }
-            }
-        } catch (Exception e){
-            Log.d("WhoBuys", "DE");
-        }
-        return informers;
-    }*/
-
     public ListInformer[] createListinformers(){
         ListInformer[] informers = null;
         try {
@@ -102,8 +69,8 @@ public class DataExchanger {
                 String lastListName = "";
                 String lastListTime = "";
                 if(lists.length > 0){
-                    lastListName = lists[lists.length - 1].getName();
-                    lastListTime = lists[lists.length - 1].getHumanCreationTime();
+                    lastListName = lists[lists.length - 1].getStoreName();
+                    lastListTime = lists[lists.length - 1].getStoreTime();
                 }
 
                 informers[i] = new ListInformer(groups[i].getId(), groups[i].getName(), active, lastListName, lastListTime);
@@ -729,15 +696,15 @@ public class DataExchanger {
     }
 
 
-    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group, String listName) {
+    public UserGroup addOnlineList(Item[] itemsArray, UserGroup group, String storeName, String storeTime) {
         UserGroup resultGroup = null;
         try {
             String result = null;
             if (itemsArray != null && group != null) {
                 ActiveActivityProvider provider = (ActiveActivityProvider) context;
                 WebCall webCall = new WebCall();
-                String jsonString = WebCall.prepareItemsJSONString(itemsArray);
-                result = webCall.callServer(provider.userSessionData.getId(), listName, group.getId(), "sendlistogram", jsonString, provider.userSessionData);
+                String jsonString = WebCall.prepareNewListogram(itemsArray, storeName, storeTime);
+                result = webCall.callServer(provider.userSessionData.getId(), BLANK_WEBCALL_FIELD, group.getId(), "sendlistogram", jsonString, provider.userSessionData);
                 if (result != null && result.length() > 2 && result.substring(0, 3).equals("200")) {
                     resultGroup = updateGroup(group);
                 }
@@ -1058,16 +1025,17 @@ public class DataExchanger {
         }
     }
 
-    public UserGroup redactOnlineList(SList list, Item[] items, String listName) {
+    public UserGroup redactOnlineList(SList list, Item[] items, String storeName, String storeTime) {
         UserGroup result = null;
          try {
              if (list != null && items != null && list.getGroup().getId() != null) {
                  ActiveActivityProvider provider = (ActiveActivityProvider) context;
                  WebCall webCall = new WebCall();
-                 String itemsJSONString = WebCall.prepareItemsJSONString(items);
-                 String resultString = webCall.callServer(listName, String.valueOf(list.getId()), list.getGroup().getId(), "redactlist", itemsJSONString, provider.userSessionData);
+                 String itemsJSONString = WebCall.prepareNewListogram(items, storeName, storeTime);
+                 String resultString = webCall.callServer(BLANK_WEBCALL_FIELD,
+                         String.valueOf(list.getId()), list.getGroup().getId(), "redactlist",
+                         itemsJSONString, provider.userSessionData);
                  if (resultString != null && resultString.length() > 2 && resultString.substring(0, 3).equals("200")) {
-                     //list.setItems(items);
                      result = updateGroup(list.getGroup());
                  }
              }

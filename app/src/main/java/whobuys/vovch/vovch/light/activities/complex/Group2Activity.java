@@ -390,7 +390,8 @@ public class Group2Activity extends WithLoginActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(getActivity(), getString(R.string.list_downloaded_informer), Toast.LENGTH_LONG)
                             .show();
-                    activeActivityProvider.createListogramOffline(list.getItems(), list.getName());
+                    activeActivityProvider.createListogramOffline(list.getItems(),
+                            list.getStoreName(), list.getStoreTime());
                 }
             });
             builder.setNeutralButton(button1String, new DialogInterface.OnClickListener() {

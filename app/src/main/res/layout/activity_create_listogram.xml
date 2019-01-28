@@ -3,36 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:fitsSystemWindows="true"
     android:background="@color/elementLayoutColor1"
     tools:context="whobuys.vovch.vovch.light.activities.simple.CreateListogramActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/create_listogram_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/elementLayoutColor1">
-        <EditText
-            android:id="@+id/create_listogram_toolbar_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="0.8"
-            android:hint="@string/enter_list_name"
-            android:maxLines="1"
-            android:textAllCaps="false"
-            android:singleLine="true"
-            android:inputType="textNoSuggestions"
-            android:background="@android:color/transparent"
-            android:textColor="@color/whoBuysGray"
-            android:textSize="30sp"
-            android:gravity="start"
-            android:layout_gravity="center" />
-    </android.support.v7.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -41,13 +18,105 @@
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         android:id="@+id/createlistogramscrollview"
-        android:scrollbars="none"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="76dp">
+        android:scrollbars="none">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
+                android:foreground="?attr/selectableItemBackground"
+                card_view:cardUseCompatPadding="false"
+                card_view:contentPaddingLeft="8dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:contentPaddingBottom="8dp"
+                card_view:contentPaddingRight="8dp"
+                card_view:contentPaddingTop="8dp"
+                card_view:cardElevation="3dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0px"
+                        android:layout_height="0px"/>
+                    <EditText
+                        android:id="@+id/create_listogram_store_name_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/whoBuysGray"
+                        android:textSize="18sp"
+                        android:hint="@string/enter_store_name"
+                        android:nextFocusUp="@id/create_listogram_store_name_edittext"
+                        android:nextFocusLeft="@id/create_listogram_store_name_edittext"/>
+                    <TextView
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/whoBuysGray"
+                        android:text="@string/store_name_example"
+                        android:textSize="14sp"
+                        android:alpha="0.5"/>
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
+                        android:textColor="@color/whoBuysGray"
+                        android:text="@string/store_name_note"
+                        android:textSize="10sp"
+                        android:alpha="0.4"/>
+                    <LinearLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0px"
+                        android:layout_height="0px"/>
+                    <EditText
+                        android:layout_marginTop="8dp"
+                        android:id="@+id/create_listogram_time_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/whoBuysGray"
+                        android:textSize="18sp"
+                        android:hint="@string/enter_time"
+                        android:nextFocusUp="@id/create_listogram_time_edittext"
+                        android:nextFocusLeft="@id/create_listogram_time_edittext"/>
+                    <TextView
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/whoBuysGray"
+                        android:text="@string/store_time_example"
+                        android:textSize="14sp"
+                        android:alpha="0.5"/>
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="8dp"
+                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/whoBuysGray"
+                        android:text="@string/store_time_note"
+                        android:textSize="10sp"
+                        android:alpha="0.4"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

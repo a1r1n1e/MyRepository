@@ -14,13 +14,16 @@ public class OfflineListogramCreatorTask implements Runnable {
     private ActiveActivityProvider provider;
     private Item[] items;
     private int incomingActivityType;
-    private String listName;
+    private String storeName;
+    private String storeTime;
 
-    public OfflineListogramCreatorTask(Item[] items, int incomingActivityType, ActiveActivityProvider provider, String listName) {
+    public OfflineListogramCreatorTask(Item[] items, int incomingActivityType,
+                                       ActiveActivityProvider provider, String storeName,
+                                       String storeTime) {
         this.provider = provider;
         this.items = items;
         this.incomingActivityType = incomingActivityType;
-        this.listName = listName;
+        this.storeName = storeName;
     }
 
 
@@ -30,10 +33,11 @@ public class OfflineListogramCreatorTask implements Runnable {
 
             SList list = null;
             DataBaseTask2 addTask = new DataBaseTask2(provider);
-            list = addTask.addList(items, "t", listName);
+            list = addTask.addList(items, "t", storeName, storeTime);
 
             Handler handler = new Handler(Looper.getMainLooper());
-            OfflineListogramCreatorTaskDE runnable = new OfflineListogramCreatorTaskDE(list, incomingActivityType, provider);
+            OfflineListogramCreatorTaskDE runnable = new OfflineListogramCreatorTaskDE(list,
+                    incomingActivityType, provider);
             handler.post(runnable);
 
         } catch (Exception e) {

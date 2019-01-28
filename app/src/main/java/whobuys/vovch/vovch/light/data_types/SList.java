@@ -23,7 +23,8 @@ public class SList /*implements Parcelable*/ {
     private String humanCreationTime;
     private int owner;
     private String ownerName;
-    private String name;
+    private String storeName;
+    private String storeTime;
 
     private CardView cardView;
     private ImageButton disButton;
@@ -37,7 +38,8 @@ public class SList /*implements Parcelable*/ {
         owner = -1;
         type = false;
         state = true;
-        name = "";
+        storeName = "";                             //should always be filled, doing this just to be sure
+        storeTime = "";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         creationTime = format.format(Calendar.getInstance().getTime());
         setHumanCreationTime();
@@ -50,13 +52,8 @@ public class SList /*implements Parcelable*/ {
         setState(newState);
         setOwner(newOwner);
         setOwnerName(newOwnerName);
-        setName("");
-        /*if(!newType) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            creationTime = format.format(Calendar.getInstance().getTime());
-        } else{
-            creationTime = newCreationTime;
-        }*/
+        setStoreName("");                           //should always be filled, doing this just to be sure
+        setStoreTime("");
         creationTime = newCreationTime;
         setHumanCreationTime();
     }
@@ -65,19 +62,20 @@ public class SList /*implements Parcelable*/ {
         return super.clone();
     }
 
-    public void setName(String name) {
-        if(name != null) {
-            this.name = name;
-        } else {
-            this.name = "";
-        }
+    public void setStoreName(String storeName){
+        this.storeName = storeName;
     }
 
-    public String getName() {
-        if(this.name == null){
-            this.name = "";
-        }
-        return name;
+    public String getStoreName(){
+        return storeName;
+    }
+
+    public void setStoreTime(String storeTime) {
+        this.storeTime = storeTime;
+    }
+
+    public String getStoreTime() {
+        return storeTime;
     }
 
     private void setHumanCreationTime(){

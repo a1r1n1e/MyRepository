@@ -83,4 +83,12 @@
     <string name="profile">Profile</string>
     <string name="additional">Additional</string>
     <string name="enter_list_name">Enter list name</string>
+    <string name="enter_store_name">Store and location</string>
+    <string name="store_name_example">example: auchan Altufevo</string>
+    <string name="enter_time">Cart ready at</string>
+    <string name="store_time_example">example: friday 4:30 pm</string>
+    <string name="store_name_note">note: at this moment we work only in Moscow</string>
+    <string name="store_time_note">note: at least in 24 hours from now</string>
+    <string name="list_item">list item</string>
+    <string name="fill_store_and_time">Enter store and time</string>
 </resources>

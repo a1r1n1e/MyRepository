@@ -83,4 +83,12 @@
     <string name="profile">Профиль</string>
     <string name="additional">Дополнительно</string>
     <string name="enter_list_name">Назовите список</string>
+    <string name="enter_store_name">Гипермаркет в который вы поедете</string>
+    <string name="store_name_example">например: Ашан Алтуфьево</string>
+    <string name="enter_time">Время, к которому собрать тележку</string>
+    <string name="store_time_example">например: пятница 19:30</string>
+    <string name="store_name_note">важно: пока мы работаем только в Москве и ближайшем Подмосковье</string>
+    <string name="store_time_note">важно: мы сможем собрать тележку не раньше завтрашнего дня</string>
+    <string name="list_item">пункт списка</string>
+    <string name="fill_store_and_time">Выберите когда и где</string>
 </resources>

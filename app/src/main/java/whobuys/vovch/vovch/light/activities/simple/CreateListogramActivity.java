@@ -98,17 +98,11 @@ public class CreateListogramActivity extends WithLoginActivity {
 
         setContentView(R.layout.activity_create_listogram);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.create_listogram_toolbar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(24);
-        }
-        setSupportActionBar(toolbar);
-
         if(getIntent().getExtras() != null) {
             loadType = getIntent().getExtras().getInt(INTENT_LOAD_TYPE);                                      //getting information what type of action is it
         }
 
-        if((loadType == 1 || loadType == 3) && provider != null ){
+        if((loadType == 1 || loadType == 3 || loadType == 4)&& provider != null ){
             UserGroup currentGroup = provider.getActiveGroup();
             if(currentGroup != null){
                 groupId = currentGroup.getId();
@@ -116,8 +110,10 @@ public class CreateListogramActivity extends WithLoginActivity {
         }
 
         if(loadType == 2 || loadType == 3){
-            EditText listNameEditText = (EditText) findViewById(R.id.create_listogram_toolbar_edittext);
-            listNameEditText.setText(provider.getResendingList().getName());
+            EditText listNameEditText = (EditText) findViewById(R.id.create_listogram_store_name_edittext);
+            listNameEditText.setText(provider.getResendingList().getStoreName());
+            EditText storeTimeEdittext = (EditText) findViewById(R.id.create_listogram_time_edittext);
+            storeTimeEdittext.setText(provider.getResendingList().getStoreTime());
         }
 
         View.OnClickListener sendListagramListener = new View.OnClickListener() {
@@ -128,7 +124,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         };
         ImageButton sendListogramButton = (ImageButton) findViewById(R.id.create_listogram_send_list_button);
         sendListogramButton.setOnClickListener(sendListagramListener);
-        scrollToEnd();
+        scrollToTop();
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.create_listogram_add_punct_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -170,19 +166,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         if(provider.getActiveActivityNumber() == 6) {
             provider.nullActiveActivity();
         }
-        /*Intent intent = null;
-        if(loadType == 1 || loadType == 3) {                                                            //Possibly refactor to odds and evens
-            intent = new Intent(CreateListogramActivity.this, Group2Activity.class);
-        } else if ((loadType == 0 || loadType == 2) && provider != null) {
-            provider.setActiveListsActivityLoadType(1);
-            intent = new Intent(CreateListogramActivity.this, ActiveListsActivity.class);
-        }
-        if(intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            flag = true;
-            startActivity(intent);
-        }
-        */
+
         if(loadType == 0 || loadType == 2) {
             provider.setActiveListsActivityLoadType(1);
         }
@@ -195,11 +179,11 @@ public class CreateListogramActivity extends WithLoginActivity {
             TempItems.clear();
         }
     }
-    private void scrollToEnd(){
+    private void scrollToTop(){
         getScrollView().post(new Runnable() {
             @Override
             public void run() {
-                getScrollView().fullScroll(ScrollView.FOCUS_DOWN);
+                getScrollView().fullScroll(ScrollView.FOCUS_UP);
             }
         });
     }
@@ -236,7 +220,7 @@ public class CreateListogramActivity extends WithLoginActivity {
         if(hasData){
             itemNameEditText.setText(tempItem.getName());
         }
-        itemNameEditText.setHint("Name");
+        itemNameEditText.setHint(R.string.list_item);
         itemNameEditText.setTempItem(tempItem);
         itemNameEditText.setOnEditorActionListener(editorListenerTwo);
         addingListogramLayout.addView(itemNameEditText);
@@ -317,19 +301,30 @@ public class CreateListogramActivity extends WithLoginActivity {
     public void sendListogram(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_listogram_send_list_button);
         Item[] items = makeSendingItemsArray();
-        if(items != null && provider != null){
-            CompleteDialogFragment dialogFragment = new CompleteDialogFragment();
-            dialogFragment.setActiveActivityProvider(provider);
-            dialogFragment.setItems(items);
-            dialogFragment.setLoadType(loadType);
-            dialogFragment.setFab(fab);
+        String storeName = ((EditText)
+                findViewById(R.id.create_listogram_store_name_edittext))
+                .getText().toString();
+        String storeTime = ((EditText)
+                findViewById(R.id.create_listogram_time_edittext))
+                .getText().toString();
+        if(!storeName.equals("") && !storeTime.equals("")) {
+            if (items != null && provider != null) {
+                CompleteDialogFragment dialogFragment = new CompleteDialogFragment();
+                dialogFragment.setActiveActivityProvider(provider);
+                dialogFragment.setItems(items);
+                dialogFragment.setLoadType(loadType);
+                dialogFragment.setFab(fab);
 
-            EditText listNameEdittext = (EditText) findViewById(R.id.create_listogram_toolbar_edittext);
-            dialogFragment.setListName(listNameEdittext.getText().toString());
+                dialogFragment.setStoreName(storeName);
+                dialogFragment.setStoreTime(storeTime);
 
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                dialogFragment.show(transaction, FRAGMENT_TRANSACTION_DIALOG);
+            }
+        } else{
+            Toast.makeText(CreateListogramActivity.this,
+                    R.string.fill_store_and_time, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -339,7 +334,8 @@ public class CreateListogramActivity extends WithLoginActivity {
         private Item[] items;
         private FloatingActionButton fab;
         private ActiveActivityProvider activeActivityProvider;
-        private String listName;
+        private String storeName;
+        private String storeTime;
         protected void setFab(FloatingActionButton newFab){
             fab = newFab;
         }
@@ -349,9 +345,10 @@ public class CreateListogramActivity extends WithLoginActivity {
         protected void setItems(Item[] newItems){
             items = newItems;
         }
-        protected void setListName(String name){
-            listName = name;
+        protected void setStoreName(String name){
+            storeName = name;
         }
+        protected void setStoreTime(String time){ storeTime = time; }
         protected void setActiveActivityProvider(ActiveActivityProvider newActiveActivityProvider){
             activeActivityProvider = newActiveActivityProvider;
         }
@@ -385,20 +382,11 @@ public class CreateListogramActivity extends WithLoginActivity {
                         }
                     }
 
-                    /*if(loadType == 1) {
-                        activeActivityProvider.createOnlineListogram(activeActivityProvider.getActiveGroup(), items, listName);
-                    }
-                    else if(loadType == 0){                                                 //CHANGES
-                        activeActivityProvider.createListogram(items, listName);
+                    if(loadType == 0 || loadType == 4){
+                        activeActivityProvider.createListogram(items, storeName, storeTime);
                     } else if(loadType == 2){
-                        activeActivityProvider.redactListogram(items, activeActivityProvider.getResendingList(), listName);
-                    } else if(loadType == 3){
-                        activeActivityProvider.redactOnlineListogram(items, activeActivityProvider.getResendingList(), listName);
-                    }*/
-                    if(loadType == 0){
-                        activeActivityProvider.createListogram(items, listName);
-                    } else if(loadType == 2){
-                        activeActivityProvider.redactListogram(items, activeActivityProvider.getResendingList(), listName);
+                        activeActivityProvider.redactListogram(items,
+                                activeActivityProvider.getResendingList(), storeName, storeTime);
                     }
                     Toast.makeText(getActivity(), getString(R.string.dialog_confirm_action_processing),
                             Toast.LENGTH_LONG).show();

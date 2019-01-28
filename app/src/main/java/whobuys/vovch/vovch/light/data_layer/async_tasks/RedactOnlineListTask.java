@@ -22,8 +22,10 @@ public class RedactOnlineListTask extends AsyncTask<Object, Void, UserGroup> {
         Item[] items = (Item[]) loginPair[1];
         activityType = (Integer) loginPair[2];
         activeActivityProvider = (ActiveActivityProvider) loginPair[3];
-        String listName = (String) loginPair[4];
-        result = activeActivityProvider.dataExchanger.redactOnlineList(list, items, listName);
+        String storeName = (String) loginPair[4];
+        String storeTime = (String) loginPair[5];
+        result = activeActivityProvider.dataExchanger
+                .redactOnlineList(list, items, storeName, storeTime);
         return result;
     }
     @Override

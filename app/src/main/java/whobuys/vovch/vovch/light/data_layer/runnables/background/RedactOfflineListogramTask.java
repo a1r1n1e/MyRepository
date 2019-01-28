@@ -15,14 +15,18 @@ public class RedactOfflineListogramTask implements Runnable {
     private int activityType;
     private Item[] items;
     private SList list;
-    private String listName;
+    private String storeName;
+    private String storeTime;
 
-    public RedactOfflineListogramTask(SList list, int activityType, Item[] items, ActiveActivityProvider provider, String listName) {
+    public RedactOfflineListogramTask(SList list, int activityType, Item[] items,
+                                      ActiveActivityProvider provider, String storeName,
+                                      String storeTime) {
         this.provider = provider;
         this.list = list;
         this.items = items;
         this.activityType = activityType;
-        this.listName = listName;
+        this.storeName = storeName;
+        this.storeTime = storeTime;
     }
 
 
@@ -32,10 +36,11 @@ public class RedactOfflineListogramTask implements Runnable {
             SList resultList = null;
             if (list != null && items != null) {
                 DataBaseTask2 dataBaseTask2 = new DataBaseTask2(provider);
-                resultList = dataBaseTask2.redactOfflineList(list, items, listName);
+                resultList = dataBaseTask2.redactOfflineList(list, items, storeName, storeTime);
 
                 Handler handler = new Handler(Looper.getMainLooper());
-                RedactOfflineListogramTaskDE runnable = new RedactOfflineListogramTaskDE(resultList, activityType, items, provider);
+                RedactOfflineListogramTaskDE runnable = new RedactOfflineListogramTaskDE(resultList,
+                        activityType, items, provider);
                 handler.post(runnable);
             }
 

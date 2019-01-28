@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "SqLiteBase.db";
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -17,13 +17,14 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String
             SQL_CREATE_LISTS = "CREATE TABLE " + SqLiteBaseContruct.Lists.TABLE_NAME + " (" +
             SqLiteBaseContruct.Lists._ID + " INTEGER PRIMARY KEY," +
-            SqLiteBaseContruct.Lists.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+            SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_NAME + TEXT_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Lists.COLUMN_NAME_LIST_ID + TEXT_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Lists.COLUMN_NAME_ACTIVE + TEXT_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER + TEXT_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Lists.COLUMN_NAME_OWNER_ID + INTEGER_TYPE + COMMA_SEP +
             SqLiteBaseContruct.Lists.COLUMN_NAME_GROUP + INTEGER_TYPE + COMMA_SEP +
-            SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME + TEXT_TYPE + " )";
+            SqLiteBaseContruct.Lists.COLUMN_NAME_CREATION_TIME + TEXT_TYPE + COMMA_SEP +
+            SqLiteBaseContruct.Lists.COLUMN_NAME_STORE_TIME + TEXT_TYPE + " )";
     private static final String SQL_DROP_LISTS = "DROP TABLE IF EXISTS " + SqLiteBaseContruct.Lists.TABLE_NAME;
     private static final String
             SQL_CREATE_ITEMS = "CREATE TABLE " + SqLiteBaseContruct.Items.TABLE_NAME + " (" +

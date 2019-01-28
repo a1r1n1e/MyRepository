@@ -203,7 +203,8 @@ public class GroupList2Activity extends WithLoginActivity {
         refreshLayout.setRefreshing(true);
         if(loadType == 1) {
             if (group != null && group.getId() != null) {
-                provider.createOnlineListogram(group, resendingList.getItems(), resendingList.getName());
+                provider.createOnlineListogram(group, resendingList.getItems(),
+                        resendingList.getStoreName(), resendingList.getStoreTime());
             }
         } else if(loadType == 2){
             if (group != null && group.getId() != null) {
